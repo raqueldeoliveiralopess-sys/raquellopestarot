@@ -97,6 +97,12 @@ img.rev{transform:rotate(180deg)}
 /* no quiz, a imagem é cortada em cima (numeral) e embaixo (nome) para não entregar a resposta */
 .crop{width:150px;aspect-ratio:300/345;overflow:hidden;border-radius:8px;align-self:center;position:relative;background:var(--sand);box-shadow:0 8px 20px rgba(64,35,39,.18)}
 .crop img{position:absolute;left:0;width:100%;height:calc(100% / .69);top:-21.74%;object-fit:cover}
+.qa{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.qa:first-child{border-top:none}
+.qa .mk{width:22px;height:22px;border-radius:99px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px}
+.qa .mk.ok{background:var(--green-bg);color:#2F5A33;border:1px solid var(--green)}
+.qa .mk.no{background:var(--red-bg);color:var(--red);border:1px solid #C98484}
+.qa .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;font-size:13px;line-height:1.4}
 .big{font-size:56px;line-height:1;color:var(--butter)}.big span{font-size:22px;color:var(--paper);opacity:.8}
 </style>
 </head>
@@ -133,17 +139,17 @@ const ICONS = {
 
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem('tarot-estudo') || '{}'); } catch (e) { saved = {}; }
-const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[]}, saved.persist || {});
-if(!S.readings) S.readings=[]; if(!S.spreadVar) S.spreadVar={};
+const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[],quizHistory:[],quizOpen:null}, saved.persist || {});
+if(!S.readings) S.readings=[]; if(!Array.isArray(S.quizHistory)) S.quizHistory=[]; S.quizOpen=null; if(!S.spreadVar) S.spreadVar={};
 if(!S.notes) S.notes={};
-function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings}})); return true; } catch(e){ return false; } }
+function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory}})); return true; } catch(e){ return false; } }
 function exportBackup(){
-  const data={app:'estudo-tarot',exportadoEm:new Date().toISOString(),studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings};
+  const data={app:'estudo-tarot',exportadoEm:new Date().toISOString(),studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings,quizHistory:S.quizHistory};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='estudo-tarot-backup-'+new Date().toISOString().slice(0,10)+'.json'; document.body.appendChild(a); a.click(); a.remove();
 }
 function importBackup(file){
-  const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); if(d.app!=='estudo-tarot') throw 0; S.notes=Object.assign({},S.notes,d.notes||{}); S.studied=Object.assign({},S.studied,d.studied||{}); if(d.stats) S.stats={quizzes:Math.max(S.stats.quizzes,d.stats.quizzes||0),best:Math.max(S.stats.best,d.stats.best||0)}; if(Array.isArray(d.readings)){ const ids=new Set(S.readings.map(r=>r.id)); d.readings.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)&&r.draw) S.readings.push(r); }); S.readings.sort((a,b)=>b.at-a.at); S.readings=S.readings.slice(0,30); } persist(); render(); }catch(e){ alert('Esse arquivo não é um backup do app.'); } }; r.readAsText(file);
+  const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); if(d.app!=='estudo-tarot') throw 0; S.notes=Object.assign({},S.notes,d.notes||{}); S.studied=Object.assign({},S.studied,d.studied||{}); if(d.stats) S.stats={quizzes:Math.max(S.stats.quizzes,d.stats.quizzes||0),best:Math.max(S.stats.best,d.stats.best||0)}; if(Array.isArray(d.readings)){ const ids=new Set(S.readings.map(r=>r.id)); d.readings.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)&&r.draw) S.readings.push(r); }); S.readings.sort((a,b)=>b.at-a.at); S.readings=S.readings.slice(0,30); } if(Array.isArray(d.quizHistory)){ const qids=new Set(S.quizHistory.map(h=>h.id)); d.quizHistory.forEach(h=>{ if(h&&h.id&&!qids.has(h.id)&&Array.isArray(h.answers)) S.quizHistory.push(h); }); S.quizHistory.sort((a,b)=>b.at-a.at); S.quizHistory=S.quizHistory.slice(0,50); } persist(); render(); }catch(e){ alert('Esse arquivo não é um backup do app.'); } }; r.readAsText(file);
 }
 function set(patch){ Object.assign(S,patch); persist(); render(); }
 
@@ -243,10 +249,30 @@ function flash(){
   }
   return `<h1 style="font-size:32px">Flashcards</h1>${body}`;
 }
+const scopeLabel = id => (SCOPES.find(x=>x.id===id)||{label:id}).label;
+function quizDetail(h){
+  const rows=h.answers.map((a,i)=>{
+    const c=CARDS[a.c];
+    return `<div class="qa"><span class="mk ${a.ok?'ok':'no'}">${a.ok?'✓':'✕'}</span><div class="tx"><div class="eyebrow" style="font-size:10px">${i+1} · ${esc(a.k)}</div><div style="color:var(--ink)">${a.img?'Que carta é esta? (imagem)':esc(a.t)}</div><div style="color:${a.ok?'#2F5A33':'var(--red)'}">Sua resposta: ${esc(a.lab)}</div>${a.ok?'':`<div style="color:#2F5A33">Resposta certa: <b>${esc(c.name)}</b></div>`}<button class="link" data-act="card" data-id="${c.id}" style="align-self:flex-start;min-height:32px;padding:4px 0">Abrir a ficha de ${esc(c.name)}</button></div></div>`;
+  }).join('');
+  return `<div class="box" style="gap:0;border-color:var(--caramel)">${rows}<button class="link" data-act="qdel" data-id="${h.id}" style="color:var(--red);align-self:flex-start">Apagar este quiz</button></div>`;
+}
+function quizHistoryView(){
+  const H=S.quizHistory; if(!H.length) return '';
+  const total=H.reduce((a,h)=>a+h.total,0), right=H.reduce((a,h)=>a+h.score,0);
+  const best=Math.max(S.stats.best||0,...H.map(h=>h.score));
+  const miss={}; H.forEach(h=>h.answers.forEach(a=>{ if(!a.ok) miss[a.c]=(miss[a.c]||0)+1; }));
+  const top=Object.keys(miss).sort((a,b)=>miss[b]-miss[a]).slice(0,5);
+  const topHtml=top.length?`<div class="stack" style="gap:6px"><div class="eyebrow">Cartas que mais erro</div>${top.map(id=>{const c=CARDS[id];return `<button class="row" data-act="card" data-id="${c.id}" style="min-height:56px"><img src="${c.img}" alt="" loading="lazy" style="width:32px;height:52px"><div class="t"><div class="n" style="font-size:15px">${esc(c.name)}</div><div class="s">${miss[id]} erro${miss[id]===1?'':'s'} · toque para revisar a ficha</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`;}).join('')}</div>`:'';
+  const list=H.map(h=>{const open=S.quizOpen===h.id;return `<button class="row" data-act="qhist" data-id="${h.id}" style="min-height:60px;${open?'border-color:var(--caramel)':''}"><div class="t"><div class="n" style="font-size:15px;justify-content:space-between"><span>${fmtDate(h.at)} · ${new Date(h.at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span><span class="serif" style="font-size:20px;color:${h.score>=7?'#2F5A33':h.score>=5?'var(--wood)':'var(--red)'}">${h.score}/${h.total}</span></div><div class="s">${esc(scopeLabel(h.scope))} · ${h.score} acerto${h.score===1?'':'s'}, ${h.total-h.score} erro${h.total-h.score===1?'':'s'}</div><div class="bar" style="height:4px"><i style="width:${Math.round(100*h.score/h.total)}%;background:${h.score>=7?'var(--green)':'var(--caramel)'}"></i></div></div></button>${open?quizDetail(h):''}`;}).join('');
+  return `<div class="stack" style="gap:12px;margin-top:8px"><h2 style="font-size:24px">Meu histórico</h2>
+  <div class="dark" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;padding:14px"><div><div class="serif" style="font-size:28px;color:var(--butter)">${H.length}</div><div style="font-size:11px;opacity:.8">quizzes</div></div><div><div class="serif" style="font-size:28px;color:var(--butter)">${Math.round(100*right/total)}%</div><div style="font-size:11px;opacity:.8">de acertos</div></div><div><div class="serif" style="font-size:28px;color:var(--butter)">${best}/10</div><div style="font-size:11px;opacity:.8">melhor nota</div></div></div>
+  ${topHtml}<div class="stack" style="gap:8px"><div class="eyebrow">Quizzes feitos · toque para ver acertos e erros</div>${list}</div></div>`;
+}
 function quiz(){
   const q=S.quiz; let body='';
   if(!q){
-    body=`<p style="color:var(--ink2)">10 perguntas sorteadas a partir das fichas: palavras-chave, imagem, invertida, luz e sombra, simbolismo e áreas da vida. O nome da carta nunca aparece na pergunta.</p><div class="stack"><div class="eyebrow">Quais cartas</div><div class="pills wrap">${SCOPES.map(s=>`<button class="pill${S.quizScope===s.id?' on':''}" data-act="qscope" data-id="${s.id}">${s.label}</button>`).join('')}</div></div><button class="btn" data-act="qstart">Começar o quiz</button>`;
+    body=`<p style="color:var(--ink2)">10 perguntas sorteadas a partir das fichas: palavras-chave, imagem, invertida, luz e sombra, simbolismo e áreas da vida. O nome da carta nunca aparece na pergunta.</p><div class="stack"><div class="eyebrow">Quais cartas</div><div class="pills wrap">${SCOPES.map(s=>`<button class="pill${S.quizScope===s.id?' on':''}" data-act="qscope" data-id="${s.id}">${s.label}</button>`).join('')}</div></div><button class="btn" data-act="qstart">Começar o quiz</button>${quizHistoryView()}`;
   } else if(!q.done){
     const cur=q.qs[q.i]; const letters='ABCD';
     const opts=cur.options.map((o,i)=>{let cls='';if(q.chosen!==null)cls=o.id===cur.answer?' correct':o.id===q.chosen?' wrong':' muted';return `<button class="opt${cls}" data-act="pick" data-id="${o.id}"><b>${letters[i]}</b>${esc(o.label)}</button>`;}).join('');
@@ -256,7 +282,10 @@ function quiz(){
     <div class="stack">${opts}</div>${fb}`;
   } else {
     const msg = q.score>=9?'Domínio total desse grupo. Passe para o próximo.':q.score>=6?'Bom caminho. Revise as que errou nas fichas.':'Vale voltar às fichas e aos flashcards antes de repetir.';
-    body=`<div class="dark stack" style="text-align:center;padding:24px 20px"><div class="eyebrow" style="color:var(--pink)">Resultado</div><div class="serif big">${q.score}<span> / ${q.qs.length}</span></div><div style="font-size:14px;opacity:.9">${msg}</div></div><button class="btn" data-act="qstart">Novo quiz</button><button class="btn ghost" data-act="qreset">Escolher outras cartas</button>`;
+    const h=S.quizHistory.find(x=>x.id===q.histId);
+    body=`<div class="dark stack" style="text-align:center;padding:24px 20px"><div class="eyebrow" style="color:var(--pink)">Resultado</div><div class="serif big">${q.score}<span> / ${q.qs.length}</span></div><div style="font-size:14px;opacity:.9">${msg}</div></div>
+    ${h?`<button class="btn ghost" data-act="qhist" data-id="${h.id}">${S.quizOpen===h.id?'Esconder acertos e erros':'Ver acertos e erros'}</button>${S.quizOpen===h.id?quizDetail(h):''}`:''}
+    <button class="btn" data-act="qstart">Novo quiz</button><button class="btn ghost" data-act="qreset">Ver histórico e escolher outras cartas</button>`;
   }
   return `<h1 style="font-size:32px">Quiz</h1>${body}`;
 }
@@ -396,10 +425,12 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='psave'){ const pr=S.practice; if(!pr||pr.saved) return; const r={id:String(Date.now()),spreadId:pr.spreadId,draw:pr.draw,at:Date.now(),var:pr.var}; pr.saved=true; set({readings:[r].concat(S.readings).slice(0,30)}); }
   else if(a==='pload'){ const r=S.readings.find(x=>x.id===id); if(r) set({practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='pdel'){ if(!confirm('Apagar esta prática?')) return; const pr=S.practice; const r=S.readings.find(x=>x.id===id); if(pr&&r&&pr.saved&&pr.at===r.at) pr.saved=false; set({readings:S.readings.filter(x=>x.id!==id)}); }
-  else if(a==='qstart') set({quiz:{qs:buildQuiz(S.quizScope),i:0,chosen:null,score:0,done:false}});
-  else if(a==='qreset') set({quiz:null});
-  else if(a==='pick'){ const q=S.quiz; if(q.chosen!==null) return; q.chosen=+id; if(q.chosen===q.qs[q.i].answer)q.score++; render(); const nb=document.querySelector('[data-act="qnext"]'); if(nb) nb.scrollIntoView({behavior:'smooth',block:'end'}); }
-  else if(a==='qnext'){ const q=S.quiz, n=q.i+1; q.chosen=null; if(n>=q.qs.length){ q.done=true; S.stats.quizzes++; S.stats.best=Math.max(S.stats.best,q.score); persist(); } else q.i=n; render(); document.getElementById('main').scrollTop=0; }
+  else if(a==='qstart') set({quiz:{qs:buildQuiz(S.quizScope),i:0,chosen:null,score:0,done:false,answers:[]},quizOpen:null});
+  else if(a==='qreset') set({quiz:null,quizOpen:null});
+  else if(a==='qhist') set({quizOpen:S.quizOpen===id?null:id});
+  else if(a==='qdel'){ if(!confirm('Apagar este quiz do histórico?')) return; if(S.quiz&&S.quiz.histId===id) S.quiz.histId=null; set({quizHistory:S.quizHistory.filter(h=>h.id!==id),quizOpen:null}); }
+  else if(a==='pick'){ const q=S.quiz; if(q.chosen!==null) return; q.chosen=+id; const cq=q.qs[q.i], ok=q.chosen===cq.answer; if(ok)q.score++; const op=cq.options.find(o=>o.id===q.chosen); if(!q.answers) q.answers=[]; q.answers.push({c:cq.card.id,k:cq.kind,t:cq.text,img:!!cq.img,ch:q.chosen,ok,lab:op?op.label:''}); render(); const nb=document.querySelector('[data-act="qnext"]'); if(nb) nb.scrollIntoView({behavior:'smooth',block:'end'}); }
+  else if(a==='qnext'){ const q=S.quiz, n=q.i+1; q.chosen=null; if(n>=q.qs.length){ q.done=true; S.stats.quizzes++; S.stats.best=Math.max(S.stats.best,q.score); const hid=String(Date.now()); q.histId=hid; S.quizHistory=[{id:hid,at:Date.now(),scope:S.quizScope,score:q.score,total:q.qs.length,answers:q.answers||[]}].concat(S.quizHistory).slice(0,50); persist(); } else q.i=n; render(); document.getElementById('main').scrollTop=0; }
 });
 
 render();
