@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grimório Arcano</title>
+<meta name="theme-color" content="#402327">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Grimório">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@400;500;600&display=swap">
+<style>
+:root{--paper:#F4ECE1;--card:#FFFDF9;--line:#E2D3C2;--ink:#402327;--ink2:#5E4038;--muted:#7A5A4E;--wood:#593122;--caramel:#AD7E62;--pink:#F4B1C8;--butter:#ECDF90;--sand:#EDE1D2;--green:#3F6E4A;--green-bg:#EAF2EA;--red:#7E2C2C;--red-bg:#FBEDED}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:'Jost',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+button{font-family:inherit;cursor:pointer;color:inherit}
+h1,h2,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;margin:0}
+#app{flex:1;display:flex;flex-direction:column;max-width:520px;width:100%;margin:0 auto;min-height:0;position:relative}
+#topbar{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:rgba(244,236,225,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:5}
+button:active{opacity:.85}
+main>*{flex-shrink:0}
+main{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:calc(20px + env(safe-area-inset-top,0px)) 20px 28px;display:flex;flex-direction:column;gap:18px}
+nav{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--card);padding:6px 8px calc(10px + env(safe-area-inset-bottom,0px));flex-shrink:0}
+nav button{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:48px;padding:6px 0;border:none;background:transparent;color:#A0857A;font-size:11px;font-weight:500}
+nav button.on{color:var(--ink)}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.btn{min-height:52px;border:none;border-radius:14px;background:var(--wood);color:var(--paper);font-size:16px;font-weight:600;width:100%}
+.btn.ghost{background:var(--card);color:var(--wood);border:1px solid var(--line);min-height:48px;font-size:15px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:16px;min-height:96px;border:1px solid var(--line);border-radius:16px;background:var(--card);text-align:left;width:100%}
+.tile b{font-size:16px;font-weight:600}.tile small{font-size:12px;color:var(--muted)}
+.row{display:flex;align-items:center;gap:12px;padding:10px 12px 10px 10px;min-height:64px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-align:left;width:100%}
+.row img{width:40px;height:66px;object-fit:cover;border-radius:6px;background:var(--sand);flex-shrink:0}
+.row .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.row .n{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px}
+.row .s{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dot{width:8px;height:8px;border-radius:99px;background:#5E8C61;display:inline-block}
+.pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.pills.wrap{flex-wrap:wrap;overflow:visible}
+.pill{min-height:40px;padding:8px 14px;border-radius:99px;border:1px solid #D9C7B3;background:var(--card);color:var(--wood);font-size:13px;font-weight:500;white-space:nowrap}
+.pill.on{border-color:var(--ink);background:var(--ink);color:var(--butter);font-weight:600}
+.bar{height:6px;border-radius:99px;background:var(--sand);overflow:hidden}.bar i{display:block;height:100%;background:var(--caramel);border-radius:99px}
+.dark{background:var(--ink);color:var(--paper);border-radius:20px;padding:18px}
+.dark .bar{background:rgba(244,236,225,.18)}
+.mod{display:flex;align-items:center;gap:14px;padding:14px 16px;min-height:72px;border:1px solid var(--line);border-radius:16px;background:var(--card);text-align:left;width:100%}
+.mod .g{width:44px;height:44px;border-radius:12px;background:var(--paper);display:flex;align-items:center;justify-content:center;color:var(--caramel);flex-shrink:0}
+.mod .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.chip{padding:6px 10px;border-radius:99px;background:var(--ink);color:var(--butter);font-size:12px;font-weight:500}
+.box{padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.box.dark{border:none;background:var(--ink);color:var(--paper)}
+.notes{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:16px;background:#FBF3E4;border:1px solid #E8D6B8}
+.notes textarea{width:100%;min-height:140px;padding:12px;border:1px solid #E2D3C2;border-radius:12px;background:var(--card);color:var(--ink);font-family:inherit;font-size:16px;line-height:1.5;resize:vertical}
+.notes textarea:focus{outline:2px solid var(--caramel);outline-offset:1px}
+.notes .st{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;min-height:20px}
+.link{border:none;background:transparent;color:var(--wood);font-size:13px;font-weight:600;padding:8px 4px;min-height:44px}
+.box .h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.li{font-size:13px;line-height:1.4;padding-left:10px;border-left:2px solid var(--butter)}
+.dark .li{border-color:var(--pink)}
+p{margin:0;font-size:15px;line-height:1.5}
+.sym{display:flex;gap:10px;font-size:14px;line-height:1.45}.sym i{width:6px;height:6px;border-radius:99px;background:var(--caramel);margin-top:7px;flex-shrink:0}
+.iconbtn{width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--wood);display:flex;align-items:center;justify-content:center}
+.flash{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:420px;padding:20px;border:1px solid var(--line);border-radius:22px;background:var(--card);text-align:center;width:100%}
+.flash.back{background:var(--ink);color:var(--paper)}
+.flash img{width:170px;height:280px;object-fit:cover;border-radius:10px;box-shadow:0 10px 24px rgba(64,35,39,.2);background:var(--sand)}
+.opt{display:flex;align-items:center;min-height:52px;padding:12px 14px;border-radius:14px;font-size:15px;text-align:left;width:100%;line-height:1.35;border:1px solid #D9C7B3;background:var(--card)}
+.opt b{margin-right:8px;opacity:.7}
+.opt.correct{border-color:var(--green);background:var(--green-bg);color:#2F5A33;font-weight:600}
+.opt.wrong{border-color:#C98484;background:var(--red-bg);color:var(--red)}
+.opt.muted{border-color:var(--line);color:#A0857A}
+.mode{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px;min-height:56px;border-radius:14px;border:1px solid #D9C7B3;background:var(--card);text-align:left;width:100%}
+.mode.on{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.mode small{font-size:12px;opacity:.8}.mode b{font-size:15px}
+.stack{display:flex;flex-direction:column;gap:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fb{font-size:14px;line-height:1.45;padding:12px 14px;border-radius:12px;background:var(--sand)}
+.big{font-size:56px;line-height:1;color:var(--butter)}.big span{font-size:22px;color:var(--paper);opacity:.8}
+</style>
+</head>
+<body>
+<div id="topbar" aria-hidden="true"></div><div id="app"><main id="main"></main><nav id="nav"></nav></div>
+<script src="cards.js"></script>
+<script>
+(function(){
+const CARDS = window.TAROT_CARDS || [];
+const SUITS = [
+  {id:'maiores',label:'Arcanos Maiores',short:'Maiores',element:''},
+  {id:'paus',label:'Paus',short:'Paus',element:'Fogo'},
+  {id:'ouros',label:'Ouros',short:'Ouros',element:'Terra'},
+  {id:'espadas',label:'Espadas',short:'Espadas',element:'Ar'},
+  {id:'copas',label:'Copas',short:'Copas',element:'Água'}];
+const ELEMENT_SVG = {
+  maiores:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5L20.8 17.5H3.2Z"/><path d="M3.2 8.5H20.8L12 23.5Z"/></svg>',
+  paus:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5L21 20.5H3Z"/></svg>',
+  ouros:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 3.5H21L12 20.5Z"/><path d="M4.6 9.5H19.4"/></svg>',
+  espadas:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 3.5L21 20.5H3Z"/><path d="M4.6 14.5H19.4"/></svg>',
+  copas:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M3 3.5H21L12 20.5Z"/></svg>'
+};
+const SCOPES = [{id:'all',label:'Todas as 78'}].concat(SUITS.map(s=>({id:s.id,label:s.short})));
+const ICONS = {
+  home:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>',
+  cards:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="11" height="17" rx="2"/><path d="M9 7h10a2 2 0 0 1 2 2v12H11"/></svg>',
+  flash:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>',
+  quiz:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>',
+  left:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
+  right:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>'
+};
+
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem('tarot-estudo') || '{}'); } catch (e) { saved = {}; }
+const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0}}, saved.persist || {});
+if(!S.notes) S.notes={};
+function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit}})); return true; } catch(e){ return false; } }
+function exportBackup(){
+  const data={app:'estudo-tarot',exportadoEm:new Date().toISOString(),studied:S.studied,notes:S.notes,stats:S.stats};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='estudo-tarot-backup-'+new Date().toISOString().slice(0,10)+'.json'; document.body.appendChild(a); a.click(); a.remove();
+}
+function importBackup(file){
+  const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); if(d.app!=='estudo-tarot') throw 0; S.notes=Object.assign({},S.notes,d.notes||{}); S.studied=Object.assign({},S.studied,d.studied||{}); if(d.stats) S.stats={quizzes:Math.max(S.stats.quizzes,d.stats.quizzes||0),best:Math.max(S.stats.best,d.stats.best||0)}; persist(); render(); }catch(e){ alert('Esse arquivo não é um backup do app.'); } }; r.readAsText(file);
+}
+function set(patch){ Object.assign(S,patch); persist(); render(); }
+
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const cardsOf = sc => sc==='all'?CARDS:CARDS.filter(c=>c.suit===sc);
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const resumo = t => { const m=/Resumo:\s*(.*)$/i.exec(t||''); return m?m[1].trim():(t||'').split('. ')[0]; };
+const studiedCount = () => Object.keys(S.studied).filter(k=>S.studied[k]).length;
+
+function buildQuiz(scope){
+  const pool=cardsOf(scope), picked=shuffle(pool).slice(0,10);
+  const kinds=['chaves','imagem','invertido','amor','financeiro','nome'];
+  return picked.map((c,i)=>{
+    const kind=kinds[i%kinds.length];
+    const group=shuffle([c].concat(shuffle(pool.filter(x=>x.id!==c.id)).slice(0,3)));
+    const names=group.map(x=>({id:x.id,label:x.name}));
+    if(kind==='chaves') return {card:c,kind:'Palavras-chave',text:'Qual carta tem as palavras-chave: '+c.palavras+'?',options:names,answer:c.id};
+    if(kind==='imagem') return {card:c,kind:'Reconheça a carta',text:'Que carta é esta?',img:c.img,options:names,answer:c.id};
+    if(kind==='invertido'){ const t=c.invertido.replace(/^Quando invertid[ao],?\s*/i,'').replace(/^(o|a|os|as)\s+[^,]+?\s+(indica|mostra|revela|fala de|aponta)\s+/i,'').split('. ')[0]; return {card:c,kind:'Carta invertida',text:'Invertida, qual carta indica: '+t+'?',options:names,answer:c.id}; }
+    if(kind==='amor') return {card:c,kind:'No amor',text:'No amor, qual carta resume: “'+resumo(c.amor)+'”?',options:names,answer:c.id};
+    if(kind==='financeiro') return {card:c,kind:'No financeiro',text:'No financeiro, qual carta resume: “'+resumo(c.financeiro)+'”?',options:names,answer:c.id};
+    return {card:c,kind:'Significado',text:'Quais são as palavras-chave de '+c.name+'?',options:group.map(x=>({id:x.id,label:x.palavras})),answer:c.id};
+  });
+}
+
+// ---------- screens ----------
+function home(){
+  const n=studiedCount();
+  const hint = n===0?'Comece pelos Arcanos Maiores: 22 cartas, a base de tudo.':n<22?'Faltam '+(22-n)+' para fechar os Arcanos Maiores.':n<78?'Faltam '+(78-n)+' cartas para completar o baralho.':'Baralho completo. Agora é treinar com quiz e flashcards.';
+  const mods=SUITS.map(su=>{const cs=cardsOf(su.id),d=cs.filter(c=>S.studied[c.id]).length;return `<button class="mod" data-act="lib" data-suit="${su.id}"><div class="g">${ELEMENT_SVG[su.id]}</div><div class="t"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b style="font-size:16px">${su.label}${su.element?` <span style="font-weight:400;font-size:12px;color:var(--muted)">· ${su.element}</span>`:``}</b><span style="font-size:12px;color:var(--muted);white-space:nowrap">${d} / ${cs.length}</span></div><div class="bar"><i style="width:${Math.round(100*d/cs.length)}%"></i></div></div></button>`;}).join('');
+  return `<div class="stack" style="gap:4px"><div class="eyebrow">Grimório Arcano</div><h1 style="font-size:40px;line-height:1.05">Sua trilha de estudo</h1><p style="color:var(--ink2);margin-top:6px">78 cartas, uma por vez. Estude a ficha, treine com flashcards e confirme no quiz.</p></div>
+  <div class="dark stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="eyebrow" style="color:var(--pink)">Progresso geral</div><div class="serif" style="font-size:26px;color:var(--butter)">${n}<span style="font-size:16px;color:var(--paper);opacity:.8"> / 78</span></div></div><div class="bar" style="height:8px"><i style="width:${Math.round(100*n/78)}%"></i></div><div style="font-size:13px;opacity:.85">${hint}</div></div>
+  <div class="grid2"><button class="tile" data-act="go" data-screen="flash">${ICONS.flash}<div><b>Flashcards</b><br><small>Memorize as cartas</small></div></button><button class="tile" data-act="go" data-screen="quiz">${ICONS.quiz}<div><b>Quiz</b><br><small>10 perguntas rápidas</small></div></button></div>
+  <div class="stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="font-size:24px">Módulos</h2><span style="font-size:12px;color:var(--muted)">toque para estudar</span></div>${mods}</div>
+  <div class="box" style="gap:6px"><div class="h" style="color:var(--wood)">Backup</div><div style="font-size:13px;color:var(--ink2);line-height:1.45">${notesCount()} carta${notesCount()===1?'':'s'} com anotações e ${n} estudada${n===1?'':'s'}, salvas só neste aparelho. Exporte de vez em quando para não perder.</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="link" data-act="export">Exportar backup</button><label class="link" style="cursor:pointer;display:flex;align-items:center">Importar backup<input type="file" accept="application/json,.json" data-import style="display:none"></label></div></div>
+  ${S.stats.quizzes?`<div style="font-size:11px;color:#7A5A4E;text-align:center">Melhor quiz: ${S.stats.best}/10</div>`:''}`;
+}
+function library(){
+  const tabs=SUITS.map(su=>`<button class="pill${S.suit===su.id?' on':''}" data-act="suit" data-suit="${su.id}">${su.short}</button>`).join('');
+  const rows=cardsOf(S.suit).map(c=>`<button class="row" data-act="card" data-id="${c.id}"><img src="${c.img}" alt="" loading="lazy"><div class="t"><div class="n">${esc(c.name)}${S.studied[c.id]?'<i class="dot"></i>':''}</div><div class="s">Carta ${c.id} · ${esc(c.palavras)}</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`).join('');
+  return `<h1 style="font-size:32px">Cartas</h1><div class="pills">${tabs}</div><div class="stack">${rows}</div>`;
+}
+function cardView(){
+  const c=CARDS[S.cardId]||CARDS[0]; const su=SUITS.find(x=>x.id===c.suit)||SUITS[0]; const st=!!S.studied[c.id];
+  const chips=(c.palavras||'').split(/[•,]/).map(t=>t.trim()).filter(Boolean).map(t=>`<span class="chip">${esc(t)}</span>`).join('');
+  const lis=a=>(a||[]).map(t=>`<div class="li">${esc(t)}</div>`).join('');
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin:-8px -8px 0"><button data-act="go" data-screen="library" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;border:none;background:transparent;color:var(--wood);font-size:15px">${ICONS.left}Cartas</button><div style="display:flex;gap:4px"><button class="iconbtn" data-act="prev" aria-label="Anterior">${ICONS.left}</button><button class="iconbtn" data-act="next" aria-label="Próxima">${ICONS.right}</button></div></div>
+  <div style="display:flex;gap:16px;align-items:flex-end"><img src="${c.img}" alt="${esc(c.name)}" style="width:132px;height:218px;object-fit:cover;border-radius:10px;box-shadow:0 10px 24px rgba(64,35,39,.18);background:var(--sand);flex-shrink:0"><div class="stack" style="gap:6px;min-width:0"><div class="eyebrow">Carta ${c.id} · ${su.label}</div><h1 style="font-size:34px;line-height:1">${esc(c.name)}</h1><div style="font-size:13px;line-height:1.4;color:var(--ink2)"><b style="color:var(--wood)">Polaridade.</b> ${esc(c.polaridade)}</div></div></div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px">${chips}</div>
+  <button class="btn${st?' ghost':''}" data-act="toggle" style="${st?'border-color:#5E8C61;background:var(--green-bg);color:#2F5A33':''}">${st?'Estudada — toque para desmarcar':'Marcar como estudada'}</button>
+  <div class="stack" style="gap:6px"><h2 style="font-size:22px">Significado geral</h2><p>${esc(c.geral)}</p></div>
+  <div class="grid2"><div class="box"><div class="h" style="color:#8A6A1E">Lado de luz</div>${lis(c.luz)}</div><div class="box dark"><div class="h" style="color:var(--pink)">Lado de sombra</div>${lis(c.sombra)}</div></div>
+  <div class="stack"><h2 style="font-size:22px">Simbolismo</h2>${(c.simbolismo||[]).map(t=>`<div class="sym"><i></i><div>${esc(t)}</div></div>`).join('')}</div>
+  <div class="box" style="background:var(--sand);border:none;gap:6px"><div class="h" style="color:var(--wood)">Invertida</div><p style="font-size:14px">${esc(c.invertido)}</p></div>
+  <div class="stack" style="gap:12px"><h2 style="font-size:22px">Nas áreas da vida</h2><div><div style="font-size:13px;font-weight:600;color:#AD4A6A">Amor</div><p style="font-size:14px">${esc(c.amor)}</p></div><div><div style="font-size:13px;font-weight:600;color:var(--green)">Financeiro</div><p style="font-size:14px">${esc(c.financeiro)}</p></div><div><div style="font-size:13px;font-weight:600;color:#5B4E9B">Espiritualidade</div><p style="font-size:14px">${esc(c.espiritualidade)}</p></div></div>
+  <div class="notes"><h2 style="font-size:22px">Minhas anotações</h2><label for="note" style="font-size:13px;color:var(--ink2)">Interpretações, intuições, tiragens em que ${esc(c.name)} apareceu, referências de outros estudos.</label><textarea id="note" data-note="${c.id}" placeholder="Escreva aqui…">${esc(S.notes[c.id]||'')}</textarea><div class="st"><span id="note-status">${S.notes[c.id]?'Salvo neste aparelho':''}</span><span>${(S.notes[c.id]||'').length?((S.notes[c.id]||'').length+' caracteres'):''}</span></div></div>`;
+}
+function notesCount(){ return Object.keys(S.notes).filter(k=>(S.notes[k]||'').trim()).length; }
+function flash(){
+  const f=S.flash; let body='';
+  if(!f){
+    body=`<div class="stack"><div class="eyebrow">Quais cartas</div><div class="pills wrap">${SCOPES.map(s=>`<button class="pill${S.flashScope===s.id?' on':''}" data-act="fscope" data-id="${s.id}">${s.label}</button>`).join('')}</div></div>
+    <div class="stack"><div class="eyebrow">Modo</div><button class="mode${S.flashMode==='carta'?' on':''}" data-act="fmode" data-id="carta"><b>Ver a carta, lembrar o significado</b><small>Frente: imagem e nome. Verso: palavras-chave e significado.</small></button><button class="mode${S.flashMode==='texto'?' on':''}" data-act="fmode" data-id="texto"><b>Ler o significado, lembrar a carta</b><small>Frente: palavras-chave e significado. Verso: imagem e nome.</small></button></div>
+    <button class="btn" data-act="fstart">Começar · ${cardsOf(S.flashScope).length} cartas</button>`;
+  } else if(!f.done){
+    const c=CARDS[f.deck[f.i]]; const showImg = S.flashMode==='carta' ? !f.flipped : f.flipped;
+    const face = showImg ? `<img src="${c.img}" alt=""><div class="serif" style="font-size:30px;line-height:1">${esc(c.name)}</div><div class="eyebrow" style="color:inherit;opacity:.7">Carta ${c.id}</div>` : `<div class="eyebrow" style="color:inherit;opacity:.7">Palavras-chave</div><div class="serif" style="font-size:24px;line-height:1.2">${esc(c.palavras)}</div><p style="font-size:14px;opacity:.92">${esc(c.geral)}</p>`;
+    body=`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Carta ${f.i+1} de ${f.deck.length}</span><span><b style="color:#2F5A33">${f.known} sei</b> · <b style="color:#9B3B3B">${f.unknown} ainda não</b></span></div>
+    <button class="flash${f.flipped?' back':''}" data-act="flip">${face}<div style="font-size:12px;opacity:.6">${f.flipped?'Toque para voltar':'Toque para virar'}</div></button>
+    <div class="grid2"><button class="btn" data-act="fno" style="background:var(--red-bg);color:var(--red);border:1px solid #C98484">Ainda não sei</button><button class="btn" data-act="fyes" style="background:var(--green)">Já sei</button></div>`;
+  } else {
+    body=`<div class="dark stack" style="text-align:center;padding:24px 20px"><div class="eyebrow" style="color:var(--pink)">Rodada concluída</div><div class="serif big">${f.known}<span> / ${f.deck.length}</span></div><div style="font-size:14px;opacity:.9">${f.unknown===0?'Todas na memória. Experimente o outro modo ou o quiz.':f.unknown+' para revisar nas fichas antes da próxima rodada.'}</div></div>
+    <button class="btn" data-act="fstart">Repetir rodada</button><button class="btn ghost" data-act="freset">Escolher outras cartas</button>`;
+  }
+  return `<h1 style="font-size:32px">Flashcards</h1>${body}`;
+}
+function quiz(){
+  const q=S.quiz; let body='';
+  if(!q){
+    body=`<p style="color:var(--ink2)">10 perguntas sorteadas a partir das fichas: palavras-chave, imagem, invertida e áreas da vida.</p><div class="stack"><div class="eyebrow">Quais cartas</div><div class="pills wrap">${SCOPES.map(s=>`<button class="pill${S.quizScope===s.id?' on':''}" data-act="qscope" data-id="${s.id}">${s.label}</button>`).join('')}</div></div><button class="btn" data-act="qstart">Começar o quiz</button>`;
+  } else if(!q.done){
+    const cur=q.qs[q.i]; const letters='ABCD';
+    const opts=cur.options.map((o,i)=>{let cls='';if(q.chosen!==null)cls=o.id===cur.answer?' correct':o.id===q.chosen?' wrong':' muted';return `<button class="opt${cls}" data-act="pick" data-id="${o.id}"><b>${letters[i]}</b>${esc(o.label)}</button>`;}).join('');
+    const fb = q.chosen===null?'':`<div class="fb">${q.chosen===cur.answer?'Certo. ':'A resposta era '+esc(cur.card.name)+'. '}${esc(cur.card.palavras)}.</div><button class="btn" data-act="qnext">${q.i+1>=q.qs.length?'Ver resultado':'Próxima pergunta'}</button>`;
+    body=`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Pergunta ${q.i+1} de ${q.qs.length}</span><b style="color:#2F5A33">${q.score} acertos</b></div><div class="bar"><i style="width:${Math.round(100*q.i/q.qs.length)}%"></i></div>
+    <div class="box" style="padding:18px;gap:12px;border-radius:20px"><div class="eyebrow">${cur.kind}</div>${cur.img?`<img src="${cur.img}" alt="" style="width:120px;height:198px;object-fit:cover;border-radius:8px;align-self:center;box-shadow:0 8px 20px rgba(64,35,39,.18)">`:''}<div class="serif" style="font-size:22px;line-height:1.25">${esc(cur.text)}</div></div>
+    <div class="stack">${opts}</div>${fb}`;
+  } else {
+    const msg = q.score>=9?'Domínio total desse grupo. Passe para o próximo.':q.score>=6?'Bom caminho. Revise as que errou nas fichas.':'Vale voltar às fichas e aos flashcards antes de repetir.';
+    body=`<div class="dark stack" style="text-align:center;padding:24px 20px"><div class="eyebrow" style="color:var(--pink)">Resultado</div><div class="serif big">${q.score}<span> / ${q.qs.length}</span></div><div style="font-size:14px;opacity:.9">${msg}</div></div><button class="btn" data-act="qstart">Novo quiz</button><button class="btn ghost" data-act="qreset">Escolher outras cartas</button>`;
+  }
+  return `<h1 style="font-size:32px">Quiz</h1>${body}`;
+}
+
+let lastKey=null;
+function render(){
+  const main=document.getElementById('main');
+  const key=S.screen+(S.screen==='card'?':'+S.cardId:S.screen==='library'?':'+S.suit:'');
+  const keep = key===lastKey ? main.scrollTop : 0;
+  main.innerHTML = S.screen==='home'?home():S.screen==='library'?library():S.screen==='card'?cardView():S.screen==='flash'?flash():quiz();
+  main.scrollTop=keep; lastKey=key;
+  const active = S.screen==='card'?'library':S.screen;
+  document.getElementById('nav').innerHTML=[['home','Início'],['library','Cartas'],['flash','Flashcards'],['quiz','Quiz']].map(([id,l])=>`<button class="${active===id?'on':''}" data-act="go" data-screen="${id}">${ICONS[id==='library'?'cards':id]}<span>${l}</span></button>`).join('');
+}
+
+let noteTimer=null;
+document.getElementById('app').addEventListener('input',e=>{
+  const t=e.target; if(!t.matches('[data-note]')) return;
+  const id=t.dataset.note; S.notes[id]=t.value;
+  const st=document.getElementById('note-status'); if(st) st.textContent='Salvando…';
+  clearTimeout(noteTimer); noteTimer=setTimeout(()=>{ const ok=persist(); if(st) st.textContent=ok?'Salvo neste aparelho':'Não foi possível salvar'; },400);
+});
+document.getElementById('app').addEventListener('change',e=>{
+  const t=e.target; if(t.matches('[data-import]') && t.files && t.files[0]) importBackup(t.files[0]);
+});
+document.getElementById('app').addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return; const a=b.dataset.act, id=b.dataset.id;
+  if(a==='export') exportBackup();
+  else if(a==='go') set({screen:b.dataset.screen});
+  else if(a==='lib') set({screen:'library',suit:b.dataset.suit});
+  else if(a==='suit') set({suit:b.dataset.suit});
+  else if(a==='card') set({screen:'card',cardId:+id});
+  else if(a==='prev') set({cardId:(S.cardId+CARDS.length-1)%CARDS.length});
+  else if(a==='next') set({cardId:(S.cardId+1)%CARDS.length});
+  else if(a==='toggle'){ const st=Object.assign({},S.studied); st[S.cardId]=!st[S.cardId]; set({studied:st}); }
+  else if(a==='fscope') set({flashScope:id});
+  else if(a==='fmode') set({flashMode:id});
+  else if(a==='fstart') set({flash:{deck:shuffle(cardsOf(S.flashScope)).map(c=>c.id),i:0,flipped:false,known:0,unknown:0,done:false}});
+  else if(a==='freset') set({flash:null});
+  else if(a==='flip'){ S.flash.flipped=!S.flash.flipped; render(); }
+  else if(a==='fyes'||a==='fno'){ const f=S.flash, n=f.i+1; if(a==='fyes')f.known++; else f.unknown++; f.flipped=false; if(n>=f.deck.length)f.done=true; else f.i=n; render(); document.getElementById('main').scrollTop=0; }
+  else if(a==='qscope') set({quizScope:id});
+  else if(a==='qstart') set({quiz:{qs:buildQuiz(S.quizScope),i:0,chosen:null,score:0,done:false}});
+  else if(a==='qreset') set({quiz:null});
+  else if(a==='pick'){ const q=S.quiz; if(q.chosen!==null) return; q.chosen=+id; if(q.chosen===q.qs[q.i].answer)q.score++; render(); const nb=document.querySelector('[data-act="qnext"]'); if(nb) nb.scrollIntoView({behavior:'smooth',block:'end'}); }
+  else if(a==='qnext'){ const q=S.quiz, n=q.i+1; q.chosen=null; if(n>=q.qs.length){ q.done=true; S.stats.quizzes++; S.stats.best=Math.max(S.stats.best,q.score); persist(); } else q.i=n; render(); document.getElementById('main').scrollTop=0; }
+});
+
+render();
+if('serviceWorker' in navigator){
+  // Quando um service worker novo assume o controle (deploy novo), recarrega uma vez para mostrar a versão atualizada
+  let reloading=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(navigator.serviceWorker.controller && !reloading){ reloading=true; location.reload(); } });
+  navigator.serviceWorker.register('sw.js').then(reg=>{
+    // verifica se há versão nova toda vez que o app volta para o primeiro plano
+    document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') reg.update().catch(()=>{}); });
+  }).catch(()=>{});
+}
+})();
+</script>
+</body>
+</html>
