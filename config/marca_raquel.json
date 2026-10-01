@@ -1,42 +1,60 @@
 {
+  "versao": "V2 (01/10/2026)",
   "nome": "Raquel Lopes",
   "handle": "@raquellopestarot",
-  "identidade": "Taróloga que não lê cartinha sobre o outro: lê o padrão enraizado que trava a mulher no amor e no dinheiro.",
-  "nicho": "Tarot arquetípico para mulheres de 35 a 55 que dão conta de tudo mas repetem padrões no amor e no dinheiro.",
-  "angulo": "Leitura de base junguiana que não fala do outro, fala dela, e mostra o movimento que quebra o ciclo. As grandes contas do nicho leem o outro e vendem previsão; aqui a pergunta sobre ele volta pra ela.",
-  "arquetipo": "Amiga + Rebelde. Eu te acolho, mas não passo pano pro padrão que te faz aceitar migalha, cobrar pouco e dar conta de tudo sozinha.",
+  "identidade": "Taróloga arquetípica há 8 anos, com propósito declarado: cuidar e ensinar. Ensina tarot numa perspectiva junguiana e não divinatória no Grimório Arcano e reúne achadinhos de bruxa no Mercado Holístico. Quando lê, não lê o outro: lê o padrão.",
+  "nicho": "Tarot arquetípico de perspectiva junguiana e não divinatória, para quem quer aprender ou se aprofundar.",
+  "persona": "Bruxa ou terapeuta holística de 18 a 35 anos. Quer aprender tarot, ou já sabe e quer se aprofundar numa perspectiva junguiana e não divinatória.",
+  "promessa": "Aprender tarot sem decoreba, compreendendo a linguagem simbólica.",
+  "angulo": "Tarot arquetípico + bruxa ou terapeuta holística de 18 a 35 anos que quer aprender ou se aprofundar + estudo no app, junguiano e não divinatório, que troca a decoreba pela compreensão da linguagem simbólica. O que separa a marca: primeiro o formato (estudo no app Grimório Arcano por assinatura, enquanto as contas que ensinam vendem curso e formação); depois o lugar (estudo junguiano dentro do mundo da bruxa, enquanto elas tiram o tarot da espiritualidade).",
+  "arquetipo": "Amiga + Rebelde. Eu te ensino e te aviso do achado, mas não passo pano pra decoreba, tarot de adivinhação e leitura sem ética.",
   "tom": {
-    "vocabulario_usa": ["cara", "meu anjo", "tipo assim", "padrão", "dar conta", "entendeu", "né", "sabe"],
+    "vocabulario_usa": ["cara", "meu anjo", "tipo assim", "padrão", "dar conta", "achadinho de bruxa", "entendeu", "né", "sabe"],
     "vocabulario_banido": ["o universo conspira", "luz e amor", "gratidão por tudo", "destino garantido", "vibração baixa"],
     "ritmo": "Mistura controlada: abre curta, desenvolve, fecha seca.",
     "humor": "Sarcasmo com o mercado e auto-ironia, nunca em cima da cliente."
   },
   "visual": {
-    "cores_cena": ["roxo profundo", "vinho ameixa", "marrom madeira escura", "caramelo amadeirado"],
-    "cores_marca_texto_acento": ["rosa pastel", "amarelo manteiga"],
-    "regra_cores": "Rosa pastel e amarelo manteiga só em tipografia e acento sobre fundo escuro. Nunca como cor de ambiente ou fundo.",
-    "iluminacao": "Luz natural de janela, lateral e suave, com pele real e sombra delicada. Secundário: luz de vela e interior escuro.",
+    "quem_aparece": "A creator gerada por IA, sempre com o mesmo rosto e o mesmo cabelo. Sem foto ou vídeo gravado.",
+    "cores_cena": ["vinho ameixa #402327", "marrom madeira escura #593122", "caramelo amadeirado #AD7E62", "roxo profundo #431E3D"],
+    "cores_marca_texto_acento": ["rosa pastel #F4B1C8", "amarelo manteiga #ECDF90"],
+    "regra_cores": "Rosa pastel (#F4B1C8) e amarelo manteiga (#ECDF90) só em tipografia e acento sobre fundo escuro. Nunca como cor de ambiente ou fundo.",
+    "tipografia": "Apple Garamond nos títulos, Garet no corpo.",
+    "iluminacao": "Luz natural de janela, lateral e suave, com pele real e sombra delicada. Vela e interior escuro como secundário. Golden hour como exceção.",
     "ambientes": [
       "sala whimsigoth com plantas, madeira, quadros antigos e tecido em camadas",
       "mesa de tarot junto à janela com cartas, livros e objetos simbólicos",
       "canto de leitura com poltrona vintage, estante e espelho ornamentado"
     ],
-    "guarda_roupa": "Vintage whimsigoth com renda, veludo, mangas amplas, saia longa fluida, colete e cardigã de textura. Cabelo cacheado sempre solto, mesmo formato. Acessórios marcantes: anel grande, brinco expressivo, colar de pingente simbólico."
+    "guarda_roupa": "Vintage whimsigoth com renda, veludo, mangas amplas, saia longa fluida, colete e cardigã de textura. Cabelo cacheado sempre solto, mesmo formato e repartição. Acessórios marcantes: anel grande, brinco expressivo, colar de pingente simbólico."
   },
   "regras_nao_negociaveis": [
     "Nunca escrever: o universo conspira, luz e amor, gratidão por tudo, destino garantido, vibração baixa como culpa da cliente.",
-    "Nunca ler o outro. Pergunta sobre ele volta pra ela.",
-    "Nunca entregar resultado como garantia, nem com prazo. Amada e rica é o desejo dela, não a minha promessa.",
-    "Fotografia sempre em luz natural de janela dentro de casa com plantas e madeira. Estúdio e fundo neutro, nunca.",
-    "Cabelo cacheado solto no mesmo formato, em peça vintage dentro das cores de cena."
+    "Nunca ler o outro, nem ensinar a ler o outro. Pergunta sobre ele volta pra quem perguntou.",
+    "Nunca entregar resultado como garantia, nem com prazo: nem na leitura, nem no que ensina, nem no que indica. Na voz dela, vela, cristal e incenso não trazem amor nem dinheiro. Interpretar não é prometer.",
+    "Sempre retratada em luz natural de janela dentro de casa com plantas e madeira. Estúdio e fundo neutro, nunca.",
+    "Sempre de cabelo cacheado solto no mesmo formato, em peça vintage dentro das cores de cena."
   ],
   "defende": [
+    "Tarot se aprende compreendendo a linguagem simbólica, não decorando significado.",
+    "Taróloga responsável se forma com profundidade simbólica e ética terapêutica.",
     "A cliente decide e a leitura amplia autonomia.",
-    "Mulher pode querer amor, dinheiro e cuidado sem merecer por sacrifício.",
     "Símbolo só vale se couber em cena da vida real."
   ],
   "ataca": [
-    "Prometer volta de ex ou dinheiro certo pra vender pelo desespero.",
-    "Culpar a energia da mulher e chamar sobrecarga de força."
-  ]
+    "Decoreba de significado pronto.",
+    "Tarot de adivinhação.",
+    "Leitura sem ética, que promete volta de ex ou dinheiro certo e culpa a energia da cliente."
+  ],
+  "produtos": {
+    "mercado_holistico": "Grupos de ofertas no WhatsApp com achadinhos de bruxa da Shopee, Shein e Mercado Livre, por link de afiliado. FOCO DE VENDA. Entram: baralhos, oráculos, tarot, livros esotéricos, roupas fairycore/goth/whimsigoth/whimsical, decoração de casa, itens de altar, cristais, velas, incensos e papelaria mágica.",
+    "grimorio_arcano": "App de estudos de tarot: fichas das 78 cartas com interpretações em amor, dinheiro e espiritualidade, flashcards, quiz e trilha por naipe. R$29,90/mês na Kiwify. Segundo produto.",
+    "leituras": "Ponto Exato, Sessão Espelho e Ciclo Espelho estão PAUSADOS. Nenhum conteúdo empurra venda de leitura por enquanto."
+  },
+  "linha_editorial": {
+    "carrossel_de_oferta": "Papel: vender. Voz: amiga que achou e avisou — o que é, pra que serve, quanto custa. Nenhum objeto promete efeito. CTA: grupo do Mercado Holístico no WhatsApp.",
+    "post_de_estudo": "Papel: ensinar. Explica a linguagem simbólica da carta, sem lista para decorar, e pousa em cena da vida real. Nunca ensina a ler o outro. CTA: Grimório Arcano.",
+    "meme_de_tarot": "Papel: alcançar. Sarcasmo com o mercado e auto-ironia. O alvo nunca é quem estuda. CTA: seguir o perfil.",
+    "fora_da_marca": "Reels em câmera e capa de notícia."
+  }
 }

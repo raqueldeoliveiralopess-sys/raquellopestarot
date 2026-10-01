@@ -55,16 +55,21 @@ def _bloco_referencia(analise: AnalisePost) -> str:
     return "\n".join(partes)
 
 
-def gerar_prompt(analise: AnalisePost, marca: dict, slides: int = 8) -> str:
+def gerar_prompt(analise: AnalisePost, marca: dict, slides: int = 8, tipo: str = "estudo") -> str:
+    """Monta o prompt. ``tipo``: "estudo" (ensinar, CTA Grimório Arcano) ou
+    "oferta" (achadinho de bruxa, CTA grupo do Mercado Holístico)."""
     tom = marca["tom"]
     visual = marca["visual"]
-    return f"""# PROMPT PARA CHATGPT — ROTEIRO DE CARROSSEL ({marca["handle"]})
+    persona = marca.get("persona", "")
+    cabecalho = f"""# PROMPT PARA CHATGPT — ROTEIRO DE CARROSSEL ({marca["handle"]})
 
 Você é roteirista de carrosséis do Instagram de {marca["nome"]} ({marca["handle"]}).
 
 ## QUEM É A MARCA
 - Identidade: {marca["identidade"]}
 - Nicho: {marca["nicho"]}
+- Persona: {persona}
+- Promessa: {marca.get("promessa", "")}
 - Ângulo: {marca["angulo"]}
 - Arquétipo de voz: {marca["arquetipo"]}
 
@@ -77,8 +82,10 @@ Você é roteirista de carrosséis do Instagram de {marca["nome"]} ({marca["hand
 - Ataca (com sarcasmo, nunca em cima da cliente): {" | ".join(marca["ataca"])}
 
 ## IDENTIDADE VISUAL (para a direção de arte de cada slide)
+- Quem aparece: {visual.get("quem_aparece", "")}
 - Cores de cena/fundo: {", ".join(visual["cores_cena"])}.
 - Cores de marca ({", ".join(visual["cores_marca_texto_acento"])}): {visual["regra_cores"]}
+- Tipografia: {visual.get("tipografia", "")}
 - Iluminação: {visual["iluminacao"]}
 - Ambientes possíveis: {_lista(visual["ambientes"], "  • ")}
 - Guarda-roupa/estética: {visual["guarda_roupa"]}
@@ -88,22 +95,32 @@ Você é roteirista de carrosséis do Instagram de {marca["nome"]} ({marca["hand
 
 ## POST DE REFERÊNCIA (inspiração, NUNCA cópia)
 {_bloco_referencia(analise)}
+"""
+    if tipo == "oferta":
+        tarefa = _tarefa_oferta(marca, slides)
+    else:
+        tarefa = _tarefa_estudo(marca, slides, persona)
+    return cabecalho + tarefa
 
-## TAREFA
+
+def _tarefa_estudo(marca: dict, slides: int, persona: str) -> str:
+    return f"""
+## TAREFA — POST DE ESTUDO (papel: ensinar)
 Crie o roteiro de UM carrossel de {slides} slides para o Instagram de {marca["handle"]},
 inspirado no TEMA do post de referência, mas reescrito de ponta a ponta na voz
-e no ângulo da marca. Se o original fala do outro (ex, parceiro, "ele"), vire a
-pergunta para ela: o padrão dela, o movimento dela.
+e no ângulo da marca. Explique a linguagem simbólica sem lista para decorar e
+pouse em cena da vida real. Se o original ensina a ler o outro ou fala do
+"ele", vire a pergunta para quem perguntou: o padrão dela, o movimento dela.
 
 Estrutura obrigatória:
 - Slide 1 (capa): gancho de até 12 palavras que para o scroll, na dor ou desejo
-  da mulher de 35 a 55 que dá conta de tudo. Teste 2 opções de gancho.
-- Slides 2 a {slides - 2}: desenvolvimento — abre curta, aprofunda o padrão,
-  traz o símbolo/arquétipo só se couber em cena da vida real, e mostra o
-  movimento que quebra o ciclo. Um pensamento por slide, frases curtas.
+  da persona ({persona}). Teste 2 opções de gancho.
+- Slides 2 a {slides - 2}: desenvolvimento — abre curta, aprofunda o símbolo
+  só se couber em cena da vida real, e mostra a compreensão que substitui a
+  decoreba. Um pensamento por slide, frases curtas.
 - Slide {slides - 1}: a virada seca — a frase que ela printa.
-- Slide {slides} (CTA): convite leve e específico (comentar uma palavra, salvar,
-  ou chamar no direct), sem promessa de resultado e sem prazo.
+- Slide {slides} (CTA): convite leve para o Grimório Arcano (app de estudos de
+  tarot por assinatura), sem promessa de resultado e sem prazo.
 
 Para CADA slide, entregue neste formato:
 1. **Texto do slide** (o que vai escrito na arte)
@@ -114,11 +131,52 @@ Para CADA slide, entregue neste formato:
 
 Depois dos slides, entregue também:
 - **Legenda** do post (3 a 6 linhas, abre curta e fecha com o CTA)
-- **10 hashtags** do nicho de tarot arquetípico/autoconhecimento em português
+- **10 hashtags** do nicho de tarot arquetípico/bruxaria/estudo simbólico em português
 
 Antes de finalizar, revise tudo contra o vocabulário proibido e as regras não
-negociáveis. Se qualquer frase ler o outro, prometer resultado ou usar clichê
-místico, reescreva.
+negociáveis. Se qualquer frase ler o outro, ensinar a ler o outro, prometer
+resultado ou usar clichê místico, reescreva.
+"""
+
+
+def _tarefa_oferta(marca: dict, slides: int) -> str:
+    produtos = marca.get("produtos", {})
+    return f"""
+## TAREFA — CARROSSEL DE OFERTA (papel: vender achadinho de bruxa)
+Crie o roteiro de UM carrossel de {slides} slides para o Instagram de {marca["handle"]},
+apresentando o produto do post de referência como achadinho de bruxa. A voz é
+a da amiga que achou e avisou: o que é, pra que serve, quanto custa. NENHUM
+objeto promete efeito — na voz dela, vela, cristal e incenso não trazem amor
+nem dinheiro. O objeto entra em cena da vida real (altar, mesa de estudo,
+guarda-roupa, decoração).
+
+Contexto do produto: {produtos.get("mercado_holistico", "achadinhos de bruxa por link de afiliado")}
+
+Estrutura obrigatória:
+- Slide 1 (capa): gancho de achadinho de até 12 palavras ("achadinho de bruxa"
+  pode abrir). Teste 2 opções.
+- Slides 2 a {slides - 2}: o que é, pra que serve na cena real da bruxa ou
+  terapeuta holística, detalhe que faz valer (material, tamanho, estética) e
+  preço aproximado com honestidade de amiga (se o preço não estiver no post de
+  referência, deixe o campo [PREÇO] para preencher).
+- Slide {slides - 1}: a opinião seca da amiga — por que ela avisaria ou não.
+- Slide {slides} (CTA): convite para o grupo do Mercado Holístico no WhatsApp
+  (link na bio), onde saem os achadinhos com link. Sem urgência falsa.
+
+Para CADA slide, entregue neste formato:
+1. **Texto do slide** (o que vai escrito na arte)
+2. **Direção de arte** (fundo, cor, ambiente e como o produto aparece em cena,
+   usando SOMENTE a identidade visual acima — rosa pastel e amarelo manteiga
+   apenas em tipografia/acento sobre fundo escuro)
+3. **Nota de voz** (como a frase soa: acolhe, cutuca ou fecha seca)
+
+Depois dos slides, entregue também:
+- **Legenda** do post (3 a 6 linhas, abre curta e fecha com o CTA do grupo)
+- **10 hashtags** de achadinhos/bruxaria/whimsigoth em português
+
+Antes de finalizar, revise tudo contra o vocabulário proibido e as regras não
+negociáveis. Se qualquer frase prometer efeito do objeto, resultado ou prazo,
+reescreva.
 """
 
 

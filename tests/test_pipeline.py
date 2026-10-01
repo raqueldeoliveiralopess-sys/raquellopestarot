@@ -113,6 +113,22 @@ class TestPrompt(unittest.TestCase):
         self.assertIn("10 slides", texto)
         self.assertIn("Slide 9", texto)  # virada seca em slides - 1
 
+    def test_prompt_tipo_oferta(self):
+        marca = prompts.carregar_marca()
+        posts = ingestao.carregar(str(MANUAL_EXEMPLO))
+        texto = prompts.gerar_prompt(analise.analisar(posts[0]), marca, tipo="oferta")
+        self.assertIn("achadinho de bruxa", texto)
+        self.assertIn("Mercado Holístico", texto)
+        self.assertIn("NENHUM\nobjeto promete efeito", texto)
+        self.assertNotIn("Grimório Arcano (app de estudos", texto)
+
+    def test_prompt_usa_persona_do_config(self):
+        marca = prompts.carregar_marca()
+        posts = ingestao.carregar(str(MANUAL_EXEMPLO))
+        texto = prompts.gerar_prompt(analise.analisar(posts[0]), marca, tipo="estudo")
+        self.assertIn("Bruxa ou terapeuta holística de 18 a 35 anos", texto)
+        self.assertNotIn("35 a 55", texto.split("## TAREFA")[1])
+
     def test_prompt_sem_legenda_instrui_pelo_link(self):
         marca = prompts.carregar_marca()
         a = analise.analisar(PostSalvo(url="https://www.instagram.com/p/X1/"))

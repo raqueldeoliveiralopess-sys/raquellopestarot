@@ -30,7 +30,7 @@ def _cmd_gerar(args: argparse.Namespace) -> int:
     usados: set[str] = set()
     for post in posts:
         analise = mod_analise.analisar(post)
-        texto = prompts.gerar_prompt(analise, marca, slides=args.slides)
+        texto = prompts.gerar_prompt(analise, marca, slides=args.slides, tipo=args.tipo)
         nome = f"prompt_{analise.post.identificador()}.md"
         if nome in usados:
             nome = f"prompt_{analise.post.identificador()}_{len(usados)}.md"
@@ -84,6 +84,7 @@ def main(argv: list[str] | None = None) -> int:
     p_gerar.add_argument("--colecao", default="", help="filtra pela pasta de salvos com esse nome (só funciona com o export oficial)")
     p_gerar.add_argument("--saida", default="prompts", help="pasta de saída (padrão: prompts/)")
     p_gerar.add_argument("--slides", type=int, default=8, help="quantidade de slides do carrossel (padrão: 8)")
+    p_gerar.add_argument("--tipo", choices=["estudo", "oferta"], default="estudo", help="estudo = ensinar (CTA Grimório Arcano); oferta = achadinho de bruxa (CTA grupo do Mercado Holístico)")
     p_gerar.add_argument("--marca", default=str(prompts.CONFIG_PADRAO), help="caminho do JSON de identidade da marca")
     p_gerar.set_defaults(func=_cmd_gerar)
 

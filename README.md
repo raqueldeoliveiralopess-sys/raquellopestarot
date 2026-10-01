@@ -75,6 +75,9 @@ prompts/
 
 Opções úteis de `gerar`:
 
+- `--tipo oferta` — carrossel de oferta (achadinho de bruxa, CTA grupo do
+  Mercado Holístico); o padrão `--tipo estudo` ensina e aponta pro Grimório
+  Arcano. Use `oferta` para pastas de produtos (Shopee, Shein, Mercado Livre).
 - `--slides 10` — carrossel com outra quantidade de slides (padrão 8)
 - `--saida pasta/` — muda a pasta de saída (padrão `prompts/`)
 - `--marca config/marca_raquel.json` — outro arquivo de identidade
