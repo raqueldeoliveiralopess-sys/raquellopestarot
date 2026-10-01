@@ -25,8 +25,8 @@ h1,h2,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;marg
 button:active{opacity:.85}
 main>*{flex-shrink:0}
 main{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:calc(20px + env(safe-area-inset-top,0px)) 20px 28px;display:flex;flex-direction:column;gap:18px}
-nav{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--card);padding:6px 8px calc(10px + env(safe-area-inset-bottom,0px));flex-shrink:0}
-nav button{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:48px;padding:6px 0;border:none;background:transparent;color:#A0857A;font-size:11px;font-weight:500}
+nav{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--card);padding:6px 8px calc(10px + env(safe-area-inset-bottom,0px));flex-shrink:0}
+nav button{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:48px;padding:6px 0;border:none;background:transparent;color:#A0857A;font-size:10.5px;font-weight:500}
 nav button.on{color:var(--ink)}
 .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:500}
 .btn{min-height:52px;border:none;border-radius:14px;background:var(--wood);color:var(--paper);font-size:16px;font-weight:600;width:100%}
@@ -77,12 +77,30 @@ p{margin:0;font-size:15px;line-height:1.5}
 .stack{display:flex;flex-direction:column;gap:8px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .fb{font-size:14px;line-height:1.45;padding:12px 14px;border-radius:12px;background:var(--sand)}
+.layout{display:grid;gap:8px;width:100%}
+.pos{position:relative;aspect-ratio:1/1.6;border:1.5px dashed #C9B49C;border-radius:10px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px;text-align:center;overflow:hidden;color:var(--ink)}
+.pos small{font-size:10px;line-height:1.15;color:var(--muted);padding:0 2px}
+.pos .num{position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:99px;background:var(--ink);color:var(--butter);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;z-index:2}
+.pos.live{border-style:solid;border-color:var(--line);padding:0;cursor:pointer}
+.pos img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block}
+img.rev{transform:rotate(180deg)}
+.pos.on{outline:3px solid var(--caramel);outline-offset:1px}
+.pos.cross{position:absolute;width:72%;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);box-shadow:0 4px 12px rgba(64,35,39,.3);z-index:3}
+.pos.cross small{display:none}
+.wheel{position:relative;width:100%;aspect-ratio:1;border-radius:50%;border:1px solid var(--line);background:var(--card)}
+.wheel .pos{position:absolute;aspect-ratio:auto}
+.wheel .pos small{display:none}
+.wheel .pos .num{top:2px;left:2px;width:18px;height:18px;font-size:10px}
+.step{display:flex;gap:10px;font-size:14px;line-height:1.45}.step b{width:22px;height:22px;border-radius:99px;background:var(--ink);color:var(--butter);font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.grid3 .tile{min-height:88px;padding:12px;gap:8px}.grid3 .tile b{font-size:14px}.grid3 .tile small{font-size:11px}
 .big{font-size:56px;line-height:1;color:var(--butter)}.big span{font-size:22px;color:var(--paper);opacity:.8}
 </style>
 </head>
 <body>
 <div id="topbar" aria-hidden="true"></div><div id="app"><main id="main"></main><nav id="nav"></nav></div>
 <script src="cards.js"></script>
+<script src="tiragens.js"></script>
 <script>
 (function(){
 const CARDS = window.TAROT_CARDS || [];
@@ -105,22 +123,24 @@ const ICONS = {
   cards:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="11" height="17" rx="2"/><path d="M9 7h10a2 2 0 0 1 2 2v12H11"/></svg>',
   flash:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>',
   quiz:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>',
+  spreads:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="13" rx="1.5"/><path d="M5.5 7.5L3 8.3l3.6 11 4.4-1.5"/><path d="M18.5 7.5l2.5.8-3.6 11-4.4-1.5"/></svg>',
   left:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
   right:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>'
 };
 
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem('tarot-estudo') || '{}'); } catch (e) { saved = {}; }
-const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0}}, saved.persist || {});
+const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[]}, saved.persist || {});
+if(!S.readings) S.readings=[]; if(!S.spreadVar) S.spreadVar={};
 if(!S.notes) S.notes={};
-function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit}})); return true; } catch(e){ return false; } }
+function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings}})); return true; } catch(e){ return false; } }
 function exportBackup(){
-  const data={app:'estudo-tarot',exportadoEm:new Date().toISOString(),studied:S.studied,notes:S.notes,stats:S.stats};
+  const data={app:'estudo-tarot',exportadoEm:new Date().toISOString(),studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='estudo-tarot-backup-'+new Date().toISOString().slice(0,10)+'.json'; document.body.appendChild(a); a.click(); a.remove();
 }
 function importBackup(file){
-  const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); if(d.app!=='estudo-tarot') throw 0; S.notes=Object.assign({},S.notes,d.notes||{}); S.studied=Object.assign({},S.studied,d.studied||{}); if(d.stats) S.stats={quizzes:Math.max(S.stats.quizzes,d.stats.quizzes||0),best:Math.max(S.stats.best,d.stats.best||0)}; persist(); render(); }catch(e){ alert('Esse arquivo não é um backup do app.'); } }; r.readAsText(file);
+  const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); if(d.app!=='estudo-tarot') throw 0; S.notes=Object.assign({},S.notes,d.notes||{}); S.studied=Object.assign({},S.studied,d.studied||{}); if(d.stats) S.stats={quizzes:Math.max(S.stats.quizzes,d.stats.quizzes||0),best:Math.max(S.stats.best,d.stats.best||0)}; if(Array.isArray(d.readings)){ const ids=new Set(S.readings.map(r=>r.id)); d.readings.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)&&r.draw) S.readings.push(r); }); S.readings.sort((a,b)=>b.at-a.at); S.readings=S.readings.slice(0,30); } persist(); render(); }catch(e){ alert('Esse arquivo não é um backup do app.'); } }; r.readAsText(file);
 }
 function set(patch){ Object.assign(S,patch); persist(); render(); }
 
@@ -128,20 +148,43 @@ const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&l
 const cardsOf = sc => sc==='all'?CARDS:CARDS.filter(c=>c.suit===sc);
 const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
 const resumo = t => { const m=/Resumo:\s*(.*)$/i.exec(t||''); return m?m[1].trim():(t||'').split('. ')[0]; };
+const ROMAN={0:'0',1:'I',2:'II',3:'III',4:'IV',5:'V',6:'VI',7:'VII',8:'VIII',9:'IX',10:'X',11:'XI',12:'XII',13:'XIII',14:'XIV',15:'XV',16:'XVI',17:'XVII',18:'XVIII',19:'XIX',20:'XX',21:'XXI'};
+const rxEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+// Troca menções ao nome da carta por "esta carta", para quiz e flashcards não entregarem a resposta.
+function mask(text, c){
+  let t=String(text||'');
+  const full=c.name, bare=full.replace(/^(O|A|Os|As)\s+/,'');
+  const core=bare.split(/\s+(?:de|da|do|dos|das)\s+/)[0];
+  const names=[full,bare]; if(core!==bare) names.push(core);
+  const alts=names.map(rxEsc).sort((a,b)=>b.length-a.length).join('|');
+  const det='(?:(?:o|a|os|as|um|uma|esse|essa|este|esta|aquele|aquela|nosso|nossa)\\s+)?';
+  const rx=new RegExp('(^|[^\\p{L}])'+det+'(?:'+alts+')(?![\\p{L}])','giu');
+  t=t.replace(rx,(m,pre)=>pre+(m.trim()[0]===m.trim()[0].toUpperCase()&&/^[A-ZÀ-Ú]/.test(m.trim())?'Esta carta':'esta carta'));
+  if(c.suit==='maiores'){
+    t=t.replace(/\b(?:a\s+)?carta\s+(?:de\s+)?n[úu]mero\s+\S+/giu,'esta carta');
+    t=t.replace(new RegExp('\\b(?:o\\s+)?arcano\\s+(?:'+ROMAN[c.id]+'|'+c.id+'|zero)(?![\\p{L}\\d])','giu'),'esta carta');
+  }
+  t=t.replace(/esta carta,?\s+(?:a|esta)\s+carta/giu,'esta carta').replace(/\s{2,}/g,' ').replace(/^esta carta/,'Esta carta');
+  return t;
+}
+const pick2 = a => shuffle(a||[]).slice(0,2).join('; ');
 const studiedCount = () => Object.keys(S.studied).filter(k=>S.studied[k]).length;
 
 function buildQuiz(scope){
   const pool=cardsOf(scope), picked=shuffle(pool).slice(0,10);
-  const kinds=['chaves','imagem','invertido','amor','financeiro','nome'];
+  const kinds=shuffle(['chaves','imagem','invertido','luz','sombra','simbolo','amor','financeiro','nome','imagem']);
   return picked.map((c,i)=>{
-    const kind=kinds[i%kinds.length];
+    let kind=kinds[i%kinds.length];
     const group=shuffle([c].concat(shuffle(pool.filter(x=>x.id!==c.id)).slice(0,3)));
     const names=group.map(x=>({id:x.id,label:x.name}));
-    if(kind==='chaves') return {card:c,kind:'Palavras-chave',text:'Qual carta tem as palavras-chave: '+c.palavras+'?',options:names,answer:c.id};
+    if(kind==='simbolo'){ const cand=(c.simbolismo||[]).map(t=>mask(t,c)).filter(t=>t.length>20&&!/esta carta/i.test(t)); if(cand.length) return {card:c,kind:'Simbolismo',text:'Em que carta aparece: “'+shuffle(cand)[0]+'”?',options:names,answer:c.id}; kind='luz'; }
+    if(kind==='chaves') return {card:c,kind:'Palavras-chave',text:'Qual carta tem as palavras-chave: '+mask(c.palavras,c)+'?',options:names,answer:c.id};
     if(kind==='imagem') return {card:c,kind:'Reconheça a carta',text:'Que carta é esta?',img:c.img,options:names,answer:c.id};
-    if(kind==='invertido'){ const t=c.invertido.replace(/^Quando invertid[ao],?\s*/i,'').replace(/^(o|a|os|as)\s+[^,]+?\s+(indica|mostra|revela|fala de|aponta)\s+/i,'').split('. ')[0]; return {card:c,kind:'Carta invertida',text:'Invertida, qual carta indica: '+t+'?',options:names,answer:c.id}; }
-    if(kind==='amor') return {card:c,kind:'No amor',text:'No amor, qual carta resume: “'+resumo(c.amor)+'”?',options:names,answer:c.id};
-    if(kind==='financeiro') return {card:c,kind:'No financeiro',text:'No financeiro, qual carta resume: “'+resumo(c.financeiro)+'”?',options:names,answer:c.id};
+    if(kind==='invertido'){ let t=mask(c.invertido,c).replace(/^Invertid[ao],?\s*/i,'').split('. ')[0].replace(/^esta carta/i,'esta carta'); t=t.charAt(0).toLowerCase()+t.slice(1); return {card:c,kind:'Carta invertida',text:'Invertida, '+t+'. Qual é a carta?',options:names,answer:c.id}; }
+    if(kind==='luz') return {card:c,kind:'Lado de luz',text:'Qual carta tem como lado de luz: “'+pick2(c.luz.map(t=>mask(t,c)))+'”?',options:names,answer:c.id};
+    if(kind==='sombra') return {card:c,kind:'Lado de sombra',text:'Qual carta tem como lado de sombra: “'+pick2(c.sombra.map(t=>mask(t,c)))+'”?',options:names,answer:c.id};
+    if(kind==='amor') return {card:c,kind:'No amor',text:'No amor, qual carta resume: “'+mask(resumo(c.amor),c)+'”?',options:names,answer:c.id};
+    if(kind==='financeiro') return {card:c,kind:'No financeiro',text:'No financeiro, qual carta resume: “'+mask(resumo(c.financeiro),c)+'”?',options:names,answer:c.id};
     return {card:c,kind:'Significado',text:'Quais são as palavras-chave de '+c.name+'?',options:group.map(x=>({id:x.id,label:x.palavras})),answer:c.id};
   });
 }
@@ -151,9 +194,9 @@ function home(){
   const n=studiedCount();
   const hint = n===0?'Comece pelos Arcanos Maiores: 22 cartas, a base de tudo.':n<22?'Faltam '+(22-n)+' para fechar os Arcanos Maiores.':n<78?'Faltam '+(78-n)+' cartas para completar o baralho.':'Baralho completo. Agora é treinar com quiz e flashcards.';
   const mods=SUITS.map(su=>{const cs=cardsOf(su.id),d=cs.filter(c=>S.studied[c.id]).length;return `<button class="mod" data-act="lib" data-suit="${su.id}"><div class="g">${ELEMENT_SVG[su.id]}</div><div class="t"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b style="font-size:16px">${su.label}${su.element?` <span style="font-weight:400;font-size:12px;color:var(--muted)">· ${su.element}</span>`:``}</b><span style="font-size:12px;color:var(--muted);white-space:nowrap">${d} / ${cs.length}</span></div><div class="bar"><i style="width:${Math.round(100*d/cs.length)}%"></i></div></div></button>`;}).join('');
-  return `<div class="stack" style="gap:4px"><div class="eyebrow">Grimório Arcano</div><h1 style="font-size:40px;line-height:1.05">Sua trilha de estudo</h1><p style="color:var(--ink2);margin-top:6px">78 cartas, uma por vez. Estude a ficha, treine com flashcards e confirme no quiz.</p></div>
+  return `<div class="stack" style="gap:4px"><div class="eyebrow">Grimório Arcano</div><h1 style="font-size:40px;line-height:1.05">Sua trilha de estudo</h1><p style="color:var(--ink2);margin-top:6px">78 cartas, uma por vez. Estude a ficha, treine com flashcards, confirme no quiz e leia padrões nas tiragens.</p></div>
   <div class="dark stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="eyebrow" style="color:var(--pink)">Progresso geral</div><div class="serif" style="font-size:26px;color:var(--butter)">${n}<span style="font-size:16px;color:var(--paper);opacity:.8"> / 78</span></div></div><div class="bar" style="height:8px"><i style="width:${Math.round(100*n/78)}%"></i></div><div style="font-size:13px;opacity:.85">${hint}</div></div>
-  <div class="grid2"><button class="tile" data-act="go" data-screen="flash">${ICONS.flash}<div><b>Flashcards</b><br><small>Memorize as cartas</small></div></button><button class="tile" data-act="go" data-screen="quiz">${ICONS.quiz}<div><b>Quiz</b><br><small>10 perguntas rápidas</small></div></button></div>
+  <div class="grid3"><button class="tile" data-act="go" data-screen="flash">${ICONS.flash}<div><b>Flashcards</b><br><small>Memorize</small></div></button><button class="tile" data-act="go" data-screen="quiz">${ICONS.quiz}<div><b>Quiz</b><br><small>10 perguntas</small></div></button><button class="tile" data-act="go" data-screen="spreads">${ICONS.spreads}<div><b>Tiragens</b><br><small>${SPREADS.length} métodos</small></div></button></div>
   <div class="stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="font-size:24px">Módulos</h2><span style="font-size:12px;color:var(--muted)">toque para estudar</span></div>${mods}</div>
   <div class="box" style="gap:6px"><div class="h" style="color:var(--wood)">Backup</div><div style="font-size:13px;color:var(--ink2);line-height:1.45">${notesCount()} carta${notesCount()===1?'':'s'} com anotações e ${n} estudada${n===1?'':'s'}, salvas só neste aparelho. Exporte de vez em quando para não perder.</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="link" data-act="export">Exportar backup</button><label class="link" style="cursor:pointer;display:flex;align-items:center">Importar backup<input type="file" accept="application/json,.json" data-import style="display:none"></label></div></div>
   ${S.stats.quizzes?`<div style="font-size:11px;color:#7A5A4E;text-align:center">Melhor quiz: ${S.stats.best}/10</div>`:''}`;
@@ -187,7 +230,7 @@ function flash(){
     <button class="btn" data-act="fstart">Começar · ${cardsOf(S.flashScope).length} cartas</button>`;
   } else if(!f.done){
     const c=CARDS[f.deck[f.i]]; const showImg = S.flashMode==='carta' ? !f.flipped : f.flipped;
-    const face = showImg ? `<img src="${c.img}" alt=""><div class="serif" style="font-size:30px;line-height:1">${esc(c.name)}</div><div class="eyebrow" style="color:inherit;opacity:.7">Carta ${c.id}</div>` : `<div class="eyebrow" style="color:inherit;opacity:.7">Palavras-chave</div><div class="serif" style="font-size:24px;line-height:1.2">${esc(c.palavras)}</div><p style="font-size:14px;opacity:.92">${esc(c.geral)}</p>`;
+    const face = showImg ? `<img src="${c.img}" alt=""><div class="serif" style="font-size:30px;line-height:1">${esc(c.name)}</div><div class="eyebrow" style="color:inherit;opacity:.7">Carta ${c.id}</div>` : `<div class="eyebrow" style="color:inherit;opacity:.7">Palavras-chave</div><div class="serif" style="font-size:24px;line-height:1.2">${esc(c.palavras)}</div><p style="font-size:14px;opacity:.92">${esc(mask(c.geral,c))}</p>`;
     body=`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Carta ${f.i+1} de ${f.deck.length}</span><span><b style="color:#2F5A33">${f.known} sei</b> · <b style="color:#9B3B3B">${f.unknown} ainda não</b></span></div>
     <button class="flash${f.flipped?' back':''}" data-act="flip">${face}<div style="font-size:12px;opacity:.6">${f.flipped?'Toque para voltar':'Toque para virar'}</div></button>
     <div class="grid2"><button class="btn" data-act="fno" style="background:var(--red-bg);color:var(--red);border:1px solid #C98484">Ainda não sei</button><button class="btn" data-act="fyes" style="background:var(--green)">Já sei</button></div>`;
@@ -200,7 +243,7 @@ function flash(){
 function quiz(){
   const q=S.quiz; let body='';
   if(!q){
-    body=`<p style="color:var(--ink2)">10 perguntas sorteadas a partir das fichas: palavras-chave, imagem, invertida e áreas da vida.</p><div class="stack"><div class="eyebrow">Quais cartas</div><div class="pills wrap">${SCOPES.map(s=>`<button class="pill${S.quizScope===s.id?' on':''}" data-act="qscope" data-id="${s.id}">${s.label}</button>`).join('')}</div></div><button class="btn" data-act="qstart">Começar o quiz</button>`;
+    body=`<p style="color:var(--ink2)">10 perguntas sorteadas a partir das fichas: palavras-chave, imagem, invertida, luz e sombra, simbolismo e áreas da vida. O nome da carta nunca aparece na pergunta.</p><div class="stack"><div class="eyebrow">Quais cartas</div><div class="pills wrap">${SCOPES.map(s=>`<button class="pill${S.quizScope===s.id?' on':''}" data-act="qscope" data-id="${s.id}">${s.label}</button>`).join('')}</div></div><button class="btn" data-act="qstart">Começar o quiz</button>`;
   } else if(!q.done){
     const cur=q.qs[q.i]; const letters='ABCD';
     const opts=cur.options.map((o,i)=>{let cls='';if(q.chosen!==null)cls=o.id===cur.answer?' correct':o.id===q.chosen?' wrong':' muted';return `<button class="opt${cls}" data-act="pick" data-id="${o.id}"><b>${letters[i]}</b>${esc(o.label)}</button>`;}).join('');
@@ -215,15 +258,103 @@ function quiz(){
   return `<h1 style="font-size:32px">Quiz</h1>${body}`;
 }
 
+// ---------- tiragens ----------
+const SPREADS = window.TAROT_SPREADS || [];
+const spreadById = id => SPREADS.find(x=>x.id===id) || SPREADS[0];
+const curVar = sp => sp.variantes ? (sp.variantes.find(v=>v.id===S.spreadVar[sp.id]) || sp.variantes[0]) : null;
+const fmtDate = t => { const d=new Date(t); return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}); };
+function posStyle(sp,p){
+  if(sp.layout==='wheel'){
+    if(p.center) return 'left:50%;top:50%;width:19%;height:29%;transform:translate(-50%,-50%)';
+    const a=(180+(p.n-1)*30)*Math.PI/180, x=50+42*Math.cos(a), y=50-42*Math.sin(a);
+    return `left:${x.toFixed(2)}%;top:${y.toFixed(2)}%;width:13%;height:20%;transform:translate(-50%,-50%)`;
+  }
+  return `grid-column:${p.col};grid-row:${p.row}`;
+}
+function posInner(p,draw){
+  const d=draw&&draw[p.n-1];
+  if(d){ const c=CARDS[d.cardId]; return `<img src="${c.img}" alt="${esc(c.name)}" class="${d.rev?'rev':''}"><span class="num">${p.n}</span>`; }
+  return `<span class="num">${p.n}</span><small>${esc(p.label.split(' · ')[0].split(':')[0])}</small>`;
+}
+function renderLayout(sp,draw,open){
+  const live=!!draw;
+  const cells=sp.positions.filter(p=>!p.cross).map(p=>{
+    const cross=sp.positions.find(q=>q.cross&&q.col===p.col&&q.row===p.row);
+    const act=live?` data-act="popen" data-id="${p.n}"`:'';
+    const crossHtml=cross?`<div class="pos${live?' live':''}${cross.n===open?' on':''} cross"${live?` data-act="popen" data-id="${cross.n}"`:''}>${posInner(cross,draw)}</div>`:'';
+    return `<div class="pos${live?' live':''}${p.n===open?' on':''}"${act} style="${posStyle(sp,p)}">${posInner(p,draw)}${crossHtml}</div>`;
+  }).join('');
+  if(sp.layout==='wheel') return `<div class="wheel">${cells}</div>`;
+  return `<div class="layout" style="grid-template-columns:repeat(${sp.grid.cols},1fr)">${cells}</div>`;
+}
+function peladanSum(sp,pr){
+  if(sp.id!=='peladan') return '';
+  const four=pr.draw.slice(0,4).map(d=>CARDS[d.cardId]);
+  if(!four.every(c=>c.suit==='maiores')) return `<div style="font-size:12px;color:var(--muted);text-align:center">A síntese calculada só vale quando as quatro primeiras são Arcanos Maiores. Aqui a quinta foi sorteada.</div>`;
+  let sum=four.reduce((a,c)=>a+c.id,0); const raw=sum;
+  while(sum>22) sum=String(sum).split('').reduce((a,d)=>a+ +d,0);
+  const card=CARDS[sum===22?0:sum];
+  return `<div class="fb" style="text-align:center">Síntese calculada: ${four.map(c=>c.id).join(' + ')} = ${raw}${raw!==sum?' → '+sum:''} · <b>${esc(card.name)}</b>. Compare com a quinta carta sorteada.</div>`;
+}
+function spreads(){
+  const rows=SPREADS.map(sp=>`<button class="mod" data-act="spread" data-id="${sp.id}"><div class="g serif" style="font-size:22px;color:var(--wood)">${sp.cards}</div><div class="t"><b style="font-size:16px">${esc(sp.name)}</b><div style="font-size:12px;color:var(--muted);line-height:1.35">${esc(sp.tagline)}</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`).join('');
+  return `<div class="stack" style="gap:4px"><h1 style="font-size:32px">Tiragens</h1><p style="color:var(--ink2)">Aqui tiragem não prevê nada. Ela coloca um padrão seu em posições para você enxergar de onde ele vem, como aparece e o que pede. Toda pergunta é sobre você, nunca sobre o outro.</p></div><div class="stack">${rows}</div>${S.readings.length?`<div style="font-size:11px;color:#7A5A4E;text-align:center">${S.readings.length} prática${S.readings.length===1?'':'s'} salva${S.readings.length===1?'':'s'} neste aparelho</div>`:''}`;
+}
+function spread(){
+  const sp=spreadById(S.spreadId), tab=S.spreadTab;
+  const head=`<div style="display:flex;justify-content:space-between;align-items:center;margin:-8px -8px 0"><button data-act="go" data-screen="spreads" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;border:none;background:transparent;color:var(--wood);font-size:15px">${ICONS.left}Tiragens</button></div>
+  <div class="stack" style="gap:4px"><div class="eyebrow">${sp.cards} cartas</div><h1 style="font-size:32px;line-height:1.05">${esc(sp.name)}</h1><p style="color:var(--ink2);font-size:14px">${esc(sp.tagline)}</p></div>
+  <div class="pills">${[['aprender','Aprender'],['praticar','Praticar']].map(([id,l])=>`<button class="pill${tab===id?' on':''}" data-act="stab" data-id="${id}">${l}</button>`).join('')}</div>`;
+  return head+(tab==='praticar'?practiceView(sp):learnView(sp));
+}
+function varPills(sp){
+  if(!sp.variantes) return '';
+  const cur=curVar(sp);
+  return `<div class="stack" style="gap:8px"><div class="eyebrow">Horizonte</div><div class="pills">${sp.variantes.map(v=>`<button class="pill${cur.id===v.id?' on':''}" data-act="svar" data-id="${v.id}">${v.label}</button>`).join('')}</div><p style="font-size:14px">${esc(cur.texto)}</p></div>`;
+}
+function learnView(sp){
+  const pos=sp.positions.slice().sort((a,b)=>a.n-b.n).map(p=>`<div class="box" style="gap:6px"><div style="display:flex;gap:10px;align-items:baseline"><b class="serif" style="font-size:24px;color:var(--caramel);line-height:1">${p.n}</b><b style="font-size:15px">${esc(p.label)}</b></div><p style="font-size:14px">${esc(p.sentido)}</p><span class="chip" style="align-self:flex-start;white-space:normal;line-height:1.3">${esc(p.jung)}</span>${p.perguntas.map(q=>`<div class="li">${esc(q)}</div>`).join('')}</div>`).join('');
+  return `<p>${esc(sp.intro)}</p><div class="box" style="background:var(--sand);border:none;gap:6px"><div class="h" style="color:var(--wood)">Quando usar</div><p style="font-size:14px">${esc(sp.quando)}</p></div>${varPills(sp)}
+  <div class="stack" style="gap:8px"><h2 style="font-size:22px">O desenho</h2>${renderLayout(sp,null,null)}<div style="font-size:12px;color:var(--muted);text-align:center">Em Praticar, o app sorteia cartas nessas posições.</div></div>
+  <div class="stack" style="gap:8px"><h2 style="font-size:22px">As posições</h2>${pos}</div>
+  <div class="stack" style="gap:10px"><h2 style="font-size:22px">Como ler</h2>${sp.metodo.map((m,i)=>`<div class="step"><b>${i+1}</b><div>${esc(m)}</div></div>`).join('')}</div>
+  <div class="box dark" style="gap:8px"><div class="h" style="color:var(--pink)">Eixos que se leem juntos</div>${sp.relacoes.map(r=>`<div class="li">${esc(r)}</div>`).join('')}</div>
+  ${sp.exemplo?`<div class="notes" style="gap:6px"><div class="h" style="color:var(--wood)">Exemplo de leitura</div><p style="font-size:14px">${esc(sp.exemplo)}</p></div>`:''}
+  <button class="btn" data-act="stab" data-id="praticar">Praticar esta tiragem</button>`;
+}
+function practiceView(sp){
+  const pr=S.practice&&S.practice.spreadId===sp.id?S.practice:null;
+  const mine=S.readings.filter(r=>r.spreadId===sp.id);
+  const list=mine.length?`<div class="stack" style="gap:8px"><h2 style="font-size:22px">Minhas práticas</h2>${mine.map(r=>`<div class="row" style="min-height:56px;gap:6px"><div class="t"><div class="n" style="font-size:14px">${fmtDate(r.at)}${r.var&&sp.variantes?` · ${esc((sp.variantes.find(v=>v.id===r.var)||{}).label||'')}`:''}</div><div class="s">${r.draw.map(d=>CARDS[d.cardId].name+(d.rev?' (inv.)':'')).join(' · ')}</div></div><button class="link" data-act="pload" data-id="${r.id}">Abrir</button><button class="link" data-act="pdel" data-id="${r.id}" style="color:var(--red)">Apagar</button></div>`).join('')}</div>`:'';
+  if(!pr) return `<p style="color:var(--ink2)">Pense numa pergunta sobre você, respire, e sorteie. Depois toque em cada posição para ler a carta no lugar dela.</p>${varPills(sp)}
+    <button class="mode${S.practiceRev?' on':''}" data-act="prevt"><b>${S.practiceRev?'Com cartas invertidas':'Sem cartas invertidas'}</b><small>Toque para alternar. Cerca de uma em quatro sai invertida.</small></button>
+    <button class="btn" data-act="pdraw">Sortear ${sp.cards} cartas</button>${list}`;
+  const open=S.practiceOpen, p=sp.positions.find(x=>x.n===open);
+  let panel='';
+  if(p){
+    const d=pr.draw[p.n-1], c=CARDS[d.cardId];
+    const area=sp.area==='amor'?c.amor:sp.area==='financeiro'?c.financeiro:c.geral;
+    panel=`<div class="box" style="gap:10px;border-color:var(--caramel)"><div style="display:flex;gap:14px"><img src="${c.img}" alt="" class="${d.rev?'rev':''}" style="width:84px;height:138px;object-fit:cover;border-radius:8px;flex-shrink:0;box-shadow:0 6px 16px rgba(64,35,39,.18);background:var(--sand)"><div class="stack" style="gap:4px;min-width:0"><div class="eyebrow">${p.n} · ${esc(p.label)}</div><div class="serif" style="font-size:24px;line-height:1.05">${esc(c.name)}${d.rev?' <span style="font-size:14px;color:var(--red);font-family:Jost,sans-serif">invertida</span>':''}</div><div style="font-size:13px;color:var(--ink2)">${esc(c.palavras)}</div></div></div>
+    <div style="font-size:13px;line-height:1.45;color:var(--ink2)"><b style="color:var(--wood)">A posição.</b> ${esc(p.sentido)}</div>
+    <div style="font-size:14px;line-height:1.5"><b style="color:var(--wood)">${d.rev?'A carta invertida.':'A carta aqui.'}</b> ${esc(d.rev?c.invertido:area)}</div>
+    <span class="chip" style="align-self:flex-start;white-space:normal;line-height:1.3">${esc(p.jung)}</span>
+    ${p.perguntas.map(q=>`<div class="li">${esc(q)}</div>`).join('')}
+    <button class="btn ghost" data-act="card" data-id="${c.id}">Abrir a ficha de ${esc(c.name)}</button></div>`;
+  }
+  const legend=sp.positions.slice().sort((a,b)=>a.n-b.n).map(x=>{const d=pr.draw[x.n-1],c=CARDS[d.cardId];return `<button class="row${open===x.n?' on':''}" style="min-height:48px;padding:6px 10px;${open===x.n?'border-color:var(--caramel)':''}" data-act="popen" data-id="${x.n}"><b class="serif" style="font-size:20px;color:var(--caramel);width:26px;text-align:center">${x.n}</b><div class="t"><div class="n" style="font-size:14px">${esc(c.name)}${d.rev?' <span style="font-size:11px;color:var(--red);font-weight:500">inv.</span>':''}</div><div class="s">${esc(x.label)}</div></div></button>`;}).join('');
+  return `${renderLayout(sp,pr.draw,open)}<div style="font-size:12px;color:var(--muted);text-align:center">Toque numa posição para ler a carta nela.</div>${peladanSum(sp,pr)}${panel}<div class="stack" style="gap:6px">${legend}</div>
+  <div class="grid2"><button class="btn ghost" data-act="pdraw">Sortear de novo</button><button class="btn" data-act="psave" ${pr.saved?'disabled style="opacity:.6"':''}>${pr.saved?'Prática salva':'Salvar prática'}</button></div>${list}`;
+}
+
 let lastKey=null;
 function render(){
   const main=document.getElementById('main');
-  const key=S.screen+(S.screen==='card'?':'+S.cardId:S.screen==='library'?':'+S.suit:'');
+  const key=S.screen+(S.screen==='card'?':'+S.cardId:S.screen==='library'?':'+S.suit:S.screen==='spread'?':'+S.spreadId+':'+S.spreadTab:'');
   const keep = key===lastKey ? main.scrollTop : 0;
-  main.innerHTML = S.screen==='home'?home():S.screen==='library'?library():S.screen==='card'?cardView():S.screen==='flash'?flash():quiz();
+  main.innerHTML = S.screen==='home'?home():S.screen==='library'?library():S.screen==='card'?cardView():S.screen==='flash'?flash():S.screen==='spreads'?spreads():S.screen==='spread'?spread():quiz();
   main.scrollTop=keep; lastKey=key;
-  const active = S.screen==='card'?'library':S.screen;
-  document.getElementById('nav').innerHTML=[['home','Início'],['library','Cartas'],['flash','Flashcards'],['quiz','Quiz']].map(([id,l])=>`<button class="${active===id?'on':''}" data-act="go" data-screen="${id}">${ICONS[id==='library'?'cards':id]}<span>${l}</span></button>`).join('');
+  const active = S.screen==='card'?'library':S.screen==='spread'?'spreads':S.screen;
+  document.getElementById('nav').innerHTML=[['home','Início'],['library','Cartas'],['flash','Flashcards'],['quiz','Quiz'],['spreads','Tiragens']].map(([id,l])=>`<button class="${active===id?'on':''}" data-act="go" data-screen="${id}">${ICONS[id==='library'?'cards':id]}<span>${l}</span></button>`).join('');
 }
 
 let noteTimer=null;
@@ -253,6 +384,15 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='flip'){ S.flash.flipped=!S.flash.flipped; render(); }
   else if(a==='fyes'||a==='fno'){ const f=S.flash, n=f.i+1; if(a==='fyes')f.known++; else f.unknown++; f.flipped=false; if(n>=f.deck.length)f.done=true; else f.i=n; render(); document.getElementById('main').scrollTop=0; }
   else if(a==='qscope') set({quizScope:id});
+  else if(a==='spread') set({screen:'spread',spreadId:id,spreadTab:'aprender',practiceOpen:null});
+  else if(a==='stab'){ set({spreadTab:id,practiceOpen:null}); document.getElementById('main').scrollTop=0; }
+  else if(a==='svar'){ const v=Object.assign({},S.spreadVar); v[S.spreadId]=id; set({spreadVar:v}); }
+  else if(a==='prevt') set({practiceRev:!S.practiceRev});
+  else if(a==='pdraw'){ const sp=spreadById(S.spreadId); const draw=shuffle(CARDS).slice(0,sp.cards).map(c=>({cardId:c.id,rev:S.practiceRev&&Math.random()<.25})); const v=curVar(sp); set({practice:{spreadId:sp.id,draw,at:Date.now(),var:v?v.id:null,saved:false},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
+  else if(a==='popen'){ set({practiceOpen:S.practiceOpen===+id?null:+id}); }
+  else if(a==='psave'){ const pr=S.practice; if(!pr||pr.saved) return; const r={id:String(Date.now()),spreadId:pr.spreadId,draw:pr.draw,at:Date.now(),var:pr.var}; pr.saved=true; set({readings:[r].concat(S.readings).slice(0,30)}); }
+  else if(a==='pload'){ const r=S.readings.find(x=>x.id===id); if(r) set({practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
+  else if(a==='pdel'){ if(!confirm('Apagar esta prática?')) return; const pr=S.practice; const r=S.readings.find(x=>x.id===id); if(pr&&r&&pr.saved&&pr.at===r.at) pr.saved=false; set({readings:S.readings.filter(x=>x.id!==id)}); }
   else if(a==='qstart') set({quiz:{qs:buildQuiz(S.quizScope),i:0,chosen:null,score:0,done:false}});
   else if(a==='qreset') set({quiz:null});
   else if(a==='pick'){ const q=S.quiz; if(q.chosen!==null) return; q.chosen=+id; if(q.chosen===q.qs[q.i].answer)q.score++; render(); const nb=document.querySelector('[data-act="qnext"]'); if(nb) nb.scrollIntoView({behavior:'smooth',block:'end'}); }
