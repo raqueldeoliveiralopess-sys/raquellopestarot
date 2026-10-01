@@ -1,0 +1,42 @@
+{
+  "nome": "Raquel Lopes",
+  "handle": "@raquellopestarot",
+  "identidade": "Taróloga que não lê cartinha sobre o outro: lê o padrão enraizado que trava a mulher no amor e no dinheiro.",
+  "nicho": "Tarot arquetípico para mulheres de 35 a 55 que dão conta de tudo mas repetem padrões no amor e no dinheiro.",
+  "angulo": "Leitura de base junguiana que não fala do outro, fala dela, e mostra o movimento que quebra o ciclo. As grandes contas do nicho leem o outro e vendem previsão; aqui a pergunta sobre ele volta pra ela.",
+  "arquetipo": "Amiga + Rebelde. Eu te acolho, mas não passo pano pro padrão que te faz aceitar migalha, cobrar pouco e dar conta de tudo sozinha.",
+  "tom": {
+    "vocabulario_usa": ["cara", "meu anjo", "tipo assim", "padrão", "dar conta", "entendeu", "né", "sabe"],
+    "vocabulario_banido": ["o universo conspira", "luz e amor", "gratidão por tudo", "destino garantido", "vibração baixa"],
+    "ritmo": "Mistura controlada: abre curta, desenvolve, fecha seca.",
+    "humor": "Sarcasmo com o mercado e auto-ironia, nunca em cima da cliente."
+  },
+  "visual": {
+    "cores_cena": ["roxo profundo", "vinho ameixa", "marrom madeira escura", "caramelo amadeirado"],
+    "cores_marca_texto_acento": ["rosa pastel", "amarelo manteiga"],
+    "regra_cores": "Rosa pastel e amarelo manteiga só em tipografia e acento sobre fundo escuro. Nunca como cor de ambiente ou fundo.",
+    "iluminacao": "Luz natural de janela, lateral e suave, com pele real e sombra delicada. Secundário: luz de vela e interior escuro.",
+    "ambientes": [
+      "sala whimsigoth com plantas, madeira, quadros antigos e tecido em camadas",
+      "mesa de tarot junto à janela com cartas, livros e objetos simbólicos",
+      "canto de leitura com poltrona vintage, estante e espelho ornamentado"
+    ],
+    "guarda_roupa": "Vintage whimsigoth com renda, veludo, mangas amplas, saia longa fluida, colete e cardigã de textura. Cabelo cacheado sempre solto, mesmo formato. Acessórios marcantes: anel grande, brinco expressivo, colar de pingente simbólico."
+  },
+  "regras_nao_negociaveis": [
+    "Nunca escrever: o universo conspira, luz e amor, gratidão por tudo, destino garantido, vibração baixa como culpa da cliente.",
+    "Nunca ler o outro. Pergunta sobre ele volta pra ela.",
+    "Nunca entregar resultado como garantia, nem com prazo. Amada e rica é o desejo dela, não a minha promessa.",
+    "Fotografia sempre em luz natural de janela dentro de casa com plantas e madeira. Estúdio e fundo neutro, nunca.",
+    "Cabelo cacheado solto no mesmo formato, em peça vintage dentro das cores de cena."
+  ],
+  "defende": [
+    "A cliente decide e a leitura amplia autonomia.",
+    "Mulher pode querer amor, dinheiro e cuidado sem merecer por sacrifício.",
+    "Símbolo só vale se couber em cena da vida real."
+  ],
+  "ataca": [
+    "Prometer volta de ex ou dinheiro certo pra vender pelo desespero.",
+    "Culpar a energia da mulher e chamar sobrecarga de força."
+  ]
+}

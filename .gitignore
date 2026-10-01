@@ -1,0 +1,12 @@
+# saídas e downloads locais (conteúdo pessoal, não versionar)
+prompts/
+salvos_instagram/
+*.zip
+
+# sessão do Instaloader (credencial local)
+*.session
+
+# python
+__pycache__/
+*.pyc
+.venv/

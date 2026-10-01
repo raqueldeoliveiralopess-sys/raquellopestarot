@@ -1,0 +1,3 @@
+# Opcional — só para o comando "puxar" (download automático dos salvos).
+# Os caminhos de export oficial e lista manual usam apenas a biblioteca padrão.
+instaloader>=4.10
