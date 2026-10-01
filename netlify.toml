@@ -1,0 +1,5 @@
+# Netlify publica a raiz do repositório como está (site estático, sem build).
+# Os cabeçalhos de cache ficam no arquivo _headers.
+[build]
+  publish = "."
+  command = ""
