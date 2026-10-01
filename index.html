@@ -103,6 +103,17 @@ img.rev{transform:rotate(180deg)}
 .qa .mk.ok{background:var(--green-bg);color:#2F5A33;border:1px solid var(--green)}
 .qa .mk.no{background:var(--red-bg);color:var(--red);border:1px solid #C98484}
 .qa .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;font-size:13px;line-height:1.4}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;color:var(--ink2);font-weight:500}
+.field input,.field textarea{width:100%;min-height:50px;padding:12px 14px;border:1px solid #D9C7B3;border-radius:14px;background:var(--card);color:var(--ink);font-family:inherit;font-size:16px}
+.field textarea{min-height:90px;resize:vertical;line-height:1.45}
+.field input:focus,.field textarea:focus{outline:2px solid var(--caramel);outline-offset:1px}
+.field input.code{font-size:26px;letter-spacing:.35em;text-align:center;font-weight:600}
+.err{font-size:14px;color:var(--red);background:var(--red-bg);border-radius:12px;padding:10px 12px}
+.avatar{width:96px;height:96px;border-radius:99px;object-fit:cover;background:var(--sand);display:flex;align-items:center;justify-content:center;color:var(--caramel);font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;overflow:hidden;flex-shrink:0}
+.avatar.sm{width:44px;height:44px;font-size:20px;border:1px solid var(--line)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.gate{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;min-height:100%}
 .big{font-size:56px;line-height:1;color:var(--butter)}.big span{font-size:22px;color:var(--paper);opacity:.8}
 </style>
 </head>
@@ -110,6 +121,8 @@ img.rev{transform:rotate(180deg)}
 <div id="topbar" aria-hidden="true"></div><div id="app"><main id="main"></main><nav id="nav"></nav></div>
 <script src="cards.js"></script>
 <script src="tiragens.js"></script>
+<script src="config.js"></script>
+<script src="auth.js"></script>
 <script>
 (function(){
 const CARDS = window.TAROT_CARDS || [];
@@ -142,14 +155,27 @@ try { saved = JSON.parse(localStorage.getItem('tarot-estudo') || '{}'); } catch 
 const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[],quizHistory:[],quizOpen:null}, saved.persist || {});
 if(!S.readings) S.readings=[]; if(!Array.isArray(S.quizHistory)) S.quizHistory=[]; S.quizOpen=null; if(!S.spreadVar) S.spreadVar={};
 if(!S.notes) S.notes={};
-function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory}})); return true; } catch(e){ return false; } }
+function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory}})); syncLater(); return true; } catch(e){ return false; } }
+let lastSent=null;
+function syncLater(){ const A=window.GA_AUTH; if(!A||!A.enabled||A.estado!=='ok') return; const str=JSON.stringify(backupData()); if(str===lastSent) return; lastSent=str; A.agendarEnvio(); }
 function exportBackup(){
   const data={app:'estudo-tarot',exportadoEm:new Date().toISOString(),studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings,quizHistory:S.quizHistory};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='estudo-tarot-backup-'+new Date().toISOString().slice(0,10)+'.json'; document.body.appendChild(a); a.click(); a.remove();
 }
+function backupData(){ return {studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings,quizHistory:S.quizHistory}; }
+function mergeNote(a,b){ a=a||''; b=b||''; if(!a.trim()) return b; if(!b.trim()||a===b) return a; if(a.includes(b)) return a; if(b.includes(a)) return b; return b+'\n\n— outra versão —\n'+a; }
+// Junta dados de outro lugar (backup ou nuvem) com os do aparelho, sem perder nada.
+function mergeData(d){
+  if(!d) return;
+  const st=Object.assign({},S.studied); Object.keys(d.studied||{}).forEach(k=>{ if(d.studied[k]) st[k]=true; }); S.studied=st;
+  const nt=Object.assign({},S.notes); Object.keys(d.notes||{}).forEach(k=>{ nt[k]=mergeNote(nt[k],d.notes[k]); }); S.notes=nt;
+  if(d.stats) S.stats={quizzes:Math.max(S.stats.quizzes||0,d.stats.quizzes||0),best:Math.max(S.stats.best||0,d.stats.best||0)};
+  if(Array.isArray(d.readings)){ const ids=new Set(S.readings.map(r=>r.id)); d.readings.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)&&r.draw) S.readings.push(r); }); S.readings.sort((a,b)=>b.at-a.at); S.readings=S.readings.slice(0,30); }
+  if(Array.isArray(d.quizHistory)){ const qids=new Set(S.quizHistory.map(h=>h.id)); d.quizHistory.forEach(h=>{ if(h&&h.id&&!qids.has(h.id)&&Array.isArray(h.answers)) S.quizHistory.push(h); }); S.quizHistory.sort((a,b)=>b.at-a.at); S.quizHistory=S.quizHistory.slice(0,50); }
+}
 function importBackup(file){
-  const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); if(d.app!=='estudo-tarot') throw 0; S.notes=Object.assign({},S.notes,d.notes||{}); S.studied=Object.assign({},S.studied,d.studied||{}); if(d.stats) S.stats={quizzes:Math.max(S.stats.quizzes,d.stats.quizzes||0),best:Math.max(S.stats.best,d.stats.best||0)}; if(Array.isArray(d.readings)){ const ids=new Set(S.readings.map(r=>r.id)); d.readings.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)&&r.draw) S.readings.push(r); }); S.readings.sort((a,b)=>b.at-a.at); S.readings=S.readings.slice(0,30); } if(Array.isArray(d.quizHistory)){ const qids=new Set(S.quizHistory.map(h=>h.id)); d.quizHistory.forEach(h=>{ if(h&&h.id&&!qids.has(h.id)&&Array.isArray(h.answers)) S.quizHistory.push(h); }); S.quizHistory.sort((a,b)=>b.at-a.at); S.quizHistory=S.quizHistory.slice(0,50); } persist(); render(); }catch(e){ alert('Esse arquivo não é um backup do app.'); } }; r.readAsText(file);
+  const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); if(d.app!=='estudo-tarot') throw 0; mergeData(d); persist(); render(); }catch(e){ alert('Esse arquivo não é um backup do app.'); } }; r.readAsText(file);
 }
 function set(patch){ Object.assign(S,patch); persist(); render(); }
 
@@ -203,7 +229,8 @@ function home(){
   const n=studiedCount();
   const hint = n===0?'Comece pelos Arcanos Maiores: 22 cartas, a base de tudo.':n<22?'Faltam '+(22-n)+' para fechar os Arcanos Maiores.':n<78?'Faltam '+(78-n)+' cartas para completar o baralho.':'Baralho completo. Agora é treinar com quiz e flashcards.';
   const mods=SUITS.map(su=>{const cs=cardsOf(su.id),d=cs.filter(c=>S.studied[c.id]).length;return `<button class="mod" data-act="lib" data-suit="${su.id}"><div class="g">${ELEMENT_SVG[su.id]}</div><div class="t"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b style="font-size:16px">${su.label}${su.element?` <span style="font-weight:400;font-size:12px;color:var(--muted)">· ${su.element}</span>`:``}</b><span style="font-size:12px;color:var(--muted);white-space:nowrap">${d} / ${cs.length}</span></div><div class="bar"><i style="width:${Math.round(100*d/cs.length)}%"></i></div></div></button>`;}).join('');
-  return `<div class="stack" style="gap:4px"><div class="eyebrow">Grimório Arcano</div><h1 style="font-size:40px;line-height:1.05">Sua trilha de estudo</h1><p style="color:var(--ink2);margin-top:6px">78 cartas, uma por vez. Estude a ficha, treine com flashcards, confirme no quiz e leia padrões nas tiragens.</p></div>
+  const A=window.GA_AUTH, logged=A&&A.enabled&&A.estado==='ok';
+  return `<div class="stack" style="gap:4px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div class="eyebrow">Grimório Arcano</div>${logged?`<button data-act="go" data-screen="perfil" aria-label="Meu perfil" style="border:none;background:transparent;padding:0;display:flex;align-items:center;gap:8px;color:var(--wood);font-size:13px;font-weight:500">${avatarHtml('sm')}</button>`:''}</div><h1 style="font-size:40px;line-height:1.05">Sua trilha de estudo</h1><p style="color:var(--ink2);margin-top:6px">78 cartas, uma por vez. Estude a ficha, treine com flashcards, confirme no quiz e leia padrões nas tiragens.</p></div>
   <div class="dark stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="eyebrow" style="color:var(--pink)">Progresso geral</div><div class="serif" style="font-size:26px;color:var(--butter)">${n}<span style="font-size:16px;color:var(--paper);opacity:.8"> / 78</span></div></div><div class="bar" style="height:8px"><i style="width:${Math.round(100*n/78)}%"></i></div><div style="font-size:13px;opacity:.85">${hint}</div></div>
   <div class="grid3"><button class="tile" data-act="go" data-screen="flash">${ICONS.flash}<div><b>Flashcards</b><br><small>Memorize</small></div></button><button class="tile" data-act="go" data-screen="quiz">${ICONS.quiz}<div><b>Quiz</b><br><small>10 perguntas</small></div></button><button class="tile" data-act="go" data-screen="spreads">${ICONS.spreads}<div><b>Tiragens</b><br><small>${SPREADS.length} métodos</small></div></button></div>
   <div class="stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="font-size:24px">Módulos</h2><span style="font-size:12px;color:var(--muted)">toque para estudar</span></div>${mods}</div>
@@ -378,12 +405,52 @@ function practiceView(sp){
   <div class="grid2"><button class="btn ghost" data-act="pdraw">Sortear de novo</button><button class="btn" data-act="psave" ${pr.saved?'disabled style="opacity:.6"':''}>${pr.saved?'Prática salva':'Salvar prática'}</button></div>${list}`;
 }
 
+// ---------- login e perfil ----------
+function avatarHtml(cls){
+  const A=window.GA_AUTH, p=A&&A.perfil, nome=(p&&p.nome)||(A&&A.email)||'?';
+  return `<div class="avatar ${cls||''}">${p&&p.foto_url?`<img src="${esc(p.foto_url)}" alt="">`:esc(nome.trim().charAt(0).toUpperCase())}</div>`;
+}
+function gateView(){
+  const A=window.GA_AUTH, err=A.erro?`<div class="err">${esc(A.erro)}</div>`:'';
+  const head=`<div class="stack" style="gap:6px;text-align:center;align-items:center"><img src="icon-192.png" alt="" style="width:72px;height:72px;border-radius:18px"><div class="eyebrow">Grimório Arcano</div></div>`;
+  let body='';
+  if(A.estado==='carregando') body=`<p style="text-align:center;color:var(--ink2)">Abrindo seu grimório…</p>`;
+  else if(A.estado==='email') body=`<div class="stack" style="gap:6px;text-align:center"><h1 style="font-size:34px;line-height:1.05">Entre no seu grimório</h1><p style="color:var(--ink2)">Use o e-mail da sua assinatura. Vamos mandar um código para você digitar aqui, sem senha.</p></div>
+    <form class="stack" data-form="email" style="gap:12px"><div class="field"><label for="ga-email">E-mail</label><input id="ga-email" type="email" inputmode="email" autocomplete="email" required value="${esc(A.email)}" placeholder="voce@email.com"></div>${err}<button class="btn" ${A.ocupado?'disabled style="opacity:.6"':''}>${A.ocupado?'Enviando…':'Receber código'}</button></form>`;
+  else if(A.estado==='codigo') body=`<div class="stack" style="gap:6px;text-align:center"><h1 style="font-size:32px;line-height:1.05">Confira seu e-mail</h1><p style="color:var(--ink2)">Mandamos um código para <b>${esc(A.email)}</b>. Pode levar um minuto; olhe também o spam.</p></div>
+    <form class="stack" data-form="codigo" style="gap:12px"><div class="field"><label for="ga-code">Código</label><input id="ga-code" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="10" required placeholder="••••••"></div>${err}<button class="btn" ${A.ocupado?'disabled style="opacity:.6"':''}>${A.ocupado?'Conferindo…':'Entrar'}</button></form>
+    <div style="display:flex;justify-content:space-between"><button class="link" data-act="ga-reenviar">Mandar outro código</button><button class="link" data-act="ga-trocar">Trocar e-mail</button></div>`;
+  else if(A.estado==='sem-acesso') body=`<div class="dark stack" style="gap:10px;text-align:center"><div class="eyebrow" style="color:var(--pink)">Assinatura não encontrada</div><p>O e-mail <b>${esc(A.email)}</b> não tem uma assinatura ativa do Grimório Arcano.</p><p style="font-size:14px;opacity:.85">Se você assinou com outro e-mail, saia e entre com ele. Se acabou de assinar, espere alguns minutos e confira de novo.</p></div>
+    ${A.linkAssinatura?`<a class="btn" href="${esc(A.linkAssinatura)}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Assinar o Grimório</a>`:''}
+    <button class="btn ghost" data-act="ga-denovo">Já assinei, conferir de novo</button><button class="link" data-act="ga-sair" style="align-self:center">Entrar com outro e-mail</button>`;
+  else body=`${err||'<div class="err">Algo deu errado.</div>'}<button class="btn" data-act="ga-denovo">Tentar de novo</button>${A.user?`<button class="link" data-act="ga-sair" style="align-self:center">Sair</button>`:''}`;
+  return `<div class="gate">${head}${body}</div>`;
+}
+function perfilView(){
+  const A=window.GA_AUTH; if(!A||!A.enabled||A.estado!=='ok') return home();
+  const p=A.perfil||{}, d=S.pfDraft||(S.pfDraft={nome:p.nome||'',bio:p.bio||''});
+  const sync={ok:'Progresso salvo na nuvem',enviando:'Salvando na nuvem…',pendente:'Sem conexão: salvo neste aparelho, sobe para a nuvem quando a internet voltar'}[A.sync]||'';
+  return `<div style="display:flex;align-items:center;margin:-8px -8px 0"><button data-act="go" data-screen="home" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;border:none;background:transparent;color:var(--wood);font-size:15px">${ICONS.left}Início</button></div>
+  <h1 style="font-size:32px">Meu perfil</h1>
+  <div style="display:flex;gap:16px;align-items:center">${S.pfPreview?`<div class="avatar"><img src="${S.pfPreview}" alt=""></div>`:avatarHtml('')}<div class="stack" style="gap:4px;min-width:0"><label class="btn ghost" style="display:flex;align-items:center;justify-content:center;padding:0 16px;cursor:pointer">${p.foto_url||S.pfPreview?'Trocar foto':'Escolher foto'}<input type="file" accept="image/*" data-pf-foto style="display:none"></label><div style="font-size:12px;color:var(--muted)">A foto fica quadrada e pequena.</div></div></div>
+  <div class="field"><label for="pf-nome">Nome</label><input id="pf-nome" data-pf="nome" maxlength="60" value="${esc(d.nome)}" placeholder="Como quer ser chamada"></div>
+  <div class="field"><label for="pf-bio">Sobre você</label><textarea id="pf-bio" data-pf="bio" maxlength="160" placeholder="Há quanto tempo estuda tarot, o que te trouxe aqui…">${esc(d.bio)}</textarea><div style="font-size:12px;color:var(--muted);text-align:right">${(d.bio||'').length}/160</div></div>
+  ${A.erro?`<div class="err">${esc(A.erro)}</div>`:''}
+  <button class="btn" data-act="pf-salvar" ${A.ocupado?'disabled style="opacity:.6"':''}>${A.ocupado?'Salvando…':S.pfSaved?'Perfil salvo':'Salvar perfil'}</button>
+  <div class="box" style="gap:6px"><div class="h" style="color:var(--wood)">Conta</div><div style="font-size:14px">${esc(A.email)}</div><div id="sync-status" style="font-size:13px;color:var(--muted)">${sync}</div></div>
+  <button class="btn ghost" data-act="ga-sair" style="color:var(--red);border-color:#C98484">Sair</button>
+  <div style="font-size:12px;color:var(--muted);text-align:center;line-height:1.4">Ao sair, o progresso continua na nuvem e é apagado deste aparelho.</div>`;
+}
+
 let lastKey=null;
 function render(){
   const main=document.getElementById('main');
   const key=S.screen+(S.screen==='card'?':'+S.cardId:S.screen==='library'?':'+S.suit:S.screen==='spread'?':'+S.spreadId+':'+S.spreadTab:'');
   const keep = key===lastKey ? main.scrollTop : 0;
-  main.innerHTML = S.screen==='home'?home():S.screen==='library'?library():S.screen==='card'?cardView():S.screen==='flash'?flash():S.screen==='spreads'?spreads():S.screen==='spread'?spread():quiz();
+  const A=window.GA_AUTH, gated=A&&A.enabled&&A.estado!=='ok';
+  document.getElementById('nav').style.display=gated?'none':'';
+  if(gated){ main.innerHTML=gateView(); lastKey='gate'; return; }
+  main.innerHTML = S.screen==='perfil'?perfilView():S.screen==='home'?home():S.screen==='library'?library():S.screen==='card'?cardView():S.screen==='flash'?flash():S.screen==='spreads'?spreads():S.screen==='spread'?spread():quiz();
   main.scrollTop=keep; lastKey=key;
   const active = S.screen==='card'?'library':S.screen==='spread'?'spreads':S.screen;
   document.getElementById('nav').innerHTML=[['home','Início'],['library','Cartas'],['flash','Flashcards'],['quiz','Quiz'],['spreads','Tiragens']].map(([id,l])=>`<button class="${active===id?'on':''}" data-act="go" data-screen="${id}">${ICONS[id==='library'?'cards':id]}<span>${l}</span></button>`).join('');
@@ -396,12 +463,27 @@ document.getElementById('app').addEventListener('input',e=>{
   const st=document.getElementById('note-status'); if(st) st.textContent='Salvando…';
   clearTimeout(noteTimer); noteTimer=setTimeout(()=>{ const ok=persist(); if(st) st.textContent=ok?'Salvo neste aparelho':'Não foi possível salvar'; },400);
 });
+document.getElementById('app').addEventListener('submit',e=>{
+  const f=e.target.closest('[data-form]'); if(!f) return; e.preventDefault(); const A=window.GA_AUTH;
+  if(f.dataset.form==='email') A.enviarCodigo(document.getElementById('ga-email').value);
+  else if(f.dataset.form==='codigo') A.validarCodigo(document.getElementById('ga-code').value);
+});
+document.getElementById('app').addEventListener('input',e=>{
+  const t=e.target; if(!t.matches('[data-pf]')) return; S.pfDraft=S.pfDraft||{}; S.pfDraft[t.dataset.pf]=t.value; S.pfSaved=false;
+});
 document.getElementById('app').addEventListener('change',e=>{
   const t=e.target; if(t.matches('[data-import]') && t.files && t.files[0]) importBackup(t.files[0]);
+  if(t.matches('[data-pf-foto]') && t.files && t.files[0]){ S.pfFile=t.files[0]; S.pfSaved=false; if(S.pfPreview) URL.revokeObjectURL(S.pfPreview); S.pfPreview=URL.createObjectURL(S.pfFile); render(); }
 });
 document.getElementById('app').addEventListener('click',e=>{
   const b=e.target.closest('[data-act]'); if(!b) return; const a=b.dataset.act, id=b.dataset.id;
   if(a==='export') exportBackup();
+  else if(a==='ga-reenviar') window.GA_AUTH.enviarCodigo(window.GA_AUTH.email);
+  else if(a==='ga-trocar') window.GA_AUTH.trocarEmail();
+  else if(a==='ga-denovo') window.GA_AUTH.tentarDeNovo();
+  else if(a==='ga-sair'){ if(window.GA_AUTH.estado!=='ok'||confirm('Sair da sua conta neste aparelho?')) window.GA_AUTH.sair(); }
+  else if(a==='pf-salvar'){ const A=window.GA_AUTH, d=S.pfDraft||{}; A.salvarPerfil({nome:d.nome,bio:d.bio,foto:S.pfFile}).then(ok=>{ if(ok){ S.pfFile=null; if(S.pfPreview){URL.revokeObjectURL(S.pfPreview);S.pfPreview=null;} S.pfSaved=true; S.pfDraft=null; render(); } }); }
+  else if(a==='go'&&b.dataset.screen==='perfil'){ S.pfDraft=null; S.pfSaved=false; set({screen:'perfil'}); }
   else if(a==='go') set({screen:b.dataset.screen});
   else if(a==='lib') set({screen:'library',suit:b.dataset.suit});
   else if(a==='suit') set({suit:b.dataset.suit});
@@ -434,6 +516,29 @@ document.getElementById('app').addEventListener('click',e=>{
 });
 
 render();
+if(window.GA_AUTH && window.GA_AUTH.enabled){
+  const A=window.GA_AUTH; let authKey='';
+  const resetLocal=()=>{ S.studied={}; S.notes={}; S.stats={quizzes:0,best:0}; S.readings=[]; S.quizHistory=[]; S.practice=null; S.quiz=null; S.flash=null; };
+  A.iniciar({
+    getData: backupData,
+    applyData:(d,uid)=>{
+      let dono=null; try{ dono=localStorage.getItem('ga-dono'); }catch(e){}
+      if(dono && dono!==uid) resetLocal();      // aparelho usado por outra conta: não mistura
+      mergeData(d); lastSent=null;
+      try{ localStorage.setItem('ga-dono',uid); }catch(e){}
+      persist();
+      const typing=document.activeElement&&/INPUT|TEXTAREA/.test(document.activeElement.tagName);
+      if(!typing) render();
+    },
+    limparLocal:()=>{ resetLocal(); S.screen='home'; lastSent=null; try{ localStorage.removeItem('ga-dono'); }catch(e){} persist(); },
+    onChange:()=>{
+      const k=[A.estado,A.erro,A.ocupado,A.perfil&&JSON.stringify(A.perfil)].join('|');
+      const typing=document.activeElement&&/INPUT|TEXTAREA/.test(document.activeElement.tagName)&&A.estado==='ok';
+      if(k!==authKey&&!typing){ authKey=k; render(); }
+      const st=document.getElementById('sync-status'); if(st) st.textContent={ok:'Progresso salvo na nuvem',enviando:'Salvando na nuvem…',pendente:'Sem conexão: salvo neste aparelho, sobe para a nuvem quando a internet voltar'}[A.sync]||'';
+    }
+  });
+}
 if('serviceWorker' in navigator){
   // Quando um service worker novo assume o controle (deploy novo), recarrega uma vez para mostrar a versão atualizada
   let reloading=false;

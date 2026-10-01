@@ -3,3 +3,7 @@
 [build]
   publish = "."
   command = ""
+
+# Funções do servidor (webhook da Kiwify)
+[functions]
+  directory = "netlify/functions"
