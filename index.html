@@ -94,6 +94,9 @@ img.rev{transform:rotate(180deg)}
 .step{display:flex;gap:10px;font-size:14px;line-height:1.45}.step b{width:22px;height:22px;border-radius:99px;background:var(--ink);color:var(--butter);font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .grid3 .tile{min-height:88px;padding:12px;gap:8px}.grid3 .tile b{font-size:14px}.grid3 .tile small{font-size:11px}
+/* no quiz, a imagem é cortada em cima (numeral) e embaixo (nome) para não entregar a resposta */
+.crop{width:150px;aspect-ratio:300/345;overflow:hidden;border-radius:8px;align-self:center;position:relative;background:var(--sand);box-shadow:0 8px 20px rgba(64,35,39,.18)}
+.crop img{position:absolute;left:0;width:100%;height:calc(100% / .69);top:-21.74%;object-fit:cover}
 .big{font-size:56px;line-height:1;color:var(--butter)}.big span{font-size:22px;color:var(--paper);opacity:.8}
 </style>
 </head>
@@ -249,7 +252,7 @@ function quiz(){
     const opts=cur.options.map((o,i)=>{let cls='';if(q.chosen!==null)cls=o.id===cur.answer?' correct':o.id===q.chosen?' wrong':' muted';return `<button class="opt${cls}" data-act="pick" data-id="${o.id}"><b>${letters[i]}</b>${esc(o.label)}</button>`;}).join('');
     const fb = q.chosen===null?'':`<div class="fb">${q.chosen===cur.answer?'Certo. ':'A resposta era '+esc(cur.card.name)+'. '}${esc(cur.card.palavras)}.</div><button class="btn" data-act="qnext">${q.i+1>=q.qs.length?'Ver resultado':'Próxima pergunta'}</button>`;
     body=`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Pergunta ${q.i+1} de ${q.qs.length}</span><b style="color:#2F5A33">${q.score} acertos</b></div><div class="bar"><i style="width:${Math.round(100*q.i/q.qs.length)}%"></i></div>
-    <div class="box" style="padding:18px;gap:12px;border-radius:20px"><div class="eyebrow">${cur.kind}</div>${cur.img?`<img src="${cur.img}" alt="" style="width:120px;height:198px;object-fit:cover;border-radius:8px;align-self:center;box-shadow:0 8px 20px rgba(64,35,39,.18)">`:''}<div class="serif" style="font-size:22px;line-height:1.25">${esc(cur.text)}</div></div>
+    <div class="box" style="padding:18px;gap:12px;border-radius:20px"><div class="eyebrow">${cur.kind}</div>${cur.img?`<div class="crop"><img src="${cur.img}" alt=""></div>`:''}<div class="serif" style="font-size:22px;line-height:1.25">${esc(cur.text)}</div></div>
     <div class="stack">${opts}</div>${fb}`;
   } else {
     const msg = q.score>=9?'Domínio total desse grupo. Passe para o próximo.':q.score>=6?'Bom caminho. Revise as que errou nas fichas.':'Vale voltar às fichas e aos flashcards antes de repetir.';
