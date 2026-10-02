@@ -25,6 +25,7 @@
     console.error('Comunidade:', e);
     if (!navigator.onLine || /Failed to fetch|NetworkError|Load failed/i.test(msg)) return amigavel('Sem internet. Tente de novo quando conectar.');
     if (code === 'PGRST205' || code === '42P01' || /Could not find the table|does not exist|relation .* does not exist/i.test(msg)) return amigavel('A comunidade ainda está sendo preparada. Volte daqui a pouco.', { preparando: true });
+    if (code === 'PGRST200' || code === 'PGRST201' || /more than one relationship|Could not find a relationship/i.test(msg)) return amigavel('A comunidade precisa de um ajuste. Avise a Raquel.');
     if (code === '42501' || /row-level security|permission denied|violates/i.test(msg)) return amigavel('Você não tem permissão para fazer isso. Se acha que é um engano, fale com a Raquel.');
     if (/check constraint|too long|value too long/i.test(msg)) return amigavel('O texto passou do tamanho permitido.');
     return amigavel('Algo deu errado. Tente de novo.');
@@ -35,7 +36,7 @@
     try {
       const sb = cliente();
       let q = sb.from('posts')
-        .select('id,tema,texto,foto_url,fixado,criado_em,autor,perfil:perfis(nome,foto_url),comentarios(count),curtidas(count)')
+        .select('id,tema,texto,foto_url,fixado,criado_em,autor,perfil:perfis!posts_autor_fkey(nome,foto_url),comentarios(count),curtidas(count)')
         .order('fixado', { ascending: false })
         .order('criado_em', { ascending: false })
         .range(offset || 0, (offset || 0) + POR_PAGINA - 1);
@@ -74,7 +75,7 @@
   async function comentarios(postId){
     try {
       const { data, error } = await cliente().from('comentarios')
-        .select('id,texto,criado_em,autor,perfil:perfis(nome,foto_url)')
+        .select('id,texto,criado_em,autor,perfil:perfis!comentarios_autor_fkey(nome,foto_url)')
         .eq('post_id', postId).order('criado_em', { ascending: true }).limit(200);
       if (error) throw error;
       return (data || []).map(c => ({ ...c, perfil: c.perfil || {} }));
