@@ -26,6 +26,10 @@ Não é necessário trocar o número `CACHE` em `sw.js` a cada atualização. Tr
 - **Modo escuro**: segue a preferência do aparelho, sem botão.
 - Nos históricos de quiz e flashcards, "Cartas que mais erro" tem um botão que abre uma sessão de flashcards só com elas.
 
+## Jornada
+
+No Início, a lista de módulos virou a **Jornada**: sete capítulos em trilha (três setenários dos Arcanos Maiores: Formar o eu, Encontrar a sombra, Individuação; e as quatro casas de naipe). Um capítulo fecha quando todas as cartas dele estão estudadas e o quiz do capítulo tem 70% ou mais. O capítulo atual aparece em destaque com os botões Estudar (abre Cartas na primeira carta pendente) e Quiz do capítulo (setenários: todas as cartas do capítulo; naipes: o quiz clássico do naipe). Nada trava: qualquer capítulo pode ser aberto. Concluir os setenários e a Jornada inteira dá conquistas.
+
 ## Tiragens como diário e desafio da semana
 
 - Na prática de uma tiragem há dois campos: **Minha pergunta** (antes de sortear) e **O padrão em uma frase** (depois). Os dois ficam gravados na prática salva e aparecem na lista "Minhas práticas". Editar a frase depois de salvar atualiza a prática.
