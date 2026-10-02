@@ -130,5 +130,44 @@
     } catch(e) { throw traduz(e); }
   }
 
-  window.GA_COM = { TEMAS, POR_PAGINA, listar, publicar, comentarios, comentar, curtir, apagarPost, apagarComentario, fixar, bloquear };
+  // ---------- perfil ----------
+  const SELECT_POST='id,tema,texto,foto_url,fixado,criado_em,autor,perfil:perfis!posts_autor_fkey(nome,foto_url),comentarios(count),curtidas(count)';
+  async function marcarCurtidas(sb, posts){
+    if(!posts.length) return posts;
+    const { data, error } = await sb.from('curtidas').select('post_id').eq('user_id', A().uid()).in('post_id', posts.map(p => p.id));
+    if (!error && data) { const set = new Set(data.map(m => m.post_id)); posts.forEach(p => { p.curti = set.has(p.id); }); }
+    return posts;
+  }
+  const mapaPost = p => ({ id: p.id, tema: p.tema, texto: p.texto, foto_url: p.foto_url, fixado: !!p.fixado, criado_em: p.criado_em, autor: p.autor, perfil: p.perfil || {}, nComentarios: conta(p.comentarios), nCurtidas: conta(p.curtidas), curti: false });
+  async function perfilDe(uid){
+    try { const { data, error } = await cliente().from('perfis').select('nome,bio,foto_url').eq('id', uid).maybeSingle(); if (error) throw error; return data || { nome: '', bio: '', foto_url: '' }; }
+    catch(e) { throw traduz(e); }
+  }
+  async function postsDe(uid, { offset, soFoto } = {}){
+    try {
+      const sb = cliente();
+      let q = sb.from('posts').select(SELECT_POST).eq('autor', uid).order('criado_em', { ascending: false }).range(offset || 0, (offset || 0) + POR_PAGINA - 1);
+      if (soFoto) q = q.not('foto_url', 'is', null);
+      const { data, error } = await q; if (error) throw error;
+      const posts = await marcarCurtidas(sb, (data || []).map(mapaPost));
+      return { posts, fim: posts.length < POR_PAGINA };
+    } catch(e) { throw traduz(e); }
+  }
+  async function contagens(uid){
+    try {
+      const sb = cliente();
+      const [a, b] = await Promise.all([
+        sb.from('posts').select('id', { count: 'exact', head: true }).eq('autor', uid),
+        sb.from('curtidas').select('post_id,posts!inner(autor)', { count: 'exact', head: true }).eq('posts.autor', uid)
+      ]);
+      if (a.error) throw a.error;
+      return { posts: a.count || 0, curtidas: b.error ? 0 : (b.count || 0) };
+    } catch(e) { throw traduz(e); }
+  }
+  async function adminUids(){
+    try { const { data, error } = await cliente().rpc('admin_uids'); if (error || !Array.isArray(data)) return []; return data.map(x => typeof x === 'string' ? x : (x && (x.admin_uids || x.id))).filter(Boolean); }
+    catch(e) { return []; }
+  }
+
+  window.GA_COM = { TEMAS, POR_PAGINA, listar, publicar, perfilDe, postsDe, contagens, adminUids, comentarios, comentar, curtir, apagarPost, apagarComentario, fixar, bloquear };
 })();

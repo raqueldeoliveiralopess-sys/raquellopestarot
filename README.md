@@ -117,4 +117,8 @@ Mural único com temas (Estudo de carta, Tiragem, Dúvida, Reflexão) para as as
 - Aluna bloqueada continua lendo, mas não posta nem comenta. Para desbloquear, apague a linha dela em **Table Editor → bloqueadas**.
 - As regras exibidas em "Combinados da roda" ficam em `index.html` (função `comunidadeView`).
 
+### Perfil
+
+A foto no canto superior de cada tela abre o próprio perfil, no estilo Instagram: foto, nome, bio, contadores de posts e curtidas recebidas, botão Editar perfil e os posts da pessoa (lista ou só os com foto, em grade). Tocar no nome ou na foto de quem postou ou comentou abre o perfil dela. O selo "Administradora" depende da função `admin_uids` do banco; se ela não existir, o app segue sem o selo. Para criar, rode no SQL Editor o bloco 10 de `supabase/comunidade.sql`.
+
 Arquivos: `comunidade.js` (leitura e escrita), telas em `index.html`, banco em `supabase/comunidade.sql` (tabelas `posts`, `comentarios`, `curtidas`, `admins`, `bloqueadas`, bucket `comunidade`).

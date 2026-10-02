@@ -64,8 +64,15 @@
     muda({ estado: 'ok' });
     carregarPerfil();
     conferirAdmin();
+    carregarAdminUids();
     puxar();
   }
+  async function carregarAdminUids(){
+    try { if (window.GA_COM && window.GA_COM.adminUids) A.adminUids = new Set(await window.GA_COM.adminUids()); } catch(e) { A.adminUids = new Set(); }
+    A.onChange();
+  }
+  A.adminUids = new Set();
+  A.ehAdminUid = uid => !!uid && A.adminUids.has(uid);
   async function conferirAdmin(){
     try { const { data, error } = await sb.rpc('e_admin'); A.admin = !error && data === true; } catch(e) { A.admin = false; }
     A.onChange();

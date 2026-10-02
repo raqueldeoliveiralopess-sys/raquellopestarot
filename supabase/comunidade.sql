@@ -165,3 +165,11 @@ create policy "comunidade: apagar foto" on storage.objects for delete to authent
 -- insert into public.admins (email) values ('seu-email@exemplo.com') on conflict do nothing;
 
 -- Para desbloquear uma aluna, apague a linha dela em bloqueadas pelo Table Editor.
+
+-- 10) Quem é administradora, por id de usuária (para o selo no perfil e nos posts)
+create or replace function public.admin_uids() returns setof uuid
+language sql stable security definer set search_path = public as $$
+  select u.id from auth.users u join public.admins a on lower(a.email) = lower(u.email);
+$$;
+revoke all on function public.admin_uids() from public;
+grant execute on function public.admin_uids() to authenticated;

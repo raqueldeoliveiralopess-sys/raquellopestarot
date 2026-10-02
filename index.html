@@ -140,6 +140,14 @@ img.rev{transform:rotate(180deg)}
 .avatar.xs{width:30px;height:30px;font-size:14px;border:1px solid var(--line)}
 .cform{display:flex;gap:8px}.cform input{flex:1;min-width:0;min-height:44px;padding:10px 12px;border:1px solid #D9C7B3;border-radius:12px;background:var(--card);font-family:inherit;font-size:16px;color:var(--ink)}
 .cform button{min-height:44px;padding:0 14px;border:none;border-radius:12px;background:var(--wood);color:var(--paper);font-weight:600;font-size:14px}
+.avatar.lg{width:96px;height:96px;font-size:40px;border:1px solid var(--line)}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.pgrid button{aspect-ratio:1;border:none;padding:0;background:var(--sand);border-radius:6px;overflow:hidden}
+.pgrid img{width:100%;height:100%;object-fit:cover;display:block}
+.who button,.cmt button.nm{border:none;background:transparent;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.avbtn{border:none;background:transparent;padding:0;cursor:pointer;display:flex}
+.selo{display:inline-block;padding:3px 9px;border-radius:99px;background:var(--ink);color:var(--pink);font-size:11px;font-weight:600}
+.selo.xs{padding:1px 7px;font-size:10px;margin-left:6px;vertical-align:middle}
 .big{font-size:56px;line-height:1;color:var(--butter)}.big span{font-size:22px;color:var(--paper);opacity:.8}
 </style>
 </head>
@@ -188,6 +196,7 @@ if(!Array.isArray(S.flashHistory)) S.flashHistory=[]; S.flashOpen=null;
 if(!S.srs||typeof S.srs!=='object') S.srs={}; if(!S.srsHoje) S.srsHoje={d:'',n:0}; if(![5,10,20].includes(S.srsNovasDia)) S.srsNovasDia=10;
 S.com={posts:[],carregando:false,erro:'',preparando:false,fim:false,tema:'todos',aberto:null,coments:{},menu:null,combinados:false,draft:{},enviando:false};
 S.rasc={tema:'',texto:'',foto:null,preview:null,erro:'',enviando:false};
+S.pub={uid:null,perfil:null,contagens:null,posts:[],fim:true,carregando:false,erro:'',soFoto:false};
 if(!S.readings) S.readings=[]; if(!Array.isArray(S.quizHistory)) S.quizHistory=[]; S.quizOpen=null; if(!S.spreadVar) S.spreadVar={};
 if(!S.notes) S.notes={};
 function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje,flashHistory:S.flashHistory}})); syncLater(); return true; } catch(e){ return false; } }
@@ -268,7 +277,7 @@ function home(){
   const hint = n===0?'Comece pelos Arcanos Maiores: 22 cartas, a base de tudo.':n<22?'Faltam '+(22-n)+' para fechar os Arcanos Maiores.':n<78?'Faltam '+(78-n)+' cartas para completar o baralho.':'Baralho completo. Agora é treinar com quiz e flashcards.';
   const mods=SUITS.map(su=>{const cs=cardsOf(su.id),d=cs.filter(c=>S.studied[c.id]).length;return `<button class="mod" data-act="lib" data-suit="${su.id}"><div class="g">${ELEMENT_SVG[su.id]}</div><div class="t"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b style="font-size:16px">${su.label}${su.element?` <span style="font-weight:400;font-size:12px;color:var(--muted)">· ${su.element}</span>`:``}</b><span style="font-size:12px;color:var(--muted);white-space:nowrap">${d} / ${cs.length}</span></div><div class="bar"><i style="width:${Math.round(100*d/cs.length)}%"></i></div></div></button>`;}).join('');
   const A=window.GA_AUTH, logged=A&&A.enabled&&A.estado==='ok';
-  return `<div class="stack" style="gap:4px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div class="eyebrow">Grimório Arcano</div>${logged?`<button data-act="go" data-screen="perfil" aria-label="Meu perfil" style="border:none;background:transparent;padding:0;display:flex;align-items:center;gap:8px;color:var(--wood);font-size:13px;font-weight:500">${avatarHtml('sm')}</button>`:''}</div><h1 style="font-size:40px;line-height:1.05">Sua trilha de estudo</h1><p style="color:var(--ink2);margin-top:6px">78 cartas, uma por vez. Estude a ficha, treine com flashcards, confirme no quiz e leia padrões nas tiragens.</p></div>
+  return `<div class="stack" style="gap:4px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div class="eyebrow">Grimório Arcano</div>${logged?`<button data-act="verperfil" data-id="${A.uid()}" aria-label="Meu perfil" style="border:none;background:transparent;padding:0;display:flex;align-items:center;gap:8px;color:var(--wood);font-size:13px;font-weight:500">${avatarHtml('sm')}</button>`:''}</div><h1 style="font-size:40px;line-height:1.05">Sua trilha de estudo</h1><p style="color:var(--ink2);margin-top:6px">78 cartas, uma por vez. Estude a ficha, treine com flashcards, confirme no quiz e leia padrões nas tiragens.</p></div>
   <div class="dark stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="eyebrow" style="color:var(--pink)">Progresso geral</div><div class="serif" style="font-size:26px;color:var(--butter)">${n}<span style="font-size:16px;color:var(--paper);opacity:.8"> / 78</span></div></div><div class="bar" style="height:8px"><i style="width:${Math.round(100*n/78)}%"></i></div><div style="font-size:13px;opacity:.85">${hint}</div></div>
   <div class="grid3"><button class="tile" data-act="go" data-screen="flash">${ICONS.flash}<div><b>Flashcards</b><br><small>${(()=>{const r=resumoSrs('all');return r.due?r.due+' para hoje':r.novasSessao?r.novasSessao+' novas hoje':'Em dia';})()}</small></div></button><button class="tile" data-act="go" data-screen="quiz">${ICONS.quiz}<div><b>Quiz</b><br><small>10 perguntas</small></div></button><button class="tile" data-act="go" data-screen="spreads">${ICONS.spreads}<div><b>Tiragens</b><br><small>${SPREADS.length} métodos</small></div></button></div>
   <div class="stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="font-size:24px">Módulos</h2><span style="font-size:12px;color:var(--muted)">toque para estudar</span></div>${mods}</div>
@@ -278,7 +287,7 @@ function home(){
 function library(){
   const tabs=SUITS.map(su=>`<button class="pill${S.suit===su.id?' on':''}" data-act="suit" data-suit="${su.id}">${su.short}</button>`).join('');
   const rows=cardsOf(S.suit).map(c=>`<button class="row" data-act="card" data-id="${c.id}"><img src="${c.img}" alt="" loading="lazy"><div class="t"><div class="n">${esc(c.name)}${S.studied[c.id]?'<i class="dot"></i>':''}</div><div class="s">Carta ${c.id} · ${esc(c.palavras)}</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`).join('');
-  return `<h1 style="font-size:32px">Cartas</h1><div class="pills">${tabs}</div><div class="stack">${rows}</div>`;
+  return `${tituloComAvatar('Cartas')}<div class="pills">${tabs}</div><div class="stack">${rows}</div>`;
 }
 function cardView(){
   const c=CARDS[S.cardId]||CARDS[0]; const su=SUITS.find(x=>x.id===c.suit)||SUITS[0]; const st=!!S.studied[c.id];
@@ -418,7 +427,7 @@ function flash(){
     ${S.flashHistory[0]&&f.salvo?`<button class="btn ghost" data-act="fhist" data-id="${S.flashHistory[0].id}">${S.flashOpen===S.flashHistory[0].id?'Esconder carta a carta':'Ver carta a carta'}</button>${S.flashOpen===S.flashHistory[0].id?flashDetail(S.flashHistory[0]):''}`:''}
     ${r.novas?`<button class="btn" data-act="fextra">Estudar mais ${Math.min(10,r.novas)} novas agora</button>`:''}<button class="btn ghost" data-act="freset">Voltar</button>`;
   }
-  return `<h1 style="font-size:32px">Flashcards</h1>${body}`;
+  return `${tituloComAvatar('Flashcards')}${body}`;
 }
 const scopeLabel = id => (SCOPES.find(x=>x.id===id)||{label:id}).label;
 function quizDetail(h){
@@ -458,7 +467,7 @@ function quiz(){
     ${h?`<button class="btn ghost" data-act="qhist" data-id="${h.id}">${S.quizOpen===h.id?'Esconder acertos e erros':'Ver acertos e erros'}</button>${S.quizOpen===h.id?quizDetail(h):''}`:''}
     <button class="btn" data-act="qstart">Novo quiz</button><button class="btn ghost" data-act="qreset">Ver histórico e escolher outras cartas</button>`;
   }
-  return `<h1 style="font-size:32px">Quiz</h1>${body}`;
+  return `${tituloComAvatar('Quiz')}${body}`;
 }
 
 // ---------- tiragens ----------
@@ -501,7 +510,7 @@ function peladanSum(sp,pr){
 }
 function spreads(){
   const rows=SPREADS.map(sp=>`<button class="mod" data-act="spread" data-id="${sp.id}"><div class="g serif" style="font-size:22px;color:var(--wood)">${sp.cards}</div><div class="t"><b style="font-size:16px">${esc(sp.name)}</b><div style="font-size:12px;color:var(--muted);line-height:1.35">${esc(sp.tagline)}</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`).join('');
-  return `<div class="stack" style="gap:4px"><h1 style="font-size:32px">Tiragens</h1><p style="color:var(--ink2)">Aqui tiragem não prevê nada. Ela coloca um padrão seu em posições para você enxergar de onde ele vem, como aparece e o que pede. Toda pergunta é sobre você, nunca sobre o outro.</p></div><div class="stack">${rows}</div>${S.readings.length?`<div style="font-size:11px;color:#7A5A4E;text-align:center">${S.readings.length} prática${S.readings.length===1?'':'s'} salva${S.readings.length===1?'':'s'} neste aparelho</div>`:''}`;
+  return `<div class="stack" style="gap:4px">${tituloComAvatar('Tiragens')}<p style="color:var(--ink2)">Aqui tiragem não prevê nada. Ela coloca um padrão seu em posições para você enxergar de onde ele vem, como aparece e o que pede. Toda pergunta é sobre você, nunca sobre o outro.</p></div><div class="stack">${rows}</div>${S.readings.length?`<div style="font-size:11px;color:#7A5A4E;text-align:center">${S.readings.length} prática${S.readings.length===1?'':'s'} salva${S.readings.length===1?'':'s'} neste aparelho</div>`:''}`;
 }
 function spread(){
   const sp=spreadById(S.spreadId), tab=S.spreadTab;
@@ -550,6 +559,8 @@ function practiceView(sp){
 }
 
 // ---------- login e perfil ----------
+function avatarTopo(){ const A=window.GA_AUTH; return logada()?`<button class="avbtn" data-act="verperfil" data-id="${A.uid()}" aria-label="Meu perfil">${avatarHtml('sm')}</button>`:''; }
+function tituloComAvatar(t,extra){ return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h1 style="font-size:32px">${t}</h1><div style="display:flex;align-items:center;gap:10px">${extra||''}${avatarTopo()}</div></div>`; }
 function avatarHtml(cls){
   const A=window.GA_AUTH, p=A&&A.perfil, nome=(p&&p.nome)||(A&&A.email)||'?';
   return `<div class="avatar ${cls||''}">${p&&p.foto_url?`<img src="${esc(p.foto_url)}" alt="">`:esc(nome.trim().charAt(0).toUpperCase())}</div>`;
@@ -570,12 +581,12 @@ function gateView(){
   else body=`${err||'<div class="err">Algo deu errado.</div>'}<button class="btn" data-act="ga-denovo">Tentar de novo</button>${A.user?`<button class="link" data-act="ga-sair" style="align-self:center">Sair</button>`:''}`;
   return `<div class="gate">${head}${body}</div>`;
 }
-function perfilView(){
+function editarPerfilView(){
   const A=window.GA_AUTH; if(!A||!A.enabled||A.estado!=='ok') return home();
   const p=A.perfil||{}, d=S.pfDraft||(S.pfDraft={nome:p.nome||'',bio:p.bio||''});
   const sync={ok:'Progresso salvo na nuvem',enviando:'Salvando na nuvem…',pendente:'Sem conexão: salvo neste aparelho, sobe para a nuvem quando a internet voltar'}[A.sync]||'';
-  return `<div style="display:flex;align-items:center;margin:-8px -8px 0"><button data-act="go" data-screen="home" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;border:none;background:transparent;color:var(--wood);font-size:15px">${ICONS.left}Início</button></div>
-  <h1 style="font-size:32px">Meu perfil</h1>
+  return `<div style="display:flex;align-items:center;margin:-8px -8px 0"><button data-act="verperfil" data-id="${A.uid()}" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;border:none;background:transparent;color:var(--wood);font-size:15px">${ICONS.left}Meu perfil</button></div>
+  <h1 style="font-size:32px">Editar perfil</h1>
   <div style="display:flex;gap:16px;align-items:center">${S.pfPreview?`<div class="avatar"><img src="${S.pfPreview}" alt=""></div>`:avatarHtml('')}<div class="stack" style="gap:4px;min-width:0"><label class="btn ghost" style="display:flex;align-items:center;justify-content:center;padding:0 16px;cursor:pointer">${p.foto_url||S.pfPreview?'Trocar foto':'Escolher foto'}<input type="file" accept="image/*" data-pf-foto style="display:none"></label><div style="font-size:12px;color:var(--muted)">A foto fica quadrada e pequena.</div></div></div>
   <div class="field"><label for="pf-nome">Nome</label><input id="pf-nome" data-pf="nome" maxlength="60" value="${esc(d.nome)}" placeholder="Como quer ser chamada"></div>
   <div class="field"><label for="pf-bio">Sobre você</label><textarea id="pf-bio" data-pf="bio" maxlength="160" placeholder="Há quanto tempo estuda tarot, o que te trouxe aqui…">${esc(d.bio)}</textarea><div style="font-size:12px;color:var(--muted);text-align:right">${(d.bio||'').length}/160</div></div>
@@ -610,14 +621,14 @@ function comentariosHtml(p){
   let corpo='';
   if(!lista) corpo='<div style="font-size:13px;color:var(--muted)">Carregando…</div>';
   else if(lista.erro) corpo=`<div class="err">${esc(lista.erro)}</div>`;
-  else corpo=lista.length?lista.map(c=>`<div class="cmt">${avatarDe(c.perfil,'xs')}<div class="bd"><b>${esc(c.perfil.nome||'Assinante')}</b><small>${tempo(c.criado_em)}</small><p>${esc(c.texto)}</p>${(c.autor===A.uid()||A.admin)?`<button class="link" data-act="capagarc" data-id="${c.id}" data-post="${p.id}" style="min-height:28px;padding:2px 0;font-size:12px;color:var(--red)">Apagar</button>`:''}</div></div>`).join(''):'<div style="font-size:13px;color:var(--muted)">Ninguém comentou ainda. Abra a conversa.</div>';
+  else corpo=lista.length?lista.map(c=>`<div class="cmt"><button class="avbtn" data-act="verperfil" data-id="${c.autor}" aria-label="Ver perfil">${avatarDe(c.perfil,'xs')}</button><div class="bd"><button class="nm" data-act="verperfil" data-id="${c.autor}"><b>${esc(c.perfil.nome||'Assinante')}</b></button><small>${tempo(c.criado_em)}</small><p>${esc(c.texto)}</p>${(c.autor===A.uid()||A.admin)?`<button class="link" data-act="capagarc" data-id="${c.id}" data-post="${p.id}" style="min-height:28px;padding:2px 0;font-size:12px;color:var(--red)">Apagar</button>`:''}</div></div>`).join(''):'<div style="font-size:13px;color:var(--muted)">Ninguém comentou ainda. Abra a conversa.</div>';
   return `<div class="cmts">${corpo}<form class="cform" data-form="comentar" data-id="${p.id}"><input id="cmt-${p.id}" data-cdraft="${p.id}" maxlength="1000" placeholder="Escreva um comentário" value="${esc(S.com.draft[p.id]||'')}" autocomplete="off"><button ${S.com.enviando?'disabled style="opacity:.6"':''}>Enviar</button></form></div>`;
 }
 function postHtml(p){
   const A=window.GA_AUTH, minha=p.autor===A.uid(), pode=minha||A.admin;
   const menu=S.com.menu===p.id?`<div class="pmenu">${A.admin?`<button data-act="cfixar" data-id="${p.id}">${p.fixado?'Desafixar do topo':'Fixar no topo'}</button>`:''}${pode?`<button class="danger" data-act="capagar" data-id="${p.id}">Apagar post</button>`:''}${A.admin&&!minha?`<button class="danger" data-act="cbloq" data-id="${p.id}">Bloquear esta aluna de postar</button>`:''}</div>`:'';
-  return `<article class="post${p.fixado?' fix':''}">
-    <div class="hd">${avatarDe(p.perfil,'sm')}<div class="who"><b>${esc(p.perfil.nome||'Assinante')}</b><small>${tempo(p.criado_em)}</small></div>${pode?`<button class="iconbtn" data-act="cmenu" data-id="${p.id}" aria-label="Opções do post" style="border:none;background:transparent">${ICONS.dots}</button>`:''}</div>
+  return `<article class="post${p.fixado?' fix':''}" id="post-${p.id}">
+    <div class="hd"><button class="avbtn" data-act="verperfil" data-id="${p.autor}" aria-label="Ver perfil">${avatarDe(p.perfil,'sm')}</button><div class="who"><button data-act="verperfil" data-id="${p.autor}"><b>${esc(p.perfil.nome||'Assinante')}</b>${A.ehAdminUid(p.autor)?'<span class="selo xs">Admin</span>':''}</button><small>${tempo(p.criado_em)}</small></div>${pode?`<button class="iconbtn" data-act="cmenu" data-id="${p.id}" aria-label="Opções do post" style="border:none;background:transparent">${ICONS.dots}</button>`:''}</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap">${p.fixado?'<span class="fixtag">Aviso</span>':''}<span class="tchip">${esc(temaLabel(p.tema))}</span></div>
     ${menu}
     <div class="tx">${esc(p.texto)}</div>
@@ -635,7 +646,7 @@ function comunidadeView(){
   else if(!c.posts.length&&c.carregando) lista='<p style="text-align:center;color:var(--muted)">Carregando a roda…</p>';
   else if(!c.posts.length) lista=`<div class="box" style="text-align:center;gap:6px"><b class="serif" style="font-size:22px">A roda está esperando você</b><p style="font-size:14px;color:var(--ink2)">${c.tema==='todos'?'Ninguém postou ainda. Que tal abrir a conversa?':'Nenhum post neste tema ainda.'}</p></div>`;
   else lista=c.posts.map(postHtml).join('')+(c.fim?'':`<button class="btn ghost" data-act="cmais" ${c.carregando?'disabled style="opacity:.6"':''}>${c.carregando?'Carregando…':'Carregar mais'}</button>`)+(c.erro?`<div class="err">${esc(c.erro)}</div>`:'');
-  return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h1 style="font-size:32px">Comunidade</h1><button class="link" data-act="catual" ${c.carregando?'disabled':''}>${c.carregando?'Atualizando…':'Atualizar'}</button></div>
+  return `${tituloComAvatar('Comunidade',`<button class="link" data-act="catual" ${c.carregando?'disabled':''}>${c.carregando?'Atualizando…':'Atualizar'}</button>`)}
   <p style="color:var(--ink2);font-size:14px;margin-top:-8px">A roda das assinantes do Grimório. Compartilhe estudos, tiragens, dúvidas e reflexões.</p>
   ${comb}
   <button class="btn" data-act="cnovo" ${c.preparando?'disabled style="opacity:.6"':''}>Escrever post</button>
@@ -654,16 +665,52 @@ function escreverView(){
   <button class="btn" data-act="rpublicar" ${r.enviando?'disabled style="opacity:.6"':''}>${r.enviando?'Publicando…':'Publicar'}</button>`;
 }
 
+// ---------- perfil público ----------
+function achaPost(id){ return S.com.posts.find(x=>x.id===id)||S.pub.posts.find(x=>x.id===id)||null; }
+function removePost(id){ S.com.posts=S.com.posts.filter(x=>x.id!==id); S.pub.posts=S.pub.posts.filter(x=>x.id!==id); if(S.pub.contagens&&S.pub.uid) S.pub.contagens.posts=Math.max(0,S.pub.contagens.posts-1); }
+async function pubCarregar(uid, reset){
+  if(!COM) return; const P=S.pub;
+  if(reset){ Object.assign(P,{uid,perfil:null,contagens:null,posts:[],fim:true,carregando:true,erro:''}); S.com.aberto=null; S.com.menu=null; render();
+    const me=window.GA_AUTH.uid();
+    const [perfil,cont,lista]=await Promise.allSettled([uid===me&&window.GA_AUTH.perfil?Promise.resolve(window.GA_AUTH.perfil):COM.perfilDe(uid),COM.contagens(uid),COM.postsDe(uid,{offset:0,soFoto:P.soFoto})]);
+    if(P.uid!==uid) return;
+    P.perfil=perfil.status==='fulfilled'?perfil.value:{nome:'',bio:'',foto_url:''};
+    P.contagens=cont.status==='fulfilled'?cont.value:null;
+    if(lista.status==='fulfilled'){ P.posts=lista.value.posts; P.fim=lista.value.fim; } else P.erro=lista.reason.message;
+  } else {
+    P.carregando=true; render();
+    try{ const r=await COM.postsDe(uid,{offset:P.posts.length,soFoto:P.soFoto}); P.posts=P.posts.concat(r.posts); P.fim=r.fim; }catch(e){ P.erro=e.message; }
+  }
+  P.carregando=false; render();
+}
+function perfilPubView(){
+  if(!logada()) return home();
+  const A=window.GA_AUTH, P=S.pub, me=A.uid(), minha=P.uid===me, p=P.perfil||{}, nome=(p.nome||'').trim()||(minha?(A.email||'Você'):'Assinante');
+  const topo=`<div style="display:flex;justify-content:space-between;align-items:center;margin:-8px -8px 0"><button data-act="go" data-screen="${S.pubVolta||'home'}" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;border:none;background:transparent;color:var(--wood);font-size:15px">${ICONS.left}Voltar</button>${minha?`<button class="link" data-act="go" data-screen="editarPerfil">Editar perfil</button>`:''}</div>`;
+  const cab=`<div style="display:flex;gap:16px;align-items:center">${avatarDe(p,'lg')}<div class="stack" style="gap:6px;min-width:0;flex:1"><div class="serif" style="font-size:26px;line-height:1.05;overflow-wrap:anywhere">${esc(nome)}</div>${A.ehAdminUid(P.uid)?'<span class="selo" style="align-self:flex-start">Administradora · Grimório Arcano</span>':''}<div style="display:flex;gap:18px"><div><b style="font-size:18px">${P.contagens?P.contagens.posts:'–'}</b><div style="font-size:12px;color:var(--muted)">posts</div></div><div><b style="font-size:18px">${P.contagens?P.contagens.curtidas:'–'}</b><div style="font-size:12px;color:var(--muted)">curtidas</div></div></div></div></div>
+  ${p.bio?`<p style="font-size:14px;line-height:1.5;white-space:pre-wrap">${esc(p.bio)}</p>`:minha?`<p style="font-size:14px;color:var(--muted)">Você ainda não escreveu sua bio. <button class="link" data-act="go" data-screen="editarPerfil" style="min-height:auto;padding:0">Escrever agora</button></p>`:''}
+  ${minha?`<button class="btn ghost" data-act="go" data-screen="editarPerfil">Editar perfil</button>`:''}`;
+  const pills=`<div class="pills">${[['todos','Todos os posts'],['foto','Com foto']].map(([id,l])=>`<button class="pill${(P.soFoto?'foto':'todos')===id?' on':''}" data-act="pubtab" data-id="${id}">${l}</button>`).join('')}</div>`;
+  let corpo='';
+  if(P.carregando&&!P.posts.length) corpo='<p style="text-align:center;color:var(--muted)">Carregando…</p>';
+  else if(P.erro&&!P.posts.length) corpo=`<div class="err">${esc(P.erro)}</div>`;
+  else if(!P.posts.length) corpo=`<div class="box" style="text-align:center;gap:6px"><p style="font-size:14px;color:var(--ink2)">${P.soFoto?'Nenhum post com foto ainda.':minha?'Você ainda não postou na Comunidade.':'Nenhum post ainda.'}</p>${minha&&!P.soFoto?'<button class="btn" data-act="cnovo">Escrever meu primeiro post</button>':''}</div>`;
+  else if(P.soFoto) corpo=`<div class="pgrid">${P.posts.map(x=>`<button data-act="pubabrir" data-id="${x.id}" aria-label="Abrir post"><img src="${esc(x.foto_url)}" alt="" loading="lazy"></button>`).join('')}</div>`;
+  else corpo=`<div class="stack" style="gap:12px">${P.posts.map(postHtml).join('')}</div>`;
+  const mais=P.posts.length&&!P.fim?`<button class="btn ghost" data-act="pubmais" ${P.carregando?'disabled style="opacity:.6"':''}>${P.carregando?'Carregando…':'Carregar mais'}</button>`:'';
+  return `${topo}${cab}${pills}${corpo}${mais}`;
+}
+
 let lastKey=null;
 function render(){
   const main=document.getElementById('main');
-  const key=S.screen+(S.screen==='card'?':'+S.cardId:S.screen==='library'?':'+S.suit:S.screen==='spread'?':'+S.spreadId+':'+S.spreadTab:'');
+  const key=S.screen+(S.screen==='card'?':'+S.cardId:S.screen==='library'?':'+S.suit:S.screen==='spread'?':'+S.spreadId+':'+S.spreadTab:S.screen==='perfil'?':'+S.pub.uid+':'+(S.pub.soFoto?'f':'t'):'');
   const keep = key===lastKey ? main.scrollTop : 0;
   const foco=document.activeElement&&main.contains(document.activeElement)&&document.activeElement.id?{id:document.activeElement.id,ini:document.activeElement.selectionStart,fim:document.activeElement.selectionEnd}:null;
   const A=window.GA_AUTH, gated=A&&A.enabled&&A.estado!=='ok';
   document.getElementById('nav').style.display=gated?'none':'';
   if(gated){ main.innerHTML=gateView(); lastKey='gate'; return; }
-  main.innerHTML = S.screen==='comunidade'?comunidadeView():S.screen==='escrever'?escreverView():S.screen==='perfil'?perfilView():S.screen==='home'?home():S.screen==='library'?library():S.screen==='card'?cardView():S.screen==='flash'?flash():S.screen==='spreads'?spreads():S.screen==='spread'?spread():quiz();
+  main.innerHTML = S.screen==='comunidade'?comunidadeView():S.screen==='escrever'?escreverView():S.screen==='perfil'?perfilPubView():S.screen==='editarPerfil'?editarPerfilView():S.screen==='home'?home():S.screen==='library'?library():S.screen==='card'?cardView():S.screen==='flash'?flash():S.screen==='spreads'?spreads():S.screen==='spread'?spread():quiz();
   main.scrollTop=keep; lastKey=key;
   if(foco){ const el=document.getElementById(foco.id); if(el){ el.focus({preventScroll:true}); try{ if(foco.ini!=null) el.setSelectionRange(foco.ini,foco.fim); }catch(e){} } }
   const active = S.screen==='card'?'library':S.screen==='spread'?'spreads':S.screen==='escrever'?'comunidade':S.screen;
@@ -686,7 +733,7 @@ document.getElementById('app').addEventListener('submit',e=>{
   else if(f.dataset.form==='comentar'){
     const id=+f.dataset.id, txt=(S.com.draft[id]||'').trim(); if(!txt||S.com.enviando) return;
     S.com.enviando=true; render();
-    COM.comentar(id,txt).then(async()=>{ S.com.draft[id]=''; const p=S.com.posts.find(x=>x.id===id); if(p) p.nComentarios++; try{ S.com.coments[id]=await COM.comentarios(id); }catch(e){} })
+    COM.comentar(id,txt).then(async()=>{ S.com.draft[id]=''; const p=achaPost(id); if(p) p.nComentarios++; try{ S.com.coments[id]=await COM.comentarios(id); }catch(e){} })
       .catch(err=>alert(err.message)).finally(()=>{ S.com.enviando=false; render(); });
   }
 });
@@ -708,7 +755,7 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='ga-trocar') window.GA_AUTH.trocarEmail();
   else if(a==='ga-denovo') window.GA_AUTH.tentarDeNovo();
   else if(a==='ga-sair'){ if(window.GA_AUTH.estado!=='ok'||confirm('Sair da sua conta neste aparelho?')) window.GA_AUTH.sair(); }
-  else if(a==='pf-salvar'){ const A=window.GA_AUTH, d=S.pfDraft||{}; A.salvarPerfil({nome:d.nome,bio:d.bio,foto:S.pfFile}).then(ok=>{ if(ok){ S.pfFile=null; if(S.pfPreview){URL.revokeObjectURL(S.pfPreview);S.pfPreview=null;} S.pfSaved=true; S.pfDraft=null; render(); } }); }
+  else if(a==='pf-salvar'){ const A=window.GA_AUTH, d=S.pfDraft||{}; A.salvarPerfil({nome:d.nome,bio:d.bio,foto:S.pfFile}).then(ok=>{ if(ok){ if(S.pub.uid===A.uid()) S.pub.perfil=A.perfil; S.pfFile=null; if(S.pfPreview){URL.revokeObjectURL(S.pfPreview);S.pfPreview=null;} S.pfSaved=true; S.pfDraft=null; render(); } }); }
   else if(a==='go'&&b.dataset.screen==='comunidade'){ set({screen:'comunidade'}); comCarregar(true); }
   else if(a==='ctema'){ S.com.tema=id; comCarregar(true); }
   else if(a==='catual') comCarregar(true);
@@ -718,25 +765,25 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='cmenu'){ S.com.menu=S.com.menu===+id?null:+id; render(); }
   else if(a==='ccoment') comAbrirComentarios(+id);
   else if(a==='ccurtir'){
-    const p=S.com.posts.find(x=>x.id===+id); if(!p) return; const liga=!p.curti;
+    const p=achaPost(+id); if(!p) return; const liga=!p.curti;
     p.curti=liga; p.nCurtidas=Math.max(0,(p.nCurtidas||0)+(liga?1:-1)); render();
     COM.curtir(p.id,liga).catch(err=>{ p.curti=!liga; p.nCurtidas=Math.max(0,p.nCurtidas+(liga?-1:1)); render(); alert(err.message); });
   }
   else if(a==='capagar'){
-    const p=S.com.posts.find(x=>x.id===+id); if(!p||!confirm('Apagar este post? Os comentários dele também somem.')) return;
-    COM.apagarPost(p).then(()=>{ S.com.posts=S.com.posts.filter(x=>x.id!==p.id); S.com.menu=null; render(); }).catch(err=>alert(err.message));
+    const p=achaPost(+id); if(!p||!confirm('Apagar este post? Os comentários dele também somem.')) return;
+    COM.apagarPost(p).then(()=>{ removePost(p.id); S.com.menu=null; render(); }).catch(err=>alert(err.message));
   }
   else if(a==='cfixar'){
-    const p=S.com.posts.find(x=>x.id===+id); if(!p) return;
-    COM.fixar(p.id,!p.fixado).then(()=>comCarregar(true)).catch(err=>alert(err.message));
+    const p=achaPost(+id); if(!p) return;
+    COM.fixar(p.id,!p.fixado).then(()=>{ p.fixado=!p.fixado; S.com.menu=null; if(S.screen==='perfil') render(); else comCarregar(true); }).catch(err=>alert(err.message));
   }
   else if(a==='cbloq'){
-    const p=S.com.posts.find(x=>x.id===+id); if(!p||!confirm('Bloquear '+(p.perfil.nome||'esta aluna')+'? Ela continua lendo, mas não consegue mais postar nem comentar.')) return;
+    const p=achaPost(+id); if(!p||!confirm('Bloquear '+(p.perfil.nome||'esta aluna')+'? Ela continua lendo, mas não consegue mais postar nem comentar.')) return;
     COM.bloquear(p.autor).then(()=>{ S.com.menu=null; render(); alert('Aluna bloqueada. Para desbloquear, apague a linha dela na tabela bloqueadas do Supabase.'); }).catch(err=>alert(err.message));
   }
   else if(a==='capagarc'){
     if(!confirm('Apagar este comentário?')) return; const pid=+b.dataset.post;
-    COM.apagarComentario(+id).then(()=>{ const l=S.com.coments[pid]; if(Array.isArray(l)) S.com.coments[pid]=l.filter(c=>c.id!==+id); const p=S.com.posts.find(x=>x.id===pid); if(p) p.nComentarios=Math.max(0,p.nComentarios-1); render(); }).catch(err=>alert(err.message));
+    COM.apagarComentario(+id).then(()=>{ const l=S.com.coments[pid]; if(Array.isArray(l)) S.com.coments[pid]=l.filter(c=>c.id!==+id); const p=achaPost(pid); if(p) p.nComentarios=Math.max(0,p.nComentarios-1); render(); }).catch(err=>alert(err.message));
   }
   else if(a==='rtema'){ S.rasc.tema=id; S.rasc.erro=''; render(); }
   else if(a==='rfotox'){ if(S.rasc.preview) URL.revokeObjectURL(S.rasc.preview); S.rasc.foto=null; S.rasc.preview=null; render(); }
@@ -751,7 +798,11 @@ document.getElementById('app').addEventListener('click',e=>{
       set({screen:'comunidade'}); document.getElementById('main').scrollTop=0; comCarregar(true);
     }).catch(err=>{ r.enviando=false; r.erro=err.message; render(); });
   }
-  else if(a==='go'&&b.dataset.screen==='perfil'){ S.pfDraft=null; S.pfSaved=false; set({screen:'perfil'}); }
+  else if(a==='go'&&b.dataset.screen==='editarPerfil'){ S.pfDraft=null; S.pfSaved=false; set({screen:'editarPerfil'}); document.getElementById('main').scrollTop=0; }
+  else if(a==='verperfil'){ if(!logada()) return; const uid=id; if(S.screen!=='perfil'&&S.screen!=='editarPerfil') S.pubVolta=S.screen==='escrever'?'comunidade':S.screen; set({screen:'perfil'}); document.getElementById('main').scrollTop=0; pubCarregar(uid,true); }
+  else if(a==='pubtab'){ S.pub.soFoto=id==='foto'; pubCarregar(S.pub.uid,true); }
+  else if(a==='pubmais') pubCarregar(S.pub.uid,false);
+  else if(a==='pubabrir'){ const pid=+id; S.pub.soFoto=false; pubCarregar(S.pub.uid,true).then(()=>{ if(!S.pub.posts.some(x=>x.id===pid)) return; comAbrirComentarios(pid); const el=document.getElementById('post-'+pid); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }); }
   else if(a==='go') set({screen:b.dataset.screen});
   else if(a==='lib') set({screen:'library',suit:b.dataset.suit});
   else if(a==='suit') set({suit:b.dataset.suit});
@@ -812,7 +863,7 @@ if(window.GA_AUTH && window.GA_AUTH.enabled){
     },
     limparLocal:()=>{ resetLocal(); S.screen='home'; lastSent=null; try{ localStorage.removeItem('ga-dono'); }catch(e){} persist(); },
     onChange:()=>{
-      const k=[A.estado,A.erro,A.ocupado,A.admin,A.perfil&&JSON.stringify(A.perfil)].join('|');
+      const k=[A.estado,A.erro,A.ocupado,A.admin,A.adminUids&&A.adminUids.size,A.perfil&&JSON.stringify(A.perfil)].join('|');
       const typing=document.activeElement&&/INPUT|TEXTAREA/.test(document.activeElement.tagName)&&A.estado==='ok';
       if(k!==authKey&&!typing){ authKey=k; render(); }
       const st=document.getElementById('sync-status'); if(st) st.textContent={ok:'Progresso salvo na nuvem',enviando:'Salvando na nuvem…',pendente:'Sem conexão: salvo neste aparelho, sobe para a nuvem quando a internet voltar'}[A.sync]||'';
