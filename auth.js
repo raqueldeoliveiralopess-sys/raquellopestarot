@@ -24,7 +24,7 @@
     modo,
     enabled: modo !== 'desligado' && !!CFG.supabaseUrl && !!CFG.supabaseAnonKey,
     estado: 'carregando',       // carregando | email | codigo | sem-acesso | ok | erro
-    email: '', user: null, perfil: null, erro: '', ocupado: false, sync: 'ok', // sync: ok | enviando | pendente
+    email: '', user: null, perfil: null, admin: false, erro: '', ocupado: false, sync: 'ok', // sync: ok | enviando | pendente
     linkAssinatura: CFG.linkAssinatura || '',
     onChange: () => {}, getData: () => ({}), applyData: () => {}, limparLocal: () => {},
   };
@@ -63,7 +63,12 @@
     if (!liberado) return muda({ estado: 'sem-acesso' });
     muda({ estado: 'ok' });
     carregarPerfil();
+    conferirAdmin();
     puxar();
+  }
+  async function conferirAdmin(){
+    try { const { data, error } = await sb.rpc('e_admin'); A.admin = !error && data === true; } catch(e) { A.admin = false; }
+    A.onChange();
   }
 
   // ---------- sincronização ----------
@@ -101,19 +106,24 @@
       muda({ perfil: data || { nome: '', bio: '', foto_url: '' } });
     } catch(e) { if (!A.perfil) muda({ perfil: { nome: '', bio: '', foto_url: '' } }); }
   }
-  function reduzirFoto(file){
+  // Reduz a foto no aparelho antes de subir. quadrado: corta no centro (avatar); senão mantém a proporção.
+  function reduzirFoto(file, opt){
+    const o = Object.assign({ lado: 256, quadrado: true, qualidade: 0.85 }, opt || {});
     return new Promise((ok, falha) => {
       const img = new Image(), url = URL.createObjectURL(file);
       img.onload = () => {
-        const L = 256, c = document.createElement('canvas'); c.width = c.height = L;
-        const s = Math.min(img.width, img.height), x = (img.width - s) / 2, y = (img.height - s) / 2;
-        c.getContext('2d').drawImage(img, x, y, s, s, 0, 0, L, L); URL.revokeObjectURL(url);
-        c.toBlob(b => b ? ok(b) : falha(new Error('foto')), 'image/jpeg', 0.85);
+        const c = document.createElement('canvas'); let sx = 0, sy = 0, sw = img.width, sh = img.height, dw, dh;
+        if (o.quadrado) { const m = Math.min(sw, sh); sx = (sw - m) / 2; sy = (sh - m) / 2; sw = sh = m; dw = dh = Math.min(o.lado, m); }
+        else { const f = Math.min(1, o.lado / Math.max(sw, sh)); dw = Math.round(sw * f); dh = Math.round(sh * f); }
+        c.width = dw; c.height = dh;
+        c.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, dw, dh); URL.revokeObjectURL(url);
+        c.toBlob(b => b ? ok(b) : falha(new Error('foto')), 'image/jpeg', o.qualidade);
       };
       img.onerror = () => { URL.revokeObjectURL(url); falha(new Error('Não deu para ler essa foto.')); };
       img.src = url;
     });
   }
+  A.reduzirFoto = reduzirFoto;
   A.salvarPerfil = async ({ nome, bio, foto }) => {
     muda({ ocupado: true, erro: '' });
     let etapa = 'perfil';
@@ -171,7 +181,7 @@
     try { await sb.auth.signOut(); } catch(e) {}
     gravarCache(null);
     A.limparLocal();
-    muda({ estado: 'email', user: null, perfil: null, erro: '' });
+    muda({ estado: 'email', user: null, perfil: null, admin: false, erro: '' });
   };
 
   A.iniciar = async (hooks) => {
@@ -190,5 +200,7 @@
     }
   };
 
+  A.cliente = () => sb;
+  A.uid = () => A.user && A.user.id;
   window.GA_AUTH = A;
 })();

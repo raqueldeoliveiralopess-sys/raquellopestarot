@@ -92,3 +92,27 @@ Para testar sem afetar as alunas, abra o app com `?modo=login` no fim do endere�
 Status que liberam o acesso: `ativa` e `atrasada` (atraso de pagamento ainda não bloqueia). `cancelada`, `reembolsada` e `chargeback` bloqueiam. Sem internet, o app continua liberado por `diasOffline` dias depois da última conferência.
 
 Ao sair da conta, o progresso continua na nuvem e é apagado do aparelho. Se outra pessoa entrar no mesmo aparelho, os dados não se misturam.
+
+## Comunidade
+
+Mural único com temas (Estudo de carta, Tiragem, Dúvida, Reflexão, Achadinho) para as assinantes, com comentários, curtidas e fotos. A aba **Comunidade** só aparece para quem está logada.
+
+### Ligar
+
+1. No Supabase, em **SQL Editor**, cole e rode `supabase/comunidade.sql` (depois do `schema.sql`). Até rodar, a aba mostra "A comunidade ainda está sendo preparada".
+2. Torne-se administradora, trocando pelo seu e-mail:
+
+   ```sql
+   insert into public.admins (email) values ('seu-email@exemplo.com') on conflict do nothing;
+   ```
+
+3. Saia e entre de novo no app para o poder de administradora valer.
+
+### Moderação
+
+- Administradora vê o menu de três pontos em todo post: **Fixar no topo** (vira "Aviso"), **Apagar post** e **Bloquear esta aluna de postar**. Em comentários de qualquer pessoa aparece **Apagar**.
+- Cada aluna apaga só os próprios posts e comentários.
+- Aluna bloqueada continua lendo, mas não posta nem comenta. Para desbloquear, apague a linha dela em **Table Editor → bloqueadas**.
+- As regras exibidas em "Combinados da roda" ficam em `index.html` (função `comunidadeView`).
+
+Arquivos: `comunidade.js` (leitura e escrita), telas em `index.html`, banco em `supabase/comunidade.sql` (tabelas `posts`, `comentarios`, `curtidas`, `admins`, `bloqueadas`, bucket `comunidade`).
