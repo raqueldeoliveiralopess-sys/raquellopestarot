@@ -115,13 +115,16 @@
   }
   A.salvarPerfil = async ({ nome, bio, foto }) => {
     muda({ ocupado: true, erro: '' });
+    let etapa = 'perfil';
     try {
       let foto_url = A.perfil && A.perfil.foto_url || '';
       if (foto) {
+        etapa = 'foto';
         const blob = await reduzirFoto(foto), caminho = A.user.id + '/avatar.jpg';
         const { error } = await sb.storage.from('avatares').upload(caminho, blob, { upsert: true, contentType: 'image/jpeg' });
         if (error) throw error;
         foto_url = sb.storage.from('avatares').getPublicUrl(caminho).data.publicUrl + '?v=' + Date.now();
+        etapa = 'perfil';
       }
       const perfil = { id: A.user.id, nome: (nome || '').trim().slice(0, 60), bio: (bio || '').trim().slice(0, 160), foto_url, atualizado_em: new Date().toISOString() };
       const { error } = await sb.from('perfis').upsert(perfil);
@@ -129,7 +132,14 @@
       muda({ perfil, ocupado: false });
       return true;
     } catch(e) {
-      muda({ ocupado: false, erro: offline(e) ? 'Sem internet. Tente de novo quando conectar.' : (e.message || 'Não foi possível salvar.') });
+      console.error('Erro ao salvar ' + etapa + ':', e);
+      const msg = String(e && (e.message || e.error) || '');
+      let erro;
+      if (offline(e)) erro = 'Sem internet. Tente de novo quando conectar.';
+      else if (/row-level security|violates|unauthorized|403/i.test(msg)) erro = etapa === 'foto' ? 'Não foi possível enviar a foto por uma permissão do servidor. Tente salvar sem a foto e avise a Raquel.' : 'Não foi possível salvar o perfil por uma permissão do servidor. Avise a Raquel.';
+      else if (etapa === 'foto') erro = /size|large|grande/i.test(msg) ? 'Essa foto é grande demais. Escolha outra.' : 'Não foi possível enviar a foto. Tente outra imagem.';
+      else erro = 'Não foi possível salvar o perfil. Tente de novo.';
+      muda({ ocupado: false, erro });
       return false;
     }
   };
