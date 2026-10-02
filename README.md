@@ -2,7 +2,7 @@
 
 App de estudo das 78 cartas do tarot (fichas, flashcards com repetição espaçada, quiz e tiragens para leitura de padrão).
 
-Os flashcards seguem o modelo do Anki (SM-2 simplificado): cada carta tem uma data de revisão; a aluna responde Errei, Difícil, Bom ou Fácil e o intervalo cresce ou volta ao começo. Limite de cartas novas por dia (5, 10 ou 20). O agendamento fica em `S.srs`, entra no backup e na nuvem. PWA: pode ser adicionado à tela inicial do celular e funciona offline.
+Os flashcards seguem o modelo do Anki (SM-2 simplificado): cada carta tem uma data de revisão; a aluna responde Errei, Difícil, Bom ou Fácil e o intervalo cresce ou volta ao começo. Limite de cartas novas por dia (5, 10 ou 20). Cada sessão fica registrada em "Meu histórico" na aba Flashcards, com as respostas carta a carta, as cartas mais erradas e os dias seguidos de estudo. Agendamento (`S.srs`) e histórico (`S.flashHistory`) entram no backup e na nuvem. PWA: pode ser adicionado à tela inicial do celular e funciona offline.
 
 ## Como atualizar
 

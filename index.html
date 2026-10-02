@@ -183,13 +183,14 @@ const ICONS = {
 
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem('tarot-estudo') || '{}'); } catch (e) { saved = {}; }
-const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[],quizHistory:[],quizOpen:null,srs:{},srsNovasDia:10,srsHoje:{d:'',n:0}}, saved.persist || {});
+const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[],quizHistory:[],quizOpen:null,srs:{},srsNovasDia:10,srsHoje:{d:'',n:0},flashHistory:[],flashOpen:null}, saved.persist || {});
+if(!Array.isArray(S.flashHistory)) S.flashHistory=[]; S.flashOpen=null;
 if(!S.srs||typeof S.srs!=='object') S.srs={}; if(!S.srsHoje) S.srsHoje={d:'',n:0}; if(![5,10,20].includes(S.srsNovasDia)) S.srsNovasDia=10;
 S.com={posts:[],carregando:false,erro:'',preparando:false,fim:false,tema:'todos',aberto:null,coments:{},menu:null,combinados:false,draft:{},enviando:false};
 S.rasc={tema:'',texto:'',foto:null,preview:null,erro:'',enviando:false};
 if(!S.readings) S.readings=[]; if(!Array.isArray(S.quizHistory)) S.quizHistory=[]; S.quizOpen=null; if(!S.spreadVar) S.spreadVar={};
 if(!S.notes) S.notes={};
-function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje}})); syncLater(); return true; } catch(e){ return false; } }
+function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje,flashHistory:S.flashHistory}})); syncLater(); return true; } catch(e){ return false; } }
 let lastSent=null;
 function syncLater(){ const A=window.GA_AUTH; if(!A||!A.enabled||A.estado!=='ok') return; const str=JSON.stringify(backupData()); if(str===lastSent) return; lastSent=str; A.agendarEnvio(); }
 function exportBackup(){
@@ -197,7 +198,7 @@ function exportBackup(){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='estudo-tarot-backup-'+new Date().toISOString().slice(0,10)+'.json'; document.body.appendChild(a); a.click(); a.remove();
 }
-function backupData(){ return {studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje}; }
+function backupData(){ return {studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje,flashHistory:S.flashHistory}; }
 function mergeNote(a,b){ a=a||''; b=b||''; if(!a.trim()) return b; if(!b.trim()||a===b) return a; if(a.includes(b)) return a; if(b.includes(a)) return b; return b+'\n\n— outra versão —\n'+a; }
 // Junta dados de outro lugar (backup ou nuvem) com os do aparelho, sem perder nada.
 function mergeData(d){
@@ -208,6 +209,7 @@ function mergeData(d){
   if(Array.isArray(d.readings)){ const ids=new Set(S.readings.map(r=>r.id)); d.readings.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)&&r.draw) S.readings.push(r); }); S.readings.sort((a,b)=>b.at-a.at); S.readings=S.readings.slice(0,30); }
   if(d.srs&&typeof d.srs==='object'){ const m=Object.assign({},S.srs); Object.keys(d.srs).forEach(k=>{ const a=m[k], b=d.srs[k]; if(!b||typeof b!=='object') return; if(!a||(b.reps||0)>(a.reps||0)||((b.reps||0)===(a.reps||0)&&(b.due||0)>(a.due||0))) m[k]=b; }); S.srs=m; }
   if(d.srsHoje&&d.srsHoje.d===hojeStr()&&(d.srsHoje.n||0)>(S.srsHoje.n||0)) S.srsHoje=d.srsHoje;
+  if(Array.isArray(d.flashHistory)){ const fids=new Set(S.flashHistory.map(h=>h.id)); d.flashHistory.forEach(h=>{ if(h&&h.id&&!fids.has(h.id)&&Array.isArray(h.respostas)) S.flashHistory.push(h); }); S.flashHistory.sort((a,b)=>b.at-a.at); S.flashHistory=S.flashHistory.slice(0,50); }
   if(Array.isArray(d.quizHistory)){ const qids=new Set(S.quizHistory.map(h=>h.id)); d.quizHistory.forEach(h=>{ if(h&&h.id&&!qids.has(h.id)&&Array.isArray(h.answers)) S.quizHistory.push(h); }); S.quizHistory.sort((a,b)=>b.at-a.at); S.quizHistory=S.quizHistory.slice(0,50); }
 }
 function importBackup(file){
@@ -349,6 +351,36 @@ function proximaCarta(f){
   if(!f.fila.length) return null;
   return f.fila.slice().sort((a,b)=>(srsDe(a)?srsDe(a).due:0)-(srsDe(b)?srsDe(b).due:0))[0]; // só restam cartas em aprendizado para daqui a pouco: não faz esperar
 }
+function salvarSessaoFlash(){
+  const f=S.flash; if(!f||f.salvo||!f.respostas||!f.respostas.length) return;
+  f.salvo=true;
+  const cont=k=>f.respostas.filter(r=>r.n===k).length;
+  const h={id:String(Date.now()),at:Date.now(),scope:S.flashScope,mode:S.flashMode,feitas:f.respostas.length,erros:cont('errei'),dificil:cont('dificil'),bom:cont('bom'),facil:cont('facil'),novas:f.respostas.filter(r=>r.t==='nova').length,dur:Math.max(0,Date.now()-(f.inicio||Date.now())),respostas:f.respostas,completa:!!f.done};
+  S.flashHistory=[h].concat(S.flashHistory).slice(0,50);
+}
+const NOTA_LABEL={errei:'Errei',dificil:'Difícil',bom:'Bom',facil:'Fácil'};
+const NOTA_COR={errei:'var(--red)',dificil:'#8A6A1E',bom:'#2F5A33',facil:'var(--wood)'};
+function diasSeguidos(){
+  const dias=new Set(S.flashHistory.map(h=>{const d=new Date(h.at);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();}));
+  let n=0; const d=new Date(); if(!dias.has(d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate())) d.setDate(d.getDate()-1);
+  while(dias.has(d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate())){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+function flashDetail(h){
+  const rows=h.respostas.map((r,i)=>{ const c=CARDS[r.c]; return `<div class="qa"><span class="mk ${r.n==='errei'?'no':'ok'}" style="${r.n==='dificil'?'background:#FBF3E4;color:#8A6A1E;border-color:#D9B86A':r.n==='facil'?'background:var(--sand);color:var(--wood);border-color:var(--caramel)':''}">${r.n==='errei'?'✕':r.n==='dificil'?'~':'✓'}</span><div class="tx"><div style="display:flex;justify-content:space-between;gap:8px"><b style="color:var(--ink)">${esc(c.name)}</b><span style="color:${NOTA_COR[r.n]};font-weight:600;white-space:nowrap">${NOTA_LABEL[r.n]}</span></div><div style="font-size:12px;color:var(--muted)">${r.t==='nova'?'carta nova':r.t==='aprendendo'?'em aprendizado':'revisão'}</div>${r.n==='errei'?`<button class="link" data-act="card" data-id="${c.id}" style="align-self:flex-start;min-height:32px;padding:4px 0">Abrir a ficha de ${esc(c.name)}</button>`:''}</div></div>`; }).join('');
+  return `<div class="box" style="gap:0;border-color:var(--caramel)">${rows}<button class="link" data-act="fhdel" data-id="${h.id}" style="color:var(--red);align-self:flex-start">Apagar esta sessão</button></div>`;
+}
+function flashHistoryView(){
+  const H=S.flashHistory; if(!H.length) return '';
+  const total=H.reduce((a,h)=>a+h.feitas,0), erros=H.reduce((a,h)=>a+h.erros,0), acerto=total?Math.round(100*(total-erros)/total):0, seq=diasSeguidos();
+  const miss={}; H.forEach(h=>h.respostas.forEach(r=>{ if(r.n==='errei') miss[r.c]=(miss[r.c]||0)+1; }));
+  const top=Object.keys(miss).sort((a,b)=>miss[b]-miss[a]).slice(0,5);
+  const topHtml=top.length?`<div class="stack" style="gap:6px"><div class="eyebrow">Cartas que mais erro</div>${top.map(id=>{const c=CARDS[id];return `<button class="row" data-act="card" data-id="${c.id}" style="min-height:56px"><img src="${c.img}" alt="" loading="lazy" style="width:32px;height:52px"><div class="t"><div class="n" style="font-size:15px">${esc(c.name)}</div><div class="s">${miss[id]} erro${miss[id]===1?'':'s'} · toque para revisar a ficha</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`;}).join('')}</div>`:'';
+  const list=H.map(h=>{const open=S.flashOpen===h.id, min=Math.max(1,Math.round(h.dur/60000)); return `<button class="row" data-act="fhist" data-id="${h.id}" style="min-height:60px;${open?'border-color:var(--caramel)':''}"><div class="t"><div class="n" style="font-size:15px;justify-content:space-between"><span>${fmtDate(h.at)} · ${new Date(h.at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span><span class="serif" style="font-size:20px;color:${h.erros===0?'#2F5A33':h.erros<=h.feitas/4?'var(--wood)':'var(--red)'}">${h.feitas-h.erros}/${h.feitas}</span></div><div class="s">${esc(scopeLabel(h.scope))} · ${h.novas?h.novas+' nova'+(h.novas===1?'':'s')+' · ':''}${h.erros} erro${h.erros===1?'':'s'} · ${min} min${h.completa?'':' · encerrada antes'}</div><div class="bar" style="height:4px"><i style="width:${h.feitas?Math.round(100*(h.feitas-h.erros)/h.feitas):0}%;background:${h.erros===0?'var(--green)':'var(--caramel)'}"></i></div></div></button>${open?flashDetail(h):''}`;}).join('');
+  return `<div class="stack" style="gap:12px;margin-top:8px"><h2 style="font-size:24px">Meu histórico</h2>
+  <div class="dark" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;padding:14px"><div><div class="serif" style="font-size:28px;color:var(--butter)">${H.length}</div><div style="font-size:11px;opacity:.8">sessões</div></div><div><div class="serif" style="font-size:28px;color:var(--butter)">${acerto}%</div><div style="font-size:11px;opacity:.8">lembradas</div></div><div><div class="serif" style="font-size:28px;color:var(--butter)">${seq}</div><div style="font-size:11px;opacity:.8">dia${seq===1?'':'s'} seguido${seq===1?'':'s'}</div></div></div>
+  ${topHtml}<div class="stack" style="gap:8px"><div class="eyebrow">Sessões · toque para ver carta a carta</div>${list}</div></div>`;
+}
 function flash(){
   const f=S.flash; let body='';
   const modos=`<div class="stack"><div class="eyebrow">Modo</div><button class="mode${S.flashMode==='carta'?' on':''}" data-act="fmode" data-id="carta"><b>Ver a carta, lembrar o significado</b><small>Frente: imagem e nome. Verso: palavras-chave e significado.</small></button><button class="mode${S.flashMode==='texto'?' on':''}" data-act="fmode" data-id="texto"><b>Ler o significado, lembrar a carta</b><small>Frente: palavras-chave e significado. Verso: imagem e nome.</small></button></div>`;
@@ -362,7 +394,7 @@ function flash(){
       <div class="bar"><i style="width:${pct}%"></i></div><div style="font-size:12px;opacity:.85">${r.dominadas} de ${r.total} cartas dominadas (intervalo de 3 semanas ou mais)${r.aprendendo?` · ${r.aprendendo} em aprendizado`:''}</div></div>
     ${nada?`<div class="box" style="text-align:center;gap:6px"><b class="serif" style="font-size:22px">Tudo em dia</b><p style="font-size:14px;color:var(--ink2)">${r.proxima!=null?'Próxima revisão '+fmtQuando(r.proxima)+'.':''} ${r.novas?'Você já estudou as novas de hoje.':'Você já viu todas as cartas deste grupo.'}</p></div>${r.novas?`<button class="btn" data-act="fextra">Estudar mais ${Math.min(10,r.novas)} novas agora</button>`:''}`:`<button class="btn" data-act="fstart">Revisar · ${r.due+r.novasSessao} carta${r.due+r.novasSessao===1?'':'s'}</button>`}
     ${modos}
-    <div class="stack" style="gap:8px"><div class="eyebrow">Cartas novas por dia</div><div class="pills">${[5,10,20].map(n=>`<button class="pill${S.srsNovasDia===n?' on':''}" data-act="fnovas" data-id="${n}">${n}</button>`).join('')}</div><div style="font-size:12px;color:var(--muted)">Comece devagar. Dez por dia fecha as 78 em oito dias e as revisões se acumulam depois.</div></div>`;
+    <div class="stack" style="gap:8px"><div class="eyebrow">Cartas novas por dia</div><div class="pills">${[5,10,20].map(n=>`<button class="pill${S.srsNovasDia===n?' on':''}" data-act="fnovas" data-id="${n}">${n}</button>`).join('')}</div><div style="font-size:12px;color:var(--muted)">Comece devagar. Dez por dia fecha as 78 em oito dias e as revisões se acumulam depois.</div></div>${flashHistoryView()}`;
   } else if(!f.done){
     const id=f.atual, c=CARDS[id]; const showImg = S.flashMode==='carta' ? !f.flipped : f.flipped;
     const face = showImg ? `<img src="${c.img}" alt=""><div class="serif" style="font-size:30px;line-height:1">${esc(c.name)}</div><div class="eyebrow" style="color:inherit;opacity:.7">Carta ${c.id}</div>` : `<div class="eyebrow" style="color:inherit;opacity:.7">Palavras-chave</div><div class="serif" style="font-size:24px;line-height:1.2">${esc(c.palavras)}</div><p style="font-size:14px;opacity:.92">${esc(mask(c.geral,c))}</p>`;
@@ -383,6 +415,7 @@ function flash(){
   } else {
     const r=resumoSrs(S.flashScope);
     body=`<div class="dark stack" style="text-align:center;padding:24px 20px"><div class="eyebrow" style="color:var(--pink)">Sessão concluída</div><div class="serif big">${f.feitas}<span> carta${f.feitas===1?'':'s'}</span></div><div style="font-size:14px;opacity:.9">${f.erros?f.erros+' voltaram para o começo e aparecem de novo em breve.':'Nenhum erro nesta sessão.'} ${r.proxima!=null?'Próxima revisão '+fmtQuando(r.proxima)+'.':''}</div></div>
+    ${S.flashHistory[0]&&f.salvo?`<button class="btn ghost" data-act="fhist" data-id="${S.flashHistory[0].id}">${S.flashOpen===S.flashHistory[0].id?'Esconder carta a carta':'Ver carta a carta'}</button>${S.flashOpen===S.flashHistory[0].id?flashDetail(S.flashHistory[0]):''}`:''}
     ${r.novas?`<button class="btn" data-act="fextra">Estudar mais ${Math.min(10,r.novas)} novas agora</button>`:''}<button class="btn ghost" data-act="freset">Voltar</button>`;
   }
   return `<h1 style="font-size:32px">Flashcards</h1>${body}`;
@@ -729,17 +762,19 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='fscope') set({flashScope:id});
   else if(a==='fmode') set({flashMode:id});
   else if(a==='fnovas') set({srsNovasDia:+id});
-  else if(a==='fstart'||a==='fextra'){ const m=montarFila(S.flashScope,a==='fextra'?Math.min(10,cardsOf(S.flashScope).filter(c=>ehNova(c.id)).length):null); if(!m.fila.length){ set({flash:null}); return; } const f={fila:m.fila,atual:null,flipped:false,feitas:0,erros:0,done:false}; f.atual=proximaCarta(f); set({flash:f}); document.getElementById('main').scrollTop=0; }
-  else if(a==='freset') set({flash:null});
+  else if(a==='fhist'){ S.flashOpen=S.flashOpen===id?null:id; render(); }
+  else if(a==='fhdel'){ if(!confirm('Apagar esta sessão do histórico? O agendamento das cartas não muda.')) return; set({flashHistory:S.flashHistory.filter(h=>h.id!==id),flashOpen:null}); }
+  else if(a==='fstart'||a==='fextra'){ const m=montarFila(S.flashScope,a==='fextra'?Math.min(10,cardsOf(S.flashScope).filter(c=>ehNova(c.id)).length):null); if(!m.fila.length){ set({flash:null}); return; } const f={fila:m.fila,atual:null,flipped:false,feitas:0,erros:0,done:false,respostas:[],inicio:Date.now()}; f.atual=proximaCarta(f); set({flash:f}); document.getElementById('main').scrollTop=0; }
+  else if(a==='freset'){ salvarSessaoFlash(); set({flash:null,flashOpen:null}); }
   else if(a==='flip'){ S.flash.flipped=!S.flash.flipped; render(); }
   else if(a==='fgrade'){
     const f=S.flash, cid=f.atual, agora=Date.now(); if(!f||cid==null) return;
-    const eraNova=ehNova(cid), n=proximo(cid,id,agora);
+    const eraNova=ehNova(cid), tipoAntes=eraNova?'nova':ehAprendendo(cid)?'aprendendo':'revisao', n=proximo(cid,id,agora);
     if(eraNova){ novasHoje(); S.srsHoje.n++; }
-    S.srs[cid]=n; f.feitas++; if(id==='errei') f.erros++;
+    S.srs[cid]=n; f.feitas++; if(id==='errei') f.erros++; f.respostas.push({c:cid,n:id,t:tipoAntes});
     const fica=n.step!=null&&(n.due-agora)<=20*MIN; // continua na sessão só se volta em até 20 min
     if(!fica) f.fila=f.fila.filter(x=>x!==cid);
-    f.flipped=false; f.atual=proximaCarta(f); if(f.atual==null) f.done=true;
+    f.flipped=false; f.atual=proximaCarta(f); if(f.atual==null){ f.done=true; salvarSessaoFlash(); }
     persist(); render(); document.getElementById('main').scrollTop=0;
   }
   else if(a==='qscope') set({quizScope:id});
