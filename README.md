@@ -63,6 +63,8 @@ Em **Site configuration → Environment variables**, crie:
 | `SUPABASE_SERVICE_ROLE_KEY` | a chave service_role do Supabase |
 | `KIWIFY_TOKEN` | o token mostrado pela Kiwify ao criar o webhook |
 | `KIWIFY_PRODUCT_ID` | opcional: id do produto Grimório, para ignorar vendas de outros produtos |
+| `BREVO_API_KEY` | opcional: chave de API do Brevo (SMTP & API → Chaves de API). Com ela, quem compra recebe o e-mail de boas-vindas com o link do app |
+| `EMAIL_RESPOSTA` | opcional: e-mail que recebe as respostas das alunas ao e-mail de boas-vindas |
 
 Depois de criar as variáveis, faça um novo deploy (Deploys → Trigger deploy).
 
