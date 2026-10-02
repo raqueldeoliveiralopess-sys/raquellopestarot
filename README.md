@@ -95,7 +95,7 @@ Ao sair da conta, o progresso continua na nuvem e é apagado do aparelho. Se out
 
 ## Comunidade
 
-Mural único com temas (Estudo de carta, Tiragem, Dúvida, Reflexão, Achadinho) para as assinantes, com comentários, curtidas e fotos. A aba **Comunidade** só aparece para quem está logada.
+Mural único com temas (Estudo de carta, Tiragem, Dúvida, Reflexão) para as assinantes, com comentários, curtidas e fotos. A aba **Comunidade** só aparece para quem está logada.
 
 ### Ligar
 

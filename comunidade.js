@@ -6,8 +6,7 @@
     { id: 'estudo',    label: 'Estudo de carta' },
     { id: 'tiragem',   label: 'Tiragem' },
     { id: 'duvida',    label: 'Dúvida' },
-    { id: 'reflexao',  label: 'Reflexão' },
-    { id: 'achadinho', label: 'Achadinho' }
+    { id: 'reflexao',  label: 'Reflexão' }
   ];
 
   const A = () => window.GA_AUTH;

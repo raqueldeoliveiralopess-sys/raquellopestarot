@@ -74,7 +74,7 @@ create policy "perfis: assinantes se veem" on public.perfis for select to authen
 create table if not exists public.posts (
   id        bigint generated always as identity primary key,
   autor     uuid not null default auth.uid() references public.perfis(id) on delete cascade,
-  tema      text not null check (tema in ('estudo', 'tiragem', 'duvida', 'reflexao', 'achadinho')),
+  tema      text not null check (tema in ('estudo', 'tiragem', 'duvida', 'reflexao', 'achadinho')) -- 'achadinho' fica aceito só por compatibilidade; o app não oferece mais,
   texto     text not null check (char_length(texto) between 1 and 2000),
   foto_url  text,
   fixado    boolean not null default false,

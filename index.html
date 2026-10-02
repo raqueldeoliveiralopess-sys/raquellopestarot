@@ -525,7 +525,7 @@ function comunidadeView(){
   else if(!c.posts.length) lista=`<div class="box" style="text-align:center;gap:6px"><b class="serif" style="font-size:22px">A roda está esperando você</b><p style="font-size:14px;color:var(--ink2)">${c.tema==='todos'?'Ninguém postou ainda. Que tal abrir a conversa?':'Nenhum post neste tema ainda.'}</p></div>`;
   else lista=c.posts.map(postHtml).join('')+(c.fim?'':`<button class="btn ghost" data-act="cmais" ${c.carregando?'disabled style="opacity:.6"':''}>${c.carregando?'Carregando…':'Carregar mais'}</button>`)+(c.erro?`<div class="err">${esc(c.erro)}</div>`:'');
   return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h1 style="font-size:32px">Comunidade</h1><button class="link" data-act="catual" ${c.carregando?'disabled':''}>${c.carregando?'Atualizando…':'Atualizar'}</button></div>
-  <p style="color:var(--ink2);font-size:14px;margin-top:-8px">A roda das assinantes do Grimório. Compartilhe estudos, tiragens e dúvidas.</p>
+  <p style="color:var(--ink2);font-size:14px;margin-top:-8px">A roda das assinantes do Grimório. Compartilhe estudos, tiragens, dúvidas e reflexões.</p>
   ${comb}
   <button class="btn" data-act="cnovo" ${c.preparando?'disabled style="opacity:.6"':''}>Escrever post</button>
   <div class="pills">${pills}</div>
