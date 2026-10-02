@@ -46,7 +46,9 @@ export function classify(body) {
 async function sb(path, init) {
   const url = process.env.SUPABASE_URL.replace(/\/$/, '') + path;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const res = await fetch(url, { ...init, headers: { apikey: key, Authorization: 'Bearer ' + key, 'content-type': 'application/json', ...(init && init.headers) } });
+  // chaves novas (sb_secret_...) vão só no apikey; as antigas (service_role, JWT) também no Authorization
+  const auth = key.startsWith('sb_') ? {} : { Authorization: 'Bearer ' + key };
+  const res = await fetch(url, { ...init, headers: { apikey: key, ...auth, 'content-type': 'application/json', ...(init && init.headers) } });
   if (!res.ok) throw new Error('Supabase ' + res.status + ': ' + (await res.text()).slice(0, 200));
   return res;
 }
