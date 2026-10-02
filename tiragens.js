@@ -13,7 +13,7 @@ window.TAROT_SPREADS=[
     {n:3,label:'Direção',col:3,row:1,sentido:'Para onde o padrão aponta se nada mudar, e o que ele pede para ser integrado. Tendência, não sentença.',jung:'Função transcendente: o terceiro caminho que nasce quando o conflito é sustentado',perguntas:['Se eu não fizer nada diferente, que cena se repete?','O que esta carta pede que eu olhe de frente, e não que eu resolva?']}
   ],
   metodo:[
-    'Formule a pergunta sobre você, nunca sobre outra pessoa. "Por que eu travo quando preciso falar" funciona; "o que ele sente por mim" não.',
+    'Formule a pergunta de quem está na mesa, nunca sobre quem não está. "Por que eu travo quando preciso falar" funciona; "o que ele sente por mim" não.',
     'Embaralhe pensando na cena concreta. Padrão só vale se couber numa cena da vida real.',
     'Vire as três e leia primeiro a imagem: o que os personagens estão fazendo, para onde olham, o que está no chão.',
     'Leia cada posição com luz e sombra. A mesma carta na Raiz pode ser um recurso ou uma ferida.',
