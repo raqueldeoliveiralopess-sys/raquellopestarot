@@ -149,6 +149,7 @@ img.rev{transform:rotate(180deg)}
 .avbtn{border:none;background:transparent;padding:0;cursor:pointer;display:flex}
 .selo{display:inline-block;padding:3px 9px;border-radius:99px;background:var(--ink);color:var(--pink);font-size:11px;font-weight:600}
 .selo.xs{padding:1px 7px;font-size:10px;margin-left:6px;vertical-align:middle}
+.gfacil{background:#402327;color:#ECDF90}
 .big{font-size:56px;line-height:1;color:var(--butter)}.big span{font-size:22px;color:var(--paper);opacity:.8}
 
 .meta{display:flex;align-items:center;gap:10px;min-height:44px;padding:2px 0;border:none;background:transparent;text-align:left;width:100%}
@@ -174,6 +175,7 @@ img.rev{transform:rotate(180deg)}
   .pill.on,.mode.on,.chip,.pos .num,.step b,.fixtag,.selo{background:var(--butter);color:#402327;border-color:var(--butter)}
   .selo{color:#402327}
   .btn{color:#171013}
+  .gfacil{background:#ECDF90;color:#402327}
   .opt,.mode,.pill,.field input,.field textarea,.cform input,.notes textarea{border-color:var(--line)}
   .opt.correct,.qa .mk.ok{color:#9FD9AC}
   .opt.muted{color:#7D6A62}
@@ -555,7 +557,7 @@ function flash(){
       <button class="btn" data-act="fgrade" data-id="errei" style="background:var(--red-bg);color:var(--red);border:1px solid #C98484;flex-direction:column;gap:2px;min-height:60px;font-size:14px;display:flex;align-items:center;justify-content:center">Errei<small style="font-weight:400;font-size:11px;opacity:.8">${prev('errei')}</small></button>
       <button class="btn ghost" data-act="fgrade" data-id="dificil" style="flex-direction:column;gap:2px;min-height:60px;font-size:14px;display:flex;align-items:center;justify-content:center">Difícil<small style="font-weight:400;font-size:11px;opacity:.8">${prev('dificil')}</small></button>
       <button class="btn" data-act="fgrade" data-id="bom" style="background:var(--green);flex-direction:column;gap:2px;min-height:60px;font-size:14px;display:flex;align-items:center;justify-content:center">Bom<small style="font-weight:400;font-size:11px;opacity:.85">${prev('bom')}</small></button>
-      <button class="btn" data-act="fgrade" data-id="facil" style="background:var(--ink);color:var(--butter);flex-direction:column;gap:2px;min-height:60px;font-size:14px;display:flex;align-items:center;justify-content:center">Fácil<small style="font-weight:400;font-size:11px;opacity:.85">${prev('facil')}</small></button></div>`
+      <button class="btn gfacil" data-act="fgrade" data-id="facil" style="flex-direction:column;gap:2px;min-height:60px;font-size:14px;display:flex;align-items:center;justify-content:center">Fácil<small style="font-weight:400;font-size:11px;opacity:.85">${prev('facil')}</small></button></div>`
       :`<button class="btn" data-act="flip">Mostrar resposta</button>`;
     body=`<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)"><span class="tchip">${tipo}</span><span><b style="color:#5B7FB5">${restantes.n}</b> · <b style="color:#9B3B3B">${restantes.a}</b> · <b style="color:#2F5A33">${restantes.r}</b></span></div>
     <button class="flash${f.flipped?' back':''}" data-act="flip">${face}<div style="font-size:12px;opacity:.6">${f.flipped?'Toque para ver a frente':'Toque para virar'}</div></button>
