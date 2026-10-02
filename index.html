@@ -214,6 +214,7 @@ img.rev{transform:rotate(180deg)}
 <div id="topbar" aria-hidden="true"></div><div id="app"><main id="main"></main><nav id="nav"></nav></div>
 <script src="cards.js"></script>
 <script src="tiragens.js"></script>
+<script src="diario.js"></script>
 <script src="config.js"></script>
 <script src="auth.js"></script>
 <script src="comunidade.js"></script>
@@ -321,25 +322,9 @@ const salvoOnde = () => logada()?'Salvo · sincroniza com a nuvem':'Salvo neste 
 
 // ---------- ritual diário: carta do dia, metas, sequência e conquistas ----------
 const diaDe = ts => { const d=new Date(ts); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
-function hashDia(str){ let h=2166136261; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h; }
-function cartaDoDia(){ return CARDS[hashDia('carta:'+hojeStr())%CARDS.length]; }
-const PERGUNTAS_DIA=[
-  'Em que cena da sua semana esta carta já aconteceu de verdade?',
-  'Que parte sua esta carta descreve e você não gosta de admitir?',
-  'Que força sua esta carta nomeia?',
-  'Se você levasse esta carta a sério por um dia, o que faria diferente hoje?',
-  'Qual é a esperança desta carta? E qual é o medo? São a mesma cena?',
-  'Em que cena antiga você reconhece esta carta?',
-  'O que esta carta pede que você olhe de frente, sem precisar resolver?',
-  'Onde o lado de sombra desta carta aparece disfarçado de virtude na sua vida?',
-  'Que pessoa da sua história encarna esta carta? O que isso diz de você, não dela?',
-  'Se esta carta fosse uma frase que você repete para si, qual seria?',
-  'O que você faria hoje se acreditasse no lado de luz desta carta?',
-  'Em que momento do dia esta carta aparece sem você perceber?',
-  'Esta carta é você dentro do tema ou é o tema em si?',
-  'Que hábito seu esta carta explica melhor do que você mesma explicaria?'
-];
-function perguntaDoDia(){ return PERGUNTAS_DIA[hashDia('pergunta:'+hojeStr())%PERGUNTAS_DIA.length]; }
+const DIARIO=window.GA_DIARIO;
+function cartaDoDia(){ return CARDS[DIARIO.indiceCarta(hojeStr(),CARDS.length)]; }
+function perguntaDoDia(){ return DIARIO.perguntaDoDia(hojeStr()); }
 function marcarDia(){ S.diasEstudo[hojeStr()]=true; }
 function diasEstudados(){ const s=new Set(Object.keys(S.diasEstudo)); S.flashHistory.forEach(h=>s.add(diaDe(h.at))); S.quizHistory.forEach(h=>s.add(diaDe(h.at))); return s; }
 function diasSeguidos(){
@@ -887,13 +872,14 @@ function gateView(){
 }
 function editarPerfilView(){
   const A=window.GA_AUTH; if(!A||!A.enabled||A.estado!=='ok') return home();
-  const p=A.perfil||{}, d=S.pfDraft||(S.pfDraft={nome:p.nome||'',bio:p.bio||''});
+  const p=A.perfil||{}, d=S.pfDraft||(S.pfDraft={nome:p.nome||'',bio:p.bio||'',lembrete:!!p.lembrete});
   const sync={ok:'Progresso salvo na nuvem',enviando:'Salvando na nuvem…',pendente:'Sem conexão: salvo neste aparelho, sobe para a nuvem quando a internet voltar'}[A.sync]||'';
   return `<div style="display:flex;align-items:center;margin:-8px -8px 0"><button data-act="verperfil" data-id="${A.uid()}" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;border:none;background:transparent;color:var(--wood);font-size:15px">${ICONS.left}Meu perfil</button></div>
   <h1 style="font-size:32px">Editar perfil</h1>
   <div style="display:flex;gap:16px;align-items:center">${S.pfPreview?`<div class="avatar"><img src="${S.pfPreview}" alt=""></div>`:avatarHtml('')}<div class="stack" style="gap:4px;min-width:0"><label class="btn ghost" style="display:flex;align-items:center;justify-content:center;padding:0 16px;cursor:pointer">${p.foto_url||S.pfPreview?'Trocar foto':'Escolher foto'}<input type="file" accept="image/*" data-pf-foto style="display:none"></label><div style="font-size:12px;color:var(--muted)">A foto fica quadrada e pequena.</div></div></div>
   <div class="field"><label for="pf-nome">Nome</label><input id="pf-nome" data-pf="nome" maxlength="60" value="${esc(d.nome)}" placeholder="Como quer ser chamada"></div>
   <div class="field"><label for="pf-bio">Sobre você</label><textarea id="pf-bio" data-pf="bio" maxlength="160" placeholder="Há quanto tempo estuda tarot, o que te trouxe aqui…">${esc(d.bio)}</textarea><div style="font-size:12px;color:var(--muted);text-align:right">${(d.bio||'').length}/160</div></div>
+  <div class="stack" style="gap:6px"><div class="eyebrow">Lembrete</div><button class="mode${d.lembrete?' on':''}" data-act="pf-lembrete" role="switch" aria-checked="${!!d.lembrete}"><b>${d.lembrete?'Lembrete diário por e-mail: ligado':'Lembrete diário por e-mail: desligado'}</b><small>Todo dia às 8h, um e-mail curto com a carta do dia e quantas cartas esperam revisão. Sem promessa nenhuma, só o convite para abrir o app.</small></button>${A.lembreteIndisponivel?'<div style="font-size:12px;color:var(--muted)">O lembrete ainda não está disponível neste servidor. O resto do perfil foi salvo.</div>':''}</div>
   ${A.erro?`<div class="err">${esc(A.erro)}</div>`:''}
   <button class="btn" data-act="pf-salvar" ${A.ocupado?'disabled style="opacity:.6"':''}>${A.ocupado?'Salvando…':S.pfSaved?'Perfil salvo':'Salvar perfil'}</button>
   <div class="box" style="gap:6px"><div class="h" style="color:var(--wood)">Conta</div><div style="font-size:14px">${esc(A.email)}</div><div id="sync-status" style="font-size:13px;color:var(--muted)">${sync}</div></div>
@@ -1068,7 +1054,8 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='ga-trocar') window.GA_AUTH.trocarEmail();
   else if(a==='ga-denovo') window.GA_AUTH.tentarDeNovo();
   else if(a==='ga-sair'){ if(window.GA_AUTH.estado!=='ok'||confirm('Sair da sua conta neste aparelho?')) window.GA_AUTH.sair(); }
-  else if(a==='pf-salvar'){ const A=window.GA_AUTH, d=S.pfDraft||{}; A.salvarPerfil({nome:d.nome,bio:d.bio,foto:S.pfFile}).then(ok=>{ if(ok){ if(S.pub.uid===A.uid()) S.pub.perfil=A.perfil; S.pfFile=null; if(S.pfPreview){URL.revokeObjectURL(S.pfPreview);S.pfPreview=null;} S.pfSaved=true; S.pfDraft=null; render(); } }); }
+  else if(a==='pf-lembrete'){ S.pfDraft=S.pfDraft||{nome:'',bio:''}; S.pfDraft.lembrete=!S.pfDraft.lembrete; S.pfSaved=false; render(); }
+  else if(a==='pf-salvar'){ const A=window.GA_AUTH, d=S.pfDraft||{}; A.salvarPerfil({nome:d.nome,bio:d.bio,foto:S.pfFile,lembrete:!!d.lembrete}).then(ok=>{ if(ok){ if(S.pub.uid===A.uid()) S.pub.perfil=A.perfil; S.pfFile=null; if(S.pfPreview){URL.revokeObjectURL(S.pfPreview);S.pfPreview=null;} S.pfSaved=true; S.pfDraft=null; render(); } }); }
   else if(a==='go'&&b.dataset.screen==='comunidade'){ set({screen:'comunidade'}); comCarregar(true); }
   else if(a==='ctema'){ S.com.tema=id; comCarregar(true); }
   else if(a==='catual'){ S.com.destaque.tentado=false; comCarregar(true); }

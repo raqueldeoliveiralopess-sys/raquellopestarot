@@ -26,6 +26,15 @@ Não é necessário trocar o número `CACHE` em `sw.js` a cada atualização. Tr
 - **Modo escuro**: segue a preferência do aparelho, sem botão.
 - Nos históricos de quiz e flashcards, "Cartas que mais erro" tem um botão que abre uma sessão de flashcards só com elas.
 
+## Lembrete diário por e-mail
+
+A aluna liga e desliga em **Editar perfil** ("Lembrete diário por e-mail"). Todo dia às 8h de Brasília, a função agendada `netlify/functions/lembrete-diario.mjs` envia pela Brevo um e-mail curto com a carta do dia (a mesma que o app mostra), a pergunta de reflexão, quantas cartas esperam revisão nos flashcards e a sequência de dias. O rodapé tem o link "Parar de receber", assinado, que chama `lembrete-sair.mjs` e desliga o lembrete no perfil.
+
+Para ligar:
+1. Rode `supabase/lembretes.sql` no SQL Editor (coluna `perfis.lembrete` e função `lembretes_pendentes`, que só a chave de serviço pode chamar). Enquanto não rodar, o interruptor aparece no app, mas o perfil salva sem ele e avisa que o lembrete ainda não está disponível.
+2. Na Netlify, as variáveis `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` e `BREVO_API_KEY` já existem por causa do webhook. Opcional: `LEMBRETE_SECRET` (um texto longo qualquer) para assinar o link de descadastro; sem ele, a chave de serviço é usada para isso.
+3. O horário fica em `config.schedule` dentro da função (`0 11 * * *`, em UTC). O arquivo `netlify.toml` inclui `cards.js` e `diario.js` no pacote da função, e `diario.js` é o único lugar onde ficam as perguntas e o sorteio da carta do dia, usado pelo app e pelo e-mail.
+
 ## Jornada
 
 No Início, a lista de módulos virou a **Jornada**: sete capítulos em trilha (três setenários dos Arcanos Maiores: Formar o eu, Encontrar a sombra, Individuação; e as quatro casas de naipe). Um capítulo fecha quando todas as cartas dele estão estudadas e o quiz do capítulo tem 70% ou mais. O capítulo atual aparece em destaque com os botões Estudar (abre Cartas na primeira carta pendente) e Quiz do capítulo (setenários: todas as cartas do capítulo; naipes: o quiz clássico do naipe). Nada trava: qualquer capítulo pode ser aberto. Concluir os setenários e a Jornada inteira dá conquistas.

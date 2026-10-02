@@ -109,7 +109,8 @@
   // ---------- perfil ----------
   async function carregarPerfil(){
     try {
-      const { data } = await sb.from('perfis').select('nome,bio,foto_url').eq('id', A.user.id).maybeSingle();
+      let { data, error } = await sb.from('perfis').select('nome,bio,foto_url,lembrete').eq('id', A.user.id).maybeSingle();
+      if (error && semColunaLembrete(error)) { A.lembreteIndisponivel = true; ({ data } = await sb.from('perfis').select('nome,bio,foto_url').eq('id', A.user.id).maybeSingle()); }
       muda({ perfil: data || { nome: '', bio: '', foto_url: '' } });
     } catch(e) { if (!A.perfil) muda({ perfil: { nome: '', bio: '', foto_url: '' } }); }
   }
@@ -131,7 +132,9 @@
     });
   }
   A.reduzirFoto = reduzirFoto;
-  A.salvarPerfil = async ({ nome, bio, foto }) => {
+  // Enquanto a coluna perfis.lembrete não existir no banco (supabase/lembretes.sql), o resto do perfil salva normalmente
+  const semColunaLembrete = e => e && (e.code === 'PGRST204' || /lembrete/i.test(String(e.message || '')) && /column|coluna|schema cache/i.test(String(e.message || '')));
+  A.salvarPerfil = async ({ nome, bio, foto, lembrete }) => {
     muda({ ocupado: true, erro: '' });
     let etapa = 'perfil';
     try {
@@ -145,7 +148,9 @@
         etapa = 'perfil';
       }
       const perfil = { id: A.user.id, nome: (nome || '').trim().slice(0, 60), bio: (bio || '').trim().slice(0, 160), foto_url, atualizado_em: new Date().toISOString() };
-      const { error } = await sb.from('perfis').upsert(perfil);
+      if (lembrete != null && !A.lembreteIndisponivel) perfil.lembrete = !!lembrete;
+      let { error } = await sb.from('perfis').upsert(perfil);
+      if (error && semColunaLembrete(error) && 'lembrete' in perfil) { A.lembreteIndisponivel = true; delete perfil.lembrete; ({ error } = await sb.from('perfis').upsert(perfil)); }
       if (error) throw error;
       muda({ perfil, ocupado: false });
       return true;

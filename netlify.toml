@@ -7,3 +7,7 @@
 # Funções do servidor (webhook da Kiwify)
 [functions]
   directory = "netlify/functions"
+
+# O lembrete diário lê as cartas e as perguntas do próprio app
+[functions."lembrete-diario"]
+  included_files = ["cards.js", "diario.js"]
