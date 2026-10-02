@@ -240,7 +240,7 @@ if(!['classico','relampago','erros','luzsombra'].includes(S.quizModo)) S.quizMod
 if(!S.diasEstudo||typeof S.diasEstudo!=='object') S.diasEstudo={}; if(!S.conquistas||typeof S.conquistas!=='object') S.conquistas={}; if(!S.cdd) S.cdd={d:'',ok:false}; if(!S.cartasDia) S.cartasDia={d:'',n:0}; S.conqOpen=false;
 if(!Array.isArray(S.flashHistory)) S.flashHistory=[]; S.flashOpen=null;
 if(!S.srs||typeof S.srs!=='object') S.srs={}; if(!S.srsHoje) S.srsHoje={d:'',n:0}; if(![5,10,20].includes(S.srsNovasDia)) S.srsNovasDia=10;
-S.com={posts:[],carregando:false,erro:'',preparando:false,fim:false,tema:'todos',aberto:null,coments:{},menu:null,combinados:false,draft:{},enviando:false};
+S.com={posts:[],carregando:false,erro:'',preparando:false,fim:false,tema:'todos',aberto:null,coments:{},menu:null,combinados:false,draft:{},enviando:false,destaque:{post:null,tentado:false}};
 S.rasc={tema:'',texto:'',foto:null,preview:null,erro:'',enviando:false};
 S.pub={uid:null,perfil:null,contagens:null,posts:[],fim:true,carregando:false,erro:'',soFoto:false};
 if(!S.readings) S.readings=[]; if(!Array.isArray(S.quizHistory)) S.quizHistory=[]; S.quizOpen=null; if(!S.spreadVar) S.spreadVar={};
@@ -348,6 +348,25 @@ function hojeHtml(){
   const m=metasHoje(), feitas=m.filter(x=>x.ok).length, seq=diasSeguidos(), fechado=feitas===m.length;
   const rows=m.map(x=>`<button class="meta${x.ok?' ok':''}" data-act="go" data-screen="${x.screen}"><span class="mk">${x.ok?'✓':''}</span><div class="t"><b>${x.label}</b><small>${esc(x.det)}</small></div></button>`).join('');
   return `<div class="box" style="gap:6px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="h" style="color:var(--wood)">Hoje</div><div style="font-size:13px;color:var(--muted)"><b class="serif" style="font-size:24px;color:var(--ink)">${seq}</b> dia${seq===1?'':'s'} seguido${seq===1?'':'s'}</div></div>${rows}<div style="font-size:12px;color:${fechado?'var(--green)':'var(--muted)'};padding-top:4px">${fechado?'Dia fechado. Amanhã tem carta nova.':feitas+' de '+m.length+'. Qualquer uma já conta o dia na sequência.'}</div></div>`;
+}
+async function carregarDestaque(){
+  const D=S.com.destaque; if(D.tentado||!logada()||!COM||!COM.fixados) return; D.tentado=true;
+  try{ const l=await COM.fixados(); D.post=l[0]||null; }catch(e){ D.post=null; }
+  const typing=document.activeElement&&/INPUT|TEXTAREA/.test(document.activeElement.tagName);
+  if(S.screen==='home'&&!typing) render();
+}
+function destaqueHtml(){
+  if(!logada()||!COM) return '';
+  const D=S.com.destaque; if(!D.tentado) carregarDestaque();
+  const p=D.post; if(!p) return '';
+  const linhas=String(p.texto||'').split('\n').map(x=>x.trim()).filter(Boolean);
+  const titulo=linhas[0]||'', resto=linhas.slice(1).join(' ');
+  const desafio=/^desafio/i.test(titulo.normalize('NFD').replace(/[̀-ͯ]/g,''));
+  const n=p.nComentarios||0;
+  return `<div class="box" style="border-color:var(--caramel);gap:8px"><div style="display:flex;justify-content:space-between;align-items:center"><div class="h" style="color:var(--wood)">${desafio?'Desafio da semana':'Aviso fixado'}</div><div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)">${avatarDe(p.perfil,'xs')}${esc((p.perfil&&p.perfil.nome)||'Raquel')}</div></div>
+  <div class="serif" style="font-size:22px;line-height:1.15">${esc(titulo)}</div>${resto?`<p style="font-size:14px;color:var(--ink2)">${esc(resto.length>160?resto.slice(0,157).trim()+'…':resto)}</p>`:''}
+  ${p.foto_url?`<img src="${esc(p.foto_url)}" alt="" loading="lazy" style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;background:var(--sand)">`:''}
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span style="font-size:13px;color:var(--muted)">${n?n+' resposta'+(n===1?'':'s'):'Seja a primeira a responder'}</span><button class="btn" data-act="cdesafio" data-id="${p.id}" style="width:auto;min-height:44px;padding:0 18px;font-size:15px">Participar</button></div></div>`;
 }
 function cartaDoDiaHtml(){
   const c=cartaDoDia(), q=perguntaDoDia(), feita=S.cdd.d===hojeStr()&&S.cdd.ok;
@@ -489,7 +508,7 @@ function home(){
   const mods=SUITS.map(su=>{const cs=cardsOf(su.id),d=cs.filter(c=>S.studied[c.id]).length;return `<button class="mod" data-act="lib" data-suit="${su.id}"><div class="g">${ELEMENT_SVG[su.id]}</div><div class="t"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b style="font-size:16px">${su.label}${su.element?` <span style="font-weight:400;font-size:12px;color:var(--muted)">· ${su.element}</span>`:``}</b><span style="font-size:12px;color:var(--muted);white-space:nowrap">${d} / ${cs.length}</span></div><div class="bar"><i style="width:${Math.round(100*d/cs.length)}%"></i></div></div></button>`;}).join('');
   const A=window.GA_AUTH, logged=A&&A.enabled&&A.estado==='ok';
   return `<div class="stack" style="gap:4px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div class="eyebrow">Grimório Arcano</div>${logged?`<button data-act="verperfil" data-id="${A.uid()}" aria-label="Meu perfil" style="border:none;background:transparent;padding:0;display:flex;align-items:center;gap:8px;color:var(--wood);font-size:13px;font-weight:500">${avatarHtml('sm')}</button>`:''}</div><h1 style="font-size:40px;line-height:1.05">Sua trilha de estudo</h1><p style="color:var(--ink2);margin-top:6px">78 cartas, uma por vez. Estude a ficha, treine com flashcards, confirme no quiz e leia padrões nas tiragens.</p></div>
-  ${cartaDoDiaHtml()}${hojeHtml()}
+  ${cartaDoDiaHtml()}${destaqueHtml()}${hojeHtml()}
   <div class="dark stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="eyebrow" style="color:var(--pink)">Progresso geral</div><div class="serif" style="font-size:26px;color:var(--butter)">${n}<span style="font-size:16px;color:var(--paper);opacity:.8"> / 78</span></div></div><div class="bar" style="height:8px"><i style="width:${Math.round(100*n/78)}%"></i></div><div style="font-size:13px;opacity:.85">${hint}</div></div>
   <div class="grid3"><button class="tile" data-act="go" data-screen="flash">${ICONS.flash}<div><b>Flashcards</b><br><small>${(()=>{const r=resumoSrs('all');return r.due?r.due+' para hoje':r.novasSessao?r.novasSessao+' novas hoje':'Em dia';})()}</small></div></button><button class="tile" data-act="go" data-screen="quiz">${ICONS.quiz}<div><b>Quiz</b><br><small>${QMODOS.length} modos</small></div></button><button class="tile" data-act="go" data-screen="spreads">${ICONS.spreads}<div><b>Tiragens</b><br><small>${SPREADS.length} métodos</small></div></button></div>
   <div class="stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="font-size:24px">Módulos</h2><span style="font-size:12px;color:var(--muted)">toque para estudar</span></div>${mods}</div>
@@ -763,11 +782,17 @@ function learnView(sp){
   ${sp.exemplo?`<div class="notes" style="gap:6px"><div class="h" style="color:var(--wood)">Exemplo de leitura</div><p style="font-size:14px">${esc(sp.exemplo)}</p></div>`:''}
   <button class="btn" data-act="stab" data-id="praticar">Praticar esta tiragem</button>`;
 }
+function textoPratica(sp,pr){
+  const v=pr.var&&sp.variantes?(sp.variantes.find(x=>x.id===pr.var)||{}).label:'';
+  const linhas=sp.positions.slice().sort((a,b)=>a.n-b.n).map(x=>{const d=pr.draw[x.n-1],c=CARDS[d.cardId];return x.n+' · '+x.label+': '+c.name+(d.rev?' (invertida)':'');});
+  return 'Pratiquei a tiragem '+sp.name+(v?' · '+v:'')+'.\nPergunta: '+((pr.pergunta||'').trim()||'(sem pergunta registrada)')+'\n'+linhas.join('\n')+'\nO padrão em uma frase: '+((pr.sintese||'').trim()||'(ainda sem síntese)')+'\n\n';
+}
 function practiceView(sp){
   const pr=S.practice&&S.practice.spreadId===sp.id?S.practice:null;
   const mine=S.readings.filter(r=>r.spreadId===sp.id);
-  const list=mine.length?`<div class="stack" style="gap:8px"><h2 style="font-size:22px">Minhas práticas</h2>${mine.map(r=>`<div class="row" style="min-height:56px;gap:6px"><div class="t"><div class="n" style="font-size:14px">${fmtDate(r.at)}${r.var&&sp.variantes?` · ${esc((sp.variantes.find(v=>v.id===r.var)||{}).label||'')}`:''}</div><div class="s">${r.draw.map(d=>CARDS[d.cardId].name+(d.rev?' (inv.)':'')).join(' · ')}</div></div><button class="link" data-act="pload" data-id="${r.id}">Abrir</button><button class="link" data-act="pdel" data-id="${r.id}" style="color:var(--red)">Apagar</button></div>`).join('')}</div>`:'';
-  if(!pr) return `<p style="color:var(--ink2)">Pense numa pergunta sobre você, respire, e sorteie. Depois toque em cada posição para ler a carta no lugar dela.</p>${varPills(sp)}
+  const list=mine.length?`<div class="stack" style="gap:8px"><h2 style="font-size:22px">Minhas práticas</h2>${mine.map(r=>{const frase=(r.pergunta||'').trim()||(r.sintese||'').trim();return `<div class="row" style="min-height:56px;gap:6px"><div class="t"><div class="n" style="font-size:14px">${fmtDate(r.at)}${r.var&&sp.variantes?` · ${esc((sp.variantes.find(v=>v.id===r.var)||{}).label||'')}`:''}</div>${frase?`<div style="font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(frase)}</div>`:''}<div class="s">${r.draw.map(d=>CARDS[d.cardId].name+(d.rev?' (inv.)':'')).join(' · ')}</div></div><button class="link" data-act="pload" data-id="${r.id}">Abrir</button><button class="link" data-act="pdel" data-id="${r.id}" style="color:var(--red)">Apagar</button></div>`;}).join('')}</div>`:'';
+  const pergunta=`<div class="field"><label for="pq">Minha pergunta</label><input id="pq" data-pq maxlength="140" value="${esc((pr?pr.pergunta:S.practicePergunta)||'')}" placeholder="Sobre você, nunca sobre o outro. Ex.: por que eu adio toda conversa difícil?"></div>`;
+  if(!pr) return `<p style="color:var(--ink2)">Pense numa pergunta sobre você, respire, e sorteie. Depois toque em cada posição para ler a carta no lugar dela.</p>${varPills(sp)}${pergunta}
     <button class="mode${S.practiceRev?' on':''}" data-act="prevt"><b>${S.practiceRev?'Com cartas invertidas':'Sem cartas invertidas'}</b><small>Toque para alternar. Cerca de uma em quatro sai invertida.</small></button>
     <button class="btn" data-act="pdraw">Sortear ${sp.cards} cartas</button>${list}`;
   const open=S.practiceOpen, p=sp.positions.find(x=>x.n===open);
@@ -783,8 +808,9 @@ function practiceView(sp){
     <button class="btn ghost" data-act="card" data-id="${c.id}">Abrir a ficha de ${esc(c.name)}</button></div>`;
   }
   const legend=sp.positions.slice().sort((a,b)=>a.n-b.n).map(x=>{const d=pr.draw[x.n-1],c=CARDS[d.cardId];return `<button class="row${open===x.n?' on':''}" style="min-height:48px;padding:6px 10px;${open===x.n?'border-color:var(--caramel)':''}" data-act="popen" data-id="${x.n}"><b class="serif" style="font-size:20px;color:var(--caramel);width:26px;text-align:center">${x.n}</b><div class="t"><div class="n" style="font-size:14px">${esc(c.name)}${d.rev?' <span style="font-size:11px;color:var(--red);font-weight:500">inv.</span>':''}</div><div class="s">${esc(x.label)}</div></div></button>`;}).join('');
-  return `${renderLayout(sp,pr.draw,open)}<div style="font-size:12px;color:var(--muted);text-align:center">Toque numa posição para ler a carta nela.</div>${peladanSum(sp,pr)}${panel}<div class="stack" style="gap:6px">${legend}</div>
-  <div class="grid2"><button class="btn ghost" data-act="pdraw">Sortear de novo</button><button class="btn" data-act="psave" ${pr.saved?'disabled style="opacity:.6"':''}>${pr.saved?'Prática salva':'Salvar prática'}</button></div>${list}`;
+  const sintese=`<div class="notes" style="gap:6px"><label for="ps" style="font-size:13px;font-weight:600;color:var(--wood)">O padrão em uma frase</label><textarea id="ps" data-ps maxlength="200" style="min-height:80px" placeholder="Porque (1), hoje eu (2), e isso aponta para (3)…">${esc(pr.sintese||'')}</textarea><div class="st"><span>Se não couber numa frase, ainda não está claro.</span><span id="ps-status">${pr.saved&&(pr.sintese||'').trim()?salvoOnde():''}</span></div></div>`;
+  return `${pergunta}${renderLayout(sp,pr.draw,open)}<div style="font-size:12px;color:var(--muted);text-align:center">Toque numa posição para ler a carta nela.</div>${peladanSum(sp,pr)}${panel}<div class="stack" style="gap:6px">${legend}</div>${sintese}
+  <div class="grid2"><button class="btn ghost" data-act="pdraw">Sortear de novo</button><button class="btn" data-act="psave" ${pr.saved?'disabled style="opacity:.6"':''}>${pr.saved?'Prática salva':'Salvar prática'}</button></div>${logada()&&COM?`<button class="btn ghost" data-act="pshare">Compartilhar na roda</button>`:''}${list}`;
 }
 
 // ---------- login e perfil ----------
@@ -966,8 +992,17 @@ document.getElementById('app').addEventListener('submit',e=>{
       .catch(err=>alert(err.message)).finally(()=>{ S.com.enviando=false; render(); });
   }
 });
+let prTimer=null;
 document.getElementById('app').addEventListener('input',e=>{
   const t=e.target;
+  if(t.matches('[data-pq]')||t.matches('[data-ps]')){
+    const pr=S.practice, campo=t.matches('[data-pq]')?'pergunta':'sintese';
+    if(pr&&pr.spreadId===S.spreadId){ pr[campo]=t.value; if(pr.saved){ const r=S.readings.find(x=>x.at===pr.at&&x.spreadId===pr.spreadId); if(r) r[campo]=t.value.trim(); } }
+    else if(campo==='pergunta') S.practicePergunta=t.value;
+    const st=document.getElementById('ps-status'); if(st&&campo==='sintese') st.textContent=pr&&pr.saved?'Salvando…':'';
+    clearTimeout(prTimer); prTimer=setTimeout(()=>{ const ok=persist(); if(st&&campo==='sintese'&&pr&&pr.saved) st.textContent=ok?salvoOnde():'Não foi possível salvar'; },400);
+    return;
+  }
   if(t.matches('[data-rasc]')){ S.rasc[t.dataset.rasc]=t.value; const ct=document.getElementById('rasc-count'); if(ct) ct.textContent=t.value.length+'/2000'; return; }
   if(t.matches('[data-cdraft]')){ S.com.draft[t.dataset.cdraft]=t.value; return; }
   if(!t.matches('[data-pf]')) return; S.pfDraft=S.pfDraft||{}; S.pfDraft[t.dataset.pf]=t.value; S.pfSaved=false;
@@ -987,7 +1022,7 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='pf-salvar'){ const A=window.GA_AUTH, d=S.pfDraft||{}; A.salvarPerfil({nome:d.nome,bio:d.bio,foto:S.pfFile}).then(ok=>{ if(ok){ if(S.pub.uid===A.uid()) S.pub.perfil=A.perfil; S.pfFile=null; if(S.pfPreview){URL.revokeObjectURL(S.pfPreview);S.pfPreview=null;} S.pfSaved=true; S.pfDraft=null; render(); } }); }
   else if(a==='go'&&b.dataset.screen==='comunidade'){ set({screen:'comunidade'}); comCarregar(true); }
   else if(a==='ctema'){ S.com.tema=id; comCarregar(true); }
-  else if(a==='catual') comCarregar(true);
+  else if(a==='catual'){ S.com.destaque.tentado=false; comCarregar(true); }
   else if(a==='cmais') comCarregar(false);
   else if(a==='ccomb'){ S.com.combinados=!S.com.combinados; render(); }
   else if(a==='cnovo'){ S.rasc.erro=''; set({screen:'escrever'}); document.getElementById('main').scrollTop=0; }
@@ -1004,7 +1039,7 @@ document.getElementById('app').addEventListener('click',e=>{
   }
   else if(a==='cfixar'){
     const p=achaPost(+id); if(!p) return;
-    COM.fixar(p.id,!p.fixado).then(()=>{ p.fixado=!p.fixado; S.com.menu=null; if(S.screen==='perfil') render(); else comCarregar(true); }).catch(err=>alert(err.message));
+    COM.fixar(p.id,!p.fixado).then(()=>{ p.fixado=!p.fixado; S.com.menu=null; S.com.destaque.tentado=false; if(S.screen==='perfil') render(); else comCarregar(true); }).catch(err=>alert(err.message));
   }
   else if(a==='cbloq'){
     const p=achaPost(+id); if(!p||!confirm('Bloquear '+(p.perfil.nome||'esta aluna')+'? Ela continua lendo, mas não consegue mais postar nem comentar.')) return;
@@ -1068,11 +1103,13 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='stab'){ set({spreadTab:id,practiceOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='svar'){ const v=Object.assign({},S.spreadVar); v[S.spreadId]=id; set({spreadVar:v}); }
   else if(a==='prevt') set({practiceRev:!S.practiceRev});
-  else if(a==='pdraw'){ const sp=spreadById(S.spreadId); const draw=shuffle(CARDS).slice(0,sp.cards).map(c=>({cardId:c.id,rev:S.practiceRev&&Math.random()<.25})); const v=curVar(sp); set({practice:{spreadId:sp.id,draw,at:Date.now(),var:v?v.id:null,saved:false},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
+  else if(a==='pdraw'){ const sp=spreadById(S.spreadId); const draw=shuffle(CARDS).slice(0,sp.cards).map(c=>({cardId:c.id,rev:S.practiceRev&&Math.random()<.25})); const v=curVar(sp); set({practice:{spreadId:sp.id,draw,at:Date.now(),var:v?v.id:null,saved:false,pergunta:(S.practice&&S.practice.spreadId===sp.id?S.practice.pergunta:S.practicePergunta)||'',sintese:''},practiceOpen:null}); S.practicePergunta=''; document.getElementById('main').scrollTop=0; }
   else if(a==='popen'){ set({practiceOpen:S.practiceOpen===+id?null:+id}); }
-  else if(a==='psave'){ const pr=S.practice; if(!pr||pr.saved) return; const r={id:String(Date.now()),spreadId:pr.spreadId,draw:pr.draw,at:Date.now(),var:pr.var}; pr.saved=true; marcarDia(); set({readings:[r].concat(S.readings).slice(0,30)}); }
-  else if(a==='pload'){ const r=S.readings.find(x=>x.id===id); if(r) set({practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
+  else if(a==='psave'){ const pr=S.practice; if(!pr||pr.saved) return; const r={id:String(Date.now()),spreadId:pr.spreadId,draw:pr.draw,at:pr.at,var:pr.var,pergunta:(pr.pergunta||'').trim(),sintese:(pr.sintese||'').trim()}; pr.saved=true; marcarDia(); set({readings:[r].concat(S.readings).slice(0,30)}); }
+  else if(a==='pload'){ const r=S.readings.find(x=>x.id===id); if(r) set({practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true,pergunta:r.pergunta||'',sintese:r.sintese||''},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='pdel'){ if(!confirm('Apagar esta prática?')) return; const pr=S.practice; const r=S.readings.find(x=>x.id===id); if(pr&&r&&pr.saved&&pr.at===r.at) pr.saved=false; set({readings:S.readings.filter(x=>x.id!==id)}); }
+  else if(a==='pshare'){ const pr=S.practice; if(!pr||!logada()||!COM) return; const sp=spreadById(pr.spreadId); S.rasc.tema='tiragem'; S.rasc.erro=''; const tp=textoPratica(sp,pr); if(!S.rasc.texto.includes(tp.trim())) S.rasc.texto=S.rasc.texto.trim()?S.rasc.texto.trim()+'\n\n'+tp:tp; set({screen:'escrever'}); document.getElementById('main').scrollTop=0; }
+  else if(a==='cdesafio'){ const pid=+id; set({screen:'comunidade'}); comCarregar(true).then(()=>{ if(!S.com.posts.some(x=>x.id===pid)) return; comAbrirComentarios(pid); const el=document.getElementById('post-'+pid); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }); }
   else if(a==='qstart'){ pararTimer(); const q=montarQuiz(); if(!q) return; set({quiz:q,quizOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='qreset'){ const q=S.quiz; if(q&&!q.done&&q.answers.length&&q.modo==='relampago') finalizarQuiz(q); pararTimer(); set({quiz:null,quizOpen:null}); }
   else if(a==='qhist') set({quizOpen:S.quizOpen===id?null:id});

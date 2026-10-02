@@ -26,6 +26,12 @@ Não é necessário trocar o número `CACHE` em `sw.js` a cada atualização. Tr
 - **Modo escuro**: segue a preferência do aparelho, sem botão.
 - Nos históricos de quiz e flashcards, "Cartas que mais erro" tem um botão que abre uma sessão de flashcards só com elas.
 
+## Tiragens como diário e desafio da semana
+
+- Na prática de uma tiragem há dois campos: **Minha pergunta** (antes de sortear) e **O padrão em uma frase** (depois). Os dois ficam gravados na prática salva e aparecem na lista "Minhas práticas". Editar a frase depois de salvar atualiza a prática.
+- Logada, o botão **Compartilhar na roda** abre a tela Escrever com o tema Tiragem e o texto já montado (tiragem, pergunta, cartas por posição e a síntese). Se já havia um rascunho, o texto é anexado ao fim.
+- **Desafio da semana**: a Raquel escreve um post começando com "Desafio da semana:" (a primeira linha vira o título) e fixa nos três pontos do post. Ele aparece no Início de todas as assinantes, com a contagem de respostas e o botão Participar, que abre os comentários desse post. Um post fixado que não comece com "Desafio" aparece como "Aviso fixado". Só o post fixado mais recente é mostrado.
+
 ## Quiz: quatro modos
 
 - **Clássico**: 10 perguntas sorteadas das fichas, sem o nome da carta na pergunta.

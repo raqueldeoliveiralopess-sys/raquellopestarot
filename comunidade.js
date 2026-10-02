@@ -164,10 +164,19 @@
       return { posts: a.count || 0, curtidas: b.error ? 0 : (b.count || 0) };
     } catch(e) { throw traduz(e); }
   }
+  // Último post fixado pela administradora (aviso ou desafio da semana), para o Início
+  async function fixados(){
+    try {
+      const sb=cliente();
+      const { data, error } = await sb.from('posts').select(SELECT_POST).eq('fixado', true).order('criado_em', { ascending: false }).limit(1);
+      if (error) throw error;
+      return marcarCurtidas(sb, (data || []).map(mapaPost));
+    } catch(e) { throw traduz(e); }
+  }
   async function adminUids(){
     try { const { data, error } = await cliente().rpc('admin_uids'); if (error || !Array.isArray(data)) return []; return data.map(x => typeof x === 'string' ? x : (x && (x.admin_uids || x.id))).filter(Boolean); }
     catch(e) { return []; }
   }
 
-  window.GA_COM = { TEMAS, POR_PAGINA, listar, publicar, perfilDe, postsDe, contagens, adminUids, comentarios, comentar, curtir, apagarPost, apagarComentario, fixar, bloquear };
+  window.GA_COM = { TEMAS, POR_PAGINA, listar, publicar, perfilDe, postsDe, contagens, adminUids, fixados, comentarios, comentar, curtir, apagarPost, apagarComentario, fixar, bloquear };
 })();
