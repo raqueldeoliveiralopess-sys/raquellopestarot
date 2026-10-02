@@ -26,6 +26,11 @@ Não é necessário trocar o número `CACHE` em `sw.js` a cada atualização. Tr
 - **Modo escuro**: segue a preferência do aparelho, sem botão.
 - Nos históricos de quiz e flashcards, "Cartas que mais erro" tem um botão que abre uma sessão de flashcards só com elas.
 
+## Cartas irmãs e flashcards por área
+
+- Na ficha de cada carta, a seção **Cartas irmãs** mostra o mesmo número nos outros naipes (menores) ou as cartas de mesma raiz numerológica entre os Maiores (Mago, Roda e Sol; Sacerdotisa, Força e Julgamento…; o Louco conversa com o Mundo e o Mago). Tocar abre a tela **Lado a lado**: imagem, palavras-chave, polaridade, luz, sombra, significado geral e invertida das duas, com atalho para trocar a segunda carta.
+- Nos **Flashcards**, o seletor **Área** (Geral, Amor, Financeiro, Espiritualidade, Invertida) troca o texto do verso pelo da área escolhida. O agendamento da repetição espaçada continua um por carta; o histórico registra a área de cada sessão.
+
 ## Lembrete diário por e-mail
 
 A aluna liga e desliga em **Editar perfil** ("Lembrete diário por e-mail"). Todo dia às 8h de Brasília, a função agendada `netlify/functions/lembrete-diario.mjs` envia pela Brevo um e-mail curto com a carta do dia (a mesma que o app mostra), a pergunta de reflexão, quantas cartas esperam revisão nos flashcards e a sequência de dias. O rodapé tem o link "Parar de receber", assinado, que chama `lembrete-sair.mjs` e desliga o lembrete no perfil.

@@ -150,6 +150,13 @@ img.rev{transform:rotate(180deg)}
 .selo{display:inline-block;padding:3px 9px;border-radius:99px;background:var(--ink);color:var(--pink);font-size:11px;font-weight:600}
 .selo.xs{padding:1px 7px;font-size:10px;margin-left:6px;vertical-align:middle}
 .gfacil{background:#402327;color:#ECDF90}
+.irmas{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.irmas button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;border:1px solid var(--line);border-radius:14px;background:var(--card);font-size:12px;line-height:1.2;text-align:center}
+.irmas img{width:56px;height:92px;object-fit:cover;border-radius:6px;background:var(--sand)}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
+.cgrid>div,.cgrid>p{min-width:0}
+.ccol{display:flex;flex-direction:column;gap:8px;padding:12px 10px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+.ccol img{width:96px;height:158px;object-fit:cover;border-radius:8px;background:var(--sand);box-shadow:0 8px 20px rgba(64,35,39,.18)}
 .trilha{position:relative;display:flex;flex-direction:column;gap:8px}
 .trilha::before{content:"";position:absolute;left:21px;top:22px;bottom:22px;width:2px;background:var(--line);z-index:0}
 .cap{position:relative;z-index:1;border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:hidden}
@@ -251,7 +258,8 @@ const ICONS = {
 
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem('tarot-estudo') || '{}'); } catch (e) { saved = {}; }
-const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[],quizHistory:[],quizOpen:null,srs:{},srsNovasDia:10,srsHoje:{d:'',n:0},flashHistory:[],flashOpen:null,diasEstudo:{},conquistas:{},cdd:{d:'',ok:false},cartasDia:{d:'',n:0},quizModo:'classico',quizNivel:'normal'}, saved.persist || {});
+const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[],quizHistory:[],quizOpen:null,srs:{},srsNovasDia:10,srsHoje:{d:'',n:0},flashHistory:[],flashOpen:null,diasEstudo:{},conquistas:{},cdd:{d:'',ok:false},cartasDia:{d:'',n:0},quizModo:'classico',quizNivel:'normal',flashArea:'geral'}, saved.persist || {});
+if(!['geral','amor','financeiro','espiritualidade','invertida'].includes(S.flashArea)) S.flashArea='geral'; S.cmp=null;
 if(!['classico','relampago','erros','luzsombra'].includes(S.quizModo)) S.quizModo='classico'; if(!['normal','dificil'].includes(S.quizNivel)) S.quizNivel='normal';
 if(!S.diasEstudo||typeof S.diasEstudo!=='object') S.diasEstudo={}; if(!S.conquistas||typeof S.conquistas!=='object') S.conquistas={}; if(!S.cdd) S.cdd={d:'',ok:false}; if(!S.cartasDia) S.cartasDia={d:'',n:0}; S.conqOpen=false;
 if(!Array.isArray(S.flashHistory)) S.flashHistory=[]; S.flashOpen=null;
@@ -261,7 +269,7 @@ S.rasc={tema:'',texto:'',foto:null,preview:null,erro:'',enviando:false};
 S.pub={uid:null,perfil:null,contagens:null,posts:[],fim:true,carregando:false,erro:'',soFoto:false};
 if(!S.readings) S.readings=[]; if(!Array.isArray(S.quizHistory)) S.quizHistory=[]; S.quizOpen=null; if(!S.spreadVar) S.spreadVar={};
 if(!S.notes) S.notes={};
-function persist(){ try { checarConquistas(); localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,quizModo:S.quizModo,quizNivel:S.quizNivel,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje,flashHistory:S.flashHistory,diasEstudo:S.diasEstudo,conquistas:S.conquistas,cdd:S.cdd,cartasDia:S.cartasDia}})); syncLater(); return true; } catch(e){ return false; } }
+function persist(){ try { checarConquistas(); localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,flashArea:S.flashArea,quizScope:S.quizScope,quizModo:S.quizModo,quizNivel:S.quizNivel,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje,flashHistory:S.flashHistory,diasEstudo:S.diasEstudo,conquistas:S.conquistas,cdd:S.cdd,cartasDia:S.cartasDia}})); syncLater(); return true; } catch(e){ return false; } }
 let lastSent=null;
 function syncLater(){ const A=window.GA_AUTH; if(!A||!A.enabled||A.estado!=='ok') return; const str=JSON.stringify(backupData()); if(str===lastSent) return; lastSent=str; A.agendarEnvio(); }
 function exportBackup(){
@@ -555,6 +563,36 @@ function library(){
   const rows=cardsOf(S.suit).map(c=>`<button class="row" id="carta-${c.id}" data-act="card" data-id="${c.id}"><img src="${c.img}" alt="" loading="lazy"><div class="t"><div class="n">${esc(c.name)}${S.studied[c.id]?'<i class="dot"></i>':''}</div><div class="s">${rotulo(c)} · ${esc(c.palavras)}</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`).join('');
   return `${tituloComAvatar('Cartas')}<div class="pills">${tabs}</div><div class="stack">${rows}</div>`;
 }
+// Cartas irmãs: menores com o mesmo número nos outros naipes; maiores pela redução numerológica (1, 10 e 19; 2, 11 e 20…)
+const AREAS=[{id:'geral',label:'Geral'},{id:'amor',label:'Amor'},{id:'financeiro',label:'Financeiro'},{id:'espiritualidade',label:'Espiritualidade'},{id:'invertida',label:'Invertida'}];
+const areaLabel = id => (AREAS.find(a=>a.id===id)||AREAS[0]).label;
+function irmas(c){
+  if(c.suit!=='maiores') return CARDS.filter(x=>x.suit!=='maiores'&&x.id!==c.id&&x.rank===c.rank);
+  const red=n=>{ while(n>9) n=String(n).split('').reduce((a,d)=>a+ +d,0); return n; };
+  if(c.id===0) return CARDS.filter(x=>x.suit==='maiores'&&[21,1].includes(x.id)); // o Louco conversa com o fim e o começo da jornada
+  return CARDS.filter(x=>x.suit==='maiores'&&x.id!==c.id&&x.id!==0&&red(x.id)===red(c.id));
+}
+function irmasHtml(c){
+  const l=irmas(c); if(!l.length) return '';
+  const motivo=c.suit==='maiores'?(c.id===0?'O zero não tem par numérico: compare com o Mundo, que fecha o ciclo, e com o Mago, que o abre.':'Mesma raiz numerológica entre os Maiores: o mesmo tema em estágios diferentes da jornada.'):'O mesmo número nos outros naipes: a mesma etapa vivida com fogo, terra, ar e água.';
+  return `<div class="stack" style="gap:8px"><h2 style="font-size:22px">Cartas irmãs</h2><p style="font-size:13px;color:var(--ink2)">${motivo} Toque para ver lado a lado.</p><div class="irmas">${l.map(x=>`<button data-act="comparar" data-a="${c.id}" data-b="${x.id}"><img src="${x.img}" alt="" loading="lazy"><b>${esc(x.name)}</b></button>`).join('')}</div></div>`;
+}
+function compararView(){
+  const cmp=S.cmp; if(!cmp) return cardView();
+  const a=CARDS[cmp.a], b=CARDS[cmp.b]; if(!a||!b) return cardView();
+  const col=(c,outra)=>`<div class="ccol"><button class="avbtn" data-act="card" data-id="${c.id}" style="flex-direction:column;gap:6px;align-items:center;width:100%"><img src="${c.img}" alt=""><b class="serif" style="font-size:20px;line-height:1.05;text-align:center">${esc(c.name)}</b></button><div style="font-size:12px;color:var(--ink2);text-align:center;line-height:1.35">${esc(c.palavras)}</div><div style="font-size:12px;line-height:1.4"><b style="color:var(--wood)">Polaridade.</b> ${esc(c.polaridade.split('. ')[0].split(',')[0])}</div></div>`;
+  const lista=(k,cor,titulo)=>`<div class="stack" style="gap:6px"><div class="eyebrow" style="color:${cor}">${titulo}</div><div class="cgrid"><div>${(a[k]||[]).map(t=>`<div class="li">${esc(t)}</div>`).join('')}</div><div>${(b[k]||[]).map(t=>`<div class="li">${esc(t)}</div>`).join('')}</div></div></div>`;
+  const outras=irmas(a).filter(x=>x.id!==b.id);
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin:-8px -8px 0"><button data-act="card" data-id="${a.id}" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;border:none;background:transparent;color:var(--wood);font-size:15px">${ICONS.left}${esc(a.name)}</button></div>
+  <div class="stack" style="gap:4px"><div class="eyebrow">Lado a lado</div><h1 style="font-size:28px;line-height:1.05">${esc(a.name)} e ${esc(b.name)}</h1><p style="font-size:14px;color:var(--ink2)">Leia as duas colunas como uma pergunta: o que muda quando a mesma etapa troca de elemento ou de estágio?</p></div>
+  <div class="cgrid">${col(a,b)}${col(b,a)}</div>
+  ${lista('luz','#8A6A1E','Lado de luz')}
+  <div class="box dark" style="gap:6px">${lista('sombra','var(--pink)','Lado de sombra')}</div>
+  <div class="stack" style="gap:6px"><div class="eyebrow">Significado geral</div><div class="cgrid"><p style="font-size:13px">${esc(a.geral)}</p><p style="font-size:13px">${esc(b.geral)}</p></div></div>
+  <div class="stack" style="gap:6px"><div class="eyebrow">Invertidas</div><div class="cgrid"><p style="font-size:13px">${esc(a.invertido)}</p><p style="font-size:13px">${esc(b.invertido)}</p></div></div>
+  ${outras.length?`<div class="stack" style="gap:8px"><div class="eyebrow">Trocar a segunda carta</div><div class="pills">${outras.map(x=>`<button class="pill" data-act="comparar" data-a="${a.id}" data-b="${x.id}">${esc(x.name)}</button>`).join('')}</div></div>`:''}
+  <div class="grid2"><button class="btn ghost" data-act="card" data-id="${a.id}">Ficha de ${esc(a.name.replace(/^(O|A|Os|As) /,''))}</button><button class="btn ghost" data-act="card" data-id="${b.id}">Ficha de ${esc(b.name.replace(/^(O|A|Os|As) /,''))}</button></div>`;
+}
 function cardView(){
   const c=CARDS[S.cardId]||CARDS[0]; const su=SUITS.find(x=>x.id===c.suit)||SUITS[0]; const st=!!S.studied[c.id];
   const chips=(c.palavras||'').split(/[•,]/).map(t=>t.trim()).filter(Boolean).map(t=>`<span class="chip">${esc(t)}</span>`).join('');
@@ -568,6 +606,7 @@ function cardView(){
   <div class="stack"><h2 style="font-size:22px">Simbolismo</h2>${(c.simbolismo||[]).map(t=>`<div class="sym"><i></i><div>${esc(t)}</div></div>`).join('')}</div>
   <div class="box" style="background:var(--sand);border:none;gap:6px"><div class="h" style="color:var(--wood)">Invertida</div><p style="font-size:14px">${esc(c.invertido)}</p></div>
   <div class="stack" style="gap:12px"><h2 style="font-size:22px">Nas áreas da vida</h2><div><div style="font-size:13px;font-weight:600;color:#AD4A6A">Amor</div><p style="font-size:14px">${esc(c.amor)}</p></div><div><div style="font-size:13px;font-weight:600;color:var(--green)">Financeiro</div><p style="font-size:14px">${esc(c.financeiro)}</p></div><div><div style="font-size:13px;font-weight:600;color:#5B4E9B">Espiritualidade</div><p style="font-size:14px">${esc(c.espiritualidade)}</p></div></div>
+  ${irmasHtml(c)}
   <div class="notes"><h2 style="font-size:22px">Minhas anotações</h2><label for="note" style="font-size:13px;color:var(--ink2)">Interpretações, intuições, tiragens em que ${esc(c.name)} apareceu, referências de outros estudos.</label><textarea id="note" data-note="${c.id}" placeholder="Escreva aqui…">${esc(S.notes[c.id]||'')}</textarea><div class="st"><span id="note-status">${S.notes[c.id]?salvoOnde():''}</span><span>${(S.notes[c.id]||'').length?((S.notes[c.id]||'').length+' caracteres'):''}</span></div></div>`;
 }
 function notesCount(){ return Object.keys(S.notes).filter(k=>(S.notes[k]||'').trim()).length; }
@@ -630,7 +669,7 @@ function salvarSessaoFlash(){
   const f=S.flash; if(!f||f.salvo||!f.respostas||!f.respostas.length) return;
   f.salvo=true;
   const cont=k=>f.respostas.filter(r=>r.n===k).length;
-  const h={id:String(Date.now()),at:Date.now(),scope:S.flashScope,mode:S.flashMode,feitas:f.respostas.length,erros:cont('errei'),dificil:cont('dificil'),bom:cont('bom'),facil:cont('facil'),novas:f.respostas.filter(r=>r.t==='nova').length,dur:Math.max(0,Date.now()-(f.inicio||Date.now())),respostas:f.respostas,completa:!!f.done};
+  const h={id:String(Date.now()),at:Date.now(),scope:S.flashScope,mode:S.flashMode,area:S.flashArea,feitas:f.respostas.length,erros:cont('errei'),dificil:cont('dificil'),bom:cont('bom'),facil:cont('facil'),novas:f.respostas.filter(r=>r.t==='nova').length,dur:Math.max(0,Date.now()-(f.inicio||Date.now())),respostas:f.respostas,completa:!!f.done};
   S.flashHistory=[h].concat(S.flashHistory).slice(0,50);
 }
 const NOTA_LABEL={errei:'Errei',dificil:'Difícil',bom:'Bom',facil:'Fácil'};
@@ -645,7 +684,7 @@ function flashHistoryView(){
   const miss={}; H.forEach(h=>h.respostas.forEach(r=>{ if(r.n==='errei') miss[r.c]=(miss[r.c]||0)+1; }));
   const top=Object.keys(miss).sort((a,b)=>miss[b]-miss[a]).slice(0,5);
   const topHtml=top.length?`<div class="stack" style="gap:6px"><div class="eyebrow">Cartas que mais erro</div>${top.map(id=>{const c=CARDS[id];return `<button class="row" data-act="card" data-id="${c.id}" style="min-height:56px"><img src="${c.img}" alt="" loading="lazy" style="width:32px;height:52px"><div class="t"><div class="n" style="font-size:15px">${esc(c.name)}</div><div class="s">${miss[id]} erro${miss[id]===1?'':'s'} · toque para revisar a ficha</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`;}).join('')}<button class="btn ghost" data-act="ferros" data-ids="${top.join(',')}">Revisar essas ${top.length} nos flashcards agora</button></div>`:'';
-  const list=H.map(h=>{const open=S.flashOpen===h.id, min=Math.max(1,Math.round(h.dur/60000)); return `<button class="row" data-act="fhist" data-id="${h.id}" style="min-height:60px;${open?'border-color:var(--caramel)':''}"><div class="t"><div class="n" style="font-size:15px;justify-content:space-between"><span>${fmtDate(h.at)} · ${new Date(h.at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span><span class="serif" style="font-size:20px;color:${h.erros===0?'#2F5A33':h.erros<=h.feitas/4?'var(--wood)':'var(--red)'}">${h.feitas-h.erros}/${h.feitas}</span></div><div class="s">${esc(scopeLabel(h.scope))} · ${h.novas?h.novas+' nova'+(h.novas===1?'':'s')+' · ':''}${h.erros} erro${h.erros===1?'':'s'} · ${min} min${h.completa?'':' · encerrada antes'}</div><div class="bar" style="height:4px"><i style="width:${h.feitas?Math.round(100*(h.feitas-h.erros)/h.feitas):0}%;background:${h.erros===0?'var(--green)':'var(--caramel)'}"></i></div></div></button>${open?flashDetail(h):''}`;}).join('');
+  const list=H.map(h=>{const open=S.flashOpen===h.id, min=Math.max(1,Math.round(h.dur/60000)); return `<button class="row" data-act="fhist" data-id="${h.id}" style="min-height:60px;${open?'border-color:var(--caramel)':''}"><div class="t"><div class="n" style="font-size:15px;justify-content:space-between"><span>${fmtDate(h.at)} · ${new Date(h.at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span><span class="serif" style="font-size:20px;color:${h.erros===0?'#2F5A33':h.erros<=h.feitas/4?'var(--wood)':'var(--red)'}">${h.feitas-h.erros}/${h.feitas}</span></div><div class="s">${esc(scopeLabel(h.scope))}${h.area&&h.area!=='geral'?' · '+esc(areaLabel(h.area)):''} · ${h.novas?h.novas+' nova'+(h.novas===1?'':'s')+' · ':''}${h.erros} erro${h.erros===1?'':'s'} · ${min} min${h.completa?'':' · encerrada antes'}</div><div class="bar" style="height:4px"><i style="width:${h.feitas?Math.round(100*(h.feitas-h.erros)/h.feitas):0}%;background:${h.erros===0?'var(--green)':'var(--caramel)'}"></i></div></div></button>${open?flashDetail(h):''}`;}).join('');
   return `<div class="stack" style="gap:12px;margin-top:8px"><h2 style="font-size:24px">Meu histórico</h2>
   <div class="dark" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;padding:14px"><div><div class="serif" style="font-size:28px;color:var(--butter)">${H.length}</div><div style="font-size:11px;opacity:.8">sessões</div></div><div><div class="serif" style="font-size:28px;color:var(--butter)">${acerto}%</div><div style="font-size:11px;opacity:.8">lembradas</div></div><div><div class="serif" style="font-size:28px;color:var(--butter)">${seq}</div><div style="font-size:11px;opacity:.8">dia${seq===1?'':'s'} seguido${seq===1?'':'s'}</div></div></div>
   ${topHtml}<div class="stack" style="gap:8px"><div class="eyebrow">Sessões · toque para ver carta a carta</div>${list}</div></div>`;
@@ -663,10 +702,12 @@ function flash(){
       <div class="bar"><i style="width:${pct}%"></i></div><div style="font-size:12px;opacity:.85">${r.dominadas} de ${r.total} cartas dominadas (intervalo de 3 semanas ou mais)${r.aprendendo?` · ${r.aprendendo} em aprendizado`:''}</div></div>
     ${nada?`<div class="box" style="text-align:center;gap:6px"><b class="serif" style="font-size:22px">Tudo em dia</b><p style="font-size:14px;color:var(--ink2)">${r.proxima!=null?'Próxima revisão '+fmtQuando(r.proxima)+'.':''} ${r.novas?'Você já estudou as novas de hoje.':'Você já viu todas as cartas deste grupo.'}</p></div>${r.novas?`<button class="btn" data-act="fextra">Estudar mais ${Math.min(10,r.novas)} novas agora</button>`:''}`:`<button class="btn" data-act="fstart">Revisar · ${r.due+r.novasSessao} carta${r.due+r.novasSessao===1?'':'s'}</button>`}
     ${modos}
+    <div class="stack" style="gap:8px"><div class="eyebrow">Área</div><div class="pills">${AREAS.map(x=>`<button class="pill${S.flashArea===x.id?' on':''}" data-act="farea" data-id="${x.id}">${x.label}</button>`).join('')}</div><div style="font-size:12px;color:var(--muted)">${S.flashArea==='geral'?'Palavras-chave e significado geral.':S.flashArea==='invertida'?'O texto da carta invertida no lugar do significado. O agendamento continua o mesmo por carta.':'O texto da carta '+(S.flashArea==='amor'?'no amor':S.flashArea==='financeiro'?'no financeiro':'na espiritualidade')+' no lugar do significado geral. O agendamento continua o mesmo por carta.'}</div></div>
     <div class="stack" style="gap:8px"><div class="eyebrow">Cartas novas por dia</div><div class="pills">${[5,10,20].map(n=>`<button class="pill${S.srsNovasDia===n?' on':''}" data-act="fnovas" data-id="${n}">${n}</button>`).join('')}</div><div style="font-size:12px;color:var(--muted)">Comece devagar. Dez por dia fecha as 78 em oito dias e as revisões se acumulam depois.</div></div>${flashHistoryView()}`;
   } else if(!f.done){
     const id=f.atual, c=CARDS[id]; const showImg = S.flashMode==='carta' ? !f.flipped : f.flipped;
-    const face = showImg ? `<img src="${c.img}" alt=""><div class="serif" style="font-size:30px;line-height:1">${esc(c.name)}</div><div class="eyebrow" style="color:inherit;opacity:.7">${rotulo(c)}</div>` : `<div class="eyebrow" style="color:inherit;opacity:.7">Palavras-chave</div><div class="serif" style="font-size:24px;line-height:1.2">${esc(c.palavras)}</div><p style="font-size:14px;opacity:.92">${esc(mask(c.geral,c))}</p>`;
+    const ar=S.flashArea, textoArea=ar==='geral'?null:ar==='invertida'?mask(c.invertido,c).replace(/^Invertid[ao],?\s*/i,'').replace(/^esta carta/i,'Esta carta'):mask(c[ar],c);
+    const face = showImg ? `<img src="${c.img}" alt=""><div class="serif" style="font-size:30px;line-height:1">${esc(c.name)}</div><div class="eyebrow" style="color:inherit;opacity:.7">${rotulo(c)}${ar!=='geral'?' · '+areaLabel(ar).toLowerCase():''}</div>` : textoArea ? `<div class="eyebrow" style="color:inherit;opacity:.7">${ar==='invertida'?'Carta invertida':'No '+areaLabel(ar).toLowerCase()}</div><p style="font-size:15px;line-height:1.5;opacity:.95">${esc(textoArea)}</p>` : `<div class="eyebrow" style="color:inherit;opacity:.7">Palavras-chave</div><div class="serif" style="font-size:24px;line-height:1.2">${esc(c.palavras)}</div><p style="font-size:14px;opacity:.92">${esc(mask(c.geral,c))}</p>`;
     const agora=Date.now(), tipo=ehNova(id)?'Nova':ehAprendendo(id)?'Aprendendo':'Revisão';
     const restantes={n:f.fila.filter(ehNova).length,a:f.fila.filter(ehAprendendo).length,r:f.fila.filter(ehRevisao).length};
     const prev=n=>{ const x=proximo(id,n,agora); return fmtIntervalo(x.due-agora); };
@@ -994,16 +1035,16 @@ function perfilPubView(){
 let lastKey=null;
 function render(){
   const main=document.getElementById('main');
-  const key=S.screen+(S.screen==='card'?':'+S.cardId:S.screen==='library'?':'+S.suit:S.screen==='spread'?':'+S.spreadId+':'+S.spreadTab:S.screen==='perfil'?':'+S.pub.uid+':'+(S.pub.soFoto?'f':'t'):'');
+  const key=S.screen+(S.screen==='card'?':'+S.cardId:S.screen==='comparar'&&S.cmp?':'+S.cmp.a+':'+S.cmp.b:S.screen==='library'?':'+S.suit:S.screen==='spread'?':'+S.spreadId+':'+S.spreadTab:S.screen==='perfil'?':'+S.pub.uid+':'+(S.pub.soFoto?'f':'t'):'');
   const keep = key===lastKey ? main.scrollTop : 0;
   const foco=document.activeElement&&main.contains(document.activeElement)&&document.activeElement.id?{id:document.activeElement.id,ini:document.activeElement.selectionStart,fim:document.activeElement.selectionEnd}:null;
   const A=window.GA_AUTH, gated=A&&A.enabled&&A.estado!=='ok';
   document.getElementById('nav').style.display=gated?'none':'';
   if(gated){ main.innerHTML=gateView(); lastKey='gate'; return; }
-  main.innerHTML = S.screen==='comunidade'?comunidadeView():S.screen==='escrever'?escreverView():S.screen==='perfil'?perfilPubView():S.screen==='editarPerfil'?editarPerfilView():S.screen==='home'?home():S.screen==='library'?library():S.screen==='card'?cardView():S.screen==='flash'?flash():S.screen==='spreads'?spreads():S.screen==='spread'?spread():quiz();
+  main.innerHTML = S.screen==='comunidade'?comunidadeView():S.screen==='escrever'?escreverView():S.screen==='perfil'?perfilPubView():S.screen==='editarPerfil'?editarPerfilView():S.screen==='home'?home():S.screen==='library'?library():S.screen==='card'?cardView():S.screen==='comparar'?compararView():S.screen==='flash'?flash():S.screen==='spreads'?spreads():S.screen==='spread'?spread():quiz();
   main.scrollTop=keep; lastKey=key;
   if(foco){ const el=document.getElementById(foco.id); if(el){ el.focus({preventScroll:true}); try{ if(foco.ini!=null) el.setSelectionRange(foco.ini,foco.fim); }catch(e){} } }
-  const active = S.screen==='card'?'library':S.screen==='spread'?'spreads':S.screen==='escrever'?'comunidade':S.screen;
+  const active = S.screen==='card'||S.screen==='comparar'?'library':S.screen==='spread'?'spreads':S.screen==='escrever'?'comunidade':S.screen;
   const tabs=[['home','Início'],['library','Cartas'],['flash','Flashcards'],['quiz','Quiz'],['spreads','Tiragens']].concat(logada()&&COM?[['comunidade','Comunidade']]:[]);
   const navEl=document.getElementById('nav'); navEl.style.setProperty('--tabs',tabs.length);
   navEl.innerHTML=tabs.map(([id,l])=>`<button class="${active===id?'on':''}" data-act="go" data-screen="${id}">${ICONS[id==='library'?'cards':id]}<span>${l}</span></button>`).join('');
@@ -1119,6 +1160,8 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='ferros'){ const ids=(b.dataset.ids||'').split(',').map(Number).filter(x=>!isNaN(x)&&CARDS[x]); if(!ids.length) return; const f={fila:ids,atual:null,flipped:false,feitas:0,erros:0,done:false,respostas:[],inicio:Date.now()}; f.atual=proximaCarta(f); set({screen:'flash',flash:f,flashOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='fscope') set({flashScope:id});
   else if(a==='fmode') set({flashMode:id});
+  else if(a==='farea') set({flashArea:id});
+  else if(a==='comparar'){ S.cmp={a:+b.dataset.a,b:+b.dataset.b}; set({screen:'comparar'}); document.getElementById('main').scrollTop=0; }
   else if(a==='fnovas') set({srsNovasDia:+id});
   else if(a==='fhist'){ S.flashOpen=S.flashOpen===id?null:id; render(); }
   else if(a==='fhdel'){ if(!confirm('Apagar esta sessão do histórico? O agendamento das cartas não muda.')) return; set({flashHistory:S.flashHistory.filter(h=>h.id!==id),flashOpen:null}); }
