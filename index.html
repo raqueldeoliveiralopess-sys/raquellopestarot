@@ -183,20 +183,21 @@ const ICONS = {
 
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem('tarot-estudo') || '{}'); } catch (e) { saved = {}; }
-const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[],quizHistory:[],quizOpen:null}, saved.persist || {});
+const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[],quizHistory:[],quizOpen:null,srs:{},srsNovasDia:10,srsHoje:{d:'',n:0}}, saved.persist || {});
+if(!S.srs||typeof S.srs!=='object') S.srs={}; if(!S.srsHoje) S.srsHoje={d:'',n:0}; if(![5,10,20].includes(S.srsNovasDia)) S.srsNovasDia=10;
 S.com={posts:[],carregando:false,erro:'',preparando:false,fim:false,tema:'todos',aberto:null,coments:{},menu:null,combinados:false,draft:{},enviando:false};
 S.rasc={tema:'',texto:'',foto:null,preview:null,erro:'',enviando:false};
 if(!S.readings) S.readings=[]; if(!Array.isArray(S.quizHistory)) S.quizHistory=[]; S.quizOpen=null; if(!S.spreadVar) S.spreadVar={};
 if(!S.notes) S.notes={};
-function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory}})); syncLater(); return true; } catch(e){ return false; } }
+function persist(){ try { localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje}})); syncLater(); return true; } catch(e){ return false; } }
 let lastSent=null;
 function syncLater(){ const A=window.GA_AUTH; if(!A||!A.enabled||A.estado!=='ok') return; const str=JSON.stringify(backupData()); if(str===lastSent) return; lastSent=str; A.agendarEnvio(); }
 function exportBackup(){
-  const data={app:'estudo-tarot',exportadoEm:new Date().toISOString(),studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings,quizHistory:S.quizHistory};
+  const data=Object.assign({app:'estudo-tarot',exportadoEm:new Date().toISOString()},backupData());
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='estudo-tarot-backup-'+new Date().toISOString().slice(0,10)+'.json'; document.body.appendChild(a); a.click(); a.remove();
 }
-function backupData(){ return {studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings,quizHistory:S.quizHistory}; }
+function backupData(){ return {studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje}; }
 function mergeNote(a,b){ a=a||''; b=b||''; if(!a.trim()) return b; if(!b.trim()||a===b) return a; if(a.includes(b)) return a; if(b.includes(a)) return b; return b+'\n\n— outra versão —\n'+a; }
 // Junta dados de outro lugar (backup ou nuvem) com os do aparelho, sem perder nada.
 function mergeData(d){
@@ -205,6 +206,8 @@ function mergeData(d){
   const nt=Object.assign({},S.notes); Object.keys(d.notes||{}).forEach(k=>{ nt[k]=mergeNote(nt[k],d.notes[k]); }); S.notes=nt;
   if(d.stats) S.stats={quizzes:Math.max(S.stats.quizzes||0,d.stats.quizzes||0),best:Math.max(S.stats.best||0,d.stats.best||0)};
   if(Array.isArray(d.readings)){ const ids=new Set(S.readings.map(r=>r.id)); d.readings.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)&&r.draw) S.readings.push(r); }); S.readings.sort((a,b)=>b.at-a.at); S.readings=S.readings.slice(0,30); }
+  if(d.srs&&typeof d.srs==='object'){ const m=Object.assign({},S.srs); Object.keys(d.srs).forEach(k=>{ const a=m[k], b=d.srs[k]; if(!b||typeof b!=='object') return; if(!a||(b.reps||0)>(a.reps||0)||((b.reps||0)===(a.reps||0)&&(b.due||0)>(a.due||0))) m[k]=b; }); S.srs=m; }
+  if(d.srsHoje&&d.srsHoje.d===hojeStr()&&(d.srsHoje.n||0)>(S.srsHoje.n||0)) S.srsHoje=d.srsHoje;
   if(Array.isArray(d.quizHistory)){ const qids=new Set(S.quizHistory.map(h=>h.id)); d.quizHistory.forEach(h=>{ if(h&&h.id&&!qids.has(h.id)&&Array.isArray(h.answers)) S.quizHistory.push(h); }); S.quizHistory.sort((a,b)=>b.at-a.at); S.quizHistory=S.quizHistory.slice(0,50); }
 }
 function importBackup(file){
@@ -265,7 +268,7 @@ function home(){
   const A=window.GA_AUTH, logged=A&&A.enabled&&A.estado==='ok';
   return `<div class="stack" style="gap:4px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div class="eyebrow">Grimório Arcano</div>${logged?`<button data-act="go" data-screen="perfil" aria-label="Meu perfil" style="border:none;background:transparent;padding:0;display:flex;align-items:center;gap:8px;color:var(--wood);font-size:13px;font-weight:500">${avatarHtml('sm')}</button>`:''}</div><h1 style="font-size:40px;line-height:1.05">Sua trilha de estudo</h1><p style="color:var(--ink2);margin-top:6px">78 cartas, uma por vez. Estude a ficha, treine com flashcards, confirme no quiz e leia padrões nas tiragens.</p></div>
   <div class="dark stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="eyebrow" style="color:var(--pink)">Progresso geral</div><div class="serif" style="font-size:26px;color:var(--butter)">${n}<span style="font-size:16px;color:var(--paper);opacity:.8"> / 78</span></div></div><div class="bar" style="height:8px"><i style="width:${Math.round(100*n/78)}%"></i></div><div style="font-size:13px;opacity:.85">${hint}</div></div>
-  <div class="grid3"><button class="tile" data-act="go" data-screen="flash">${ICONS.flash}<div><b>Flashcards</b><br><small>Memorize</small></div></button><button class="tile" data-act="go" data-screen="quiz">${ICONS.quiz}<div><b>Quiz</b><br><small>10 perguntas</small></div></button><button class="tile" data-act="go" data-screen="spreads">${ICONS.spreads}<div><b>Tiragens</b><br><small>${SPREADS.length} métodos</small></div></button></div>
+  <div class="grid3"><button class="tile" data-act="go" data-screen="flash">${ICONS.flash}<div><b>Flashcards</b><br><small>${(()=>{const r=resumoSrs('all');return r.due?r.due+' para hoje':r.novasSessao?r.novasSessao+' novas hoje':'Em dia';})()}</small></div></button><button class="tile" data-act="go" data-screen="quiz">${ICONS.quiz}<div><b>Quiz</b><br><small>10 perguntas</small></div></button><button class="tile" data-act="go" data-screen="spreads">${ICONS.spreads}<div><b>Tiragens</b><br><small>${SPREADS.length} métodos</small></div></button></div>
   <div class="stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="font-size:24px">Módulos</h2><span style="font-size:12px;color:var(--muted)">toque para estudar</span></div>${mods}</div>
   <div class="box" style="gap:6px"><div class="h" style="color:var(--wood)">Backup</div><div style="font-size:13px;color:var(--ink2);line-height:1.45">${notesCount()} carta${notesCount()===1?'':'s'} com anotações e ${n} estudada${n===1?'':'s'}, salvas só neste aparelho. Exporte de vez em quando para não perder.</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="link" data-act="export">Exportar backup</button><label class="link" style="cursor:pointer;display:flex;align-items:center">Importar backup<input type="file" accept="application/json,.json" data-import style="display:none"></label></div></div>
   ${S.stats.quizzes?`<div style="font-size:11px;color:#7A5A4E;text-align:center">Melhor quiz: ${S.stats.best}/10</div>`:''}`;
@@ -291,21 +294,96 @@ function cardView(){
   <div class="notes"><h2 style="font-size:22px">Minhas anotações</h2><label for="note" style="font-size:13px;color:var(--ink2)">Interpretações, intuições, tiragens em que ${esc(c.name)} apareceu, referências de outros estudos.</label><textarea id="note" data-note="${c.id}" placeholder="Escreva aqui…">${esc(S.notes[c.id]||'')}</textarea><div class="st"><span id="note-status">${S.notes[c.id]?'Salvo neste aparelho':''}</span><span>${(S.notes[c.id]||'').length?((S.notes[c.id]||'').length+' caracteres'):''}</span></div></div>`;
 }
 function notesCount(){ return Object.keys(S.notes).filter(k=>(S.notes[k]||'').trim()).length; }
+// ---------- repetição espaçada (estilo Anki, SM-2 simplificado) ----------
+const MIN=60e3, DIA=864e5, PASSOS=[1*MIN,10*MIN], DOMINADA=21; // intervalo em dias a partir do qual a carta conta como dominada
+const hojeStr = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+const srsDe = id => S.srs[id] || null;
+const ehNova = id => !srsDe(id);
+const ehAprendendo = id => { const r=srsDe(id); return !!r && r.step!=null; };
+const ehRevisao = id => { const r=srsDe(id); return !!r && r.step==null; };
+const estaDue = (id,agora) => { const r=srsDe(id); return !!r && (r.due||0)<=agora; };
+function novasHoje(){ if(S.srsHoje.d!==hojeStr()) S.srsHoje={d:hojeStr(),n:0}; return S.srsHoje.n; }
+function fmtIntervalo(ms){ if(ms<MIN) return '<1 min'; if(ms<3600e3) return Math.round(ms/MIN)+' min'; if(ms<DIA) return Math.round(ms/3600e3)+' h'; const d=Math.round(ms/DIA); if(d<30) return d+' d'; if(d<365) return (d/30).toFixed(d<60?1:0).replace('.0','')+' m'; return (d/365).toFixed(1).replace('.0','')+' a'; }
+function fmtQuando(ms){ if(ms<=0) return 'agora'; if(ms<MIN) return 'em menos de 1 min'; if(ms<3600e3) return 'em '+Math.round(ms/MIN)+' min'; if(ms<DIA) return 'em '+Math.round(ms/3600e3)+' h'; const d=Math.round(ms/DIA); return d===1?'amanhã':'em '+d+' dias'; }
+// Calcula o próximo estado da carta para uma resposta (errei | dificil | bom | facil), sem gravar.
+function proximo(id, nota, agora){
+  const r=Object.assign({iv:0,ease:2.5,reps:0,lapses:0,step:0,due:0}, srsDe(id)||{});
+  const n={iv:r.iv,ease:r.ease,reps:r.reps+1,lapses:r.lapses,step:r.step,due:agora,last:agora};
+  const fuzz=x=>x*(0.95+Math.random()*0.1);
+  if(r.step!=null){ // nova ou reaprendendo
+    const relapso=r.lapses>0&&r.iv>0;
+    if(nota==='errei'){ n.step=0; n.due=agora+PASSOS[0]; }
+    else if(nota==='dificil'){ n.step=r.step; n.due=agora+Math.max(PASSOS[Math.min(r.step,PASSOS.length-1)]*1.5,5*MIN); }
+    else if(nota==='bom'){ const st=r.step+1; if(st>=PASSOS.length){ n.step=null; n.iv=relapso?Math.max(1,Math.round(r.iv*0.25)):1; n.due=agora+n.iv*DIA; } else { n.step=st; n.due=agora+PASSOS[st]; } }
+    else { n.step=null; n.iv=relapso?Math.max(2,Math.round(r.iv*0.5)):4; n.ease=Math.min(3.5,r.ease+0.15); n.due=agora+n.iv*DIA; }
+  } else { // revisão
+    if(nota==='errei'){ n.lapses=r.lapses+1; n.ease=Math.max(1.3,r.ease-0.2); n.step=0; n.due=agora+PASSOS[0]; }
+    else if(nota==='dificil'){ n.ease=Math.max(1.3,r.ease-0.15); n.iv=Math.max(r.iv+1,Math.round(fuzz(r.iv*1.2))); n.due=agora+n.iv*DIA; }
+    else if(nota==='bom'){ n.iv=Math.max(r.iv+1,Math.round(fuzz(r.iv*r.ease))); n.due=agora+n.iv*DIA; }
+    else { n.ease=Math.min(3.5,r.ease+0.15); n.iv=Math.max(r.iv+2,Math.round(fuzz(r.iv*r.ease*1.3))); n.due=agora+n.iv*DIA; }
+  }
+  n.iv=Math.min(n.iv,365*2);
+  return n;
+}
+function resumoSrs(scope){
+  const agora=Date.now(), ids=cardsOf(scope).map(c=>c.id);
+  const novas=ids.filter(ehNova).length, aprendendo=ids.filter(ehAprendendo).length, rev=ids.filter(ehRevisao).length;
+  const due=ids.filter(id=>!ehNova(id)&&estaDue(id,agora)).length;
+  const dominadas=ids.filter(id=>ehRevisao(id)&&(srsDe(id).iv||0)>=DOMINADA).length;
+  const novasDisp=Math.max(0,S.srsNovasDia-novasHoje());
+  const futuras=ids.filter(id=>!ehNova(id)&&!estaDue(id,agora)).map(id=>srsDe(id).due);
+  const proxima=futuras.length?Math.min(...futuras)-agora:null;
+  return {novas,aprendendo,rev,due,dominadas,novasDisp,novasSessao:Math.min(novas,novasDisp),proxima,total:ids.length};
+}
+function montarFila(scope, extraNovas){
+  const agora=Date.now(), ids=cardsOf(scope).map(c=>c.id);
+  const due=ids.filter(id=>!ehNova(id)&&estaDue(id,agora)).sort((a,b)=>srsDe(a).due-srsDe(b).due);
+  const qtdNovas=extraNovas!=null?extraNovas:Math.max(0,S.srsNovasDia-novasHoje());
+  const novas=shuffle(ids.filter(ehNova)).slice(0,qtdNovas);
+  return {fila:due.concat(novas),novasRestantes:qtdNovas};
+}
+function proximaCarta(f){
+  const agora=Date.now();
+  const prontas=f.fila.filter(id=>ehNova(id)||srsDe(id).due<=agora);
+  if(prontas.length){ const apr=prontas.filter(ehAprendendo); if(apr.length) return apr.sort((a,b)=>srsDe(a).due-srsDe(b).due)[0]; const rev=prontas.filter(ehRevisao); if(rev.length) return rev[0]; return prontas[0]; }
+  if(!f.fila.length) return null;
+  return f.fila.slice().sort((a,b)=>(srsDe(a)?srsDe(a).due:0)-(srsDe(b)?srsDe(b).due:0))[0]; // só restam cartas em aprendizado para daqui a pouco: não faz esperar
+}
 function flash(){
   const f=S.flash; let body='';
+  const modos=`<div class="stack"><div class="eyebrow">Modo</div><button class="mode${S.flashMode==='carta'?' on':''}" data-act="fmode" data-id="carta"><b>Ver a carta, lembrar o significado</b><small>Frente: imagem e nome. Verso: palavras-chave e significado.</small></button><button class="mode${S.flashMode==='texto'?' on':''}" data-act="fmode" data-id="texto"><b>Ler o significado, lembrar a carta</b><small>Frente: palavras-chave e significado. Verso: imagem e nome.</small></button></div>`;
   if(!f){
-    body=`<div class="stack"><div class="eyebrow">Quais cartas</div><div class="pills wrap">${SCOPES.map(s=>`<button class="pill${S.flashScope===s.id?' on':''}" data-act="fscope" data-id="${s.id}">${s.label}</button>`).join('')}</div></div>
-    <div class="stack"><div class="eyebrow">Modo</div><button class="mode${S.flashMode==='carta'?' on':''}" data-act="fmode" data-id="carta"><b>Ver a carta, lembrar o significado</b><small>Frente: imagem e nome. Verso: palavras-chave e significado.</small></button><button class="mode${S.flashMode==='texto'?' on':''}" data-act="fmode" data-id="texto"><b>Ler o significado, lembrar a carta</b><small>Frente: palavras-chave e significado. Verso: imagem e nome.</small></button></div>
-    <button class="btn" data-act="fstart">Começar · ${cardsOf(S.flashScope).length} cartas</button>`;
+    const r=resumoSrs(S.flashScope), nada=r.due===0&&r.novasSessao===0;
+    const pct=r.total?Math.round(100*r.dominadas/r.total):0;
+    body=`<p style="color:var(--ink2);font-size:14px">Repetição espaçada: você responde o quanto lembrou e o app decide quando mostrar a carta de novo. O que você acerta volta cada vez mais tarde; o que erra volta logo.</p>
+    <div class="stack"><div class="eyebrow">Quais cartas</div><div class="pills wrap">${SCOPES.map(x=>`<button class="pill${S.flashScope===x.id?' on':''}" data-act="fscope" data-id="${x.id}">${x.label}</button>`).join('')}</div></div>
+    <div class="dark stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="eyebrow" style="color:var(--pink)">Para hoje</div><div style="font-size:12px;opacity:.8">${scopeLabel(S.flashScope)}</div></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center"><div><div class="serif" style="font-size:28px;color:#8FD3A0">${r.due}</div><div style="font-size:11px;opacity:.8">para revisar</div></div><div><div class="serif" style="font-size:28px;color:#9DC3F0">${r.novasSessao}</div><div style="font-size:11px;opacity:.8">novas</div></div><div><div class="serif" style="font-size:28px;color:var(--butter)">${r.dominadas}</div><div style="font-size:11px;opacity:.8">dominadas</div></div></div>
+      <div class="bar"><i style="width:${pct}%"></i></div><div style="font-size:12px;opacity:.85">${r.dominadas} de ${r.total} cartas dominadas (intervalo de 3 semanas ou mais)${r.aprendendo?` · ${r.aprendendo} em aprendizado`:''}</div></div>
+    ${nada?`<div class="box" style="text-align:center;gap:6px"><b class="serif" style="font-size:22px">Tudo em dia</b><p style="font-size:14px;color:var(--ink2)">${r.proxima!=null?'Próxima revisão '+fmtQuando(r.proxima)+'.':''} ${r.novas?'Você já estudou as novas de hoje.':'Você já viu todas as cartas deste grupo.'}</p></div>${r.novas?`<button class="btn" data-act="fextra">Estudar mais ${Math.min(10,r.novas)} novas agora</button>`:''}`:`<button class="btn" data-act="fstart">Revisar · ${r.due+r.novasSessao} carta${r.due+r.novasSessao===1?'':'s'}</button>`}
+    ${modos}
+    <div class="stack" style="gap:8px"><div class="eyebrow">Cartas novas por dia</div><div class="pills">${[5,10,20].map(n=>`<button class="pill${S.srsNovasDia===n?' on':''}" data-act="fnovas" data-id="${n}">${n}</button>`).join('')}</div><div style="font-size:12px;color:var(--muted)">Comece devagar. Dez por dia fecha as 78 em oito dias e as revisões se acumulam depois.</div></div>`;
   } else if(!f.done){
-    const c=CARDS[f.deck[f.i]]; const showImg = S.flashMode==='carta' ? !f.flipped : f.flipped;
+    const id=f.atual, c=CARDS[id]; const showImg = S.flashMode==='carta' ? !f.flipped : f.flipped;
     const face = showImg ? `<img src="${c.img}" alt=""><div class="serif" style="font-size:30px;line-height:1">${esc(c.name)}</div><div class="eyebrow" style="color:inherit;opacity:.7">Carta ${c.id}</div>` : `<div class="eyebrow" style="color:inherit;opacity:.7">Palavras-chave</div><div class="serif" style="font-size:24px;line-height:1.2">${esc(c.palavras)}</div><p style="font-size:14px;opacity:.92">${esc(mask(c.geral,c))}</p>`;
-    body=`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Carta ${f.i+1} de ${f.deck.length}</span><span><b style="color:#2F5A33">${f.known} sei</b> · <b style="color:#9B3B3B">${f.unknown} ainda não</b></span></div>
-    <button class="flash${f.flipped?' back':''}" data-act="flip">${face}<div style="font-size:12px;opacity:.6">${f.flipped?'Toque para voltar':'Toque para virar'}</div></button>
-    <div class="grid2"><button class="btn" data-act="fno" style="background:var(--red-bg);color:var(--red);border:1px solid #C98484">Ainda não sei</button><button class="btn" data-act="fyes" style="background:var(--green)">Já sei</button></div>`;
+    const agora=Date.now(), tipo=ehNova(id)?'Nova':ehAprendendo(id)?'Aprendendo':'Revisão';
+    const restantes={n:f.fila.filter(ehNova).length,a:f.fila.filter(ehAprendendo).length,r:f.fila.filter(ehRevisao).length};
+    const prev=n=>{ const x=proximo(id,n,agora); return fmtIntervalo(x.due-agora); };
+    const botoes=f.flipped?`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+      <button class="btn" data-act="fgrade" data-id="errei" style="background:var(--red-bg);color:var(--red);border:1px solid #C98484;flex-direction:column;gap:2px;min-height:60px;font-size:14px;display:flex;align-items:center;justify-content:center">Errei<small style="font-weight:400;font-size:11px;opacity:.8">${prev('errei')}</small></button>
+      <button class="btn ghost" data-act="fgrade" data-id="dificil" style="flex-direction:column;gap:2px;min-height:60px;font-size:14px;display:flex;align-items:center;justify-content:center">Difícil<small style="font-weight:400;font-size:11px;opacity:.8">${prev('dificil')}</small></button>
+      <button class="btn" data-act="fgrade" data-id="bom" style="background:var(--green);flex-direction:column;gap:2px;min-height:60px;font-size:14px;display:flex;align-items:center;justify-content:center">Bom<small style="font-weight:400;font-size:11px;opacity:.85">${prev('bom')}</small></button>
+      <button class="btn" data-act="fgrade" data-id="facil" style="background:var(--ink);color:var(--butter);flex-direction:column;gap:2px;min-height:60px;font-size:14px;display:flex;align-items:center;justify-content:center">Fácil<small style="font-weight:400;font-size:11px;opacity:.85">${prev('facil')}</small></button></div>`
+      :`<button class="btn" data-act="flip">Mostrar resposta</button>`;
+    body=`<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)"><span class="tchip">${tipo}</span><span><b style="color:#5B7FB5">${restantes.n}</b> · <b style="color:#9B3B3B">${restantes.a}</b> · <b style="color:#2F5A33">${restantes.r}</b></span></div>
+    <button class="flash${f.flipped?' back':''}" data-act="flip">${face}<div style="font-size:12px;opacity:.6">${f.flipped?'Toque para ver a frente':'Toque para virar'}</div></button>
+    ${botoes}
+    <div style="font-size:11px;color:var(--muted);text-align:center">azul: novas · vermelho: aprendendo · verde: revisões restantes</div>
+    <button class="link" data-act="freset" style="align-self:center">Encerrar por agora</button>`;
   } else {
-    body=`<div class="dark stack" style="text-align:center;padding:24px 20px"><div class="eyebrow" style="color:var(--pink)">Rodada concluída</div><div class="serif big">${f.known}<span> / ${f.deck.length}</span></div><div style="font-size:14px;opacity:.9">${f.unknown===0?'Todas na memória. Experimente o outro modo ou o quiz.':f.unknown+' para revisar nas fichas antes da próxima rodada.'}</div></div>
-    <button class="btn" data-act="fstart">Repetir rodada</button><button class="btn ghost" data-act="freset">Escolher outras cartas</button>`;
+    const r=resumoSrs(S.flashScope);
+    body=`<div class="dark stack" style="text-align:center;padding:24px 20px"><div class="eyebrow" style="color:var(--pink)">Sessão concluída</div><div class="serif big">${f.feitas}<span> carta${f.feitas===1?'':'s'}</span></div><div style="font-size:14px;opacity:.9">${f.erros?f.erros+' voltaram para o começo e aparecem de novo em breve.':'Nenhum erro nesta sessão.'} ${r.proxima!=null?'Próxima revisão '+fmtQuando(r.proxima)+'.':''}</div></div>
+    ${r.novas?`<button class="btn" data-act="fextra">Estudar mais ${Math.min(10,r.novas)} novas agora</button>`:''}<button class="btn ghost" data-act="freset">Voltar</button>`;
   }
   return `<h1 style="font-size:32px">Flashcards</h1>${body}`;
 }
@@ -650,10 +728,20 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='toggle'){ const st=Object.assign({},S.studied); st[S.cardId]=!st[S.cardId]; set({studied:st}); }
   else if(a==='fscope') set({flashScope:id});
   else if(a==='fmode') set({flashMode:id});
-  else if(a==='fstart') set({flash:{deck:shuffle(cardsOf(S.flashScope)).map(c=>c.id),i:0,flipped:false,known:0,unknown:0,done:false}});
+  else if(a==='fnovas') set({srsNovasDia:+id});
+  else if(a==='fstart'||a==='fextra'){ const m=montarFila(S.flashScope,a==='fextra'?Math.min(10,cardsOf(S.flashScope).filter(c=>ehNova(c.id)).length):null); if(!m.fila.length){ set({flash:null}); return; } const f={fila:m.fila,atual:null,flipped:false,feitas:0,erros:0,done:false}; f.atual=proximaCarta(f); set({flash:f}); document.getElementById('main').scrollTop=0; }
   else if(a==='freset') set({flash:null});
   else if(a==='flip'){ S.flash.flipped=!S.flash.flipped; render(); }
-  else if(a==='fyes'||a==='fno'){ const f=S.flash, n=f.i+1; if(a==='fyes')f.known++; else f.unknown++; f.flipped=false; if(n>=f.deck.length)f.done=true; else f.i=n; render(); document.getElementById('main').scrollTop=0; }
+  else if(a==='fgrade'){
+    const f=S.flash, cid=f.atual, agora=Date.now(); if(!f||cid==null) return;
+    const eraNova=ehNova(cid), n=proximo(cid,id,agora);
+    if(eraNova){ novasHoje(); S.srsHoje.n++; }
+    S.srs[cid]=n; f.feitas++; if(id==='errei') f.erros++;
+    const fica=n.step!=null&&(n.due-agora)<=20*MIN; // continua na sessão só se volta em até 20 min
+    if(!fica) f.fila=f.fila.filter(x=>x!==cid);
+    f.flipped=false; f.atual=proximaCarta(f); if(f.atual==null) f.done=true;
+    persist(); render(); document.getElementById('main').scrollTop=0;
+  }
   else if(a==='qscope') set({quizScope:id});
   else if(a==='spread') set({screen:'spread',spreadId:id,spreadTab:'aprender',practiceOpen:null});
   else if(a==='stab'){ set({spreadTab:id,practiceOpen:null}); document.getElementById('main').scrollTop=0; }
