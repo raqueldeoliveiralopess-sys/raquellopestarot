@@ -38,9 +38,10 @@ language sql stable security definer set search_path = public as $$
   select exists (select 1 from public.bloqueadas where user_id = auth.uid());
 $$;
 
-revoke all on function public.e_assinante() from public;
-revoke all on function public.e_admin() from public;
-revoke all on function public.e_bloqueada() from public;
+-- O Supabase dá permissão padrão ao papel anônimo; "from public" não cobre isso, então revogamos de anon também.
+revoke all on function public.e_assinante() from public, anon;
+revoke all on function public.e_admin() from public, anon;
+revoke all on function public.e_bloqueada() from public, anon;
 grant execute on function public.e_assinante() to authenticated;
 grant execute on function public.e_admin() to authenticated;
 grant execute on function public.e_bloqueada() to authenticated;
@@ -171,5 +172,5 @@ create or replace function public.admin_uids() returns setof uuid
 language sql stable security definer set search_path = public as $$
   select u.id from auth.users u join public.admins a on lower(a.email) = lower(u.email);
 $$;
-revoke all on function public.admin_uids() from public;
+revoke all on function public.admin_uids() from public, anon;
 grant execute on function public.admin_uids() to authenticated;
