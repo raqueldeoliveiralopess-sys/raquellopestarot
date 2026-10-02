@@ -47,7 +47,8 @@ No Início, a lista de módulos virou a **Jornada**: sete capítulos em trilha (
 ## Tiragens como diário e desafio da semana
 
 - Na prática de uma tiragem há dois campos: **Minha pergunta** (antes de sortear) e **O padrão em uma frase** (depois). Os dois ficam gravados na prática salva e aparecem na lista "Minhas práticas". Editar a frase depois de salvar atualiza a prática.
-- Logada, o botão **Compartilhar na roda** abre a tela Escrever com o tema Tiragem e o texto já montado (tiragem, pergunta, cartas por posição e a síntese). Se já havia um rascunho, o texto é anexado ao fim.
+- Abaixo da síntese, a caixa **Minha interpretação** (texto livre, até 3.000 caracteres) fica gravada na prática e pode ser editada depois de salva. Na tela Tiragens, **Minhas práticas** lista todas as práticas salvas, de qualquer tiragem, com contadores (total, neste mês, com escrita); tocar reabre a prática com as cartas e os textos. Ficam guardadas as 100 mais recentes, sincronizadas na nuvem.
+- Logada, o botão **Compartilhar na roda** abre a tela Escrever com o tema Tiragem e o texto já montado (tiragem, pergunta, cartas por posição, síntese e interpretação). Se já havia um rascunho, o texto é anexado ao fim.
 - **Desafio da semana**: a Raquel escreve um post começando com "Desafio da semana:" (a primeira linha vira o título) e fixa nos três pontos do post. Ele aparece no Início de todas as assinantes, com a contagem de respostas e o botão Participar, que abre os comentários desse post. Um post fixado que não comece com "Desafio" aparece como "Aviso fixado". Só o post fixado mais recente é mostrado.
 
 ## Quiz: quatro modos

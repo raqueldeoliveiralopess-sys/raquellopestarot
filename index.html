@@ -285,7 +285,7 @@ function mergeData(d){
   const st=Object.assign({},S.studied); Object.keys(d.studied||{}).forEach(k=>{ if(d.studied[k]) st[k]=true; }); S.studied=st;
   const nt=Object.assign({},S.notes); Object.keys(d.notes||{}).forEach(k=>{ nt[k]=mergeNote(nt[k],d.notes[k]); }); S.notes=nt;
   if(d.stats) S.stats={quizzes:Math.max(S.stats.quizzes||0,d.stats.quizzes||0),best:Math.max(S.stats.best||0,d.stats.best||0)};
-  if(Array.isArray(d.readings)){ const ids=new Set(S.readings.map(r=>r.id)); d.readings.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)&&r.draw) S.readings.push(r); }); S.readings.sort((a,b)=>b.at-a.at); S.readings=S.readings.slice(0,30); }
+  if(Array.isArray(d.readings)){ const ids=new Set(S.readings.map(r=>r.id)); d.readings.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)&&r.draw) S.readings.push(r); }); S.readings.sort((a,b)=>b.at-a.at); S.readings=S.readings.slice(0,100); }
   if(d.srs&&typeof d.srs==='object'){ const m=Object.assign({},S.srs); Object.keys(d.srs).forEach(k=>{ const a=m[k], b=d.srs[k]; if(!b||typeof b!=='object') return; if(!a||(b.reps||0)>(a.reps||0)||((b.reps||0)===(a.reps||0)&&(b.due||0)>(a.due||0))) m[k]=b; }); S.srs=m; }
   if(d.srsHoje&&d.srsHoje.d===hojeStr()&&(d.srsHoje.n||0)>(S.srsHoje.n||0)) S.srsHoje=d.srsHoje;
   if(Array.isArray(d.flashHistory)){ const fids=new Set(S.flashHistory.map(h=>h.id)); d.flashHistory.forEach(h=>{ if(h&&h.id&&!fids.has(h.id)&&Array.isArray(h.respostas)) S.flashHistory.push(h); }); S.flashHistory.sort((a,b)=>b.at-a.at); S.flashHistory=S.flashHistory.slice(0,50); }
@@ -833,7 +833,16 @@ function peladanSum(sp,pr){
 }
 function spreads(){
   const rows=SPREADS.map(sp=>`<button class="mod" data-act="spread" data-id="${sp.id}"><div class="g serif" style="font-size:22px;color:var(--wood)">${sp.cards}</div><div class="t"><b style="font-size:16px">${esc(sp.name)}</b><div style="font-size:12px;color:var(--muted);line-height:1.35">${esc(sp.tagline)}</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`).join('');
-  return `<div class="stack" style="gap:4px">${tituloComAvatar('Tiragens')}<p style="color:var(--ink2)">Aqui tiragem não prevê nada. Ela coloca um padrão seu em posições para você enxergar de onde ele vem, como aparece e o que pede. Toda pergunta é sobre você, nunca sobre o outro.</p></div><div class="stack">${rows}</div>${S.readings.length?`<div style="font-size:11px;color:#7A5A4E;text-align:center">${S.readings.length} prática${S.readings.length===1?'':'s'} salva${S.readings.length===1?'':'s'} neste aparelho</div>`:''}`;
+  return `<div class="stack" style="gap:4px">${tituloComAvatar('Tiragens')}<p style="color:var(--ink2)">Aqui tiragem não prevê nada. Ela coloca um padrão seu em posições para você enxergar de onde ele vem, como aparece e o que pede. Toda pergunta é sobre você, nunca sobre o outro.</p></div><div class="stack">${rows}</div>${historicoPraticas()}`;
+}
+function historicoPraticas(){
+  const R=S.readings; if(!R.length) return '';
+  const mes=new Date(); const noMes=R.filter(r=>{const d=new Date(r.at);return d.getMonth()===mes.getMonth()&&d.getFullYear()===mes.getFullYear();}).length;
+  const comTexto=R.filter(r=>(r.interpretacao||'').trim()||(r.sintese||'').trim()).length;
+  const rows=R.map(r=>{const sp=spreadById(r.spreadId); if(!sp) return ''; const frase=(r.pergunta||'').trim()||(r.sintese||'').trim(); const v=r.var&&sp.variantes?(sp.variantes.find(x=>x.id===r.var)||{}).label:''; return `<button class="row" data-act="phist" data-id="${r.id}" style="min-height:64px"><div class="t"><div class="n" style="font-size:15px;justify-content:space-between"><span>${esc(sp.name)}${v?' · '+esc(v):''}</span><span style="font-size:12px;font-weight:400;color:var(--muted);white-space:nowrap">${fmtDate(r.at)}</span></div>${frase?`<div style="font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(frase)}</div>`:''}<div class="s">${r.draw.map(d=>CARDS[d.cardId].name+(d.rev?' (inv.)':'')).join(' · ')}${(r.interpretacao||'').trim()?' · com interpretação':''}</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`;}).join('');
+  return `<div class="stack" style="gap:12px;margin-top:8px"><h2 style="font-size:24px">Minhas práticas</h2>
+  <div class="dark" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;padding:14px"><div><div class="serif" style="font-size:28px;color:var(--butter)">${R.length}</div><div style="font-size:11px;opacity:.8">prática${R.length===1?'':'s'}</div></div><div><div class="serif" style="font-size:28px;color:var(--butter)">${noMes}</div><div style="font-size:11px;opacity:.8">neste mês</div></div><div><div class="serif" style="font-size:28px;color:var(--butter)">${comTexto}</div><div style="font-size:11px;opacity:.8">com escrita</div></div></div>
+  <div class="eyebrow">Todas as tiragens · toque para reabrir</div>${rows}</div>`;
 }
 function spread(){
   const sp=spreadById(S.spreadId), tab=S.spreadTab;
@@ -860,7 +869,7 @@ function learnView(sp){
 function textoPratica(sp,pr){
   const v=pr.var&&sp.variantes?(sp.variantes.find(x=>x.id===pr.var)||{}).label:'';
   const linhas=sp.positions.slice().sort((a,b)=>a.n-b.n).map(x=>{const d=pr.draw[x.n-1],c=CARDS[d.cardId];return x.n+' · '+x.label+': '+c.name+(d.rev?' (invertida)':'');});
-  return 'Pratiquei a tiragem '+sp.name+(v?' · '+v:'')+'.\nPergunta: '+((pr.pergunta||'').trim()||'(sem pergunta registrada)')+'\n'+linhas.join('\n')+'\nO padrão em uma frase: '+((pr.sintese||'').trim()||'(ainda sem síntese)')+'\n\n';
+  return 'Pratiquei a tiragem '+sp.name+(v?' · '+v:'')+'.\nPergunta: '+((pr.pergunta||'').trim()||'(sem pergunta registrada)')+'\n'+linhas.join('\n')+'\nO padrão em uma frase: '+((pr.sintese||'').trim()||'(ainda sem síntese)')+((pr.interpretacao||'').trim()?'\n\nMinha interpretação:\n'+pr.interpretacao.trim():'')+'\n\n';
 }
 function practiceView(sp){
   const pr=S.practice&&S.practice.spreadId===sp.id?S.practice:null;
@@ -883,7 +892,8 @@ function practiceView(sp){
     <button class="btn ghost" data-act="card" data-id="${c.id}">Abrir a ficha de ${esc(c.name)}</button></div>`;
   }
   const legend=sp.positions.slice().sort((a,b)=>a.n-b.n).map(x=>{const d=pr.draw[x.n-1],c=CARDS[d.cardId];return `<button class="row${open===x.n?' on':''}" style="min-height:48px;padding:6px 10px;${open===x.n?'border-color:var(--caramel)':''}" data-act="popen" data-id="${x.n}"><b class="serif" style="font-size:20px;color:var(--caramel);width:26px;text-align:center">${x.n}</b><div class="t"><div class="n" style="font-size:14px">${esc(c.name)}${d.rev?' <span style="font-size:11px;color:var(--red);font-weight:500">inv.</span>':''}</div><div class="s">${esc(x.label)}</div></div></button>`;}).join('');
-  const sintese=`<div class="notes" style="gap:6px"><label for="ps" style="font-size:13px;font-weight:600;color:var(--wood)">O padrão em uma frase</label><textarea id="ps" data-ps maxlength="200" style="min-height:80px" placeholder="Porque (1), hoje eu (2), e isso aponta para (3)…">${esc(pr.sintese||'')}</textarea><div class="st"><span>Se não couber numa frase, ainda não está claro.</span><span id="ps-status">${pr.saved&&(pr.sintese||'').trim()?salvoOnde():''}</span></div></div>`;
+  const sintese=`<div class="notes" style="gap:6px"><label for="ps" style="font-size:13px;font-weight:600;color:var(--wood)">O padrão em uma frase</label><textarea id="ps" data-ps maxlength="200" style="min-height:80px" placeholder="Porque (1), hoje eu (2), e isso aponta para (3)…">${esc(pr.sintese||'')}</textarea><div class="st"><span>Se não couber numa frase, ainda não está claro.</span><span id="ps-status">${pr.saved&&(pr.sintese||'').trim()?salvoOnde():''}</span></div>
+  <label for="pi" style="font-size:13px;font-weight:600;color:var(--wood);margin-top:6px">Minha interpretação</label><textarea id="pi" data-pi maxlength="3000" style="min-height:140px" placeholder="Leia posição por posição, depois a tiragem inteira como uma frase. O que cada carta faz no lugar dela? Que padrão aparece? O que ele pede?">${esc(pr.interpretacao||'')}</textarea><div class="st"><span>${(pr.interpretacao||'').length?(pr.interpretacao||'').length+' caracteres':''}</span><span id="pi-status">${pr.saved&&(pr.interpretacao||'').trim()?salvoOnde():''}</span></div></div>`;
   return `${pergunta}${renderLayout(sp,pr.draw,open)}<div style="font-size:12px;color:var(--muted);text-align:center">Toque numa posição para ler a carta nela.</div>${peladanSum(sp,pr)}${panel}<div class="stack" style="gap:6px">${legend}</div>${sintese}
   <div class="grid2"><button class="btn ghost" data-act="pdraw">Sortear de novo</button><button class="btn" data-act="psave" ${pr.saved?'disabled style="opacity:.6"':''}>${pr.saved?'Prática salva':'Salvar prática'}</button></div>${logada()&&COM?`<button class="btn ghost" data-act="pshare">Compartilhar na roda</button>`:''}${list}`;
 }
@@ -1071,12 +1081,12 @@ document.getElementById('app').addEventListener('submit',e=>{
 let prTimer=null;
 document.getElementById('app').addEventListener('input',e=>{
   const t=e.target;
-  if(t.matches('[data-pq]')||t.matches('[data-ps]')){
-    const pr=S.practice, campo=t.matches('[data-pq]')?'pergunta':'sintese';
+  if(t.matches('[data-pq]')||t.matches('[data-ps]')||t.matches('[data-pi]')){
+    const pr=S.practice, campo=t.matches('[data-pq]')?'pergunta':t.matches('[data-ps]')?'sintese':'interpretacao';
     if(pr&&pr.spreadId===S.spreadId){ pr[campo]=t.value; if(pr.saved){ const r=S.readings.find(x=>x.at===pr.at&&x.spreadId===pr.spreadId); if(r) r[campo]=t.value.trim(); } }
     else if(campo==='pergunta') S.practicePergunta=t.value;
-    const st=document.getElementById('ps-status'); if(st&&campo==='sintese') st.textContent=pr&&pr.saved?'Salvando…':'';
-    clearTimeout(prTimer); prTimer=setTimeout(()=>{ const ok=persist(); if(st&&campo==='sintese'&&pr&&pr.saved) st.textContent=ok?salvoOnde():'Não foi possível salvar'; },400);
+    const st=document.getElementById(campo==='sintese'?'ps-status':campo==='interpretacao'?'pi-status':'x'); if(st) st.textContent=pr&&pr.saved?'Salvando…':'';
+    clearTimeout(prTimer); prTimer=setTimeout(()=>{ const ok=persist(); if(st&&pr&&pr.saved) st.textContent=ok?salvoOnde():'Não foi possível salvar'; },400);
     return;
   }
   if(t.matches('[data-rasc]')){ S.rasc[t.dataset.rasc]=t.value; const ct=document.getElementById('rasc-count'); if(ct) ct.textContent=t.value.length+'/2000'; return; }
@@ -1185,10 +1195,11 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='stab'){ set({spreadTab:id,practiceOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='svar'){ const v=Object.assign({},S.spreadVar); v[S.spreadId]=id; set({spreadVar:v}); }
   else if(a==='prevt') set({practiceRev:!S.practiceRev});
-  else if(a==='pdraw'){ const sp=spreadById(S.spreadId); const draw=shuffle(CARDS).slice(0,sp.cards).map(c=>({cardId:c.id,rev:S.practiceRev&&Math.random()<.25})); const v=curVar(sp); set({practice:{spreadId:sp.id,draw,at:Date.now(),var:v?v.id:null,saved:false,pergunta:(S.practice&&S.practice.spreadId===sp.id?S.practice.pergunta:S.practicePergunta)||'',sintese:''},practiceOpen:null}); S.practicePergunta=''; document.getElementById('main').scrollTop=0; }
+  else if(a==='pdraw'){ const sp=spreadById(S.spreadId); const draw=shuffle(CARDS).slice(0,sp.cards).map(c=>({cardId:c.id,rev:S.practiceRev&&Math.random()<.25})); const v=curVar(sp); set({practice:{spreadId:sp.id,draw,at:Date.now(),var:v?v.id:null,saved:false,pergunta:(S.practice&&S.practice.spreadId===sp.id?S.practice.pergunta:S.practicePergunta)||'',sintese:'',interpretacao:''},practiceOpen:null}); S.practicePergunta=''; document.getElementById('main').scrollTop=0; }
   else if(a==='popen'){ set({practiceOpen:S.practiceOpen===+id?null:+id}); }
-  else if(a==='psave'){ const pr=S.practice; if(!pr||pr.saved) return; const r={id:String(Date.now()),spreadId:pr.spreadId,draw:pr.draw,at:pr.at,var:pr.var,pergunta:(pr.pergunta||'').trim(),sintese:(pr.sintese||'').trim()}; pr.saved=true; marcarDia(); set({readings:[r].concat(S.readings).slice(0,30)}); }
-  else if(a==='pload'){ const r=S.readings.find(x=>x.id===id); if(r) set({practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true,pergunta:r.pergunta||'',sintese:r.sintese||''},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
+  else if(a==='psave'){ const pr=S.practice; if(!pr||pr.saved) return; const r={id:String(Date.now()),spreadId:pr.spreadId,draw:pr.draw,at:pr.at,var:pr.var,pergunta:(pr.pergunta||'').trim(),sintese:(pr.sintese||'').trim(),interpretacao:(pr.interpretacao||'').trim()}; pr.saved=true; marcarDia(); set({readings:[r].concat(S.readings).slice(0,100)}); }
+  else if(a==='phist'){ const r=S.readings.find(x=>x.id===id); if(!r) return; set({screen:'spread',spreadId:r.spreadId,spreadTab:'praticar',practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true,pergunta:r.pergunta||'',sintese:r.sintese||'',interpretacao:r.interpretacao||''},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
+  else if(a==='pload'){ const r=S.readings.find(x=>x.id===id); if(r) set({practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true,pergunta:r.pergunta||'',sintese:r.sintese||'',interpretacao:r.interpretacao||''},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='pdel'){ if(!confirm('Apagar esta prática?')) return; const pr=S.practice; const r=S.readings.find(x=>x.id===id); if(pr&&r&&pr.saved&&pr.at===r.at) pr.saved=false; set({readings:S.readings.filter(x=>x.id!==id)}); }
   else if(a==='pshare'){ const pr=S.practice; if(!pr||!logada()||!COM) return; const sp=spreadById(pr.spreadId); S.rasc.tema='tiragem'; S.rasc.erro=''; const tp=textoPratica(sp,pr); if(!S.rasc.texto.includes(tp.trim())) S.rasc.texto=S.rasc.texto.trim()?S.rasc.texto.trim()+'\n\n'+tp:tp; set({screen:'escrever'}); document.getElementById('main').scrollTop=0; }
   else if(a==='cdesafio'){ const pid=+id; set({screen:'comunidade'}); comCarregar(true).then(()=>{ if(!S.com.posts.some(x=>x.id===pid)) return; comAbrirComentarios(pid); const el=document.getElementById('post-'+pid); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }); }
