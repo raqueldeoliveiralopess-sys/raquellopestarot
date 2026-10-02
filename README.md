@@ -18,6 +18,14 @@ Não é necessário trocar o número `CACHE` em `sw.js` a cada atualização. Tr
 - `index.html`: quando um service worker novo assume, a página recarrega uma vez; ao voltar para o app, ele verifica se há atualização.
 - `_headers`: impede a Netlify e o navegador de guardarem em cache os arquivos que mudam.
 
+## Ritual diário, conquistas e modo escuro
+
+- **Carta do dia**: no Início, uma carta sorteada pela data (a mesma para todas as alunas), com uma pergunta de reflexão. Dá para responder uma pergunta de quiz sobre ela ou escrever uma reflexão (vira post na Comunidade com tema Reflexão, ou anotação na ficha para quem não está logada).
+- **Hoje**: quatro metas (carta do dia, flashcards, uma carta nova, um quiz) e a sequência de dias de estudo. Qualquer atividade conta o dia.
+- **Conquistas**: marcos pessoais (naipes completos, baralho completo, quiz sem erro, dias seguidos, cartas dominadas, primeira tiragem, primeiro post…). Ficam no Início e no próprio perfil, sincronizam com a nuvem e só a própria aluna vê. Ao ganhar uma, aparece um aviso com confete e uma vibração curta.
+- **Modo escuro**: segue a preferência do aparelho, sem botão.
+- Nos históricos de quiz e flashcards, "Cartas que mais erro" tem um botão que abre uma sessão de flashcards só com elas.
+
 ## Login, perfil e acesso só para assinantes
 
 O app tem login por código enviado ao e-mail, perfil com foto e progresso salvo na nuvem. O acesso pode ser liberado só para quem tem assinatura ativa na Kiwify.

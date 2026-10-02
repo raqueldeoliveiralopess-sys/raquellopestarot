@@ -1,7 +1,7 @@
 {
   "name": "Grimório Arcano",
   "short_name": "Grimório",
-  "description": "Trilha de estudo das 78 cartas: fichas, flashcards e quiz.",
+  "description": "Trilha de estudo das 78 cartas: fichas, flashcards com repetição espaçada, quiz, tiragens e comunidade.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
