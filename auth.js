@@ -14,7 +14,8 @@
     }
   } catch(e) {}
   let teste = null; try { teste = localStorage.getItem('ga-modo-teste'); } catch(e) {}
-  const modo = VALIDOS.includes(teste) ? teste : VALIDOS.includes(CFG.modo) ? CFG.modo : 'desligado';
+  // Com 'assinantes' ligado para todas, o link de teste não pode afrouxar a conferência de assinatura.
+  const modo = CFG.modo === 'assinantes' ? 'assinantes' : VALIDOS.includes(teste) ? teste : VALIDOS.includes(CFG.modo) ? CFG.modo : 'desligado';
   const ATIVOS = ['ativa', 'atrasada'];
   const CACHE_KEY = 'ga-acesso';
   const LIB = 'vendor/supabase-2.117.2.js';

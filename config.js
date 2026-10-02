@@ -11,11 +11,11 @@
 // supabaseUrl e supabaseAnonKey vêm do painel do Supabase (Project Settings → API).
 // A chave "anon" é pública por natureza: pode ficar aqui. NUNCA coloque a "service_role" neste arquivo.
 window.GA_CONFIG = {
-  modo: 'desligado',
+  modo: 'assinantes',
   supabaseUrl: 'https://garcewmgyljmscygqrab.supabase.co',
   supabaseAnonKey: 'sb_publishable_PQ7lWZMrCMPS7KXX16gjpg_u8NZ6n9P',
   // link da página de compra da assinatura na Kiwify, mostrado para quem ainda não assina
-  linkAssinatura: '',
+  linkAssinatura: 'https://pay.kiwify.com.br/mGgkkRc',
   // dias que o app continua liberado sem internet depois da última confirmação de assinatura
   diasOffline: 7
 };

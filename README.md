@@ -20,7 +20,7 @@ Não é necessário trocar o número `CACHE` em `sw.js` a cada atualização. Tr
 
 O app tem login por código enviado ao e-mail, perfil com foto e progresso salvo na nuvem. O acesso pode ser liberado só para quem tem assinatura ativa na Kiwify.
 
-Tudo vem **desligado** (`modo: 'desligado'` em `config.js`). Enquanto estiver assim, o app funciona como antes, sem login. Só mude depois de seguir os passos abaixo.
+**Situação atual:** ligado em `modo: 'assinantes'` (`config.js`), com Supabase em São Paulo, e-mail pelo Brevo (`nao-responda@raquellopestarot.com.br`) e webhook da Kiwify ativo. Para voltar ao app sem login, mude `modo` para `'desligado'`. Com `'assinantes'` ligado, os links de teste `?modo=` não afrouxam a conferência de assinatura.
 
 ### Arquivos
 
