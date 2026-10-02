@@ -1,8 +1,20 @@
 // Grimório Arcano — login por código, assinatura, sincronização do progresso e perfil.
-// Fica inativo quando GA_CONFIG.modo é 'desligado'.
+// Fica inativo quando GA_CONFIG.modo é 'desligado' (salvo o modo de teste ligado por link neste aparelho).
 (function(){
   const CFG = window.GA_CONFIG || {};
-  const modo = CFG.modo === 'login' || CFG.modo === 'assinantes' ? CFG.modo : 'desligado';
+  const VALIDOS = ['login', 'assinantes'];
+  // Modo de teste por link: ?modo=login ou ?modo=assinantes liga só neste aparelho; ?modo=desligado desfaz.
+  try {
+    const url = new URL(location.href), pedido = url.searchParams.get('modo');
+    if (pedido) {
+      if (VALIDOS.includes(pedido)) localStorage.setItem('ga-modo-teste', pedido);
+      else if (pedido === 'desligado') localStorage.removeItem('ga-modo-teste');
+      url.searchParams.delete('modo');
+      history.replaceState(null, '', url.pathname + url.search + url.hash);
+    }
+  } catch(e) {}
+  let teste = null; try { teste = localStorage.getItem('ga-modo-teste'); } catch(e) {}
+  const modo = VALIDOS.includes(teste) ? teste : VALIDOS.includes(CFG.modo) ? CFG.modo : 'desligado';
   const ATIVOS = ['ativa', 'atrasada'];
   const CACHE_KEY = 'ga-acesso';
   const LIB = 'vendor/supabase-2.117.2.js';

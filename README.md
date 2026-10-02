@@ -81,6 +81,9 @@ A Kiwify só avisa vendas novas. Para liberar quem já assina: exporte da Kiwify
 
 ### 5. Ligar
 
+Para testar sem afetar as alunas, abra o app com `?modo=login` no fim do endereço (por exemplo `https://SEU-SITE.netlify.app/?modo=login`). O modo de teste vale só naquele aparelho e continua ligado até você abrir o app com `?modo=desligado`. Também existe `?modo=assinantes`, para testar o bloqueio de quem não assina.
+
+
 1. No `config.js`, preencha `supabaseUrl`, `supabaseAnonKey` e `linkAssinatura`, e mude `modo` para `'login'`. Teste com o seu e-mail: entrar, editar o perfil, estudar uma carta, abrir em outro aparelho.
 2. Quando tudo estiver certo, mude `modo` para `'assinantes'`.
 
