@@ -26,6 +26,15 @@ Não é necessário trocar o número `CACHE` em `sw.js` a cada atualização. Tr
 - **Modo escuro**: segue a preferência do aparelho, sem botão.
 - Nos históricos de quiz e flashcards, "Cartas que mais erro" tem um botão que abre uma sessão de flashcards só com elas.
 
+## Quiz: quatro modos
+
+- **Clássico**: 10 perguntas sorteadas das fichas, sem o nome da carta na pergunta.
+- **Relâmpago**: 60 segundos; a próxima pergunta vem sozinha e o quiz não acaba antes do relógio.
+- **Só as que errei**: monta o quiz com as cartas mais erradas no quiz e nos flashcards.
+- **Luz ou sombra?**: a carta é nomeada e a aluna diz de que lado dela vem a frase.
+- **Dificuldade** (Clássico e Relâmpago): no nível Difícil, as opções erradas são do mesmo naipe ou do mesmo número da carta certa.
+- O feedback de erro mostra também as palavras-chave da carta escolhida, para a diferença ficar clara. O histórico guarda o modo de cada quiz; "melhor nota" conta só o Clássico.
+
 ## Login, perfil e acesso só para assinantes
 
 O app tem login por código enviado ao e-mail, perfil com foto e progresso salvo na nuvem. O acesso pode ser liberado só para quem tem assinatura ativa na Kiwify.

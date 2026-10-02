@@ -235,7 +235,8 @@ const ICONS = {
 
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem('tarot-estudo') || '{}'); } catch (e) { saved = {}; }
-const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[],quizHistory:[],quizOpen:null,srs:{},srsNovasDia:10,srsHoje:{d:'',n:0},flashHistory:[],flashOpen:null,diasEstudo:{},conquistas:{},cdd:{d:'',ok:false},cartasDia:{d:'',n:0}}, saved.persist || {});
+const S = Object.assign({screen:'home',suit:'maiores',cardId:0,studied:{},notes:{},flashScope:'maiores',flashMode:'carta',flash:null,quizScope:'maiores',quiz:null,stats:{quizzes:0,best:0},spreadId:null,spreadTab:'aprender',spreadVar:{},practice:null,practiceOpen:null,practiceRev:true,readings:[],quizHistory:[],quizOpen:null,srs:{},srsNovasDia:10,srsHoje:{d:'',n:0},flashHistory:[],flashOpen:null,diasEstudo:{},conquistas:{},cdd:{d:'',ok:false},cartasDia:{d:'',n:0},quizModo:'classico',quizNivel:'normal'}, saved.persist || {});
+if(!['classico','relampago','erros','luzsombra'].includes(S.quizModo)) S.quizModo='classico'; if(!['normal','dificil'].includes(S.quizNivel)) S.quizNivel='normal';
 if(!S.diasEstudo||typeof S.diasEstudo!=='object') S.diasEstudo={}; if(!S.conquistas||typeof S.conquistas!=='object') S.conquistas={}; if(!S.cdd) S.cdd={d:'',ok:false}; if(!S.cartasDia) S.cartasDia={d:'',n:0}; S.conqOpen=false;
 if(!Array.isArray(S.flashHistory)) S.flashHistory=[]; S.flashOpen=null;
 if(!S.srs||typeof S.srs!=='object') S.srs={}; if(!S.srsHoje) S.srsHoje={d:'',n:0}; if(![5,10,20].includes(S.srsNovasDia)) S.srsNovasDia=10;
@@ -244,7 +245,7 @@ S.rasc={tema:'',texto:'',foto:null,preview:null,erro:'',enviando:false};
 S.pub={uid:null,perfil:null,contagens:null,posts:[],fim:true,carregando:false,erro:'',soFoto:false};
 if(!S.readings) S.readings=[]; if(!Array.isArray(S.quizHistory)) S.quizHistory=[]; S.quizOpen=null; if(!S.spreadVar) S.spreadVar={};
 if(!S.notes) S.notes={};
-function persist(){ try { checarConquistas(); localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje,flashHistory:S.flashHistory,diasEstudo:S.diasEstudo,conquistas:S.conquistas,cdd:S.cdd,cartasDia:S.cartasDia}})); syncLater(); return true; } catch(e){ return false; } }
+function persist(){ try { checarConquistas(); localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,quizScope:S.quizScope,quizModo:S.quizModo,quizNivel:S.quizNivel,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje,flashHistory:S.flashHistory,diasEstudo:S.diasEstudo,conquistas:S.conquistas,cdd:S.cdd,cartasDia:S.cartasDia}})); syncLater(); return true; } catch(e){ return false; } }
 let lastSent=null;
 function syncLater(){ const A=window.GA_AUTH; if(!A||!A.enabled||A.estado!=='ok') return; const str=JSON.stringify(backupData()); if(str===lastSent) return; lastSent=str; A.agendarEnvio(); }
 function exportBackup(){
@@ -366,6 +367,8 @@ const CONQUISTAS=[
   {id:'baralho',ic:'📖',nome:'Grimório completo',texto:'As 78 cartas estudadas.',teste:()=>studiedCount()>=78},
   {id:'quiz1',ic:'❔',nome:'Primeiro quiz',texto:'Um quiz de 10 perguntas concluído.',teste:()=>S.quizHistory.some(h=>h.total>=10)},
   {id:'quiz10',ic:'🎯',nome:'Dez de dez',texto:'Um quiz de 10 perguntas sem nenhum erro.',teste:()=>S.quizHistory.some(h=>h.total>=10&&h.score===h.total)},
+  {id:'rel15',ic:'⚡',nome:'Relâmpago',texto:'Quinze acertos em um quiz relâmpago.',teste:()=>S.quizHistory.some(h=>h.modo==='relampago'&&h.score>=15)},
+  {id:'ls10',ic:'☯',nome:'Luz e sombra',texto:'Um quiz Luz ou sombra sem nenhum erro.',teste:()=>S.quizHistory.some(h=>h.modo==='luzsombra'&&h.total>=10&&h.score===h.total)},
   {id:'dom10',ic:'🧠',nome:'Dez na memória',texto:'Dez cartas dominadas nos flashcards.',teste:()=>resumoSrs('all').dominadas>=10},
   {id:'dom78',ic:'🌕',nome:'Baralho na memória',texto:'As 78 cartas dominadas nos flashcards.',teste:()=>resumoSrs('all').dominadas>=78},
   {id:'seq7',ic:'🕯️',nome:'Sete dias',texto:'Sete dias seguidos de estudo.',teste:()=>diasSeguidos()>=7},
@@ -399,23 +402,84 @@ function conquistasHtml(){
   return `<div class="stack" style="gap:8px"><button class="row" data-act="conq" style="min-height:56px"><div class="t"><div class="n" style="font-size:15px">Conquistas <span style="font-weight:400;color:var(--muted);font-size:13px">${n} de ${CONQUISTAS.length}</span></div><div class="s">${S.conqOpen?'Toque para esconder':'Marcos do seu estudo. Só você vê.'}</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>${S.conqOpen?`<div class="conq">${grid}</div>`:''}</div>`;
 }
 
-function buildQuiz(scope, forcadas){
-  const pool=cardsOf(scope), picked=forcadas||shuffle(pool).slice(0,10);
+const QMODOS=[
+  {id:'classico',label:'Clássico',desc:'10 perguntas sorteadas das fichas: palavras-chave, imagem, invertida, luz e sombra, simbolismo e áreas da vida.'},
+  {id:'relampago',label:'Relâmpago',desc:'60 segundos no relógio. Quantas você acerta? A próxima pergunta vem sozinha.'},
+  {id:'erros',label:'Só as que errei',desc:'As cartas que você mais erra no quiz e nos flashcards, para fechar as lacunas.'},
+  {id:'luzsombra',label:'Luz ou sombra?',desc:'Uma frase da ficha de uma carta nomeada: é lado de luz ou lado de sombra?'}
+];
+const modoLabel = id => (QMODOS.find(m=>m.id===id)||QMODOS[0]).label;
+// Opções erradas: no nível difícil, cartas do mesmo naipe ou do mesmo número (Três de Copas × Três de Paus)
+function distratores(c,pool,n){
+  const outras=pool.filter(x=>x.id!==c.id);
+  if(S.quizNivel!=='dificil') return shuffle(outras).slice(0,n);
+  const parecidas=shuffle(outras.filter(x=>x.suit===c.suit||(c.rank!=null&&x.rank===c.rank)));
+  const resto=shuffle(outras.filter(x=>!parecidas.includes(x)));
+  return parecidas.concat(resto).slice(0,n);
+}
+function buildQuiz(scope, forcadas, qtd){
+  const pool=cardsOf(scope); qtd=qtd||10;
+  let picked=forcadas||shuffle(pool).slice(0,qtd);
+  while(!forcadas&&picked.length<qtd) picked=picked.concat(shuffle(pool).slice(0,qtd-picked.length)); // relâmpago em grupos pequenos repete cartas
   const kinds=shuffle(['chaves','imagem','invertido','luz','sombra','simbolo','amor','financeiro','nome','imagem']);
   return picked.map((c,i)=>{
     let kind=kinds[i%kinds.length];
-    const group=shuffle([c].concat(shuffle(pool.filter(x=>x.id!==c.id)).slice(0,3)));
-    const names=group.map(x=>({id:x.id,label:x.name}));
-    if(kind==='simbolo'){ const cand=(c.simbolismo||[]).map(t=>mask(t,c)).filter(t=>t.length>20&&!/esta carta/i.test(t)); if(cand.length) return {card:c,kind:'Simbolismo',text:'Em que carta aparece: “'+shuffle(cand)[0]+'”?',options:names,answer:c.id}; kind='luz'; }
-    if(kind==='chaves') return {card:c,kind:'Palavras-chave',text:'Qual carta tem as palavras-chave: '+mask(c.palavras,c)+'?',options:names,answer:c.id};
-    if(kind==='imagem') return {card:c,kind:'Reconheça a carta',text:'Que carta é esta?',img:c.img,options:names,answer:c.id};
-    if(kind==='invertido'){ let t=mask(c.invertido,c).replace(/^Invertid[ao],?\s*/i,'').split('. ')[0].replace(/^esta carta/i,'esta carta'); t=t.charAt(0).toLowerCase()+t.slice(1); return {card:c,kind:'Carta invertida',text:'Invertida, '+t+'. Qual é a carta?',options:names,answer:c.id}; }
-    if(kind==='luz') return {card:c,kind:'Lado de luz',text:'Qual carta tem como lado de luz: “'+pick2(c.luz.map(t=>mask(t,c)))+'”?',options:names,answer:c.id};
-    if(kind==='sombra') return {card:c,kind:'Lado de sombra',text:'Qual carta tem como lado de sombra: “'+pick2(c.sombra.map(t=>mask(t,c)))+'”?',options:names,answer:c.id};
-    if(kind==='amor') return {card:c,kind:'No amor',text:'No amor, qual carta resume: “'+mask(resumo(c.amor),c)+'”?',options:names,answer:c.id};
-    if(kind==='financeiro') return {card:c,kind:'No financeiro',text:'No financeiro, qual carta resume: “'+mask(resumo(c.financeiro),c)+'”?',options:names,answer:c.id};
-    return {card:c,kind:'Significado',text:'Quais são as palavras-chave de '+c.name+'?',options:group.map(x=>({id:x.id,label:x.palavras})),answer:c.id};
+    const group=shuffle([c].concat(distratores(c,pool,3)));
+    const names=group.map(x=>({id:String(x.id),label:x.name}));
+    const ans=String(c.id);
+    if(kind==='simbolo'){ const cand=(c.simbolismo||[]).map(t=>mask(t,c)).filter(t=>t.length>20&&!/esta carta/i.test(t)); if(cand.length) return {card:c,kind:'Simbolismo',text:'Em que carta aparece: “'+shuffle(cand)[0]+'”?',options:names,answer:ans}; kind='luz'; }
+    if(kind==='chaves') return {card:c,kind:'Palavras-chave',text:'Qual carta tem as palavras-chave: '+mask(c.palavras,c)+'?',options:names,answer:ans};
+    if(kind==='imagem') return {card:c,kind:'Reconheça a carta',text:'Que carta é esta?',img:c.img,options:names,answer:ans};
+    if(kind==='invertido'){ let t=mask(c.invertido,c).replace(/^Invertid[ao],?\s*/i,'').split('. ')[0].replace(/^esta carta/i,'esta carta'); t=t.charAt(0).toLowerCase()+t.slice(1); return {card:c,kind:'Carta invertida',text:'Invertida, '+t+'. Qual é a carta?',options:names,answer:ans}; }
+    if(kind==='luz') return {card:c,kind:'Lado de luz',text:'Qual carta tem como lado de luz: “'+pick2(c.luz.map(t=>mask(t,c)))+'”?',options:names,answer:ans};
+    if(kind==='sombra') return {card:c,kind:'Lado de sombra',text:'Qual carta tem como lado de sombra: “'+pick2(c.sombra.map(t=>mask(t,c)))+'”?',options:names,answer:ans};
+    if(kind==='amor') return {card:c,kind:'No amor',text:'No amor, qual carta resume: “'+mask(resumo(c.amor),c)+'”?',options:names,answer:ans};
+    if(kind==='financeiro') return {card:c,kind:'No financeiro',text:'No financeiro, qual carta resume: “'+mask(resumo(c.financeiro),c)+'”?',options:names,answer:ans};
+    return {card:c,kind:'Significado',text:'Quais são as palavras-chave de '+c.name+'?',options:group.map(x=>({id:String(x.id),label:x.palavras})),answer:ans,nome:true};
   });
+}
+function perguntaLuzSombra(c){
+  const lado=Math.random()<.5?'luz':'sombra', arr=(c[lado]&&c[lado].length)?c[lado]:c[lado==='luz'?'sombra':'luz'], real=arr===c.luz?'luz':'sombra';
+  return {card:c,kind:'Luz ou sombra?',text:'Em '+c.name+', “'+shuffle(arr)[0]+'” é lado de luz ou lado de sombra?',options:[{id:'luz',label:'Lado de luz'},{id:'sombra',label:'Lado de sombra'}],answer:real,ls:true};
+}
+// Cartas erradas no quiz e nos flashcards, da mais errada para a menos
+function cartasErradas(){
+  const m={}; S.quizHistory.forEach(h=>h.answers.forEach(a=>{ if(!a.ok&&CARDS[a.c]) m[a.c]=(m[a.c]||0)+1; }));
+  S.flashHistory.forEach(h=>h.respostas.forEach(r=>{ if(r.n==='errei'&&CARDS[r.c]) m[r.c]=(m[r.c]||0)+1; }));
+  return Object.keys(m).sort((a,b)=>m[b]-m[a]).map(Number);
+}
+function montarQuiz(){
+  const modo=S.quizModo, scope=S.quizScope, base={i:0,chosen:null,score:0,done:false,answers:[],modo,scope};
+  if(modo==='relampago') return Object.assign(base,{qs:buildQuiz(scope,null,40),fim:Date.now()+60000});
+  if(modo==='erros'){ const ids=cartasErradas(); if(!ids.length) return null; const top=ids.slice(0,10); return Object.assign(base,{qs:buildQuiz('all',shuffle(top.map(id=>CARDS[id])).map(c=>c)),scope:'erros'}); }
+  if(modo==='luzsombra') return Object.assign(base,{qs:shuffle(cardsOf(scope)).slice(0,10).map(perguntaLuzSombra)});
+  return Object.assign(base,{qs:buildQuiz(scope)});
+}
+let qTimer=null;
+function pararTimer(){ if(qTimer){ clearInterval(qTimer); qTimer=null; } }
+function garantirTimer(){
+  const q=S.quiz; if(!q||q.modo!=='relampago'||q.done||qTimer) return;
+  qTimer=setInterval(()=>{
+    const q=S.quiz; if(!q||q.done||S.screen!=='quiz'||q.modo!=='relampago'){ pararTimer(); return; }
+    const resta=Math.max(0,q.fim-Date.now()); const el=document.getElementById('qtimer'); if(el) el.textContent=Math.ceil(resta/1000)+' s'; const bar=document.getElementById('qbar'); if(bar) bar.style.width=Math.round(100*resta/60000)+'%';
+    if(resta<=0){ finalizarQuiz(q); render(); }
+  },250);
+}
+function finalizarQuiz(q){
+  if(q.done) return; q.done=true; pararTimer();
+  const total=q.modo==='relampago'?q.answers.length:q.qs.length;
+  S.stats.quizzes++; if(q.modo==='classico'&&total>=10) S.stats.best=Math.max(S.stats.best||0,q.score);
+  const hid=String(Date.now()); q.histId=hid;
+  S.quizHistory=[{id:hid,at:Date.now(),scope:q.scope||S.quizScope,modo:q.modo||'classico',score:q.score,total,answers:q.answers||[]}].concat(S.quizHistory).slice(0,50);
+  marcarDia(); if(q.scope==='dia') S.cdd={d:hojeStr(),ok:true};
+  if(total>=10&&q.score===total) celebrar();
+  persist();
+}
+function avancarQuiz(q){
+  const n=q.i+1; q.chosen=null;
+  if(q.modo==='relampago'&&n>=q.qs.length&&Date.now()<q.fim) q.qs=q.qs.concat(buildQuiz(q.scope,null,20)); // relâmpago não acaba antes do relógio
+  if(n>=q.qs.length||(q.modo==='relampago'&&Date.now()>=q.fim)) finalizarQuiz(q); else q.i=n;
+  render(); document.getElementById('main').scrollTop=0;
 }
 
 // ---------- screens ----------
@@ -427,7 +491,7 @@ function home(){
   return `<div class="stack" style="gap:4px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div class="eyebrow">Grimório Arcano</div>${logged?`<button data-act="verperfil" data-id="${A.uid()}" aria-label="Meu perfil" style="border:none;background:transparent;padding:0;display:flex;align-items:center;gap:8px;color:var(--wood);font-size:13px;font-weight:500">${avatarHtml('sm')}</button>`:''}</div><h1 style="font-size:40px;line-height:1.05">Sua trilha de estudo</h1><p style="color:var(--ink2);margin-top:6px">78 cartas, uma por vez. Estude a ficha, treine com flashcards, confirme no quiz e leia padrões nas tiragens.</p></div>
   ${cartaDoDiaHtml()}${hojeHtml()}
   <div class="dark stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="eyebrow" style="color:var(--pink)">Progresso geral</div><div class="serif" style="font-size:26px;color:var(--butter)">${n}<span style="font-size:16px;color:var(--paper);opacity:.8"> / 78</span></div></div><div class="bar" style="height:8px"><i style="width:${Math.round(100*n/78)}%"></i></div><div style="font-size:13px;opacity:.85">${hint}</div></div>
-  <div class="grid3"><button class="tile" data-act="go" data-screen="flash">${ICONS.flash}<div><b>Flashcards</b><br><small>${(()=>{const r=resumoSrs('all');return r.due?r.due+' para hoje':r.novasSessao?r.novasSessao+' novas hoje':'Em dia';})()}</small></div></button><button class="tile" data-act="go" data-screen="quiz">${ICONS.quiz}<div><b>Quiz</b><br><small>10 perguntas</small></div></button><button class="tile" data-act="go" data-screen="spreads">${ICONS.spreads}<div><b>Tiragens</b><br><small>${SPREADS.length} métodos</small></div></button></div>
+  <div class="grid3"><button class="tile" data-act="go" data-screen="flash">${ICONS.flash}<div><b>Flashcards</b><br><small>${(()=>{const r=resumoSrs('all');return r.due?r.due+' para hoje':r.novasSessao?r.novasSessao+' novas hoje':'Em dia';})()}</small></div></button><button class="tile" data-act="go" data-screen="quiz">${ICONS.quiz}<div><b>Quiz</b><br><small>${QMODOS.length} modos</small></div></button><button class="tile" data-act="go" data-screen="spreads">${ICONS.spreads}<div><b>Tiragens</b><br><small>${SPREADS.length} métodos</small></div></button></div>
   <div class="stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="font-size:24px">Módulos</h2><span style="font-size:12px;color:var(--muted)">toque para estudar</span></div>${mods}</div>
   ${conquistasHtml()}
   <div class="box" style="gap:6px"><div class="h" style="color:var(--wood)">${logged?'Nuvem e backup':'Backup'}</div><div style="font-size:13px;color:var(--ink2);line-height:1.45">${logged?`Seu progresso (${n} estudada${n===1?'':'s'}, ${notesCount()} carta${notesCount()===1?'':'s'} com anotações, flashcards, quiz e práticas) fica salvo na nuvem e aparece em qualquer aparelho em que você entrar. Exportar um arquivo é opcional.`:`${notesCount()} carta${notesCount()===1?'':'s'} com anotações e ${n} estudada${n===1?'':'s'}, salvas só neste aparelho. Exporte de vez em quando para não perder.`}</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="link" data-act="export">Exportar backup</button><label class="link" style="cursor:pointer;display:flex;align-items:center">Importar backup<input type="file" accept="application/json,.json" data-import style="display:none"></label></div></div>
@@ -576,18 +640,18 @@ const scopeLabel = id => id==='dia'?'Carta do dia':(SCOPES.find(x=>x.id===id)||{
 function quizDetail(h){
   const rows=h.answers.map((a,i)=>{
     const c=CARDS[a.c];
-    return `<div class="qa"><span class="mk ${a.ok?'ok':'no'}">${a.ok?'✓':'✕'}</span><div class="tx"><div class="eyebrow" style="font-size:10px">${i+1} · ${esc(a.k)}</div><div style="color:var(--ink)">${a.img?'Que carta é esta? (imagem)':esc(a.t)}</div><div style="color:${a.ok?'#2F5A33':'var(--red)'}">Sua resposta: ${esc(a.lab)}</div>${a.ok?'':`<div style="color:#2F5A33">Resposta certa: <b>${esc(c.name)}</b></div>`}<button class="link" data-act="card" data-id="${c.id}" style="align-self:flex-start;min-height:32px;padding:4px 0">Abrir a ficha de ${esc(c.name)}</button></div></div>`;
+    return `<div class="qa"><span class="mk ${a.ok?'ok':'no'}">${a.ok?'✓':'✕'}</span><div class="tx"><div class="eyebrow" style="font-size:10px">${i+1} · ${esc(a.k)}</div><div style="color:var(--ink)">${a.img?'Que carta é esta? (imagem)':esc(a.t)}</div><div style="color:${a.ok?'#2F5A33':'var(--red)'}">Sua resposta: ${esc(a.lab)}</div>${a.ok?'':`<div style="color:#2F5A33">Resposta certa: <b>${esc(a.ans||c.name)}</b></div>`}<button class="link" data-act="card" data-id="${c.id}" style="align-self:flex-start;min-height:32px;padding:4px 0">Abrir a ficha de ${esc(c.name)}</button></div></div>`;
   }).join('');
   return `<div class="box" style="gap:0;border-color:var(--caramel)">${rows}<button class="link" data-act="qdel" data-id="${h.id}" style="color:var(--red);align-self:flex-start">Apagar este quiz</button></div>`;
 }
 function quizHistoryView(){
   const H=S.quizHistory; if(!H.length) return '';
   const total=H.reduce((a,h)=>a+h.total,0), right=H.reduce((a,h)=>a+h.score,0);
-  const best=Math.max(S.stats.best||0,...H.map(h=>h.score));
+  const best=Math.max(S.stats.best||0,...H.filter(h=>(h.modo||'classico')==='classico'&&h.total>=10).map(h=>h.score));
   const miss={}; H.forEach(h=>h.answers.forEach(a=>{ if(!a.ok) miss[a.c]=(miss[a.c]||0)+1; }));
   const top=Object.keys(miss).sort((a,b)=>miss[b]-miss[a]).slice(0,5);
   const topHtml=top.length?`<div class="stack" style="gap:6px"><div class="eyebrow">Cartas que mais erro</div>${top.map(id=>{const c=CARDS[id];return `<button class="row" data-act="card" data-id="${c.id}" style="min-height:56px"><img src="${c.img}" alt="" loading="lazy" style="width:32px;height:52px"><div class="t"><div class="n" style="font-size:15px">${esc(c.name)}</div><div class="s">${miss[id]} erro${miss[id]===1?'':'s'} · toque para revisar a ficha</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`;}).join('')}<button class="btn ghost" data-act="ferros" data-ids="${top.join(',')}">Revisar essas ${top.length} nos flashcards agora</button></div>`:'';
-  const list=H.map(h=>{const open=S.quizOpen===h.id;return `<button class="row" data-act="qhist" data-id="${h.id}" style="min-height:60px;${open?'border-color:var(--caramel)':''}"><div class="t"><div class="n" style="font-size:15px;justify-content:space-between"><span>${fmtDate(h.at)} · ${new Date(h.at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span><span class="serif" style="font-size:20px;color:${h.score>=7?'#2F5A33':h.score>=5?'var(--wood)':'var(--red)'}">${h.score}/${h.total}</span></div><div class="s">${esc(scopeLabel(h.scope))} · ${h.score} acerto${h.score===1?'':'s'}, ${h.total-h.score} erro${h.total-h.score===1?'':'s'}</div><div class="bar" style="height:4px"><i style="width:${Math.round(100*h.score/h.total)}%;background:${h.score>=7?'var(--green)':'var(--caramel)'}"></i></div></div></button>${open?quizDetail(h):''}`;}).join('');
+  const list=H.map(h=>{const open=S.quizOpen===h.id;return `<button class="row" data-act="qhist" data-id="${h.id}" style="min-height:60px;${open?'border-color:var(--caramel)':''}"><div class="t"><div class="n" style="font-size:15px;justify-content:space-between"><span>${fmtDate(h.at)} · ${new Date(h.at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span><span class="serif" style="font-size:20px;color:${h.total&&h.score/h.total>=.7?'#2F5A33':h.total&&h.score/h.total>=.5?'var(--wood)':'var(--red)'}">${h.modo==='relampago'?h.score+' em 60 s':h.score+'/'+h.total}</span></div><div class="s">${esc(modoLabel(h.modo))}${h.scope==='erros'?'':' · '+esc(scopeLabel(h.scope))} · ${h.score} acerto${h.score===1?'':'s'}, ${h.total-h.score} erro${h.total-h.score===1?'':'s'}</div><div class="bar" style="height:4px"><i style="width:${h.total?Math.round(100*h.score/h.total):0}%;background:${h.total&&h.score/h.total>=.7?'var(--green)':'var(--caramel)'}"></i></div></div></button>${open?quizDetail(h):''}`;}).join('');
   return `<div class="stack" style="gap:12px;margin-top:8px"><h2 style="font-size:24px">Meu histórico</h2>
   <div class="dark" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;padding:14px"><div><div class="serif" style="font-size:28px;color:var(--butter)">${H.length}</div><div style="font-size:11px;opacity:.8">quizzes</div></div><div><div class="serif" style="font-size:28px;color:var(--butter)">${Math.round(100*right/total)}%</div><div style="font-size:11px;opacity:.8">de acertos</div></div><div><div class="serif" style="font-size:28px;color:var(--butter)">${best}/10</div><div style="font-size:11px;opacity:.8">melhor nota</div></div></div>
   ${topHtml}<div class="stack" style="gap:8px"><div class="eyebrow">Quizzes feitos · toque para ver acertos e erros</div>${list}</div></div>`;
@@ -595,20 +659,42 @@ function quizHistoryView(){
 function quiz(){
   const q=S.quiz; let body='';
   if(!q){
-    body=`<p style="color:var(--ink2)">10 perguntas sorteadas a partir das fichas: palavras-chave, imagem, invertida, luz e sombra, simbolismo e áreas da vida. O nome da carta nunca aparece na pergunta.</p><div class="stack"><div class="eyebrow">Quais cartas</div><div class="pills wrap">${SCOPES.map(s=>`<button class="pill${S.quizScope===s.id?' on':''}" data-act="qscope" data-id="${s.id}">${s.label}</button>`).join('')}</div></div><button class="btn" data-act="qstart">Começar o quiz</button>${quizHistoryView()}`;
+    const modo=S.quizModo, nErr=cartasErradas().length;
+    const modos=`<div class="stack"><div class="eyebrow">Modo</div>${QMODOS.map(m=>`<button class="mode${modo===m.id?' on':''}" data-act="qmodo" data-id="${m.id}"><b>${m.label}</b><small>${m.desc}</small></button>`).join('')}</div>`;
+    const escopo=modo==='erros'?'':`<div class="stack"><div class="eyebrow">Quais cartas</div><div class="pills wrap">${SCOPES.map(s=>`<button class="pill${S.quizScope===s.id?' on':''}" data-act="qscope" data-id="${s.id}">${s.label}</button>`).join('')}</div></div>`;
+    const nivel=(modo==='classico'||modo==='relampago')?`<div class="stack" style="gap:8px"><div class="eyebrow">Dificuldade</div><div class="pills">${[['normal','Normal'],['dificil','Difícil']].map(([id,l])=>`<button class="pill${S.quizNivel===id?' on':''}" data-act="qnivel" data-id="${id}">${l}</button>`).join('')}</div><div style="font-size:12px;color:var(--muted)">${S.quizNivel==='dificil'?'As opções erradas são do mesmo naipe ou do mesmo número da carta certa.':'As opções erradas vêm de qualquer carta do grupo.'}</div></div>`:'';
+    const botao=modo==='erros'?(nErr?`<button class="btn" data-act="qstart">Revisar ${Math.min(10,nErr)} carta${Math.min(10,nErr)===1?'':'s'} que errei</button>`:`<div class="box" style="text-align:center"><p style="font-size:14px;color:var(--ink2)">Você ainda não errou nenhuma carta no quiz nem nos flashcards. Faça um quiz clássico primeiro.</p></div>`):`<button class="btn" data-act="qstart">${modo==='relampago'?'Começar · 60 segundos':modo==='luzsombra'?'Começar · 10 frases':'Começar o quiz'}</button>`;
+    body=`<p style="color:var(--ink2)">Quatro jeitos de se testar. ${modo==='luzsombra'?'Aqui a carta é nomeada: o teste é saber de que lado dela a frase vem.':'O nome da carta nunca aparece na pergunta.'}</p>${modos}${escopo}${nivel}${botao}${quizHistoryView()}`;
   } else if(!q.done){
-    const cur=q.qs[q.i]; const letters='ABCD';
+    garantirTimer();
+    const cur=q.qs[q.i]; const letters='ABCD', rel=q.modo==='relampago';
     const opts=cur.options.map((o,i)=>{let cls='';if(q.chosen!==null)cls=o.id===cur.answer?' correct':o.id===q.chosen?' wrong':' muted';return `<button class="opt${cls}" data-act="pick" data-id="${o.id}"><b>${letters[i]}</b>${esc(o.label)}</button>`;}).join('');
-    const fb = q.chosen===null?'':`<div class="fb">${q.chosen===cur.answer?'Certo. ':'A resposta era '+esc(cur.card.name)+'. '}${esc(cur.card.palavras)}.</div><button class="btn" data-act="qnext">${q.i+1>=q.qs.length?'Ver resultado':'Próxima pergunta'}</button>`;
-    body=`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Pergunta ${q.i+1} de ${q.qs.length}</span><b style="color:#2F5A33">${q.score} acertos</b></div><div class="bar"><i style="width:${Math.round(100*q.i/q.qs.length)}%"></i></div>
+    let fb='';
+    if(q.chosen!==null){
+      const ok=q.chosen===cur.answer, c=cur.card;
+      let txt;
+      if(cur.ls){ const outro=cur.answer==='luz'?'sombra':'luz'; txt=(ok?'Certo. ':'Não: é lado de '+cur.answer+'. ')+'Para comparar, o lado de '+outro+' de '+esc(c.name)+': “'+esc(shuffle(c[outro])[0])+'”.'; }
+      else if(cur.nome){ const esc_=CARDS[+q.chosen]; txt=ok?'Certo. '+esc(c.palavras)+'.':'As palavras-chave de '+esc(c.name)+' são '+esc(c.palavras)+'.'+(esc_?' As que você escolheu são de '+esc(esc_.name)+'.':''); }
+      else { const esc_=CARDS[+q.chosen]; txt=(ok?'Certo. ':'A resposta era '+esc(c.name)+'. ')+esc(c.palavras)+'.'+(!ok&&esc_?' '+esc(esc_.name)+', que você escolheu, é '+esc(esc_.palavras.toLowerCase())+'.':''); }
+      fb=`<div class="fb">${txt}</div>`+(rel?'':`<button class="btn" data-act="qnext">${q.i+1>=q.qs.length?'Ver resultado':'Próxima pergunta'}</button>`);
+    }
+    const resta=rel?Math.max(0,q.fim-Date.now()):0;
+    const topo=rel?`<span>Relâmpago · <b id="qtimer" style="color:var(--wood)">${Math.ceil(resta/1000)} s</b></span><b style="color:#2F5A33">${q.score} acerto${q.score===1?'':'s'}</b>`:`<span>Pergunta ${q.i+1} de ${q.qs.length}</span><b style="color:#2F5A33">${q.score} acerto${q.score===1?'':'s'}</b>`;
+    const barra=rel?`<div class="bar"><i id="qbar" style="width:${Math.round(100*resta/60000)}%;background:var(--green)"></i></div>`:`<div class="bar"><i style="width:${Math.round(100*q.i/q.qs.length)}%"></i></div>`;
+    body=`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)">${topo}</div>${barra}
     <div class="box" style="padding:18px;gap:12px;border-radius:20px"><div class="eyebrow">${cur.kind}</div>${cur.img?`<div class="crop"><img src="${cur.img}" alt=""></div>`:''}<div class="serif" style="font-size:22px;line-height:1.25">${esc(cur.text)}</div></div>
-    <div class="stack">${opts}</div>${fb}`;
+    <div class="stack">${opts}</div>${fb}${rel?'':''}<button class="link" data-act="qreset" style="align-self:center">Encerrar por agora</button>`;
   } else {
-    const msg = q.qs.length<10?(q.score===q.qs.length?'Carta do dia respondida. Amanhã tem outra.':'Abra a ficha da carta do dia e releia com calma. Amanhã tem outra.'):q.score>=9?'Domínio total desse grupo. Passe para o próximo.':q.score>=6?'Bom caminho. Revise as que errou nas fichas.':'Vale voltar às fichas e aos flashcards antes de repetir.';
+    const total=q.modo==='relampago'?q.answers.length:q.qs.length;
+    let msg;
+    if(q.modo==='relampago') msg=q.score>=15?'Reflexo de quem já conhece o baralho. Tente no nível difícil.':q.score>=8?'Bom ritmo. O relâmpago melhora com as fichas frescas na memória.':'Velocidade vem depois da memória: passe pelos flashcards e volte.';
+    else if(q.modo==='luzsombra') msg=q.score>=9?'Você distingue bem os dois lados. É o que dá profundidade na leitura.':q.score>=6?'Bom. As que confundiu são as que valem reler na ficha, luz e sombra lado a lado.':'Releia luz e sombra das cartas que confundiu. A sombra costuma ser a luz em excesso.';
+    else if(q.modo==='erros') msg=q.score===total?'As lacunas estão fechando. Volte amanhã e repita.':'Essas cartas ainda escorregam. Abra a ficha de cada uma antes de repetir.';
+    else msg=q.qs.length<10?(q.score===q.qs.length?'Carta do dia respondida. Amanhã tem outra.':'Abra a ficha da carta do dia e releia com calma. Amanhã tem outra.'):q.score>=9?'Domínio total desse grupo. Passe para o próximo.':q.score>=6?'Bom caminho. Revise as que errou nas fichas.':'Vale voltar às fichas e aos flashcards antes de repetir.';
     const h=S.quizHistory.find(x=>x.id===q.histId);
-    body=`<div class="dark stack" style="text-align:center;padding:24px 20px"><div class="eyebrow" style="color:var(--pink)">Resultado</div><div class="serif big">${q.score}<span> / ${q.qs.length}</span></div><div style="font-size:14px;opacity:.9">${msg}</div></div>
+    body=`<div class="dark stack" style="text-align:center;padding:24px 20px"><div class="eyebrow" style="color:var(--pink)">${q.modo==='relampago'?'Relâmpago · 60 segundos':'Resultado'}</div><div class="serif big">${q.score}<span>${q.modo==='relampago'?' acerto'+(q.score===1?'':'s')+' em '+total:' / '+total}</span></div><div style="font-size:14px;opacity:.9">${msg}</div></div>
     ${h?`<button class="btn ghost" data-act="qhist" data-id="${h.id}">${S.quizOpen===h.id?'Esconder acertos e erros':'Ver acertos e erros'}</button>${S.quizOpen===h.id?quizDetail(h):''}`:''}
-    <button class="btn" data-act="qstart">Novo quiz</button><button class="btn ghost" data-act="qreset">Ver histórico e escolher outras cartas</button>`;
+    <button class="btn" data-act="qstart">${q.modo==='relampago'?'De novo · 60 segundos':'Novo quiz'}</button><button class="btn ghost" data-act="qreset">Ver histórico e trocar o modo</button>`;
   }
   return `${tituloComAvatar('Quiz')}${body}`;
 }
@@ -954,7 +1040,7 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='next') set({cardId:(S.cardId+1)%CARDS.length});
   else if(a==='toggle'){ const st=Object.assign({},S.studied); st[S.cardId]=!st[S.cardId]; const h=hojeStr(); if(S.cartasDia.d!==h) S.cartasDia={d:h,n:0}; if(st[S.cardId]){ marcarDia(); S.cartasDia.n++; } else if(S.cartasDia.n>0) S.cartasDia.n--; set({studied:st}); }
   else if(a==='conq'){ S.conqOpen=!S.conqOpen; render(); }
-  else if(a==='cddquiz'){ set({quiz:{qs:buildQuiz('all',[cartaDoDia()]),i:0,chosen:null,score:0,done:false,answers:[],scope:'dia'},quizOpen:null,screen:'quiz'}); document.getElementById('main').scrollTop=0; }
+  else if(a==='cddquiz'){ pararTimer(); set({quiz:{qs:buildQuiz('all',[cartaDoDia()]),i:0,chosen:null,score:0,done:false,answers:[],scope:'dia',modo:'classico'},quizOpen:null,screen:'quiz'}); document.getElementById('main').scrollTop=0; }
   else if(a==='cddref'){ const c=cartaDoDia(); marcarDia(); S.cdd={d:hojeStr(),ok:true}; if(logada()&&COM){ S.rasc.tema='reflexao'; S.rasc.erro=''; if(!S.rasc.texto.trim()) S.rasc.texto='Carta do dia: '+c.name+'.\n'+perguntaDoDia()+'\n\n'; set({screen:'escrever'}); } else set({screen:'card',cardId:c.id}); document.getElementById('main').scrollTop=0; }
   else if(a==='ferros'){ const ids=(b.dataset.ids||'').split(',').map(Number).filter(x=>!isNaN(x)&&CARDS[x]); if(!ids.length) return; const f={fila:ids,atual:null,flipped:false,feitas:0,erros:0,done:false,respostas:[],inicio:Date.now()}; f.atual=proximaCarta(f); set({screen:'flash',flash:f,flashOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='fscope') set({flashScope:id});
@@ -976,6 +1062,8 @@ document.getElementById('app').addEventListener('click',e=>{
     marcarDia(); persist(); render(); document.getElementById('main').scrollTop=0;
   }
   else if(a==='qscope') set({quizScope:id});
+  else if(a==='qmodo') set({quizModo:id});
+  else if(a==='qnivel') set({quizNivel:id});
   else if(a==='spread') set({screen:'spread',spreadId:id,spreadTab:'aprender',practiceOpen:null});
   else if(a==='stab'){ set({spreadTab:id,practiceOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='svar'){ const v=Object.assign({},S.spreadVar); v[S.spreadId]=id; set({spreadVar:v}); }
@@ -985,12 +1073,12 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='psave'){ const pr=S.practice; if(!pr||pr.saved) return; const r={id:String(Date.now()),spreadId:pr.spreadId,draw:pr.draw,at:Date.now(),var:pr.var}; pr.saved=true; marcarDia(); set({readings:[r].concat(S.readings).slice(0,30)}); }
   else if(a==='pload'){ const r=S.readings.find(x=>x.id===id); if(r) set({practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='pdel'){ if(!confirm('Apagar esta prática?')) return; const pr=S.practice; const r=S.readings.find(x=>x.id===id); if(pr&&r&&pr.saved&&pr.at===r.at) pr.saved=false; set({readings:S.readings.filter(x=>x.id!==id)}); }
-  else if(a==='qstart') set({quiz:{qs:buildQuiz(S.quizScope),i:0,chosen:null,score:0,done:false,answers:[]},quizOpen:null});
-  else if(a==='qreset') set({quiz:null,quizOpen:null});
+  else if(a==='qstart'){ pararTimer(); const q=montarQuiz(); if(!q) return; set({quiz:q,quizOpen:null}); document.getElementById('main').scrollTop=0; }
+  else if(a==='qreset'){ const q=S.quiz; if(q&&!q.done&&q.answers.length&&q.modo==='relampago') finalizarQuiz(q); pararTimer(); set({quiz:null,quizOpen:null}); }
   else if(a==='qhist') set({quizOpen:S.quizOpen===id?null:id});
   else if(a==='qdel'){ if(!confirm('Apagar este quiz do histórico?')) return; if(S.quiz&&S.quiz.histId===id) S.quiz.histId=null; set({quizHistory:S.quizHistory.filter(h=>h.id!==id),quizOpen:null}); }
-  else if(a==='pick'){ const q=S.quiz; if(q.chosen!==null) return; q.chosen=+id; const cq=q.qs[q.i], ok=q.chosen===cq.answer; if(ok)q.score++; const op=cq.options.find(o=>o.id===q.chosen); if(!q.answers) q.answers=[]; q.answers.push({c:cq.card.id,k:cq.kind,t:cq.text,img:!!cq.img,ch:q.chosen,ok,lab:op?op.label:''}); render(); const nb=document.querySelector('[data-act="qnext"]'); if(nb) nb.scrollIntoView({behavior:'smooth',block:'end'}); }
-  else if(a==='qnext'){ const q=S.quiz, n=q.i+1; q.chosen=null; if(n>=q.qs.length){ q.done=true; S.stats.quizzes++; S.stats.best=Math.max(S.stats.best,q.score); const hid=String(Date.now()); q.histId=hid; S.quizHistory=[{id:hid,at:Date.now(),scope:q.scope||S.quizScope,score:q.score,total:q.qs.length,answers:q.answers||[]}].concat(S.quizHistory).slice(0,50); marcarDia(); if(q.scope==='dia') S.cdd={d:hojeStr(),ok:true}; if(q.score===q.qs.length&&q.qs.length>=10) celebrar(); persist(); } else q.i=n; render(); document.getElementById('main').scrollTop=0; }
+  else if(a==='pick'){ const q=S.quiz; if(!q||q.done||q.chosen!==null) return; q.chosen=String(id); const cq=q.qs[q.i], ok=q.chosen===String(cq.answer); if(ok)q.score++; const op=cq.options.find(o=>o.id===q.chosen), cert=cq.options.find(o=>o.id===String(cq.answer)); if(!q.answers) q.answers=[]; q.answers.push({c:cq.card.id,k:cq.kind,t:cq.text,img:!!cq.img,ch:q.chosen,ok,lab:op?op.label:'',ans:cert?cert.label:''}); render(); if(q.modo==='relampago'){ setTimeout(()=>{ if(S.quiz===q&&!q.done&&q.chosen!==null) avancarQuiz(q); },ok?500:1100); } else { const nb=document.querySelector('[data-act="qnext"]'); if(nb) nb.scrollIntoView({behavior:'smooth',block:'end'}); } }
+  else if(a==='qnext'){ const q=S.quiz; if(q&&!q.done) avancarQuiz(q); }
 });
 
 render();
