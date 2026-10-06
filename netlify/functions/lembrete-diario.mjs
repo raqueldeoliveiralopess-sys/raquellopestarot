@@ -63,7 +63,7 @@ export function montarEmail({ nome, uid, carta, pergunta, r }) {
 <tr><td style="background:#402327;color:#F4ECE1;padding:18px 24px;font-size:12px;letter-spacing:.16em;text-transform:uppercase">Grimório Arcano · carta do dia</td></tr>
 <tr><td style="padding:24px 24px 8px;font-size:16px;line-height:1.5">${primeiro ? 'Bom dia, ' + escHtml(primeiro) + '.' : 'Bom dia.'}</td></tr>
 <tr><td style="padding:0 24px"><table cellpadding="0" cellspacing="0"><tr>
-<td style="vertical-align:top;padding-right:16px"><img src="${app}/${escHtml(carta.img)}" width="84" height="138" alt="${escHtml(carta.name)}" style="display:block;border-radius:8px;background:#EDE1D2"></td>
+<td style="vertical-align:top;padding-right:16px"><img src="${app}/${escHtml(String(carta.img).replace(/\.webp$/, '.jpg'))}" width="84" height="138" alt="${escHtml(carta.name)}" style="display:block;border-radius:8px;background:#EDE1D2"></td>
 <td style="vertical-align:top"><div style="font-size:28px;line-height:1.05;margin-bottom:6px">${escHtml(carta.name)}</div><div style="font-size:14px;color:#5E4038;margin-bottom:10px">${escHtml(carta.palavras)}</div><div style="font-size:15px;line-height:1.45"><b style="color:#8A6A1E">Para refletir.</b> ${escHtml(pergunta)}</div></td></tr></table></td></tr>
 <tr><td style="padding:18px 24px 0;font-size:15px;line-height:1.5">${escHtml(linhaRev)}${linhaSeq ? '<br>' + escHtml(linhaSeq) : ''}</td></tr>
 <tr><td style="padding:20px 24px 6px"><a href="${app}" style="display:inline-block;background:#593122;color:#F4ECE1;text-decoration:none;padding:14px 24px;border-radius:12px;font-size:16px;font-weight:bold">Abrir o Grimório</a></td></tr>

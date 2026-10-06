@@ -8,6 +8,15 @@ Os flashcards seguem o modelo do Anki (SM-2 simplificado): cada carta tem uma da
 
 Fica em `vendas/index.html` e é publicada junto com o app em `https://ogrimorioarcano.netlify.app/vendas/`. É HTML puro com animações em CSS (desligadas para quem pede movimento reduzido). As imagens das cartas vêm de `img/`; as telas do app ficam em `vendas/img/`. Antes de divulgar, troque os colchetes: depoimentos e os preços de comparação (curso gravado e livro).
 
+## Consumo de banda (créditos da Netlify)
+
+A Netlify cobra por bytes servidos, então o app é montado para baixar o mínimo:
+
+- `index.html`, `config.js` e o manifest são "rede primeiro" com revalidação: o navegador pergunta se mudou e recebe 304 sem corpo quando não mudou.
+- `cards.js`, `tiragens.js`, `diario.js`, `auth.js` e `comunidade.js` são pedidos pelo `index.html` com `?v=N` e servidos com cache de um ano. **Quando mudar um deles, suba o `?v=` nas cinco tags do `index.html` e o `CACHE` do `sw.js` para o mesmo número.** Sem isso a aluna continua com a cópia antiga.
+- As cartas são WebP (metade do tamanho dos JPEG) e entram no cache do aparelho só quando são vistas; o service worker não pré-baixa as 78 na instalação. Os JPEG ficam no repositório para o e-mail do lembrete e para a imagem de compartilhamento da página de vendas.
+- Acompanhe em Netlify > Usage (Bandwidth). Cada versão nova publicada custa uma revalidação por aparelho, não um download inteiro.
+
 ## Como atualizar
 
 1. Edite os arquivos (`index.html`, `cards.js` com as fichas, `tiragens.js` com as tiragens, imagens em `img/`).

@@ -5,20 +5,22 @@
   Cache-Control: no-cache
 /sw.js
   Cache-Control: no-cache
-/cards.js
-  Cache-Control: no-cache
-/tiragens.js
-  Cache-Control: no-cache
-/diario.js
-  Cache-Control: no-cache
 /config.js
-  Cache-Control: no-cache
-/auth.js
-  Cache-Control: no-cache
-/comunidade.js
   Cache-Control: no-cache
 /manifest.webmanifest
   Cache-Control: no-cache
+
+# Scripts versionados pelo index.html (?v=N): podem ficar em cache por muito tempo
+/cards.js
+  Cache-Control: public, max-age=31536000, immutable
+/tiragens.js
+  Cache-Control: public, max-age=31536000, immutable
+/diario.js
+  Cache-Control: public, max-age=31536000, immutable
+/auth.js
+  Cache-Control: public, max-age=31536000, immutable
+/comunidade.js
+  Cache-Control: public, max-age=31536000, immutable
 
 # Imagens das cartas e ícones: não mudam, podem ficar em cache por muito tempo
 /img/*
