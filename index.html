@@ -65,6 +65,12 @@ nav button.on{color:var(--ink)}
 .mb.a.esc:empty::after{content:'…';letter-spacing:2px;color:var(--muted);animation:pulsaPonto 1.2s ease-in-out infinite}
 @keyframes pulsaPonto{0%,100%{opacity:.35}50%{opacity:1}}
 .mentora textarea{min-height:72px}
+.mrow{display:flex;gap:6px;align-items:flex-end;max-width:92%}
+.mrow .mb{max-width:100%}
+.mav{flex:0 0 24px;width:24px;height:24px;margin-bottom:2px}
+.mav svg,.mtit svg{width:100%;height:100%;display:block}
+.mtit{display:flex;align-items:center;gap:10px}
+.mtit span{flex:0 0 32px;width:32px;height:32px}
 .notes .st{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;min-height:20px}
 .link{border:none;background:transparent;color:var(--wood);font-size:13px;font-weight:600;padding:8px 4px;min-height:44px}
 .box .h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
@@ -448,7 +454,7 @@ const CONQUISTAS=[
   {id:'notas10',ic:'✍️',nome:'Caderno aberto',texto:'Anotações em dez cartas.',teste:()=>notesCount()>=10},
   {id:'dia1',ic:'☀️',nome:'Dia fechado',texto:'As quatro metas de um dia cumpridas.',teste:()=>metasHoje().every(x=>x.ok)},
   {id:'post1',ic:'💬',nome:'Voz na roda',texto:'Primeiro post na Comunidade.',teste:()=>false},
-  {id:'mentora1',ic:'🕯️',nome:'Primeira dúvida',texto:'Primeira conversa com a Mentora dentro de uma tiragem ou ficha.',teste:()=>false}
+  {id:'mentora1',ic:'🦉',nome:'Primeira conversa',texto:'Primeira conversa com a Ofélia, a coruja do Grimório, dentro de uma tiragem ou ficha.',teste:()=>false}
 ];
 let ultimaFesta=0;
 function celebrar(){
@@ -909,11 +915,13 @@ function practiceView(sp){
   <div class="grid2"><button class="btn ghost" data-act="pdraw">Sortear de novo</button><button class="btn" data-act="psave" ${pr.saved?'disabled style="opacity:.6"':''}>${pr.saved?'Prática salva':'Salvar prática'}</button></div>${logada()&&COM?`<button class="btn ghost" data-act="pshare">Compartilhar na roda</button>`:''}${list}`;
 }
 
-// ---------- Mentora (chat de dúvidas dentro da prática e da ficha) ----------
+// ---------- Ofélia, a coruja do Grimório (chat de dúvidas dentro da prática e da ficha) ----------
+// Coruja-da-igreja em SVG: cara em coração, dois olhos, bico curto. Cores da marca, sem imagem externa.
+const CORUJA='<svg viewBox="0 0 32 32" fill="none" stroke="var(--wood)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 29.5c-6.4 0-10.5-5-10.5-11.2 0-5.4 3.1-9.6 6.3-12.8L16 8l4.2-2.5c3.2 3.2 6.3 7.4 6.3 12.8C26.5 24.5 22.4 29.5 16 29.5z" fill="var(--card)"/><path d="M16 27c-4.3-1-7.3-4.8-7.3-9 0-3.8 2.6-6.9 4.1-8.6L16 11.6l3.2-2.2c1.5 1.7 4.1 4.8 4.1 8.6 0 4.2-3 8-7.3 9z"/><circle cx="12.4" cy="16.2" r="1.5" fill="var(--wood)"/><circle cx="19.6" cy="16.2" r="1.5" fill="var(--wood)"/><path d="M16 18.3v3.2"/></svg>';
 function mentoraCtx(){
   if(S.screen==='spread'&&S.spreadTab==='praticar'&&S.practice&&S.practice.spreadId===S.spreadId){
     const pr=S.practice; if(!Array.isArray(pr.chat)) pr.chat=[];
-    return {chave:'p'+pr.at,chat:pr.chat,titulo:'Tirar dúvida com a Mentora',intro:'Ela conhece esta tiragem e as fichas do app. Não prevê e não lê quem não está na mesa: ajuda você a ler o padrão.',
+    return {chave:'p'+pr.at,chat:pr.chat,titulo:'Perguntar à Ofélia',intro:'Ofélia é a coruja do Grimório. Ela conhece esta tiragem e as fichas do app, não prevê nada e não lê quem não está na mesa: ajuda você a enxergar o padrão no escuro.',
       sugestoes:['Por que essa carta caiu nessa posição?','Minha pergunta está bem formulada?','Como ler a carta invertida aqui?','Que padrão aparece entre as posições?'],
       placeholder:'Ex.: a carta não combina com a minha pergunta. O que ela mostra aqui?',
       corpo:{spreadId:pr.spreadId,draw:pr.draw.map(d=>({cardId:d.cardId,rev:!!d.rev})),var:pr.var||null,pergunta_pratica:(pr.pergunta||'').trim(),sintese:(pr.sintese||'').trim(),interpretacao:(pr.interpretacao||'').trim()},
@@ -922,7 +930,7 @@ function mentoraCtx(){
   if(S.screen==='card'){
     const c=CARDS[S.cardId]||CARDS[0]; if(!Array.isArray(S.chatCarta[c.id])) S.chatCarta[c.id]=[];
     const chat=S.chatCarta[c.id];
-    return {chave:'c'+c.id,chat,titulo:'Dúvida sobre esta carta',intro:'A Mentora responde com a ficha de '+c.name+' e a perspectiva junguiana do app. Não prevê nada.',
+    return {chave:'c'+c.id,chat,titulo:'Perguntar à Ofélia',intro:'Ofélia, a coruja do Grimório, responde com a ficha de '+c.name+' e a perspectiva junguiana do app. Não prevê nada.',
       sugestoes:['Qual a diferença entre a luz e a sombra aqui?','Como esta carta aparece numa cena do dia a dia?','O que muda quando ela vem invertida?'],
       placeholder:'Ex.: como diferenciar '+c.name+' de uma carta parecida?',corpo:{cardId:c.id},sync(){ chat.splice(0,Math.max(0,chat.length-20)); }};
   }
@@ -930,37 +938,37 @@ function mentoraCtx(){
 }
 function mentoraHtml(){
   const ctx=mentoraCtx(); if(!ctx) return '';
-  const head=`<h2 style="font-size:22px">${esc(ctx.titulo)}</h2><p style="font-size:13px;color:var(--ink2)">${esc(ctx.intro)}</p>`;
-  if(!logada()) return `<div class="notes mentora">${head}<p style="font-size:14px">Entre na sua conta para conversar com a Mentora.</p></div>`;
+  const head=`<div class="mtit"><span>${CORUJA}</span><h2 style="font-size:22px">${esc(ctx.titulo)}</h2></div><p style="font-size:13px;color:var(--ink2)">${esc(ctx.intro)}</p>`;
+  if(!logada()) return `<div class="notes mentora">${head}<p style="font-size:14px">Entre na sua conta para conversar com a Ofélia.</p></div>`;
   const env=S.mentora.enviando&&S.mentora.chave===ctx.chave, n=ctx.chat.length;
-  const bolhas=ctx.chat.map((t,i)=>`<div class="mb q">${esc(t.q)}</div><div class="mb a${env&&i===n-1&&!t.a?' esc':''}"${i===n-1?' id="mresp"':''}>${esc(t.a)}</div>`).join('');
+  const bolhas=ctx.chat.map((t,i)=>`<div class="mb q">${esc(t.q)}</div><div class="mrow"><span class="mav">${CORUJA}</span><div class="mb a${env&&i===n-1&&!t.a?' esc':''}"${i===n-1?' id="mresp"':''}>${esc(t.a)}</div></div>`).join('');
   const sug=n?'':`<div class="pills wrap">${ctx.sugestoes.map(s=>`<button class="pill" data-act="msug" data-q="${esc(s)}">${esc(s)}</button>`).join('')}</div>`;
   const erro=S.mentora.erro&&S.mentora.chave===ctx.chave?`<div class="err">${esc(S.mentora.erro)}</div>`:'';
   const rodape=n?n+' troca'+(n===1?'':'s')+(ctx.chave[0]==='p'?' nesta prática':' nesta carta')+', salvas com o resto do estudo.':'Até 30 perguntas por dia. Só você vê esta conversa.';
-  return `<div class="notes mentora">${head}${bolhas?`<div class="mchat" id="mchat">${bolhas}</div>`:''}${sug}<label for="mq" style="font-size:13px;font-weight:600;color:var(--wood)">Minha dúvida</label><textarea id="mq" data-mq maxlength="500" placeholder="${esc(ctx.placeholder)}"${env?' disabled':''}>${esc(S.mentoraDraft||'')}</textarea><button class="btn" data-act="mperg"${env?' disabled style="opacity:.6"':''}>${env?'A Mentora está escrevendo…':'Perguntar à Mentora'}</button><div style="font-size:12px;color:var(--muted)">${esc(rodape)}</div>${erro}</div>`;
+  return `<div class="notes mentora">${head}${bolhas?`<div class="mchat" id="mchat">${bolhas}</div>`:''}${sug}<label for="mq" style="font-size:13px;font-weight:600;color:var(--wood)">Minha dúvida</label><textarea id="mq" data-mq maxlength="500" placeholder="${esc(ctx.placeholder)}"${env?' disabled':''}>${esc(S.mentoraDraft||'')}</textarea><button class="btn" data-act="mperg"${env?' disabled style="opacity:.6"':''}>${env?'Ofélia está escrevendo…':'Perguntar à Ofélia'}</button><div style="font-size:12px;color:var(--muted)">${esc(rodape)}</div>${erro}</div>`;
 }
 function rolarChat(){ const el=document.getElementById('mchat'); if(el) el.scrollTop=el.scrollHeight; }
 async function perguntarMentora(pergunta){
   pergunta=(pergunta||'').trim().slice(0,500); const ctx=mentoraCtx();
   if(!pergunta||!ctx||S.mentora.enviando||!logada()) return;
   const A=window.GA_AUTH; let token=null; try{ token=A.token?await A.token():null; }catch(e){}
-  if(!token){ S.mentora={enviando:false,erro:navigator.onLine?'Entre de novo para usar a Mentora.':'Sem internet agora.',chave:ctx.chave}; render(); return; }
+  if(!token){ S.mentora={enviando:false,erro:navigator.onLine?'Entre de novo para falar com a Ofélia.':'Sem internet agora.',chave:ctx.chave}; render(); return; }
   const troca={q:pergunta,a:'',at:Date.now()}; ctx.chat.push(troca); S.mentoraDraft=''; S.mentora={enviando:true,erro:'',chave:ctx.chave}; render(); rolarChat();
   const corpo=Object.assign({pergunta,historico:ctx.chat.slice(0,-1).slice(-10).map(t=>({q:t.q,a:t.a}))},ctx.corpo);
   const falhou=msg=>{ const i=ctx.chat.indexOf(troca); if(i>=0) ctx.chat.splice(i,1); S.mentora.erro=msg; S.mentoraDraft=pergunta; };
   try{
-    const res=await fetch('/.netlify/functions/mentora',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(corpo)});
+    const res=await fetch('/.netlify/functions/ofelia',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(corpo)});
     if(!res.ok){
-      let msg='A Mentora não respondeu agora. Tente em instantes.';
-      if(res.status===401) msg='Entre de novo para usar a Mentora.'; else if(res.status===429) msg='Você já usou as perguntas de hoje. Amanhã libera de novo.'; else if(res.status===503) msg='A Mentora ainda não foi ligada neste app.';
+      let msg='A Ofélia não respondeu agora. Tente em instantes.';
+      if(res.status===401) msg='Entre de novo para falar com a Ofélia.'; else if(res.status===429) msg='Você já usou as perguntas de hoje. Amanhã a Ofélia volta.'; else if(res.status===503) msg='A Ofélia ainda não foi ligada neste app.';
       falhou(msg); return;
     }
     const reader=res.body.getReader(), dec=new TextDecoder();
     while(true){ const {value,done}=await reader.read(); if(done) break; troca.a+=dec.decode(value,{stream:true}); const el=document.getElementById('mresp'); if(el){ el.classList.remove('esc'); el.textContent=troca.a; rolarChat(); } }
     troca.a=troca.a.trim();
-    if(!troca.a){ falhou('A Mentora não respondeu agora. Tente em instantes.'); return; }
+    if(!troca.a){ falhou('A Ofélia não respondeu agora. Tente em instantes.'); return; }
     ctx.sync(); marcarDia(); ganhar('mentora1');
-  }catch(e){ falhou(navigator.onLine?'A Mentora não respondeu agora. Tente em instantes.':'Sem internet agora.'); }
+  }catch(e){ falhou(navigator.onLine?'A Ofélia não respondeu agora. Tente em instantes.':'Sem internet agora.'); }
   finally{ S.mentora.enviando=false; persist(); render(); rolarChat(); }
 }
 

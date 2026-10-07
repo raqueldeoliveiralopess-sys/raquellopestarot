@@ -12,6 +12,6 @@
 [functions."lembrete-diario"]
   included_files = ["cards.js", "diario.js"]
 
-# A Mentora monta o contexto com as fichas das cartas e das tiragens do próprio app
-[functions."mentora"]
+# A Ofélia (chat de dúvidas) monta o contexto com as fichas das cartas e das tiragens do próprio app
+[functions."ofelia"]
   included_files = ["cards.js", "tiragens.js"]
