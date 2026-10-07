@@ -53,6 +53,20 @@ Para ligar:
 2. Na Netlify, as variáveis `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` e `BREVO_API_KEY` já existem por causa do webhook. Opcional: `LEMBRETE_SECRET` (um texto longo qualquer) para assinar o link de descadastro; sem ele, a chave de serviço é usada para isso.
 3. O horário fica em `config.schedule` dentro da função (`0 11 * * *`, em UTC). O arquivo `netlify.toml` inclui `cards.js` e `diario.js` no pacote da função, e `diario.js` é o único lugar onde ficam as perguntas e o sorteio da carta do dia, usado pelo app e pelo e-mail.
 
+## Mentora de estudos (chat de dúvidas)
+
+Dentro de uma prática de tiragem (depois do box "Minha interpretação") e na ficha de cada carta, a aluna tem a caixa **Tirar dúvida com a Mentora**. A função `netlify/functions/mentora.mjs` recebe só os ids da tiragem (ou da carta), a pergunta registrada, a síntese e a interpretação da aluna, monta o contexto com as fichas oficiais de `cards.js` e `tiragens.js` e chama a API da Anthropic (modelo `claude-opus-5-5`, resposta em streaming). O prompt do sistema carrega as regras da marca: perspectiva junguiana e não divinatória, nunca sim ou não sobre fatos (gravidez, volta de alguém, dinheiro), nunca ler quem não está na mesa, nunca prometer resultado, resposta curta que termina com uma pergunta de reflexão ou uma reformulação. Tudo o que a aluna escreve entra como texto dela, nunca como instrução.
+
+A conversa fica salva com a prática (`chat` em cada item de `readings`) ou com a carta (`chatCarta`), sincroniza com o resto do progresso e aparece de novo ao reabrir. Só aparece logada. Erros viram avisos curtos (sem sessão, limite do dia, serviço fora).
+
+Para ligar:
+1. Crie uma conta em console.anthropic.com, gere uma chave de API e defina um limite de gasto mensal lá.
+2. Na Netlify, em Site configuration → Environment variables, crie `ANTHROPIC_API_KEY` com essa chave. Nunca a cole no app nem em conversas. Opcionais: `MENTORA_LIMITE_DIA` (mensagens por aluna por dia; padrão 30) e `MENTORA_MODELO`.
+3. Rode `supabase/mentora.sql` no SQL Editor: cria `mentora_uso` (mensagens e tokens por aluna e por dia, só a chave de serviço escreve) e `mentora_registrar`. O arquivo termina com a consulta que mostra o gasto por dia.
+4. O `package.json` da raiz declara `@anthropic-ai/sdk`; a Netlify instala na build. O site continua estático, sem comando de build.
+
+Custo de referência (Opus 5.5): cerca de US$ 0,012 por mensagem, com o prompt do sistema em cache. Cem alunas com dez mensagens por mês ficam em torno de US$ 12. Se a chave não estiver configurada, a função responde 503 e o app mostra "A Mentora ainda não foi ligada neste app".
+
 ## Jornada
 
 No Início, a lista de módulos virou a **Jornada**: sete capítulos em trilha (três setenários dos Arcanos Maiores: Formar o eu, Encontrar a sombra, Individuação; e as quatro casas de naipe). Um capítulo fecha quando todas as cartas dele estão estudadas e o quiz do capítulo tem 70% ou mais. O capítulo atual aparece em destaque com os botões Estudar (abre Cartas na primeira carta pendente) e Quiz do capítulo (setenários: todas as cartas do capítulo; naipes: o quiz clássico do naipe). Nada trava: qualquer capítulo pode ser aberto. Concluir os setenários e a Jornada inteira dá conquistas.

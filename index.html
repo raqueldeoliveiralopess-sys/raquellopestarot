@@ -58,6 +58,13 @@ nav button.on{color:var(--ink)}
 .notes{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:16px;background:#FBF3E4;border:1px solid #E8D6B8}
 .notes textarea{width:100%;min-height:140px;padding:12px;border:1px solid #E2D3C2;border-radius:12px;background:var(--card);color:var(--ink);font-family:inherit;font-size:16px;line-height:1.5;resize:vertical}
 .notes textarea:focus{outline:2px solid var(--caramel);outline-offset:1px}
+.mchat{display:flex;flex-direction:column;gap:8px;max-height:380px;overflow-y:auto;padding:2px}
+.mb{max-width:88%;padding:10px 12px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.mb.q{align-self:flex-end;background:var(--ink);color:var(--paper);border-bottom-right-radius:4px}
+.mb.a{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:4px}
+.mb.a.esc:empty::after{content:'…';letter-spacing:2px;color:var(--muted);animation:pulsaPonto 1.2s ease-in-out infinite}
+@keyframes pulsaPonto{0%,100%{opacity:.35}50%{opacity:1}}
+.mentora textarea{min-height:72px}
 .notes .st{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;min-height:20px}
 .link{border:none;background:transparent;color:var(--wood);font-size:13px;font-weight:600;padding:8px 4px;min-height:44px}
 .box .h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
@@ -219,12 +226,12 @@ img.rev{transform:rotate(180deg)}
 </head>
 <body>
 <div id="topbar" aria-hidden="true"></div><div id="app"><main id="main"></main><nav id="nav"></nav></div>
-<script src="cards.js?v=32"></script>
-<script src="tiragens.js?v=32"></script>
-<script src="diario.js?v=32"></script>
+<script src="cards.js?v=33"></script>
+<script src="tiragens.js?v=33"></script>
+<script src="diario.js?v=33"></script>
 <script src="config.js"></script>
-<script src="auth.js?v=32"></script>
-<script src="comunidade.js?v=32"></script>
+<script src="auth.js?v=33"></script>
+<script src="comunidade.js?v=33"></script>
 <script>
 (function(){
 const CARDS = window.TAROT_CARDS || [];
@@ -269,7 +276,8 @@ S.rasc={tema:'',texto:'',foto:null,preview:null,erro:'',enviando:false};
 S.pub={uid:null,perfil:null,contagens:null,posts:[],fim:true,carregando:false,erro:'',soFoto:false};
 if(!S.readings) S.readings=[]; if(!Array.isArray(S.quizHistory)) S.quizHistory=[]; S.quizOpen=null; if(!S.spreadVar) S.spreadVar={};
 if(!S.notes) S.notes={};
-function persist(){ try { checarConquistas(); localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,flashArea:S.flashArea,quizScope:S.quizScope,quizModo:S.quizModo,quizNivel:S.quizNivel,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje,flashHistory:S.flashHistory,diasEstudo:S.diasEstudo,conquistas:S.conquistas,cdd:S.cdd,cartasDia:S.cartasDia}})); syncLater(); return true; } catch(e){ return false; } }
+if(!S.chatCarta||typeof S.chatCarta!=='object') S.chatCarta={}; S.mentora={enviando:false,erro:'',chave:''}; S.mentoraDraft='';
+function persist(){ try { checarConquistas(); localStorage.setItem('tarot-estudo', JSON.stringify({persist:{studied:S.studied,notes:S.notes,flashScope:S.flashScope,flashMode:S.flashMode,flashArea:S.flashArea,quizScope:S.quizScope,quizModo:S.quizModo,quizNivel:S.quizNivel,stats:S.stats,suit:S.suit,spreadVar:S.spreadVar,practice:S.practice,practiceRev:S.practiceRev,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje,flashHistory:S.flashHistory,diasEstudo:S.diasEstudo,conquistas:S.conquistas,cdd:S.cdd,cartasDia:S.cartasDia,chatCarta:S.chatCarta}})); syncLater(); return true; } catch(e){ return false; } }
 let lastSent=null;
 function syncLater(){ const A=window.GA_AUTH; if(!A||!A.enabled||A.estado!=='ok') return; const str=JSON.stringify(backupData()); if(str===lastSent) return; lastSent=str; A.agendarEnvio(); }
 function exportBackup(){
@@ -277,7 +285,7 @@ function exportBackup(){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='estudo-tarot-backup-'+new Date().toISOString().slice(0,10)+'.json'; document.body.appendChild(a); a.click(); a.remove();
 }
-function backupData(){ return {studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje,flashHistory:S.flashHistory,diasEstudo:S.diasEstudo,conquistas:S.conquistas,cdd:S.cdd,cartasDia:S.cartasDia}; }
+function backupData(){ return {studied:S.studied,notes:S.notes,stats:S.stats,readings:S.readings,quizHistory:S.quizHistory,srs:S.srs,srsNovasDia:S.srsNovasDia,srsHoje:S.srsHoje,flashHistory:S.flashHistory,diasEstudo:S.diasEstudo,conquistas:S.conquistas,cdd:S.cdd,cartasDia:S.cartasDia,chatCarta:S.chatCarta}; }
 function mergeNote(a,b){ a=a||''; b=b||''; if(!a.trim()) return b; if(!b.trim()||a===b) return a; if(a.includes(b)) return a; if(b.includes(a)) return b; return b+'\n\n— outra versão —\n'+a; }
 // Junta dados de outro lugar (backup ou nuvem) com os do aparelho, sem perder nada.
 function mergeData(d){
@@ -285,7 +293,7 @@ function mergeData(d){
   const st=Object.assign({},S.studied); Object.keys(d.studied||{}).forEach(k=>{ if(d.studied[k]) st[k]=true; }); S.studied=st;
   const nt=Object.assign({},S.notes); Object.keys(d.notes||{}).forEach(k=>{ nt[k]=mergeNote(nt[k],d.notes[k]); }); S.notes=nt;
   if(d.stats) S.stats={quizzes:Math.max(S.stats.quizzes||0,d.stats.quizzes||0),best:Math.max(S.stats.best||0,d.stats.best||0)};
-  if(Array.isArray(d.readings)){ const ids=new Set(S.readings.map(r=>r.id)); d.readings.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)&&r.draw) S.readings.push(r); }); S.readings.sort((a,b)=>b.at-a.at); S.readings=S.readings.slice(0,100); }
+  if(Array.isArray(d.readings)){ const ids=new Set(S.readings.map(r=>r.id)); d.readings.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)&&r.draw) S.readings.push(r); else if(r&&r.id&&Array.isArray(r.chat)){ const m=S.readings.find(x=>x.id===r.id); if(m&&(!Array.isArray(m.chat)||m.chat.length<r.chat.length)) m.chat=r.chat; } }); S.readings.sort((a,b)=>b.at-a.at); S.readings=S.readings.slice(0,100); }
   if(d.srs&&typeof d.srs==='object'){ const m=Object.assign({},S.srs); Object.keys(d.srs).forEach(k=>{ const a=m[k], b=d.srs[k]; if(!b||typeof b!=='object') return; if(!a||(b.reps||0)>(a.reps||0)||((b.reps||0)===(a.reps||0)&&(b.due||0)>(a.due||0))) m[k]=b; }); S.srs=m; }
   if(d.srsHoje&&d.srsHoje.d===hojeStr()&&(d.srsHoje.n||0)>(S.srsHoje.n||0)) S.srsHoje=d.srsHoje;
   if(Array.isArray(d.flashHistory)){ const fids=new Set(S.flashHistory.map(h=>h.id)); d.flashHistory.forEach(h=>{ if(h&&h.id&&!fids.has(h.id)&&Array.isArray(h.respostas)) S.flashHistory.push(h); }); S.flashHistory.sort((a,b)=>b.at-a.at); S.flashHistory=S.flashHistory.slice(0,50); }
@@ -294,6 +302,7 @@ function mergeData(d){
   if(d.conquistas&&typeof d.conquistas==='object') Object.keys(d.conquistas).forEach(k=>{ const t=+d.conquistas[k]||Date.now(); if(!S.conquistas[k]||t<S.conquistas[k]) S.conquistas[k]=t; });
   if(d.cdd&&d.cdd.d===hojeStr()&&d.cdd.ok) S.cdd={d:d.cdd.d,ok:true};
   if(d.cartasDia&&d.cartasDia.d===hojeStr()&&(d.cartasDia.n||0)>(S.cartasDia.n||0)) S.cartasDia={d:d.cartasDia.d,n:d.cartasDia.n};
+  if(d.chatCarta&&typeof d.chatCarta==='object') Object.keys(d.chatCarta).forEach(k=>{ const a=S.chatCarta[k]||[], b=d.chatCarta[k]; if(Array.isArray(b)&&b.length>a.length) S.chatCarta[k]=b.slice(-20); });
 }
 function importBackup(file){
   const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); if(d.app!=='estudo-tarot') throw 0; mergeData(d); persist(); render(); }catch(e){ alert('Esse arquivo não é um backup do app.'); } }; r.readAsText(file);
@@ -438,7 +447,8 @@ const CONQUISTAS=[
   {id:'pratica1',ic:'🧭',nome:'Primeira tiragem',texto:'Uma prática de tiragem salva.',teste:()=>S.readings.length>=1},
   {id:'notas10',ic:'✍️',nome:'Caderno aberto',texto:'Anotações em dez cartas.',teste:()=>notesCount()>=10},
   {id:'dia1',ic:'☀️',nome:'Dia fechado',texto:'As quatro metas de um dia cumpridas.',teste:()=>metasHoje().every(x=>x.ok)},
-  {id:'post1',ic:'💬',nome:'Voz na roda',texto:'Primeiro post na Comunidade.',teste:()=>false}
+  {id:'post1',ic:'💬',nome:'Voz na roda',texto:'Primeiro post na Comunidade.',teste:()=>false},
+  {id:'mentora1',ic:'🕯️',nome:'Primeira dúvida',texto:'Primeira conversa com a Mentora dentro de uma tiragem ou ficha.',teste:()=>false}
 ];
 let ultimaFesta=0;
 function celebrar(){
@@ -607,6 +617,7 @@ function cardView(){
   <div class="box" style="background:var(--sand);border:none;gap:6px"><div class="h" style="color:var(--wood)">Invertida</div><p style="font-size:14px">${esc(c.invertido)}</p></div>
   <div class="stack" style="gap:12px"><h2 style="font-size:22px">Nas áreas da vida</h2><div><div style="font-size:13px;font-weight:600;color:#AD4A6A">Amor</div><p style="font-size:14px">${esc(c.amor)}</p></div><div><div style="font-size:13px;font-weight:600;color:var(--green)">Financeiro</div><p style="font-size:14px">${esc(c.financeiro)}</p></div><div><div style="font-size:13px;font-weight:600;color:#5B4E9B">Espiritualidade</div><p style="font-size:14px">${esc(c.espiritualidade)}</p></div></div>
   ${irmasHtml(c)}
+  ${mentoraHtml()}
   <div class="notes"><h2 style="font-size:22px">Minhas anotações</h2><label for="note" style="font-size:13px;color:var(--ink2)">Interpretações, intuições, tiragens em que ${esc(c.name)} apareceu, referências de outros estudos.</label><textarea id="note" data-note="${c.id}" placeholder="Escreva aqui…">${esc(S.notes[c.id]||'')}</textarea><div class="st"><span id="note-status">${S.notes[c.id]?salvoOnde():''}</span><span>${(S.notes[c.id]||'').length?((S.notes[c.id]||'').length+' caracteres'):''}</span></div></div>`;
 }
 function notesCount(){ return Object.keys(S.notes).filter(k=>(S.notes[k]||'').trim()).length; }
@@ -894,8 +905,63 @@ function practiceView(sp){
   const legend=sp.positions.slice().sort((a,b)=>a.n-b.n).map(x=>{const d=pr.draw[x.n-1],c=CARDS[d.cardId];return `<button class="row${open===x.n?' on':''}" style="min-height:48px;padding:6px 10px;${open===x.n?'border-color:var(--caramel)':''}" data-act="popen" data-id="${x.n}"><b class="serif" style="font-size:20px;color:var(--caramel);width:26px;text-align:center">${x.n}</b><div class="t"><div class="n" style="font-size:14px">${esc(c.name)}${d.rev?' <span style="font-size:11px;color:var(--red);font-weight:500">inv.</span>':''}</div><div class="s">${esc(x.label)}</div></div></button>`;}).join('');
   const sintese=`<div class="notes" style="gap:6px"><label for="ps" style="font-size:13px;font-weight:600;color:var(--wood)">O padrão em uma frase</label><textarea id="ps" data-ps maxlength="200" style="min-height:80px" placeholder="Porque (1), hoje eu (2), e isso aponta para (3)…">${esc(pr.sintese||'')}</textarea><div class="st"><span>Se não couber numa frase, ainda não está claro.</span><span id="ps-status">${pr.saved&&(pr.sintese||'').trim()?salvoOnde():''}</span></div>
   <label for="pi" style="font-size:13px;font-weight:600;color:var(--wood);margin-top:6px">Minha interpretação</label><textarea id="pi" data-pi maxlength="3000" style="min-height:140px" placeholder="Leia posição por posição, depois a tiragem inteira como uma frase. O que cada carta faz no lugar dela? Que padrão aparece? O que ele pede?">${esc(pr.interpretacao||'')}</textarea><div class="st"><span>${(pr.interpretacao||'').length?(pr.interpretacao||'').length+' caracteres':''}</span><span id="pi-status">${pr.saved&&(pr.interpretacao||'').trim()?salvoOnde():''}</span></div></div>`;
-  return `${pergunta}${renderLayout(sp,pr.draw,open)}<div style="font-size:12px;color:var(--muted);text-align:center">Toque numa posição para ler a carta nela.</div>${peladanSum(sp,pr)}${panel}<div class="stack" style="gap:6px">${legend}</div>${sintese}
+  return `${pergunta}${renderLayout(sp,pr.draw,open)}<div style="font-size:12px;color:var(--muted);text-align:center">Toque numa posição para ler a carta nela.</div>${peladanSum(sp,pr)}${panel}<div class="stack" style="gap:6px">${legend}</div>${sintese}${mentoraHtml()}
   <div class="grid2"><button class="btn ghost" data-act="pdraw">Sortear de novo</button><button class="btn" data-act="psave" ${pr.saved?'disabled style="opacity:.6"':''}>${pr.saved?'Prática salva':'Salvar prática'}</button></div>${logada()&&COM?`<button class="btn ghost" data-act="pshare">Compartilhar na roda</button>`:''}${list}`;
+}
+
+// ---------- Mentora (chat de dúvidas dentro da prática e da ficha) ----------
+function mentoraCtx(){
+  if(S.screen==='spread'&&S.spreadTab==='praticar'&&S.practice&&S.practice.spreadId===S.spreadId){
+    const pr=S.practice; if(!Array.isArray(pr.chat)) pr.chat=[];
+    return {chave:'p'+pr.at,chat:pr.chat,titulo:'Tirar dúvida com a Mentora',intro:'Ela conhece esta tiragem e as fichas do app. Não prevê e não lê quem não está na mesa: ajuda você a ler o padrão.',
+      sugestoes:['Por que essa carta caiu nessa posição?','Minha pergunta está bem formulada?','Como ler a carta invertida aqui?','Que padrão aparece entre as posições?'],
+      placeholder:'Ex.: a carta não combina com a minha pergunta. O que ela mostra aqui?',
+      corpo:{spreadId:pr.spreadId,draw:pr.draw.map(d=>({cardId:d.cardId,rev:!!d.rev})),var:pr.var||null,pergunta_pratica:(pr.pergunta||'').trim(),sintese:(pr.sintese||'').trim(),interpretacao:(pr.interpretacao||'').trim()},
+      sync(){ pr.chat.splice(0,Math.max(0,pr.chat.length-20)); if(pr.saved){ const r=S.readings.find(x=>x.at===pr.at&&x.spreadId===pr.spreadId); if(r) r.chat=pr.chat.slice(); } }};
+  }
+  if(S.screen==='card'){
+    const c=CARDS[S.cardId]||CARDS[0]; if(!Array.isArray(S.chatCarta[c.id])) S.chatCarta[c.id]=[];
+    const chat=S.chatCarta[c.id];
+    return {chave:'c'+c.id,chat,titulo:'Dúvida sobre esta carta',intro:'A Mentora responde com a ficha de '+c.name+' e a perspectiva junguiana do app. Não prevê nada.',
+      sugestoes:['Qual a diferença entre a luz e a sombra aqui?','Como esta carta aparece numa cena do dia a dia?','O que muda quando ela vem invertida?'],
+      placeholder:'Ex.: como diferenciar '+c.name+' de uma carta parecida?',corpo:{cardId:c.id},sync(){ chat.splice(0,Math.max(0,chat.length-20)); }};
+  }
+  return null;
+}
+function mentoraHtml(){
+  const ctx=mentoraCtx(); if(!ctx) return '';
+  const head=`<h2 style="font-size:22px">${esc(ctx.titulo)}</h2><p style="font-size:13px;color:var(--ink2)">${esc(ctx.intro)}</p>`;
+  if(!logada()) return `<div class="notes mentora">${head}<p style="font-size:14px">Entre na sua conta para conversar com a Mentora.</p></div>`;
+  const env=S.mentora.enviando&&S.mentora.chave===ctx.chave, n=ctx.chat.length;
+  const bolhas=ctx.chat.map((t,i)=>`<div class="mb q">${esc(t.q)}</div><div class="mb a${env&&i===n-1&&!t.a?' esc':''}"${i===n-1?' id="mresp"':''}>${esc(t.a)}</div>`).join('');
+  const sug=n?'':`<div class="pills wrap">${ctx.sugestoes.map(s=>`<button class="pill" data-act="msug" data-q="${esc(s)}">${esc(s)}</button>`).join('')}</div>`;
+  const erro=S.mentora.erro&&S.mentora.chave===ctx.chave?`<div class="err">${esc(S.mentora.erro)}</div>`:'';
+  const rodape=n?n+' troca'+(n===1?'':'s')+(ctx.chave[0]==='p'?' nesta prática':' nesta carta')+', salvas com o resto do estudo.':'Até 30 perguntas por dia. Só você vê esta conversa.';
+  return `<div class="notes mentora">${head}${bolhas?`<div class="mchat" id="mchat">${bolhas}</div>`:''}${sug}<label for="mq" style="font-size:13px;font-weight:600;color:var(--wood)">Minha dúvida</label><textarea id="mq" data-mq maxlength="500" placeholder="${esc(ctx.placeholder)}"${env?' disabled':''}>${esc(S.mentoraDraft||'')}</textarea><button class="btn" data-act="mperg"${env?' disabled style="opacity:.6"':''}>${env?'A Mentora está escrevendo…':'Perguntar à Mentora'}</button><div style="font-size:12px;color:var(--muted)">${esc(rodape)}</div>${erro}</div>`;
+}
+function rolarChat(){ const el=document.getElementById('mchat'); if(el) el.scrollTop=el.scrollHeight; }
+async function perguntarMentora(pergunta){
+  pergunta=(pergunta||'').trim().slice(0,500); const ctx=mentoraCtx();
+  if(!pergunta||!ctx||S.mentora.enviando||!logada()) return;
+  const A=window.GA_AUTH; let token=null; try{ token=A.token?await A.token():null; }catch(e){}
+  if(!token){ S.mentora={enviando:false,erro:navigator.onLine?'Entre de novo para usar a Mentora.':'Sem internet agora.',chave:ctx.chave}; render(); return; }
+  const troca={q:pergunta,a:'',at:Date.now()}; ctx.chat.push(troca); S.mentoraDraft=''; S.mentora={enviando:true,erro:'',chave:ctx.chave}; render(); rolarChat();
+  const corpo=Object.assign({pergunta,historico:ctx.chat.slice(0,-1).slice(-10).map(t=>({q:t.q,a:t.a}))},ctx.corpo);
+  const falhou=msg=>{ const i=ctx.chat.indexOf(troca); if(i>=0) ctx.chat.splice(i,1); S.mentora.erro=msg; S.mentoraDraft=pergunta; };
+  try{
+    const res=await fetch('/.netlify/functions/mentora',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(corpo)});
+    if(!res.ok){
+      let msg='A Mentora não respondeu agora. Tente em instantes.';
+      if(res.status===401) msg='Entre de novo para usar a Mentora.'; else if(res.status===429) msg='Você já usou as perguntas de hoje. Amanhã libera de novo.'; else if(res.status===503) msg='A Mentora ainda não foi ligada neste app.';
+      falhou(msg); return;
+    }
+    const reader=res.body.getReader(), dec=new TextDecoder();
+    while(true){ const {value,done}=await reader.read(); if(done) break; troca.a+=dec.decode(value,{stream:true}); const el=document.getElementById('mresp'); if(el){ el.classList.remove('esc'); el.textContent=troca.a; rolarChat(); } }
+    troca.a=troca.a.trim();
+    if(!troca.a){ falhou('A Mentora não respondeu agora. Tente em instantes.'); return; }
+    ctx.sync(); marcarDia(); ganhar('mentora1');
+  }catch(e){ falhou(navigator.onLine?'A Mentora não respondeu agora. Tente em instantes.':'Sem internet agora.'); }
+  finally{ S.mentora.enviando=false; persist(); render(); rolarChat(); }
 }
 
 // ---------- login e perfil ----------
@@ -1089,6 +1155,7 @@ document.getElementById('app').addEventListener('input',e=>{
     clearTimeout(prTimer); prTimer=setTimeout(()=>{ const ok=persist(); if(st&&pr&&pr.saved) st.textContent=ok?salvoOnde():'Não foi possível salvar'; },400);
     return;
   }
+  if(t.matches('[data-mq]')){ S.mentoraDraft=t.value; return; }
   if(t.matches('[data-rasc]')){ S.rasc[t.dataset.rasc]=t.value; const ct=document.getElementById('rasc-count'); if(ct) ct.textContent=t.value.length+'/2000'; return; }
   if(t.matches('[data-cdraft]')){ S.com.draft[t.dataset.cdraft]=t.value; return; }
   if(!t.matches('[data-pf]')) return; S.pfDraft=S.pfDraft||{}; S.pfDraft[t.dataset.pf]=t.value; S.pfSaved=false;
@@ -1158,6 +1225,8 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='lib') set({screen:'library',suit:b.dataset.suit});
   else if(a==='suit') set({suit:b.dataset.suit});
   else if(a==='card') set({screen:'card',cardId:+id});
+  else if(a==='mperg'){ const el=document.getElementById('mq'); perguntarMentora(el?el.value:''); }
+  else if(a==='msug') perguntarMentora(b.dataset.q);
   else if(a==='prev') set({cardId:(S.cardId+CARDS.length-1)%CARDS.length});
   else if(a==='next') set({cardId:(S.cardId+1)%CARDS.length});
   else if(a==='toggle'){ const st=Object.assign({},S.studied); st[S.cardId]=!st[S.cardId]; const h=hojeStr(); if(S.cartasDia.d!==h) S.cartasDia={d:h,n:0}; if(st[S.cardId]){ marcarDia(); S.cartasDia.n++; } else if(S.cartasDia.n>0) S.cartasDia.n--; set({studied:st}); }
@@ -1195,11 +1264,11 @@ document.getElementById('app').addEventListener('click',e=>{
   else if(a==='stab'){ set({spreadTab:id,practiceOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='svar'){ const v=Object.assign({},S.spreadVar); v[S.spreadId]=id; set({spreadVar:v}); }
   else if(a==='prevt') set({practiceRev:!S.practiceRev});
-  else if(a==='pdraw'){ const sp=spreadById(S.spreadId); const draw=shuffle(CARDS).slice(0,sp.cards).map(c=>({cardId:c.id,rev:S.practiceRev&&Math.random()<.25})); const v=curVar(sp); set({practice:{spreadId:sp.id,draw,at:Date.now(),var:v?v.id:null,saved:false,pergunta:(S.practice&&S.practice.spreadId===sp.id?S.practice.pergunta:S.practicePergunta)||'',sintese:'',interpretacao:''},practiceOpen:null}); S.practicePergunta=''; document.getElementById('main').scrollTop=0; }
+  else if(a==='pdraw'){ const sp=spreadById(S.spreadId); const draw=shuffle(CARDS).slice(0,sp.cards).map(c=>({cardId:c.id,rev:S.practiceRev&&Math.random()<.25})); const v=curVar(sp); set({practice:{spreadId:sp.id,draw,at:Date.now(),var:v?v.id:null,saved:false,pergunta:(S.practice&&S.practice.spreadId===sp.id?S.practice.pergunta:S.practicePergunta)||'',sintese:'',interpretacao:'',chat:[]},practiceOpen:null}); S.practicePergunta=''; document.getElementById('main').scrollTop=0; }
   else if(a==='popen'){ set({practiceOpen:S.practiceOpen===+id?null:+id}); }
-  else if(a==='psave'){ const pr=S.practice; if(!pr||pr.saved) return; const r={id:String(Date.now()),spreadId:pr.spreadId,draw:pr.draw,at:pr.at,var:pr.var,pergunta:(pr.pergunta||'').trim(),sintese:(pr.sintese||'').trim(),interpretacao:(pr.interpretacao||'').trim()}; pr.saved=true; marcarDia(); set({readings:[r].concat(S.readings).slice(0,100)}); }
-  else if(a==='phist'){ const r=S.readings.find(x=>x.id===id); if(!r) return; set({screen:'spread',spreadId:r.spreadId,spreadTab:'praticar',practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true,pergunta:r.pergunta||'',sintese:r.sintese||'',interpretacao:r.interpretacao||''},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
-  else if(a==='pload'){ const r=S.readings.find(x=>x.id===id); if(r) set({practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true,pergunta:r.pergunta||'',sintese:r.sintese||'',interpretacao:r.interpretacao||''},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
+  else if(a==='psave'){ const pr=S.practice; if(!pr||pr.saved) return; const r={id:String(Date.now()),spreadId:pr.spreadId,draw:pr.draw,at:pr.at,var:pr.var,pergunta:(pr.pergunta||'').trim(),sintese:(pr.sintese||'').trim(),interpretacao:(pr.interpretacao||'').trim(),chat:Array.isArray(pr.chat)?pr.chat.slice(-20):[]}; pr.saved=true; marcarDia(); set({readings:[r].concat(S.readings).slice(0,100)}); }
+  else if(a==='phist'){ const r=S.readings.find(x=>x.id===id); if(!r) return; set({screen:'spread',spreadId:r.spreadId,spreadTab:'praticar',practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true,pergunta:r.pergunta||'',sintese:r.sintese||'',interpretacao:r.interpretacao||'',chat:Array.isArray(r.chat)?r.chat.slice():[]},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
+  else if(a==='pload'){ const r=S.readings.find(x=>x.id===id); if(r) set({practice:{spreadId:r.spreadId,draw:r.draw,at:r.at,var:r.var,saved:true,pergunta:r.pergunta||'',sintese:r.sintese||'',interpretacao:r.interpretacao||'',chat:Array.isArray(r.chat)?r.chat.slice():[]},practiceOpen:null}); document.getElementById('main').scrollTop=0; }
   else if(a==='pdel'){ if(!confirm('Apagar esta prática?')) return; const pr=S.practice; const r=S.readings.find(x=>x.id===id); if(pr&&r&&pr.saved&&pr.at===r.at) pr.saved=false; set({readings:S.readings.filter(x=>x.id!==id)}); }
   else if(a==='pshare'){ const pr=S.practice; if(!pr||!logada()||!COM) return; const sp=spreadById(pr.spreadId); S.rasc.tema='tiragem'; S.rasc.erro=''; const tp=textoPratica(sp,pr); if(!S.rasc.texto.includes(tp.trim())) S.rasc.texto=S.rasc.texto.trim()?S.rasc.texto.trim()+'\n\n'+tp:tp; set({screen:'escrever'}); document.getElementById('main').scrollTop=0; }
   else if(a==='cdesafio'){ const pid=+id; set({screen:'comunidade'}); comCarregar(true).then(()=>{ if(!S.com.posts.some(x=>x.id===pid)) return; comAbrirComentarios(pid); const el=document.getElementById('post-'+pid); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }); }

@@ -11,3 +11,7 @@
 # O lembrete diário lê as cartas e as perguntas do próprio app
 [functions."lembrete-diario"]
   included_files = ["cards.js", "diario.js"]
+
+# A Mentora monta o contexto com as fichas das cartas e das tiragens do próprio app
+[functions."mentora"]
+  included_files = ["cards.js", "tiragens.js"]

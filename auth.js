@@ -214,5 +214,7 @@
 
   A.cliente = () => sb;
   A.uid = () => A.user && A.user.id;
+  // Token da sessão atual, para as funções da Netlify confirmarem quem está perguntando (Mentora)
+  A.token = async () => { if (!sb) return null; const { data } = await sb.auth.getSession(); return (data && data.session && data.session.access_token) || null; };
   window.GA_AUTH = A;
 })();
