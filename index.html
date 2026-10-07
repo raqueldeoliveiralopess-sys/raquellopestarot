@@ -959,8 +959,10 @@ async function perguntarMentora(pergunta){
   try{
     const res=await fetch('/.netlify/functions/ofelia',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(corpo)});
     if(!res.ok){
-      let msg='A Ofélia não respondeu agora. Tente em instantes.';
-      if(res.status===401) msg='Entre de novo para falar com a Ofélia.'; else if(res.status===429) msg='Você já usou as perguntas de hoje. Amanhã a Ofélia volta.'; else if(res.status===503) msg='A Ofélia ainda não foi ligada neste app.';
+      let msg='A Ofélia não respondeu agora. Tente em instantes.', info={};
+      try{ info=await res.json(); }catch(e){}
+      if(res.status===401) msg='Entre de novo para falar com a Ofélia.'; else if(res.status===429) msg='Você já usou as perguntas de hoje. Amanhã a Ofélia volta.'; else if(info&&info.erro) msg=info.erro; else if(res.status===503) msg='A Ofélia ainda não foi ligada neste app.';
+      if(info&&info.codigo) msg+=' (código: '+info.codigo+')';
       falhou(msg); return;
     }
     const reader=res.body.getReader(), dec=new TextDecoder();

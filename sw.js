@@ -4,7 +4,7 @@
 //  - cards.js, tiragens.js, diario.js, auth.js, comunidade.js: CACHE PRIMEIRO; o index.html pede cada um com ?v=N, então uma versão nova é um arquivo novo
 //  - imagens, ícones e vendor: CACHE PRIMEIRO, guardados na primeira vez que são vistos (nada de baixar as 78 cartas na instalação)
 // Quando mudar um dos arquivos versionados, suba o ?v= no index.html e o CACHE aqui (mesmo número).
-const CACHE='tarot-estudo-v34';
+const CACHE='tarot-estudo-v35';
 const SHELL=["./","index.html","config.js","manifest.webmanifest"];
 const STATIC=["vendor/supabase-2.117.2.js","icon-192.png","icon-512.png"];
 

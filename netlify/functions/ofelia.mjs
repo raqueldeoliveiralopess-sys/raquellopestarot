@@ -153,7 +153,7 @@ export async function verificarUsuaria(token, fetchFn = fetch) {
 // Soma mensagens e tokens no dia; devolve quantas mensagens a aluna já mandou hoje.
 export async function registrarUso(uid, { msgs = 0, tin = 0, tout = 0 } = {}, fetchFn = fetch) {
   const res = await fetchFn(supaUrl() + '/rest/v1/rpc/ofelia_registrar', { method: 'POST', headers: cabecalhosServico(), body: JSON.stringify({ uid, msgs, tin, tout }) });
-  if (!res.ok) throw new Error('ofelia_registrar ' + res.status);
+  if (!res.ok) throw new Error('ofelia_registrar ' + res.status + ' ' + (await res.text().catch(() => '')).slice(0, 300));
   const n = await res.json().catch(() => null);
   return Number.isFinite(+n) ? +n : 0;
 }
@@ -161,7 +161,7 @@ export async function registrarUso(uid, { msgs = 0, tin = 0, tout = 0 } = {}, fe
 // ---------- função HTTP ----------
 export default async (req) => {
   if (req.method !== 'POST') return json(405, { erro: 'método' });
-  if (!process.env.ANTHROPIC_API_KEY || !process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return json(503, { erro: 'A Ofélia ainda não foi configurada.' });
+  if (!process.env.ANTHROPIC_API_KEY || !process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return json(503, { erro: 'A Ofélia ainda não foi configurada.', codigo: 'sem-variavel' });
 
   const token = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '').trim();
   const aluna = await verificarUsuaria(token).catch(() => null);
@@ -172,7 +172,7 @@ export default async (req) => {
   try { messages = montarMensagens(corpo, carregarApp()); } catch (e) { return json(400, { erro: e.message }); }
 
   let usadas;
-  try { usadas = await registrarUso(aluna.id, { msgs: 1 }); } catch (e) { console.error('ofelia: uso', e.message); return json(503, { erro: 'A Ofélia não conseguiu registrar o uso.' }); }
+  try { usadas = await registrarUso(aluna.id, { msgs: 1 }); } catch (e) { console.error('ofelia: uso', e.message); return json(503, { erro: 'A Ofélia não conseguiu falar com o banco agora.', codigo: 'banco' }); }
   if (usadas > LIMITE()) return json(429, { erro: 'Você já usou as perguntas de hoje. Amanhã a Ofélia volta.', limite: LIMITE() });
 
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, maxRetries: 1, timeout: 60_000 });
@@ -190,10 +190,12 @@ export default async (req) => {
   const it = stream[Symbol.asyncIterator]();
   let primeiro;
   try { primeiro = await it.next(); } catch (e) {
-    if (e instanceof Anthropic.AuthenticationError) { console.error('ofelia: chave da API inválida'); return json(503, { erro: 'A Ofélia ainda não foi configurada.' }); }
-    if (e instanceof Anthropic.RateLimitError) return json(503, { erro: 'A Ofélia está ocupada agora. Tente em instantes.' });
-    if (e instanceof Anthropic.APIError) { console.error('ofelia: API', e.status, e.message); return json(502, { erro: 'A Ofélia não respondeu agora. Tente em instantes.' }); }
-    console.error('ofelia:', e && e.message); return json(502, { erro: 'A Ofélia não respondeu agora. Tente em instantes.' });
+    if (e instanceof Anthropic.AuthenticationError) { console.error('ofelia: chave da API recusada'); return json(503, { erro: 'A Ofélia ainda não foi ligada neste app.', codigo: 'chave' }); }
+    if (e instanceof Anthropic.PermissionDeniedError) { console.error('ofelia: chave sem permissão', e.message); return json(503, { erro: 'A Ofélia ainda não foi ligada neste app.', codigo: 'permissao' }); }
+    if (e instanceof Anthropic.RateLimitError) { console.error('ofelia: limite da API', e.message); return json(503, { erro: 'A Ofélia está ocupada agora. Tente em instantes.', codigo: 'limite-api' }); }
+    if (e instanceof Anthropic.BadRequestError && /credit balance/i.test(e.message || '')) { console.error('ofelia: sem créditos na Anthropic'); return json(503, { erro: 'A Ofélia está sem créditos agora.', codigo: 'creditos' }); }
+    if (e instanceof Anthropic.APIError) { console.error('ofelia: API', e.status, e.message); return json(502, { erro: 'A Ofélia não respondeu agora. Tente em instantes.', codigo: 'api-' + (e.status || 'x') }); }
+    console.error('ofelia:', e && e.message); return json(502, { erro: 'A Ofélia não respondeu agora. Tente em instantes.', codigo: 'rede' });
   }
 
   const enc = new TextEncoder();
