@@ -44,6 +44,7 @@ nav button.on{color:var(--ink)}
 .dot{width:8px;height:8px;border-radius:99px;background:#5E8C61;display:inline-block}
 .pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .pills.wrap{flex-wrap:wrap;overflow:visible}
+.pills.wrap .pill{white-space:normal;text-align:left;max-width:100%}
 .pill{min-height:40px;padding:8px 14px;border-radius:99px;border:1px solid #D9C7B3;background:var(--card);color:var(--wood);font-size:13px;font-weight:500;white-space:nowrap}
 .pill.on{border-color:var(--ink);background:var(--ink);color:var(--butter);font-weight:600}
 .bar{height:6px;border-radius:99px;background:var(--sand);overflow:hidden}.bar i{display:block;height:100%;background:var(--caramel);border-radius:99px}
@@ -91,7 +92,8 @@ p{margin:0;font-size:15px;line-height:1.5}
 .mode.on{border-color:var(--ink);background:var(--ink);color:var(--paper)}
 .mode small{font-size:12px;opacity:.8}.mode b{font-size:15px}
 .stack{display:flex;flex-direction:column;gap:8px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid2>*{min-width:0;overflow-wrap:anywhere}
 .fb{font-size:14px;line-height:1.45;padding:12px 14px;border-radius:12px;background:var(--sand)}
 .layout{display:grid;gap:8px;width:100%}
 .pos{position:relative;aspect-ratio:1/1.6;border:1.5px dashed #C9B49C;border-radius:10px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px;text-align:center;overflow:hidden;color:var(--ink)}
@@ -227,6 +229,51 @@ img.rev{transform:rotate(180deg)}
   [style*="color:#9B3B3B"]{color:#E59A9A!important}
   [style*="color:#5B7FB5"]{color:#9DC3F0!important}
   [style*="background:#FBF3E4"]{background:#241A14!important}
+}
+/* ---------- blocos que viram colunas no computador (no celular seguem empilhados, na mesma ordem) ---------- */
+.hgrid,.hcol,.fgrid,.fg-a,.fg-b,.prgrid,.pr-a,.pr-b{display:flex;flex-direction:column;gap:18px;min-width:0}
+/* ---------- computador: menu lateral e conteúdo ocupando a tela ---------- */
+@media (min-width:1024px){
+  #app{max-width:none;display:grid;grid-template-columns:248px minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+  #app.sem-menu{grid-template-columns:minmax(0,1fr)}
+  nav{order:-1;grid-row:1;display:flex;flex-direction:column;gap:4px;border-top:none;border-right:1px solid var(--line);padding:28px 14px 20px;overflow-y:auto}
+  nav::before{content:'Grimório Arcano';display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;font-weight:600;color:var(--ink);line-height:1.05;padding:0 12px 22px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+  nav button,nav[style*="--tabs: 6"] button{flex-direction:row;justify-content:flex-start;gap:12px;min-height:46px;padding:0 14px;border-radius:12px;font-size:15px;letter-spacing:0;color:var(--ink2);text-align:left;transition:background .15s ease}
+  nav button svg{flex-shrink:0}
+  nav button:hover{background:var(--sand);color:var(--ink)}
+  nav button.on{background:var(--ink);color:var(--paper)}
+  main{padding:44px clamp(32px,4vw,64px) 64px;gap:22px}
+  main>*{width:100%;max-width:1200px;margin-left:auto;margin-right:auto}
+  main h1{font-size:44px}
+  /* telas de foco ficam numa coluna de leitura confortável */
+  main[data-screen="flash"]>*,main[data-screen="quiz"]>*,main[data-screen="comunidade"]>*,main[data-screen="escrever"]>*,main[data-screen="perfil"]>*,main[data-screen="editarPerfil"]>*,main[data-screen^="spread-aprender"]>*,main[data-screen="spread-praticar"]>*{max-width:820px}
+  main[data-screen="comparar"]>*{max-width:980px}
+  main[data-screen="gate"]{justify-content:center}
+  main[data-screen="gate"]>*{max-width:440px}
+  /* início: duas colunas */
+  .hgrid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:24px;align-items:start}
+  .hcol{gap:20px}
+  /* listas em grade */
+  .libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+  .libgrid .row{min-height:84px}
+  .libgrid .row img{width:46px;height:76px}
+  .row:hover,.mod:hover,.tile:hover{border-color:var(--caramel)}
+  /* ficha da carta: imagem e resumo fixos à esquerda, leitura à direita */
+  .fgrid{display:grid;grid-template-columns:260px minmax(0,1fr);gap:48px;align-items:start}
+  .fg-a{position:sticky;top:0}
+  .chead{flex-direction:column;align-items:flex-start !important}
+  .chead .cimg{width:100% !important;height:auto !important;aspect-ratio:300/493;border-radius:14px !important}
+  .fg-b{gap:22px}
+  /* prática: tabuleiro à esquerda, leitura e escrita à direita */
+  .prgrid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:32px;align-items:start}
+  .pr-a{position:sticky;top:0}
+  .pr-a .layout{max-width:360px;margin:0 auto}
+  main[data-screen^="spread-aprender"] .layout{max-width:440px;margin:0 auto}
+  .toast{bottom:32px;left:calc(50% + 124px)}
+}
+@media (min-width:1440px){
+  .libgrid{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  .fgrid{grid-template-columns:280px minmax(0,1fr)}
 }
 </style>
 </head>
@@ -566,18 +613,19 @@ function home(){
   const hint = n===0?'Comece pelos Arcanos Maiores: 22 cartas, a base de tudo.':n<22?'Faltam '+(22-n)+' para fechar os Arcanos Maiores.':n<78?'Faltam '+(78-n)+' cartas para completar o baralho.':'Baralho completo. Agora é treinar com quiz e flashcards.';
   const A=window.GA_AUTH, logged=A&&A.enabled&&A.estado==='ok';
   return `<div class="stack" style="gap:4px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div class="eyebrow">Grimório Arcano</div>${logged?`<button data-act="verperfil" data-id="${A.uid()}" aria-label="Meu perfil" style="border:none;background:transparent;padding:0;display:flex;align-items:center;gap:8px;color:var(--wood);font-size:13px;font-weight:500">${avatarHtml('sm')}</button>`:''}</div><h1 style="font-size:40px;line-height:1.05">Sua trilha de estudo</h1><p style="color:var(--ink2);margin-top:6px">78 cartas, uma por vez. Estude a ficha, treine com flashcards, confirme no quiz e leia padrões nas tiragens.</p></div>
-  ${cartaDoDiaHtml()}${destaqueHtml()}${hojeHtml()}
+  <div class="hgrid"><div class="hcol">${cartaDoDiaHtml()}${destaqueHtml()}${hojeHtml()}
   <div class="dark stack" style="gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="eyebrow" style="color:var(--pink)">Progresso geral</div><div class="serif" style="font-size:26px;color:var(--butter)">${n}<span style="font-size:16px;color:var(--paper);opacity:.8"> / 78</span></div></div><div class="bar" style="height:8px"><i style="width:${Math.round(100*n/78)}%"></i></div><div style="font-size:13px;opacity:.85">${hint}</div></div>
   <div class="grid3"><button class="tile" data-act="go" data-screen="flash">${ICONS.flash}<div><b>Flashcards</b><br><small>${(()=>{const r=resumoSrs('all');return r.due?r.due+' para hoje':r.novasSessao?r.novasSessao+' novas hoje':'Em dia';})()}</small></div></button><button class="tile" data-act="go" data-screen="quiz">${ICONS.quiz}<div><b>Quiz</b><br><small>${QMODOS.length} modos</small></div></button><button class="tile" data-act="go" data-screen="spreads">${ICONS.spreads}<div><b>Tiragens</b><br><small>${SPREADS.length} métodos</small></div></button></div>
-  ${jornadaHtml()}
+  </div><div class="hcol">${jornadaHtml()}
   ${conquistasHtml()}
   <div class="box" style="gap:6px"><div class="h" style="color:var(--wood)">${logged?'Nuvem e backup':'Backup'}</div><div style="font-size:13px;color:var(--ink2);line-height:1.45">${logged?`Seu progresso (${n} estudada${n===1?'':'s'}, ${notesCount()} carta${notesCount()===1?'':'s'} com anotações, flashcards, quiz e práticas) fica salvo na nuvem e aparece em qualquer aparelho em que você entrar. Exportar um arquivo é opcional.`:`${notesCount()} carta${notesCount()===1?'':'s'} com anotações e ${n} estudada${n===1?'':'s'}, salvas só neste aparelho. Exporte de vez em quando para não perder.`}</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="link" data-act="export">Exportar backup</button><label class="link" style="cursor:pointer;display:flex;align-items:center">Importar backup<input type="file" accept="application/json,.json" data-import style="display:none"></label></div></div>
+  </div></div>
 `;
 }
 function library(){
   const tabs=SUITS.map(su=>`<button class="pill${S.suit===su.id?' on':''}" data-act="suit" data-suit="${su.id}">${su.short}</button>`).join('');
   const rows=cardsOf(S.suit).map(c=>`<button class="row" id="carta-${c.id}" data-act="card" data-id="${c.id}"><img src="${c.img}" alt="" loading="lazy"><div class="t"><div class="n">${esc(c.name)}${S.studied[c.id]?'<i class="dot"></i>':''}</div><div class="s">${rotulo(c)} · ${esc(c.palavras)}</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`).join('');
-  return `${tituloComAvatar('Cartas')}<div class="pills">${tabs}</div><div class="stack">${rows}</div>`;
+  return `${tituloComAvatar('Cartas')}<div class="pills">${tabs}</div><div class="stack libgrid">${rows}</div>`;
 }
 // Cartas irmãs: menores com o mesmo número nos outros naipes; maiores pela redução numerológica (1, 10 e 19; 2, 11 e 20…)
 const AREAS=[{id:'geral',label:'Geral'},{id:'amor',label:'Amor'},{id:'financeiro',label:'Financeiro'},{id:'espiritualidade',label:'Espiritualidade'},{id:'invertida',label:'Invertida'}];
@@ -614,17 +662,17 @@ function cardView(){
   const chips=(c.palavras||'').split(/[•,]/).map(t=>t.trim()).filter(Boolean).map(t=>`<span class="chip">${esc(t)}</span>`).join('');
   const lis=a=>(a||[]).map(t=>`<div class="li">${esc(t)}</div>`).join('');
   return `<div style="display:flex;justify-content:space-between;align-items:center;margin:-8px -8px 0"><button data-act="go" data-screen="library" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;border:none;background:transparent;color:var(--wood);font-size:15px">${ICONS.left}Cartas</button><div style="display:flex;gap:4px"><button class="iconbtn" data-act="prev" aria-label="Anterior">${ICONS.left}</button><button class="iconbtn" data-act="next" aria-label="Próxima">${ICONS.right}</button></div></div>
-  <div style="display:flex;gap:16px;align-items:flex-end"><img src="${c.img}" alt="${esc(c.name)}" style="width:132px;height:218px;object-fit:cover;border-radius:10px;box-shadow:0 10px 24px rgba(64,35,39,.18);background:var(--sand);flex-shrink:0"><div class="stack" style="gap:6px;min-width:0"><div class="eyebrow">${c.suit==='maiores'?'Arcano '+ROMAN[c.id]+' · '+su.label:su.label+' · '+su.element}</div><h1 style="font-size:34px;line-height:1">${esc(c.name)}</h1><div style="font-size:13px;line-height:1.4;color:var(--ink2)"><b style="color:var(--wood)">Polaridade.</b> ${esc(c.polaridade)}</div></div></div>
+  <div class="fgrid"><div class="fg-a"><div class="chead" style="display:flex;gap:16px;align-items:flex-end"><img class="cimg" src="${c.img}" alt="${esc(c.name)}" style="width:132px;height:218px;object-fit:cover;border-radius:10px;box-shadow:0 10px 24px rgba(64,35,39,.18);background:var(--sand);flex-shrink:0"><div class="stack" style="gap:6px;min-width:0"><div class="eyebrow">${c.suit==='maiores'?'Arcano '+ROMAN[c.id]+' · '+su.label:su.label+' · '+su.element}</div><h1 style="font-size:34px;line-height:1">${esc(c.name)}</h1><div style="font-size:13px;line-height:1.4;color:var(--ink2)"><b style="color:var(--wood)">Polaridade.</b> ${esc(c.polaridade)}</div></div></div>
   <div style="display:flex;flex-wrap:wrap;gap:6px">${chips}</div>
   <button class="btn${st?' ghost':''}" data-act="toggle" style="${st?'border-color:#5E8C61;background:var(--green-bg);color:#2F5A33':''}">${st?'Estudada — toque para desmarcar':'Marcar como estudada'}</button>
+  ${irmasHtml(c)}</div><div class="fg-b">
   <div class="stack" style="gap:6px"><h2 style="font-size:22px">Significado geral</h2><p>${esc(c.geral)}</p></div>
   <div class="grid2"><div class="box"><div class="h" style="color:#8A6A1E">Lado de luz</div>${lis(c.luz)}</div><div class="box dark"><div class="h" style="color:var(--pink)">Lado de sombra</div>${lis(c.sombra)}</div></div>
   <div class="stack"><h2 style="font-size:22px">Simbolismo</h2>${(c.simbolismo||[]).map(t=>`<div class="sym"><i></i><div>${esc(t)}</div></div>`).join('')}</div>
   <div class="box" style="background:var(--sand);border:none;gap:6px"><div class="h" style="color:var(--wood)">Invertida</div><p style="font-size:14px">${esc(c.invertido)}</p></div>
   <div class="stack" style="gap:12px"><h2 style="font-size:22px">Nas áreas da vida</h2><div><div style="font-size:13px;font-weight:600;color:#AD4A6A">Amor</div><p style="font-size:14px">${esc(c.amor)}</p></div><div><div style="font-size:13px;font-weight:600;color:var(--green)">Financeiro</div><p style="font-size:14px">${esc(c.financeiro)}</p></div><div><div style="font-size:13px;font-weight:600;color:#5B4E9B">Espiritualidade</div><p style="font-size:14px">${esc(c.espiritualidade)}</p></div></div>
-  ${irmasHtml(c)}
   ${mentoraHtml()}
-  <div class="notes"><h2 style="font-size:22px">Minhas anotações</h2><label for="note" style="font-size:13px;color:var(--ink2)">Interpretações, intuições, tiragens em que ${esc(c.name)} apareceu, referências de outros estudos.</label><textarea id="note" data-note="${c.id}" placeholder="Escreva aqui…">${esc(S.notes[c.id]||'')}</textarea><div class="st"><span id="note-status">${S.notes[c.id]?salvoOnde():''}</span><span>${(S.notes[c.id]||'').length?((S.notes[c.id]||'').length+' caracteres'):''}</span></div></div>`;
+  <div class="notes"><h2 style="font-size:22px">Minhas anotações</h2><label for="note" style="font-size:13px;color:var(--ink2)">Interpretações, intuições, tiragens em que ${esc(c.name)} apareceu, referências de outros estudos.</label><textarea id="note" data-note="${c.id}" placeholder="Escreva aqui…">${esc(S.notes[c.id]||'')}</textarea><div class="st"><span id="note-status">${S.notes[c.id]?salvoOnde():''}</span><span>${(S.notes[c.id]||'').length?((S.notes[c.id]||'').length+' caracteres'):''}</span></div></div></div></div>`;
 }
 function notesCount(){ return Object.keys(S.notes).filter(k=>(S.notes[k]||'').trim()).length; }
 // ---------- repetição espaçada (estilo Anki, SM-2 simplificado) ----------
@@ -850,7 +898,7 @@ function peladanSum(sp,pr){
 }
 function spreads(){
   const rows=SPREADS.map(sp=>`<button class="mod" data-act="spread" data-id="${sp.id}"><div class="g serif" style="font-size:22px;color:var(--wood)">${sp.cards}</div><div class="t"><b style="font-size:16px">${esc(sp.name)}</b><div style="font-size:12px;color:var(--muted);line-height:1.35">${esc(sp.tagline)}</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`).join('');
-  return `<div class="stack" style="gap:4px">${tituloComAvatar('Tiragens')}<p style="color:var(--ink2)">Aqui tiragem não prevê nada. Ela coloca um padrão seu em posições para você enxergar de onde ele vem, como aparece e o que pede. A pergunta é sempre de quem está na mesa: você, no estudo, ou a consulente, no atendimento. Ninguém lê quem não está lá.</p></div><div class="stack">${rows}</div>${historicoPraticas()}`;
+  return `<div class="stack" style="gap:4px">${tituloComAvatar('Tiragens')}<p style="color:var(--ink2)">Aqui tiragem não prevê nada. Ela coloca um padrão seu em posições para você enxergar de onde ele vem, como aparece e o que pede. A pergunta é sempre de quem está na mesa: você, no estudo, ou a consulente, no atendimento. Ninguém lê quem não está lá.</p></div><div class="stack libgrid">${rows}</div>${historicoPraticas()}`;
 }
 function historicoPraticas(){
   const R=S.readings; if(!R.length) return '';
@@ -911,8 +959,8 @@ function practiceView(sp){
   const legend=sp.positions.slice().sort((a,b)=>a.n-b.n).map(x=>{const d=pr.draw[x.n-1],c=CARDS[d.cardId];return `<button class="row${open===x.n?' on':''}" style="min-height:48px;padding:6px 10px;${open===x.n?'border-color:var(--caramel)':''}" data-act="popen" data-id="${x.n}"><b class="serif" style="font-size:20px;color:var(--caramel);width:26px;text-align:center">${x.n}</b><div class="t"><div class="n" style="font-size:14px">${esc(c.name)}${d.rev?' <span style="font-size:11px;color:var(--red);font-weight:500">inv.</span>':''}</div><div class="s">${esc(x.label)}</div></div></button>`;}).join('');
   const sintese=`<div class="notes" style="gap:6px"><label for="ps" style="font-size:13px;font-weight:600;color:var(--wood)">O padrão em uma frase</label><textarea id="ps" data-ps maxlength="200" style="min-height:80px" placeholder="Porque (1), hoje eu (2), e isso aponta para (3)…">${esc(pr.sintese||'')}</textarea><div class="st"><span>Se não couber numa frase, ainda não está claro.</span><span id="ps-status">${pr.saved&&(pr.sintese||'').trim()?salvoOnde():''}</span></div>
   <label for="pi" style="font-size:13px;font-weight:600;color:var(--wood);margin-top:6px">Minha interpretação</label><textarea id="pi" data-pi maxlength="3000" style="min-height:140px" placeholder="Leia posição por posição, depois a tiragem inteira como uma frase. O que cada carta faz no lugar dela? Que padrão aparece? O que ele pede?">${esc(pr.interpretacao||'')}</textarea><div class="st"><span>${(pr.interpretacao||'').length?(pr.interpretacao||'').length+' caracteres':''}</span><span id="pi-status">${pr.saved&&(pr.interpretacao||'').trim()?salvoOnde():''}</span></div></div>`;
-  return `${pergunta}${renderLayout(sp,pr.draw,open)}<div style="font-size:12px;color:var(--muted);text-align:center">Toque numa posição para ler a carta nela.</div>${peladanSum(sp,pr)}${panel}<div class="stack" style="gap:6px">${legend}</div>${sintese}${mentoraHtml()}
-  <div class="grid2"><button class="btn ghost" data-act="pdraw">Sortear de novo</button><button class="btn" data-act="psave" ${pr.saved?'disabled style="opacity:.6"':''}>${pr.saved?'Prática salva':'Salvar prática'}</button></div>${logada()&&COM?`<button class="btn ghost" data-act="pshare">Compartilhar na roda</button>`:''}${list}`;
+  return `${pergunta}<div class="prgrid"><div class="pr-a">${renderLayout(sp,pr.draw,open)}<div style="font-size:12px;color:var(--muted);text-align:center">Toque numa posição para ler a carta nela.</div>${peladanSum(sp,pr)}${panel}</div><div class="pr-b"><div class="stack" style="gap:6px">${legend}</div>${sintese}${mentoraHtml()}
+  <div class="grid2"><button class="btn ghost" data-act="pdraw">Sortear de novo</button><button class="btn" data-act="psave" ${pr.saved?'disabled style="opacity:.6"':''}>${pr.saved?'Prática salva':'Salvar prática'}</button></div>${logada()&&COM?`<button class="btn ghost" data-act="pshare">Compartilhar na roda</button>`:''}</div></div>${list}`;
 }
 
 // ---------- Ofélia, a coruja do Grimório (chat de dúvidas dentro da prática e da ficha) ----------
@@ -1126,7 +1174,9 @@ function render(){
   const foco=document.activeElement&&main.contains(document.activeElement)&&document.activeElement.id?{id:document.activeElement.id,ini:document.activeElement.selectionStart,fim:document.activeElement.selectionEnd}:null;
   const A=window.GA_AUTH, gated=A&&A.enabled&&A.estado!=='ok';
   document.getElementById('nav').style.display=gated?'none':'';
-  if(gated){ main.innerHTML=gateView(); lastKey='gate'; return; }
+  document.getElementById('app').classList.toggle('sem-menu',!!gated);
+  if(gated){ main.dataset.screen='gate'; main.innerHTML=gateView(); lastKey='gate'; return; }
+  main.dataset.screen = S.screen==='spread'?'spread-'+S.spreadTab+(S.practice&&S.practice.spreadId===S.spreadId?'-on':''):S.screen;
   main.innerHTML = S.screen==='comunidade'?comunidadeView():S.screen==='escrever'?escreverView():S.screen==='perfil'?perfilPubView():S.screen==='editarPerfil'?editarPerfilView():S.screen==='home'?home():S.screen==='library'?library():S.screen==='card'?cardView():S.screen==='comparar'?compararView():S.screen==='flash'?flash():S.screen==='spreads'?spreads():S.screen==='spread'?spread():quiz();
   main.scrollTop=keep; lastKey=key;
   if(foco){ const el=document.getElementById(foco.id); if(el){ el.focus({preventScroll:true}); try{ if(foco.ini!=null) el.setSelectionRange(foco.ini,foco.fim); }catch(e){} } }

@@ -10,6 +10,10 @@ Fica em `vendas/index.html` e é publicada junto com o app em `https://ogrimorio
 
 O Pixel da Meta (id 2279176922944295) está no fim do `<head>`, com o evento PageView; o código original está em `tools/vendas/pixel.html`. Todos os botões levam ao checkout da Kiwify. No celular, a barra fixa de compra só aparece depois que a pessoa passa do topo.
 
+## Layout no computador
+
+A partir de 1024 px de largura, o app deixa de ser uma coluna de celular: a barra de abas vira um menu lateral fixo à esquerda e o conteúdo ocupa o resto da tela (até 1200 px). O Início fica em duas colunas (carta do dia, metas e progresso à esquerda; Jornada, conquistas e backup à direita), a biblioteca e a lista de tiragens viram grade, a ficha da carta deixa a imagem e o resumo fixos à esquerda com a leitura à direita, e a prática da tiragem põe o tabuleiro à esquerda e a escrita e a Ofélia à direita. Flashcards, quiz, Comunidade e perfil ficam numa coluna de leitura de 820 px. As regras estão no fim do CSS do `index.html` (`@media (min-width:1024px)`), e a tela atual vai em `main[data-screen]`. No celular nada muda: os blocos novos (`.hgrid`, `.fgrid`, `.prgrid`) empilham na mesma ordem de antes.
+
 ## Consumo de banda (créditos da Netlify)
 
 A Netlify cobra por bytes servidos, então o app é montado para baixar o mínimo:
