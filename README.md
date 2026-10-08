@@ -6,7 +6,9 @@ Os flashcards seguem o modelo do Anki (SM-2 simplificado): cada carta tem uma da
 
 ## Página de vendas
 
-Fica em `vendas/index.html` e é publicada junto com o app em `https://ogrimorioarcano.netlify.app/vendas/`. É HTML puro com animações em CSS (desligadas para quem pede movimento reduzido). As imagens das cartas vêm de `img/`; as telas do app ficam em `vendas/img/`. Antes de divulgar, troque os colchetes: depoimentos e os preços de comparação (curso gravado e livro).
+Fica em `vendas/index.html` e é publicada junto com o app em `https://ogrimorioarcano.netlify.app/vendas/`. É a página "Chave da Leitura Espelho", desenhada no Claude Design e exportada como HTML puro: as animações são em CSS (três celulares que mostram o app funcionando, leque de cartas, barra de vagas que enche ao aparecer na tela) e desligam para quem pede movimento reduzido. As cartas vêm de `img/`; a foto da Raquel e o selo de garantia ficam em `vendas/img/`. As imagens abaixo da primeira dobra carregam sob demanda, então a abertura baixa cerca de 130 KB.
+
+O Pixel da Meta (id 2279176922944295) está no fim do `<head>`, com o evento PageView; o código original está em `tools/vendas/pixel.html`. Todos os botões levam ao checkout da Kiwify. No celular, a barra fixa de compra só aparece depois que a pessoa passa do topo.
 
 ## Consumo de banda (créditos da Netlify)
 
