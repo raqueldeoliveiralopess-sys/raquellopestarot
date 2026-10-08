@@ -9,61 +9,194 @@
 <meta property="og:description" content="O tarot nunca foi sobre prever o futuro. Aprenda a ler o padrão de quem está na sua frente. R$29,90/mês, 7 dias de garantia.">
 <meta property="og:image" content="https://ogrimorioarcano.netlify.app/img/p37.jpg">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#2A1619">
+<meta name="theme-color" content="#F3D6DC">
 <link rel="icon" href="../icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&amp;family=Jost:wght@400;500;600;700&amp;display=swap">
+<script>document.documentElement.className+=' js';</script>
 <style>
-body{margin:0;background:#F4ECE1;color:#402327;font-family:'Jost',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:#593122}a:hover{color:#402327}
+:root{--cream:#F4ECE1;--sand:#EDE1D2;--paper:#FFFDF9;--blush:#F7E3E5;--ink:#402327;--ink2:#5E4038;--muted:#8A5E45;--dark:#2A1619;--plum:#431E3D;--wood:#593122;--gold:#ECDF90;--pink:#F4B1C8;--tan:#AD7E62;--line:#E7D8C8}
 *{box-sizing:border-box}
-h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;margin:0;line-height:1.05;letter-spacing:-.005em;text-wrap:balance}
-p{margin:0;line-height:1.6}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:'Jost',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;margin:0;line-height:1.04;letter-spacing:-.01em;text-wrap:balance}
+p{margin:0;line-height:1.65}
 img{max-width:100%}
+a{color:var(--wood)}
 .wrap{max-width:1120px;margin:0 auto;padding:0 32px}
-.narrow{max-width:760px;margin:0 auto;padding:0 32px}
-.sec{padding:104px 0}
-.dark{background:#2A1619;color:#F4ECE1}
-.plum{background:#431E3D;color:#F4ECE1}
-.sand{background:#EDE1D2}
-.eyebrow{font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:#8A5E45}
-.dark .eyebrow,.plum .eyebrow{color:#F4B1C8}
-.head{display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center;max-width:820px;margin:0 auto}
-.h2{font-size:50px}
-.lead{font-size:19px;line-height:1.7}
-.cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:60px;padding:0 34px;border-radius:14px;background:#ECDF90;color:#2A1619;font-weight:700;font-size:16px;letter-spacing:.08em;text-decoration:none;box-shadow:0 10px 30px rgba(42,22,25,.28);text-align:center;white-space:nowrap;transition:transform .2s ease,background .2s ease}
-.cta:hover{background:#F4B1C8;color:#2A1619;transform:translateY(-2px)}
-.cta.wood{background:#593122;color:#F4ECE1}
-.cta.wood:hover{background:#402327;color:#F4ECE1}
-.ctanote{font-size:13px;opacity:.75;margin-top:12px}
-.card{background:#FFFDF9;border:1px solid #E2D3C2;border-radius:20px;padding:28px}
-.tarot{width:150px;aspect-ratio:300/493;object-fit:cover;border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,.45);background:#402327;display:block}
-.check{display:flex;gap:12px;align-items:flex-start;font-size:18px;line-height:1.45}
-.check svg{flex:0 0 24px;margin-top:1px}
+.narrow{max-width:740px;margin:0 auto;padding:0 32px}
+.sec{padding:104px 0;position:relative}
+.center{text-align:center;display:flex;flex-direction:column;align-items:center}
+.head{display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;max-width:760px;margin:0 auto}
+.h2{font-size:52px}
+.h2 em,h1 em{font-style:italic;color:var(--plum)}
+.lead{font-size:19px;color:var(--ink2)}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:99px;background:var(--paper);color:var(--muted);font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;box-shadow:0 2px 12px rgba(64,35,39,.07);align-self:flex-start}
+.head .chip,.center .chip{align-self:center}
+.chip svg{width:15px;height:15px;flex:0 0 15px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:58px;padding:0 34px;border-radius:99px;background:var(--plum);color:var(--paper);font-weight:600;font-size:16px;letter-spacing:.01em;text-decoration:none;box-shadow:0 14px 30px rgba(67,30,61,.32);transition:transform .2s ease,box-shadow .2s ease,background .2s ease;text-align:center}
+.btn svg{width:18px;height:18px;flex:0 0 18px;transition:transform .2s ease}
+.btn:hover{background:#56284F;color:var(--paper);transform:translateY(-2px);box-shadow:0 18px 36px rgba(67,30,61,.38)}
+.btn:hover svg{transform:translateX(3px)}
+.btn.gold{background:linear-gradient(180deg,#F1E6A4,#E3CF6E);color:var(--dark);box-shadow:0 14px 30px rgba(236,223,144,.28)}
+.btn.gold:hover{background:linear-gradient(180deg,#F5ECB6,#E8D57C);color:var(--dark)}
+.ctabox{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:44px}
+.ctanote{font-size:13px;color:var(--muted)}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.checks li{display:flex;gap:12px;align-items:flex-start;font-size:17px;line-height:1.5;color:var(--ink2)}
+.ck{width:24px;height:24px;flex:0 0 24px;border-radius:50%;background:var(--plum);display:flex;align-items:center;justify-content:center;margin-top:1px}
+.ck svg{width:13px;height:13px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:26px;box-shadow:0 12px 34px rgba(64,35,39,.06)}
 
-/* topo */
-.navcta{color:#ECDF90;font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;min-height:44px;padding:0 18px;border:1px solid rgba(236,223,144,.5);border-radius:99px;display:inline-flex;align-items:center}
-.navcta:hover{background:#ECDF90;color:#2A1619}
+/* fundos */
+.bg-hero{background:linear-gradient(180deg,#F3D3DB 0%,#F6E2E3 38%,#F4ECE1 82%)}
+.bg-blush{background:linear-gradient(180deg,#F4ECE1 0%,#F7E3E5 100%)}
+.bg-blush2{background:linear-gradient(180deg,#F7E3E5 0%,#F4ECE1 100%)}
+.bg-paper{background:var(--paper)}
+.bg-sand{background:var(--sand)}
 
 /* hero */
-.hero-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:48px;align-items:center}
-.badge{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:99px;background:#F4B1C8;color:#2A1619;font-size:13px;font-weight:700;letter-spacing:.16em}
-.hero h1{font-size:52px;line-height:1.06}
-.fan{position:relative;height:440px;display:flex;justify-content:center;align-items:center}
+.hero{padding:72px 0 88px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:56px;align-items:center}
+.hero h1{font-size:72px;line-height:.98}
+.hero .lead{max-width:540px}
+.hmeta{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--muted);align-items:center}
+.hmeta span{display:inline-flex;align-items:center;gap:6px}
+.hmeta svg{width:16px;height:16px}
+.hmeta i{width:4px;height:4px;border-radius:50%;background:var(--tan);opacity:.6}
+.hvis{display:flex;flex-direction:column;align-items:center;gap:22px}
+.fan{position:relative;height:400px;width:100%;display:flex;justify-content:center;align-items:center}
 .fan .floater{position:relative;width:150px;height:247px;animation:flutua 7s ease-in-out infinite}
 .fan img{position:absolute;left:0;top:0}
+.tarot{width:150px;aspect-ratio:300/493;object-fit:cover;border-radius:12px;box-shadow:0 22px 44px rgba(42,22,25,.32);background:#402327;display:block}
 @keyframes flutua{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.pillwide{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:500px;padding:16px 20px;border-radius:20px;background:rgba(244,177,200,.32);font-size:15px;font-weight:500;color:var(--ink)}
+.pillwide svg{width:18px;height:18px;color:var(--plum)}
 
-/* diferencial */
-.difer{border-radius:28px;padding:56px;display:flex;flex-direction:column;gap:20px}
-.difer .q{font-family:'Cormorant Garamond',Georgia,serif;font-size:32px;line-height:1.3}
+/* blocos de recurso */
+.feat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:72px;align-items:center}
+.feat.rev .ftext{order:2}
+.ftext{display:flex;flex-direction:column;gap:22px}
+.ftext .h2{font-size:48px}
+.fvis{display:flex;justify-content:center;position:relative}
+.fvis::before{content:'';position:absolute;width:420px;height:420px;max-width:100%;border-radius:50%;background:radial-gradient(circle,rgba(244,177,200,.45),transparent 68%);top:50%;left:50%;transform:translate(-50%,-50%);z-index:0}
+.fvis>*{position:relative;z-index:1}
+.mirror{width:100%;max-width:440px;height:500px;overflow:hidden;border-radius:32px;background:#2A1619;background-image:radial-gradient(circle at 50% 30%,rgba(236,223,144,.22),transparent 62%);display:flex;flex-direction:column;align-items:center;padding-top:52px;box-shadow:0 28px 60px rgba(42,22,25,.25)}
+.mirror .tarot{width:190px;flex:0 0 auto;box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.mirror .reflex{transform:scaleY(-1);opacity:.3;-webkit-mask-image:linear-gradient(to bottom,transparent 55%,#000 100%);mask-image:linear-gradient(to bottom,transparent 55%,#000 100%);box-shadow:none;margin-top:8px}
+.cap{font-size:16px;color:var(--ink2);max-width:420px;text-align:center;margin:28px auto 0}
+
+/* faixa tudo em um */
+.band{border-radius:36px;padding:64px 40px;background:#431E3D;background-image:radial-gradient(circle at 15% 0%,rgba(244,177,200,.28),transparent 50%),radial-gradient(circle at 90% 100%,rgba(236,223,144,.16),transparent 50%);color:var(--cream);text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;box-shadow:0 30px 60px rgba(67,30,61,.25)}
+.band .h2{font-size:46px}
+.band .h2 em{color:var(--gold)}
+.band p{color:#E9D9D2;font-size:17px}
+.band .ctabox{margin-top:16px}
+.band .ctanote{color:#D8C2BC}
+
+/* dor e custo */
+.dor p+p{margin-top:18px}
+.costs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:52px}
+.cost{background:#FAF3EA;border:1px solid var(--line);border-radius:26px;padding:34px 28px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+.cost .ic{width:52px;height:52px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;color:var(--plum);margin-bottom:6px}
+.cost .ic svg{width:22px;height:22px}
+.cost h3{font-size:26px}
+.cost p{font-size:16px;color:var(--ink2)}
+
+/* pra você */
+.foryou{max-width:640px;margin:44px auto 0;padding:34px 32px}
+.foryou .ck{background:var(--tan)}
+.recon{font-size:16px;color:var(--ink2);text-align:center;margin-top:24px}
+.recon b{color:var(--plum)}
+
+/* depoimentos */
+.tgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:52px}
+.tcard{padding:28px;display:flex;flex-direction:column;gap:14px}
+.ttag{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;background:var(--blush);color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.ttag svg{width:13px;height:13px}
+.tcard h3{font-size:26px;line-height:1.12}
+.tcard p{font-size:15.5px;color:var(--ink2);line-height:1.6}
+.tfoot{margin-top:auto;padding-top:14px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tfoot b{font-size:15px}
+.stars{color:var(--tan);display:flex;gap:2px}
+.stars svg{width:14px;height:14px}
+.swipe{display:none;text-align:center;font-size:14px;color:var(--muted);margin-top:6px}
+
+/* especialista */
+.bio{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:64px;align-items:center}
+.photo{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;border-radius:32px;background:#402327;box-shadow:0 28px 60px rgba(42,22,25,.22)}
+.roles{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);line-height:1.8;font-weight:500}
+.bio p.t{font-size:18px;color:var(--ink2)}
+.bio p.t b{color:var(--ink)}
+
+/* bônus */
+.bgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:56px}
+.bcard{position:relative;padding:30px 26px 22px;display:flex;flex-direction:column;gap:12px}
+.free{position:absolute;top:-13px;right:20px;padding:5px 14px;border-radius:99px;background:var(--wood);color:var(--cream);font-size:11px;font-weight:700;letter-spacing:.16em}
+.bic{width:50px;height:50px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;color:var(--plum)}
+.bic svg{width:22px;height:22px}
+.bnum{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--tan)}
+.bcard h3{font-size:27px;line-height:1.08}
+.bcard p{font-size:15.5px;color:var(--ink2)}
+.bval{margin-top:auto;padding-top:14px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.bval s{font-size:16px;letter-spacing:0;color:var(--ink2)}
+.btotal{max-width:520px;margin:30px auto 0;padding:24px 28px;border-radius:24px;border:1.5px dashed var(--tan);text-align:center;display:flex;flex-direction:column;gap:4px;background:rgba(255,253,249,.6)}
+.btotal .k{font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.btotal .v{font-family:'Cormorant Garamond',Georgia,serif;font-size:44px;font-weight:700;color:var(--plum);line-height:1.1}
+.btotal p{font-size:15px;color:var(--ink2)}
+
+/* preço */
+.pcard{max-width:500px;margin:48px auto 0;border-radius:34px;padding:44px 32px 30px;background:#2A1619;background-image:radial-gradient(circle at 50% 0%,rgba(67,30,61,.95),transparent 70%);color:var(--cream);box-shadow:0 36px 70px rgba(42,22,25,.35);position:relative;text-align:center}
+.pbadge{position:absolute;top:-17px;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:99px;background:linear-gradient(180deg,#F1E6A4,#E3CF6E);color:var(--dark);font-size:12px;font-weight:700;letter-spacing:.14em;white-space:nowrap;box-shadow:0 8px 20px rgba(236,223,144,.3)}
+.pbadge svg{width:14px;height:14px}
+.pcard h3{font-size:34px}
+.pcard h3 em{font-style:italic;color:var(--pink)}
+.psub{font-size:15px;color:#D9C5BF;margin-top:6px}
+.anchor{display:inline-block;margin-top:24px;padding:4px 14px;border-radius:99px;background:rgba(244,236,225,.1);font-size:14px;color:#CDB7B0}
+.price{display:flex;align-items:baseline;justify-content:center;gap:8px;margin-top:8px}
+.price b{font-family:'Cormorant Garamond',Georgia,serif;font-size:84px;line-height:1;font-weight:700;background:linear-gradient(90deg,#ECDF90,#F4B1C8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.price span{font-size:18px;color:#D9C5BF}
+.pday{font-size:14px;color:#CDB7B0}
+.plist{list-style:none;margin:26px 0 26px;padding:0;text-align:left}
+.plist li{display:flex;gap:14px;align-items:center;padding:13px 0;border-bottom:1px solid rgba(244,236,225,.1);font-size:15.5px;line-height:1.4;color:#EDE1D8}
+.plist li:last-child{border-bottom:none}
+.plist .pi{width:34px;height:34px;flex:0 0 34px;border-radius:50%;border:1px solid rgba(244,177,200,.4);display:flex;align-items:center;justify-content:center;color:var(--pink)}
+.plist .pi svg{width:16px;height:16px}
+.plist b{color:var(--gold);font-weight:600}
+.pcard .btn{width:100%}
+.bar{margin-top:22px;border-radius:16px;background:rgba(244,177,200,.1);border:1px solid rgba(244,177,200,.32);padding:14px 16px;display:flex;flex-direction:column;gap:10px;text-align:left}
+.bar .bt{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:var(--pink)}
+.bar .bt svg{width:18px;height:18px}
+.bar .track{height:10px;border-radius:99px;background:rgba(244,236,225,.14);overflow:hidden}
+.bar .fill{height:100%;width:3%;border-radius:99px;position:relative;overflow:hidden;background-color:#F4B1C8;background-image:linear-gradient(45deg,rgba(255,255,255,.28) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.28) 50%,rgba(255,255,255,.28) 75%,transparent 75%,transparent);background-size:18px 18px;animation:listras .9s linear infinite;transition:width 2.6s cubic-bezier(.22,.8,.2,1);box-shadow:0 0 12px rgba(244,177,200,.55)}
+.bar .fill.on{width:53%}
+.bar .fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);transform:translateX(-100%);animation:brilho 1.8s ease-in-out infinite}
+@keyframes listras{to{background-position:18px 0}}
+@keyframes brilho{to{transform:translateX(100%)}}
+.pnote{font-size:13px;color:#BFA8A1;line-height:1.6;margin-top:14px}
+.trust{display:flex;justify-content:center;flex-wrap:wrap;gap:20px 40px;margin-top:40px}
+.trust div{display:flex;align-items:center;gap:12px;text-align:left}
+.trust .ti{width:42px;height:42px;border-radius:50%;background:var(--paper);display:flex;align-items:center;justify-content:center;color:var(--plum);box-shadow:0 4px 14px rgba(64,35,39,.08)}
+.trust .ti svg{width:18px;height:18px}
+.trust b{display:block;font-size:15px;font-weight:600}
+.trust span{font-size:13px;color:var(--muted)}
+
+/* garantia */
+.seal{display:block;width:210px;height:210px;object-fit:contain;filter:drop-shadow(0 14px 26px rgba(42,22,25,.22))}
+.sign{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:22px;color:var(--plum)}
+
+/* faq */
+.faq{display:flex;flex-direction:column;gap:12px;margin-top:44px}
+details{background:var(--paper);border:1px solid var(--line);border-radius:22px;transition:box-shadow .2s ease}
+details[open]{box-shadow:0 10px 28px rgba(64,35,39,.07)}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 24px;font-size:17px;font-weight:600;min-height:44px}
+summary::-webkit-details-marker{display:none}
+summary svg{width:20px;height:20px;flex:0 0 20px;color:var(--muted);transition:transform .2s ease}
+details[open] summary svg{transform:rotate(180deg)}
+details p{padding:0 24px 22px;font-size:16px;color:var(--ink2)}
 
 /* telas do app */
-.phones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;justify-items:center;align-items:start}
-.phwrap{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
-.phwrap .cap b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:600}
-.phwrap .cap span{font-size:15px;color:#5E4038}
-.ph{width:256px;height:566px;border-radius:40px;border:9px solid #1C1012;background:#F4ECE1;box-shadow:0 28px 60px rgba(42,22,25,.3);overflow:hidden;position:relative;display:flex;flex-direction:column;font-family:'Jost',system-ui,sans-serif;color:#402327;text-align:left}
+.ph{width:256px;height:566px;border-radius:44px;border:10px solid #402327;background:#F4ECE1;box-shadow:0 30px 60px rgba(42,22,25,.28);overflow:hidden;position:relative;display:flex;flex-direction:column;font-family:'Jost',system-ui,sans-serif;color:#402327;text-align:left}
 .ph .notch{position:absolute;top:8px;left:50%;width:76px;height:20px;border-radius:99px;background:#1C1012;transform:translateX(-50%);z-index:3}
 .ph .scr{flex:1;padding:40px 14px 0;display:flex;flex-direction:column;gap:10px;overflow:hidden}
 .ph .tab{height:48px;border-top:1px solid #E2D3C2;background:#FFFDF9;display:flex;justify-content:space-around;align-items:center;flex:0 0 48px}
@@ -81,8 +214,8 @@ img{max-width:100%}
 .verso{background:#431E3D;border:2px solid #ECDF90;display:flex;align-items:center;justify-content:center}
 .meta{display:flex;align-items:center;gap:8px;font-size:12px;padding:7px 0;border-bottom:1px solid #EDE1D2}
 .meta:last-child{border-bottom:none}
-.meta .ck{width:16px;height:16px;border-radius:50%;border:1.6px solid #AD7E62;flex:0 0 16px;display:flex;align-items:center;justify-content:center}
-.meta .ck svg{opacity:0}
+.meta .ck{width:16px;height:16px;border-radius:50%;border:1.6px solid #AD7E62;flex:0 0 16px;display:flex;align-items:center;justify-content:center;background:transparent;margin:0}
+.meta .ck svg{opacity:0;width:10px;height:10px}
 .slot{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:#8A5E45}
 .slot .flip{width:62px;height:102px;border-radius:8px}
 .slot .well{width:62px;height:102px;border-radius:8px;outline:1.5px dashed #D9C7B3;outline-offset:2px}
@@ -94,8 +227,6 @@ img{max-width:100%}
 .btn4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
 .btn4 span{font-size:10px;font-weight:600;text-align:center;padding:7px 0;border-radius:8px;border:1px solid #E2D3C2;background:#FFFDF9}
 .opt{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;padding:9px 10px;border-radius:10px;border:1px solid #E2D3C2;background:#FFFDF9}
-
-/* animações das telas (laços contínuos) */
 .a-flip1{animation:flip1 9s ease-in-out infinite}
 @keyframes flip1{0%,14%{transform:rotateY(0)}22%,88%{transform:rotateY(180deg)}96%,100%{transform:rotateY(0)}}
 .a-txt1{animation:txt1 9s ease infinite}
@@ -115,7 +246,6 @@ img{max-width:100%}
 .seq6{animation:seq6 9s steps(1) infinite}.seq7{position:absolute;left:0;top:0;white-space:nowrap;opacity:0;animation:seq7 9s steps(1) infinite}
 @keyframes seq6{0%,69%{opacity:1}70%,95%{opacity:0}96%,100%{opacity:1}}
 @keyframes seq7{0%,69%{opacity:0}70%,95%{opacity:1}96%,100%{opacity:0}}
-
 .a-d1{animation:d1 10s ease-out infinite}.a-d2{animation:d2 10s ease-out infinite}.a-d3{animation:d3 10s ease-out infinite}
 @keyframes d1{0%,6%{opacity:0;transform:translateY(-60px) rotate(-10deg)}12%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
 @keyframes d2{0%,12%{opacity:0;transform:translateY(-60px) rotate(8deg)}18%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
@@ -130,7 +260,6 @@ img{max-width:100%}
 @keyframes typing{0%,49%{opacity:0}50%,60%{opacity:1}61%,100%{opacity:0}}
 .a-ans{animation:ans 10s ease infinite}
 @keyframes ans{0%,60%{opacity:0;transform:translateY(8px)}64%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
-
 .a-bar{animation:bar 9s ease-in-out infinite}
 @keyframes bar{0%{width:30%}40%{width:30%}48%,90%{width:62%}100%{width:30%}}
 .a-flip3{animation:flip3 9s ease-in-out infinite}
@@ -144,103 +273,58 @@ img{max-width:100%}
 .a-ok{animation:aok 9s ease infinite}
 @keyframes aok{0%,64%{opacity:0;transform:scale(.6)}68%,92%{opacity:1;transform:none}98%,100%{opacity:0}}
 
-/* depoimentos e garantia */
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
-.quote{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:22px;line-height:1.35}
-.stars{color:#AD7E62;letter-spacing:3px;font-size:16px}
-.guar{display:flex;gap:32px;align-items:center;padding:32px 40px;border-color:#AD7E62}
-.seal{display:block;width:180px;height:180px;flex:0 0 180px;object-fit:contain;filter:drop-shadow(0 10px 18px rgba(42,22,25,.25))}
-.seal.big{width:220px;height:220px;flex:none;filter:drop-shadow(0 14px 30px rgba(0,0,0,.45))}
+/* entrada suave ao rolar */
+.js .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.js .rv.in{opacity:1;transform:none}
 
-/* especialista */
-.bio{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:center}
-.photo{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;border-radius:24px;background:#402327;box-shadow:0 24px 60px rgba(0,0,0,.45),0 0 0 1px rgba(236,223,144,.25)}
-
-/* mecanismo */
-.mec{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:56px;align-items:center}
-.mirror{height:520px;overflow:hidden;border-radius:28px;background:#2A1619;background-image:radial-gradient(circle at 50% 32%,rgba(236,223,144,.2),transparent 62%);display:flex;flex-direction:column;align-items:center;padding-top:56px}
-.mirror .tarot{width:200px;flex:0 0 auto}
-.mirror .reflex{transform:scaleY(-1);opacity:.3;-webkit-mask-image:linear-gradient(to bottom,transparent 55%,#000 100%);mask-image:linear-gradient(to bottom,transparent 55%,#000 100%);box-shadow:none;margin-top:8px}
-
-/* bônus */
-.bonus{display:grid;grid-template-columns:200px minmax(0,1fr);gap:44px;align-items:center}
-.cover{width:200px;aspect-ratio:3/4;border-radius:6px 14px 14px 6px;padding:24px 20px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 36px rgba(42,22,25,.3),inset 6px 0 0 rgba(0,0,0,.18);color:#F4ECE1}
-.cover .tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:600}
-.cover h3{font-size:27px;line-height:1.05}
-.bonus h3.t{font-size:34px}
-.bonus ul{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
-.bonus li{font-size:16px;line-height:1.55;padding-left:20px;position:relative}
-.bonus li::before{content:'';position:absolute;left:0;top:10px;width:8px;height:8px;border-radius:50%;background:#AD7E62}
-
-/* oferta */
-.stack-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;border-bottom:1px dashed rgba(244,236,225,.25);font-size:18px}
-.stack-row b{font-weight:600}
-.stack-row .v{font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;color:#ECDF90;white-space:nowrap}
-.price{font-family:'Cormorant Garamond',Georgia,serif;font-size:88px;line-height:1;color:#ECDF90;font-weight:700}
-.bar{border-radius:14px;background:rgba(244,177,200,.14);border:1px solid rgba(244,177,200,.4);padding:14px 18px;display:flex;flex-direction:column;gap:10px}
-.bar .track{height:10px;border-radius:99px;background:rgba(244,236,225,.15);overflow:hidden}
-.bar .fill{height:100%;width:3%;border-radius:99px;position:relative;overflow:hidden;background-color:#F4B1C8;background-image:linear-gradient(45deg,rgba(255,255,255,.28) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.28) 50%,rgba(255,255,255,.28) 75%,transparent 75%,transparent);background-size:18px 18px;animation:listras .9s linear infinite;transition:width 2.6s cubic-bezier(.22,.8,.2,1);box-shadow:0 0 12px rgba(244,177,200,.55)}
-.bar .fill.on{width:53%}
-.bar .fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);transform:translateX(-100%);animation:brilho 1.8s ease-in-out infinite}
-@keyframes listras{to{background-position:18px 0}}
-@keyframes brilho{to{transform:translateX(100%)}}
-
-/* ganhos x perdas */
-.vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
-.vs ol{margin:18px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px}
-.vs li{display:flex;gap:12px;font-size:17px;line-height:1.5}
-.vs li svg{flex:0 0 24px;margin-top:2px}
-
-/* faq */
-details{border-bottom:1px solid #E2D3C2}
-summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;font-size:19px;font-weight:600;min-height:44px}
-summary svg{flex:0 0 20px;transition:transform .2s ease}
-summary::-webkit-details-marker{display:none}
-details[open] summary svg{transform:rotate(180deg)}
-details p{padding:0 0 22px;font-size:17px;color:#5E4038}
-
-/* barra fixa (só celular, aparece depois do topo) */
+/* rodapé e barra fixa */
+footer{background:var(--sand);padding:64px 0 52px}
 .sticky{display:none}
 
-@media (max-width:820px){
+@media (max-width:900px){
   .wrap,.narrow{padding:0 20px}
-  .sec{padding:68px 0}
-  .h2{font-size:34px}
+  .sec{padding:72px 0}
+  .h2,.ftext .h2{font-size:36px}
   .lead{font-size:17px}
-  .hero-grid,.bio,.mec,.grid3,.vs{grid-template-columns:minmax(0,1fr);gap:28px}
-  .hero{padding-top:20px !important}
-  .hero h1{font-size:34px}
-  .fan{order:-1;height:210px;transform:scale(.68);margin:-10px 0 -20px}
-  .check{font-size:16px}
-  .cta{width:100%;padding:0 16px;font-size:15px;white-space:normal;min-height:56px}
-  .navcta{min-height:40px;padding:0 14px;font-size:12px}
-  .difer{padding:28px 22px;border-radius:22px}
-  .difer .q{font-size:24px}
-  .phones{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:18px;margin:0 -20px;padding:4px 20px 18px;scrollbar-width:none}
-  .phones::-webkit-scrollbar{display:none}
-  .phwrap{flex:0 0 256px;scroll-snap-align:center}
-  .swipe{display:block !important}
-  .guar{flex-direction:column;text-align:center;padding:30px 20px;gap:18px}
-  .guar .cta{align-self:stretch}
-  .seal{width:170px;height:170px;flex-basis:auto}
-  .seal.big{width:190px;height:190px}
-  .photo{max-width:300px;margin:0 auto}
-  .mirror{height:360px;padding-top:36px}
-  .mirror .tarot{width:140px}
-  .bonus{grid-template-columns:minmax(0,1fr);gap:20px}
-  .cover{width:180px}
-  .cover h3{font-size:24px}
-  .bonus h3.t{font-size:28px}
-  .stack-row{font-size:15px}
-  .stack-row .v{font-size:20px}
-  .price{font-size:64px}
-  summary{font-size:17px}
-  .sticky{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 16px 14px;background:rgba(28,16,18,.97);gap:12px;align-items:center;justify-content:space-between;transform:translateY(110%);transition:transform .3s ease}
+  .hero{padding:40px 0 64px}
+  .hero-grid,.feat,.bio{grid-template-columns:minmax(0,1fr);gap:36px}
+  .feat.rev .ftext{order:0}
+  .hero h1{font-size:44px}
+  .fan{height:250px}
+  .fan .floater{transform-origin:center;scale:.66}
+  .hmeta i{display:none}
+  .pillwide{font-size:14px}
+  .checks li{font-size:16px}
+  .mirror{height:380px;padding-top:40px}
+  .mirror .tarot{width:150px}
+  .band{padding:44px 22px;border-radius:28px}
+  .band .h2{font-size:32px}
+  .costs,.bgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:36px}
+  .bgrid{gap:26px}
+  .cost{padding:26px 22px}
+  .foryou{padding:26px 22px;margin-top:32px}
+  .tgrid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:36px -20px 0;padding:4px 20px 18px;scrollbar-width:none}
+  .tgrid::-webkit-scrollbar{display:none}
+  .tcard{flex:0 0 84%;scroll-snap-align:center}
+  .swipe{display:block}
+  .photo{max-width:320px;margin:0 auto}
+  .bio .ftext{gap:18px}
+  .btn{width:100%;padding:0 18px;font-size:15px;min-height:56px}
+  .ctabox{margin-top:36px}
+  .pcard{padding:42px 20px 24px;border-radius:28px}
+  .price b{font-size:68px}
+  .trust{flex-direction:column;align-items:flex-start;gap:16px;max-width:280px;margin:36px auto 0}
+  .seal{width:180px;height:180px}
+  summary{font-size:16px;padding:18px 20px}
+  details p{padding:0 20px 20px;font-size:15px}
+  .sticky{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(255,253,249,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line);gap:14px;align-items:center;justify-content:space-between;transform:translateY(110%);transition:transform .3s ease;box-shadow:0 -8px 24px rgba(64,35,39,.08)}
   .sticky.on{transform:none}
-  .sticky .cta{min-height:48px;width:auto;flex:1;font-size:13px;letter-spacing:.04em;box-shadow:none}
-  footer{padding-bottom:110px !important}
+  .sticky .btn{min-height:48px;width:auto;flex:1;font-size:14px;box-shadow:none}
+  footer{padding-bottom:120px}
 }
 @media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js .rv{opacity:1;transform:none;transition:none}
   .fan .floater,.ph *{animation:none !important}
   .a-flip1,.a-flip3,.a-f1,.a-f2,.a-f3{transform:rotateY(180deg) !important}
   .a-ck1 svg,.a-ck2 svg,.a-ck3 svg{opacity:1 !important}
@@ -264,90 +348,111 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 fbq('init', '2279176922944295');
 fbq('track', 'PageView');
 </script>
-<noscript><img loading="lazy" decoding="async" height="1" width="1" style="display:none"
+<noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=2279176922944295&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 </head>
 <body>
 
-<div style="background: #F4ECE1;">
-
-<!-- Topo -->
-<header class="dark" style="border-bottom: 1px solid rgba(244,236,225,.1);">
-  <div class="wrap" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 72px;">
-    <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 600; letter-spacing: .02em;">Grimório Arcano</div>
-    <a class="navcta" href="https://pay.kiwify.com.br/mGgkkRc">Assinar</a>
-  </div>
-</header>
-
-<!-- SEÇÃO 1: Cabeçalho de impacto -->
-<section class="sec dark hero" style="padding-top: 64px; background: #2A1619; background-image: radial-gradient(circle at 80% 40%, rgba(173,126,98,.22), transparent 55%);">
+<!-- 1. Topo -->
+<section class="bg-hero hero">
   <div class="wrap hero-grid">
-    <div style="display: flex; flex-direction: column; gap: 24px;">
-      <div class="badge">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22c4 0 7-3 7-7 0-4-3-6-4-9-1 3-3 4-4 4 0-3-1-5-3-7 0 4-3 7-3 12 0 4 3 7 7 7z"></path></svg>
-        OFERTA LIMITADA
-      </div>
-      <h1>A verdade que as tarólogas não querem que você descubra: <span style="color: #ECDF90; font-style: italic;">o tarot nunca foi sobre prever o futuro</span> e quem entendeu isso primeiro está atendendo o dobro de clientes, com o dobro de autoridade.</h1>
-      <p class="lead" style="color: #E6D8CA;">Mesmo que você nunca tenha se sentido confiante o suficiente para cobrar mais, atender mais ou se apresentar como autoridade de verdade.</p>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <div class="check"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M8 12.5l3 3 5-6"></path></svg><span>Cobra mais sem se justificar</span></div>
-        <div class="check"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M8 12.5l3 3 5-6"></path></svg><span>Atende clientes sem travar</span></div>
-        <div class="check"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M8 12.5l3 3 5-6"></path></svg><span>Abandona a fama de "adivinha"</span></div>
-      </div>
-      <div>
-        <a class="cta" href="https://pay.kiwify.com.br/mGgkkRc">COMEÇAR MINHA JORNADA</a>
-        <p class="ctanote">Acesso imediato · Garantia de 7 dias</p>
-      </div>
+    <div style="display:flex;flex-direction:column;gap:26px;">
+      <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4M17 5h4"/></svg>Grimório Arcano</div>
+      <h1>O tarot nunca foi sobre <em>prever o futuro.</em></h1>
+      <p class="lead">Quem entendeu isso primeiro está atendendo o dobro de clientes, com o dobro de autoridade. Aqui você aprende a ler o padrão psicológico de quem está na sua frente, mesmo que hoje ainda trave na hora de cobrar.</p>
+      <div class="hmeta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg>Celular e computador</span><i></i><span>Acesso imediato</span><i></i><span>7 dias de garantia</span></div>
+      <div><a class="btn" href="https://pay.kiwify.com.br/mGgkkRc">Quero começar minha jornada<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
     </div>
-    <div class="fan" aria-hidden="true">
-      <div class="floater">
-        <img class="tarot" src="../img/p7.webp" alt="" style="transform: translateX(-150px) rotate(-16deg) translateY(30px);">
-        <img class="tarot" src="../img/p39.webp" alt="" style="transform: translateX(-75px) rotate(-8deg) translateY(8px);">
-        <img class="tarot" src="../img/p45.webp" alt="" style="transform: translateX(75px) rotate(8deg) translateY(8px);">
-        <img class="tarot" src="../img/p37.webp" alt="" style="transform: translateX(150px) rotate(16deg) translateY(30px);">
-        <img class="tarot" src="../img/p3.webp" alt="" style="transform: translateY(-14px); z-index: 2;">
+    <div class="hvis">
+      <div class="fan" aria-hidden="true">
+        <div class="floater">
+          <img class="tarot" src="../img/p7.webp" alt="" style="transform: translateX(-150px) rotate(-16deg) translateY(30px);">
+          <img class="tarot" src="../img/p39.webp" alt="" style="transform: translateX(-75px) rotate(-8deg) translateY(8px);">
+          <img class="tarot" src="../img/p45.webp" alt="" style="transform: translateX(75px) rotate(8deg) translateY(8px);">
+          <img class="tarot" src="../img/p37.webp" alt="" style="transform: translateX(150px) rotate(16deg) translateY(30px);">
+          <img class="tarot" src="../img/p3.webp" alt="" style="transform: translateY(-14px); z-index: 2;">
+        </div>
+      </div>
+      <div class="pillwide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4M17 5h4"/></svg>Leitura junguiana, sem decoreba nem adivinhação</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. O método -->
+<section class="sec bg-paper">
+  <div class="wrap feat rev">
+    <div class="ftext rv">
+      <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3L21 2M16 7l3 3M18 5l2 2"/></svg>A Chave da Leitura Espelho</div>
+      <h2 class="h2">A carta não é uma janela para o amanhã. <em>É um espelho.</em></h2>
+      <p class="lead">Enquanto a maioria ainda tenta adivinhar o que vai acontecer, você aprende a enxergar o padrão de quem está na mesa. A cliente sente que foi vista de verdade pela primeira vez, e é isso que faz ela voltar e indicar.</p>
+      <ul class="checks">
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Cobra mais sem se justificar</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Atende clientes sem travar</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Abandona a fama de "adivinha"</li>
+      </ul>
+    </div>
+    <div class="fvis rv">
+      <div class="mirror" aria-hidden="true">
+        <img loading="lazy" decoding="async" class="tarot" src="../img/p21.webp" alt="">
+        <img loading="lazy" decoding="async" class="tarot reflex" src="../img/p21.webp" alt="">
       </div>
     </div>
   </div>
 </section>
 
-<!-- SEÇÃO 2: Abertura emocional -->
-<section class="sec">
-  <div class="narrow" style="display: flex; flex-direction: column; gap: 24px;">
-    <div class="eyebrow">Você conhece esse momento</div>
-    <p class="lead">Você está no meio de uma leitura, as cartas espalhadas na mesa, a cliente do outro lado te olhando com aquela expectativa que pesa e por dentro você sente aquele frio familiar, aquele momento em que a sua voz hesita porque no fundo você sabe que está oferecendo uma previsão que o tempo pode desmentir, e a vergonha disso você nunca contou pra ninguém.</p>
-    <p class="lead">Você estudou, comprou curso, decorou significados, mas ainda sente que falta algo que não está em nenhum livro, aquela segurança de quem sabe exatamente o que está fazendo e por quê.</p>
-    <p class="lead">Enquanto isso, você vê outras tarólogas com agenda lotada, indicações chegando sem parar, uma autoridade que você não consegue entender de onde vem e a resposta que elas descobriram não é intuição, não é dom, e não é sorte.</p>
-    <p class="lead">O Grimório Arcano existe para te mostrar o que essas profissionais já entenderam: <b>que a carta nunca foi sobre o futuro, ela é um espelho do padrão psicológico de quem está na sua frente</b>, e quando você aprende a ler assim, você não entrega uma previsão, você entrega à sua cliente a sensação de ter sido vista de verdade pela primeira vez.</p>
-  </div>
-  <div class="wrap" style="margin-top: 64px;">
-    <div class="plum difer">
-      <div class="eyebrow">O diferencial</div>
-      <p class="q">Enquanto a maioria das tarólogas ainda tenta adivinhar o que vai acontecer na vida da cliente, você vai estar do outro lado da mesa lendo o que ninguém mais consegue ver: <span style="color: #ECDF90;">o padrão psicológico de quem está na sua frente</span>, com uma precisão tão desconcertante que a cliente vai sentir que foi vista de verdade pela primeira vez.</p>
-      <p style="font-size: 17px; color: #E6D8CA;">Não é intuição, não é dom, é a <b style="color: #F4B1C8;">Chave da Leitura Espelho</b>, e ela é exatamente o que separa quem lota agenda de quem fica esperando o telefone tocar. O Grimório Arcano é onde essa virada acontece.</p>
+<!-- 3. Ofélia -->
+<section class="sec bg-blush">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="chip"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 29.5c-6.4 0-10.5-5-10.5-11.2 0-5.4 3.1-9.6 6.3-12.8L16 8l4.2-2.5c3.2 3.2 6.3 7.4 6.3 12.8C26.5 24.5 22.4 29.5 16 29.5z"/><circle cx="12.4" cy="16.2" r="1.6" fill="currentColor"/><circle cx="19.6" cy="16.2" r="1.6" fill="currentColor"/><path d="M16 18.3v3.2"/></svg>Sua mentora no app</div>
+      <h2 class="h2">Travou numa tiragem? <em>Pergunte à Ofélia.</em></h2>
+      <p class="lead">A coruja do Grimório explica na hora o que a carta quer dizer naquela posição, para aquela pergunta. Sem sair do app para pesquisar.</p>
     </div>
+    <div class="fvis rv" style="margin-top:52px;">
+      <div class="ph" role="img" aria-label="Tela do app: três cartas são tiradas nas posições Raiz, Cena atual e Direção, e a Ofélia responde uma dúvida">
+          <div class="notch"></div>
+          <div class="scr">
+            <div><div class="sub">Praticar</div><div class="ttl">Três cartas</div></div>
+            <div class="box" style="font-size: 11.5px;"><div class="sub" style="font-size: 9px; margin-bottom: 3px;">Minha pergunta</div>Por que eu adio conversas difíceis?</div>
+            <div style="display: flex; justify-content: space-between; padding: 4px 4px 0;">
+              <div class="slot"><div class="well"><div class="flip a-d1"><div class="in a-f1"><div class="f verso"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.6 6.9L22 9.5l-5.6 4.6L18 21.5 12 17.6 6 21.5l1.6-7.4L2 9.5l7.4-.6L12 2z"></path></svg></div><div class="f b"><img loading="lazy" decoding="async" src="../img/p39.webp" alt=""></div></div></div></div>Raiz</div>
+              <div class="slot"><div class="well"><div class="flip a-d2"><div class="in a-f2"><div class="f verso"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.6 6.9L22 9.5l-5.6 4.6L18 21.5 12 17.6 6 21.5l1.6-7.4L2 9.5l7.4-.6L12 2z"></path></svg></div><div class="f b"><img loading="lazy" decoding="async" src="../img/p21.webp" alt=""></div></div></div></div>Cena atual</div>
+              <div class="slot"><div class="well"><div class="flip a-d3"><div class="in a-f3"><div class="f verso"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.6 6.9L22 9.5l-5.6 4.6L18 21.5 12 17.6 6 21.5l1.6-7.4L2 9.5l7.4-.6L12 2z"></path></svg></div><div class="f b"><img loading="lazy" decoding="async" src="../img/p45.webp" alt=""></div></div></div></div>Direção</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+              <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#593122" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 29.5c-6.4 0-10.5-5-10.5-11.2 0-5.4 3.1-9.6 6.3-12.8L16 8l4.2-2.5c3.2 3.2 6.3 7.4 6.3 12.8C26.5 24.5 22.4 29.5 16 29.5z" fill="#FFFDF9"></path><path d="M16 27c-4.3-1-7.3-4.8-7.3-9 0-3.8 2.6-6.9 4.1-8.6L16 11.6l3.2-2.2c1.5 1.7 4.1 4.8 4.1 8.6 0 4.2-3 8-7.3 9z"></path><circle cx="12.4" cy="16.2" r="1.5" fill="#593122"></circle><circle cx="19.6" cy="16.2" r="1.5" fill="#593122"></circle><path d="M16 18.3v3.2"></path></svg>
+              <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 17px; font-weight: 600;">Perguntar à Ofélia</div>
+            </div>
+            <div class="bub a-q" style="align-self: flex-end; background: #402327; color: #F4ECE1; max-width: 86%;">O que a Lua na Raiz quer dizer aqui?</div>
+            <div style="position: relative; min-height: 80px;">
+              <div class="bub a-typing" style="position: absolute; left: 0; top: 0; background: #FFFDF9; border: 1px solid #E2D3C2;"><span class="dots"><i></i><i></i><i></i></span></div>
+              <div class="bub a-ans" style="background: #FFFDF9; border: 1px solid #E2D3C2; max-width: 94%;">Na Raiz, a Lua indica um medo antigo de errar. Em que cena desta semana ele apareceu?</div>
+            </div>
+          </div>
+          <div class="tab"><i></i><i></i><i></i><i></i><i class="on"></i></div>
+        </div>
+    </div>
+    <p class="cap rv">Você tira as cartas. Ela te ajuda a ligar cada uma à sua pergunta.</p>
   </div>
 </section>
 
-<!-- SEÇÃO 3: Prova social + garantia -->
-<section class="sec sand">
-  <div class="wrap" style="display: flex; flex-direction: column; gap: 64px;">
-    <div style="display: flex; flex-direction: column; gap: 22px;">
-      <div class="head">
-        <div class="eyebrow">O que você recebe</div>
-        <h2 class="h2">Uma chave de leitura simples e diferente de tudo que você já estudou</h2>
-      </div>
-      <p class="lead" style="max-width: 760px; margin: 0 auto;">Eu vou te entregar agora uma chave de leitura simples e diferente de tudo que você já estudou sobre tarot, nada de decoreba ou dom especial, mas tão eficaz que as tarólogas com agenda cheia já descobriram antes de você, perfeita pra quem quer atender mais clientes e ser reconhecida como autoridade de verdade, sem depender de previsões que o tempo pode desmentir e sem precisar fingir que sabe o futuro de ninguém.</p>
+<!-- 4. Ritual diário -->
+<section class="sec bg-blush2">
+  <div class="wrap feat">
+    <div class="ftext rv">
+      <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>Ritual diário</div>
+      <h2 class="h2">10 minutos por dia e o tarot <em>entra na sua rotina.</em></h2>
+      <p class="lead">Uma carta por dia com pergunta de reflexão, metas curtas e uma sequência que te chama de volta amanhã.</p>
+      <ul class="checks">
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Carta do dia com leitura junguiana</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Metas diárias que cabem em 10 minutos</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Jornada em capítulos para aprofundar</li>
+      </ul>
     </div>
-
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-    <div class="phones">
-
-      <!-- Tela 1: carta do dia e metas -->
-      <div class="phwrap">
-        <div class="ph" role="img" aria-label="Tela do app: a carta do dia vira, aparece a pergunta de reflexão e as metas do dia vão sendo concluídas">
+    <div class="fvis rv">
+      <div class="ph" role="img" aria-label="Tela do app: a carta do dia vira, aparece a pergunta de reflexão e as metas do dia vão sendo concluídas">
           <div class="notch"></div>
           <div class="scr">
             <div style="display: flex; justify-content: space-between; align-items: center;"><div><div class="sub">Quarta-feira</div><div class="ttl">Hoje</div></div><div style="width: 30px; height: 30px; border-radius: 50%; background: #AD7E62; color: #FFFDF9; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center;">R</div></div>
@@ -378,39 +483,25 @@ src="https://www.facebook.com/tr?id=2279176922944295&ev=PageView&noscript=1"
           </div>
           <div class="tab"><i class="on"></i><i></i><i></i><i></i><i></i></div>
         </div>
-        <div class="cap"><b>Ritual diário</b><span>Carta do dia, metas e sequência</span></div>
-      </div>
+    </div>
+  </div>
+</section>
 
-      <!-- Tela 2: tiragem e Ofélia -->
-      <div class="phwrap">
-        <div class="ph" role="img" aria-label="Tela do app: três cartas são tiradas nas posições Raiz, Cena atual e Direção, e a Ofélia responde uma dúvida">
-          <div class="notch"></div>
-          <div class="scr">
-            <div><div class="sub">Praticar</div><div class="ttl">Três cartas</div></div>
-            <div class="box" style="font-size: 11.5px;"><div class="sub" style="font-size: 9px; margin-bottom: 3px;">Minha pergunta</div>Por que eu adio conversas difíceis?</div>
-            <div style="display: flex; justify-content: space-between; padding: 4px 4px 0;">
-              <div class="slot"><div class="well"><div class="flip a-d1"><div class="in a-f1"><div class="f verso"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.6 6.9L22 9.5l-5.6 4.6L18 21.5 12 17.6 6 21.5l1.6-7.4L2 9.5l7.4-.6L12 2z"></path></svg></div><div class="f b"><img loading="lazy" decoding="async" src="../img/p39.webp" alt=""></div></div></div></div>Raiz</div>
-              <div class="slot"><div class="well"><div class="flip a-d2"><div class="in a-f2"><div class="f verso"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.6 6.9L22 9.5l-5.6 4.6L18 21.5 12 17.6 6 21.5l1.6-7.4L2 9.5l7.4-.6L12 2z"></path></svg></div><div class="f b"><img loading="lazy" decoding="async" src="../img/p21.webp" alt=""></div></div></div></div>Cena atual</div>
-              <div class="slot"><div class="well"><div class="flip a-d3"><div class="in a-f3"><div class="f verso"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.6 6.9L22 9.5l-5.6 4.6L18 21.5 12 17.6 6 21.5l1.6-7.4L2 9.5l7.4-.6L12 2z"></path></svg></div><div class="f b"><img loading="lazy" decoding="async" src="../img/p45.webp" alt=""></div></div></div></div>Direção</div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-              <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#593122" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 29.5c-6.4 0-10.5-5-10.5-11.2 0-5.4 3.1-9.6 6.3-12.8L16 8l4.2-2.5c3.2 3.2 6.3 7.4 6.3 12.8C26.5 24.5 22.4 29.5 16 29.5z" fill="#FFFDF9"></path><path d="M16 27c-4.3-1-7.3-4.8-7.3-9 0-3.8 2.6-6.9 4.1-8.6L16 11.6l3.2-2.2c1.5 1.7 4.1 4.8 4.1 8.6 0 4.2-3 8-7.3 9z"></path><circle cx="12.4" cy="16.2" r="1.5" fill="#593122"></circle><circle cx="19.6" cy="16.2" r="1.5" fill="#593122"></circle><path d="M16 18.3v3.2"></path></svg>
-              <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 17px; font-weight: 600;">Perguntar à Ofélia</div>
-            </div>
-            <div class="bub a-q" style="align-self: flex-end; background: #402327; color: #F4ECE1; max-width: 86%;">O que a Lua na Raiz quer dizer aqui?</div>
-            <div style="position: relative; min-height: 80px;">
-              <div class="bub a-typing" style="position: absolute; left: 0; top: 0; background: #FFFDF9; border: 1px solid #E2D3C2;"><span class="dots"><i></i><i></i><i></i></span></div>
-              <div class="bub a-ans" style="background: #FFFDF9; border: 1px solid #E2D3C2; max-width: 94%;">Na Raiz, a Lua indica um medo antigo de errar. Em que cena desta semana ele apareceu?</div>
-            </div>
-          </div>
-          <div class="tab"><i></i><i></i><i></i><i></i><i class="on"></i></div>
-        </div>
-        <div class="cap"><b>Tiragens com a Ofélia</b><span>Você pratica e tira dúvidas na hora</span></div>
-      </div>
-
-      <!-- Tela 3: flashcards e quiz -->
-      <div class="phwrap">
-        <div class="ph" role="img" aria-label="Tela do app: um flashcard vira mostrando o significado, a aluna marca Bom e acerta uma pergunta de luz ou sombra">
+<!-- 5. Flashcards e quiz -->
+<section class="sec bg-paper">
+  <div class="wrap feat rev">
+    <div class="ftext rv">
+      <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l10 5-10 5L2 7z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Memória sem decoreba</div>
+      <h2 class="h2">Os 78 arcanos na memória, <em>sem decorar lista.</em></h2>
+      <p class="lead">Flashcards que voltam na hora certa e quizzes de luz e sombra que treinam o seu olhar para o símbolo.</p>
+      <ul class="checks">
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Revisão espaçada das 78 cartas</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Quiz de luz e sombra</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Seu progresso visível a cada dia</li>
+      </ul>
+    </div>
+    <div class="fvis rv">
+      <div class="ph" role="img" aria-label="Tela do app: um flashcard vira mostrando o significado, a aluna marca Bom e acerta uma pergunta de luz ou sombra">
           <div class="notch"></div>
           <div class="scr">
             <div><div class="sub">Flashcards</div><div class="ttl">Revisão do dia</div></div>
@@ -431,245 +522,201 @@ src="https://www.facebook.com/tr?id=2279176922944295&ev=PageView&noscript=1"
           </div>
           <div class="tab"><i></i><i></i><i class="on"></i><i></i><i></i></div>
         </div>
-        <div class="cap"><b>Flashcards e quiz</b><span>Memória sem decoreba</span></div>
-      </div>
-
-    </div>
-    <p class="swipe" style="display: none; text-align: center; font-size: 13px; color: #7A5A4E;">Arraste para o lado para ver as três telas</p>
-    </div>
-
-    <div style="display: flex; flex-direction: column; gap: 22px;">
-      <div class="eyebrow" style="text-align: center;">O que dizem as alunas</div>
-      <div class="grid3">
-        <div class="card" style="display: flex; flex-direction: column; gap: 14px;"><div class="stars" aria-label="5 de 5 estrelas">★★★★★</div><p class="quote">“Eu decorava o significado das cartas, mas na hora de juntar tudo numa tiragem parecia que esquecia o que tinha estudado. Com o Grimório Arcano, comecei a prestar mais atenção nas imagens e a construir minha interpretação. Estudar tarot ficou muito mais interessante.”</p><b style="font-size: 15px; margin-top: auto;">Juliana, São Paulo</b></div>
-        <div class="card" style="display: flex; flex-direction: column; gap: 14px;"><div class="stars" aria-label="5 de 5 estrelas">★★★★★</div><p class="quote">“Eu tinha um monte de conteúdo salvo e sempre deixava o estudo pra depois. O Grimório Arcano me deu vontade de pegar o baralho e dedicar um tempinho a ele, mesmo nos dias corridos. Aos poucos, o tarot foi entrando de verdade na minha rotina.”</p><b style="font-size: 15px; margin-top: auto;">Aline, Pelotas</b></div>
-        <div class="card" style="display: flex; flex-direction: column; gap: 14px;"><div class="stars" aria-label="5 de 5 estrelas">★★★★★</div><p class="quote">“Já estudava tarot, mas ainda buscava uma resposta pronta pra confirmar cada interpretação. Estudar com o Grimório Arcano tem me ajudado a observar os símbolos, fazer perguntas e explicar melhor o que vejo nas cartas. Estou ficando mais segura da minha leitura.”</p><b style="font-size: 15px; margin-top: auto;">Renata, Porto, Portugal</b></div>
-      </div>
-    </div>
-
-    <div class="card guar">
-      <img loading="lazy" decoding="async" class="seal" src="img/selo-7-dias.webp" alt="Selo de garantia de 7 dias">
-      <div style="display: flex; flex-direction: column; gap: 10px; flex: 1;">
-        <h3 style="font-size: 32px;">Garantia de 7 dias</h3>
-        <p style="font-size: 17px;">Garantia incondicional de 7 dias. Se não ficar completamente satisfeita, devolvemos 100% do seu dinheiro sem perguntas.</p>
-      </div>
-      <a class="cta wood" href="https://pay.kiwify.com.br/mGgkkRc">ADQUIRIR COM SEGURANÇA</a>
     </div>
   </div>
 </section>
 
-<!-- SEÇÃO 4: História da especialista -->
-<section class="sec dark">
+<!-- 6. Tudo em um app -->
+<section class="sec bg-paper" style="padding-top:0;">
+  <div class="wrap">
+    <div class="band rv">
+      <h2 class="h2">Tudo isso em um só app, <em>por R$ 29,90 por mês.</em></h2>
+      <p>Método, mentora, ritual e revisão no celular e no computador.</p>
+      <div class="ctabox">
+        <a class="btn gold" href="https://pay.kiwify.com.br/mGgkkRc">Quero acesso ao método<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <span class="ctanote">Acesso imediato · Garantia de 7 dias</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Dor -->
+<section class="sec bg-blush">
+  <div class="narrow center dor rv">
+    <div class="chip">Você conhece esse momento</div>
+    <h2 class="h2" style="margin-top:20px;">As cartas na mesa, a cliente te olhando <em>e a sua voz hesita.</em></h2>
+    <p class="lead" style="margin-top:22px;">No fundo você sabe que está entregando uma previsão que o tempo pode desmentir. Você estudou, decorou significados, fez curso e ainda falta a segurança de quem sabe exatamente o que está fazendo.</p>
+    <p class="lead">Enquanto isso, outras tarólogas lotam a agenda. Não é dom, nem sorte. <b>É a forma de ler.</b></p>
+    <div class="ctabox"><a class="btn" href="https://pay.kiwify.com.br/mGgkkRc">Quero ler com segurança<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  </div>
+</section>
+
+<!-- 8. Custo -->
+<section class="sec bg-paper">
+  <div class="wrap">
+    <div class="head rv">
+      <h2 class="h2">Quanto custa <em>continuar adivinhando?</em></h2>
+      <p class="lead">Não é só uma leitura que não fecha. É a sua confiança e a sua agenda.</p>
+    </div>
+    <div class="costs">
+      <div class="cost rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/><path d="M2 18c2-3 4-3 6 0s4 3 6 0 4-3 6 0" opacity=".5"/><path d="M2 6c2-3 4-3 6 0s4 3 6 0 4-3 6 0" opacity=".5"/></svg></div><h3>A hesitação no meio da leitura</h3><p>Cada previsão que o tempo pode desmentir pesa na sua voz e na sua segurança.</p></div>
+      <div class="cost rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h5a2 2 0 012 2v14a2 2 0 01-2 2h-5"/><path d="M10 17l5-5-5-5M15 12H3"/></svg></div><h3>A cliente que vai e não indica</h3><p>Uma derrota silenciosa, e a agenda que não enche.</p></div>
+      <div class="cost rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><h3>A autoridade que fica com as outras</h3><p>Você assiste outras prosperarem sem entender de onde vem a força delas.</p></div>
+    </div>
+    <div class="ctabox rv"><a class="btn" href="https://pay.kiwify.com.br/mGgkkRc">Quero minha vaga<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  </div>
+</section>
+
+<!-- 9. Pra você -->
+<section class="sec bg-blush2">
+  <div class="wrap">
+    <div class="head rv"><h2 class="h2">O Grimório Arcano <em>é pra você que:</em></h2></div>
+    <div class="card foryou rv">
+      <ul class="checks">
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Já estudou e decorou significados, mas sente que falta algo</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Sente um frio na barriga quando precisa "prever" alguma coisa</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Quer cobrar mais sem precisar se justificar</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Quer atender sem travar no meio da tiragem</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Quer ser reconhecida como autoridade, não como "adivinha"</li>
+      </ul>
+    </div>
+    <p class="recon rv">Se você se reconheceu em <b>pelo menos 2</b>, o Grimório foi feito pra você.</p>
+    <div class="ctabox rv"><a class="btn" href="https://pay.kiwify.com.br/mGgkkRc">Quero começar agora<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  </div>
+</section>
+
+<!-- 10. Depoimentos -->
+<section class="sec bg-cream" style="background:var(--cream);">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 000-7.8z"/></svg>O que dizem as alunas</div>
+      <h2 class="h2">Quem estuda com o Grimório <em>lê com mais segurança.</em></h2>
+    </div>
+    <div class="tgrid">
+      <div class="card tcard rv"><span class="ttag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l3 3 5-6"/></svg>Aluna do Grimório</span><h3>“Estudar tarot ficou muito mais interessante.”</h3><p>“Eu decorava o significado das cartas, mas na hora de juntar tudo numa tiragem parecia que esquecia o que tinha estudado. Com o Grimório Arcano, comecei a prestar mais atenção nas imagens e a construir minha interpretação.”</p><div class="tfoot"><b>Juliana, São Paulo</b><span class="stars" aria-label="5 de 5 estrelas"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg></span></div></div>
+      <div class="card tcard rv"><span class="ttag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l3 3 5-6"/></svg>Aluna do Grimório</span><h3>“Aos poucos, o tarot foi entrando de verdade na minha rotina.”</h3><p>“Eu tinha um monte de conteúdo salvo e sempre deixava o estudo pra depois. O Grimório Arcano me deu vontade de pegar o baralho e dedicar um tempinho a ele, mesmo nos dias corridos.”</p><div class="tfoot"><b>Aline, Pelotas</b><span class="stars" aria-label="5 de 5 estrelas"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg></span></div></div>
+      <div class="card tcard rv"><span class="ttag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l3 3 5-6"/></svg>Aluna do Grimório</span><h3>“Estou ficando mais segura da minha leitura.”</h3><p>“Já estudava tarot, mas ainda buscava uma resposta pronta pra confirmar cada interpretação. Estudar com o Grimório Arcano tem me ajudado a observar os símbolos, fazer perguntas e explicar melhor o que vejo nas cartas.”</p><div class="tfoot"><b>Renata, Porto, Portugal</b><span class="stars" aria-label="5 de 5 estrelas"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg></span></div></div>
+    </div>
+    <p class="swipe">Deslize para ver mais depoimentos</p>
+  </div>
+</section>
+
+<!-- 11. Especialista -->
+<section class="sec bg-paper">
   <div class="wrap bio">
-    <img loading="lazy" decoding="async" class="photo" src="img/raquel.webp" alt="Raquel Lopes, taróloga e professora do Grimório Arcano">
-    <div style="display: flex; flex-direction: column; gap: 20px;">
-      <div class="eyebrow">Quem vai te ensinar</div>
+    <img loading="lazy" decoding="async" class="photo rv" src="img/raquel.webp" alt="Raquel Lopes, taróloga e professora do Grimório Arcano">
+    <div class="ftext rv">
+      <div class="chip">Quem vai te ensinar</div>
       <h2 class="h2">Raquel Lopes</h2>
-      <p style="font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: #ECDF90; line-height: 1.7;">Taróloga · Mentora · Professora de tarot · Astróloga · Psicanalista junguiana · Bruxa natural</p>
-      <p style="font-size: 17px; color: #E6D8CA; line-height: 1.7;">Sou taróloga, mentora e professora de tarot, astróloga, psicanalista junguiana e bruxa natural, e por muito tempo eu também senti aquele frio no meio de uma leitura, aquela hesitação de quem sabe que está entregando uma previsão que o tempo pode desmentir.</p>
-      <p style="font-size: 17px; color: #E6D8CA; line-height: 1.7;">Foi quando parei de tentar adivinhar o futuro e comecei a enxergar o que as cartas sempre quiseram mostrar, o padrão psicológico de quem está sentado do outro lado da mesa, que tudo mudou para mim. A junção entre a psicologia junguiana e o tarot me revelou que <b style="color: #F4ECE1;">a carta não é uma janela para o amanhã, ela é um espelho</b>, e aprender a ler esse espelho com precisão é o que transforma uma taróloga em uma presença que as pessoas não esquecem.</p>
-      <p style="font-size: 17px; color: #E6D8CA; line-height: 1.7;">Hoje minha missão é passar essa chave de leitura para tarólogas que ainda sentem que falta algo que nenhum curso conseguiu nomear, através do Grimório Arcano, onde ensino a Chave da Leitura Espelho, o método que faz a cliente sentir que foi vista de verdade pela primeira vez.</p>
+      <p class="roles">Taróloga · Mentora · Professora de tarot · Astróloga · Psicanalista junguiana · Bruxa natural</p>
+      <p class="t">Por muito tempo eu também senti aquele frio no meio da leitura. Tudo mudou quando parei de tentar adivinhar o futuro e juntei a psicologia junguiana ao tarot: <b>a carta virou espelho.</b></p>
+      <p class="t">Hoje eu ensino essa chave no Grimório Arcano, para tarólogas que sentem que falta algo que nenhum curso conseguiu nomear.</p>
     </div>
   </div>
 </section>
 
-<!-- SEÇÃO 5: Mecanismo -->
-<section class="sec">
-  <div class="wrap mec">
-    <div style="display: flex; flex-direction: column; gap: 20px;">
-      <div class="eyebrow">O método</div>
-      <h2 class="h2">Chave da Leitura Espelho</h2>
-      <p class="lead">Existe uma virada de percepção que separa as tarólogas que lotam agenda das que ficam esperando cliente, e ela não tem nada a ver com decorar cartas ou confiar na intuição.</p>
-      <p class="lead">A Chave da Leitura Espelho é o despertar que acontece quando você para de tentar prever o futuro e começa a enxergar na carta o padrão psicológico de quem está na sua frente. Nesse momento, você deixa de ser uma adivinha e se torna a profissional mais poderosa da mesa, porque em vez de oferecer uma previsão que pode ou não se confirmar, você entrega um espelho tão preciso que a cliente sente que finalmente foi vista de verdade.</p>
-      <p class="lead">Esse é o gatilho que gera fidelização automática, indicações em cascata e uma autoridade que nenhuma taróloga que lê o futuro consegue competir. <b>Quem ativa essa chave primeiro sai na frente</b>, e quem ainda não descobriu continua preso em leituras que o tempo pode desmentir.</p>
-      <div><a class="cta wood" href="https://pay.kiwify.com.br/mGgkkRc">QUERO ACESSO AO MÉTODO</a></div>
+<!-- 12. Bônus -->
+<section class="sec bg-blush">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v9H5v-9M7.5 8a2.5 2.5 0 010-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 010 5"/></svg>Só para quem entrar agora</div>
+      <h2 class="h2">Entrando hoje, você leva <em>3 bônus de presente</em></h2>
+      <p class="lead">Materiais em PDF para estudar e atender melhor, além do app.</p>
     </div>
-    <div class="mirror" aria-hidden="true">
-      <img loading="lazy" decoding="async" class="tarot" src="../img/p21.webp" alt="">
-      <img loading="lazy" decoding="async" class="tarot reflex" src="../img/p21.webp" alt="">
+    <div class="bgrid">
+      <div class="card bcard rv"><span class="free">GRÁTIS</span><div class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3M12 17h.01"/></svg></div><div class="bnum">Bônus 1</div><h3>Guia das Perguntas que Funcionam</h3><p>50 reformulações para trocar perguntas de adivinhação por perguntas que a carta consegue responder.</p><div class="bval">Valor normal <s>R$ 37,00</s></div></div>
+      <div class="card bcard rv"><span class="free">GRÁTIS</span><div class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20V2H6.5A2.5 2.5 0 004 4.5z"/><path d="M4 19.5A2.5 2.5 0 006.5 22H20v-5"/></svg></div><div class="bnum">Bônus 2</div><h3>Diário de Padrões</h3><p>Caderno imprimível para registrar suas tiragens e enxergar o padrão que se repete.</p><div class="bval">Valor normal <s>R$ 37,00</s></div></div>
+      <div class="card bcard rv"><span class="free">GRÁTIS</span><div class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="bnum">Bônus 3</div><h3>Roteiro de Atendimento Ético</h3><p>Do combinado inicial à devolutiva: o que dizer, o que evitar e quando indicar ajuda profissional.</p><div class="bval">Valor normal <s>R$ 97,00</s></div></div>
+    </div>
+    <div class="btotal rv"><span class="k">Valor total dos bônus</span><span class="v">R$ 171,00</span><p>Você leva tudo isso <b>sem pagar nada a mais.</b></p></div>
+    <div class="ctabox rv"><a class="btn" href="https://pay.kiwify.com.br/mGgkkRc">Quero garantir meus bônus<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  </div>
+</section>
+
+<!-- 13. Preço -->
+<section class="sec bg-blush2" id="oferta">
+  <div class="wrap">
+    <div class="head rv">
+      <h2 class="h2">Você pode continuar hesitando. <em>Ou investir menos de R$ 1 por dia.</em></h2>
+      <p class="lead">Acesso imediato ao app, à Ofélia e aos 3 bônus.</p>
+    </div>
+    <div class="pcard rv">
+      <span class="pbadge"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg>OFERTA LIMITADA</span>
+      <h3>Grimório Arcano</h3>
+      <p class="psub">Chave da Leitura Espelho · app de estudo junguiano</p>
+      <span class="anchor">De <s>R$ 200,90</s></span>
+      <div class="price"><b>R$ 29,90</b><span>/mês</span></div>
+      <p class="pday">menos de R$ 1 por dia</p>
+      <ul class="plist">
+        <li><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l10 5-10 5L2 7z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span><span>App com as <b>78 cartas</b> em leitura junguiana</span></li>
+        <li><span class="pi"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 29.5c-6.4 0-10.5-5-10.5-11.2 0-5.4 3.1-9.6 6.3-12.8L16 8l4.2-2.5c3.2 3.2 6.3 7.4 6.3 12.8C26.5 24.5 22.4 29.5 16 29.5z"/><circle cx="12.4" cy="16.2" r="1.6" fill="currentColor"/><circle cx="19.6" cy="16.2" r="1.6" fill="currentColor"/><path d="M16 18.3v3.2"/></svg></span><span><b>Ofélia</b>, a coruja que tira suas dúvidas nas tiragens</span></li>
+        <li><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></span><span>Ritual diário, <b>flashcards</b> e quiz</span></li>
+        <li><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/></svg></span><span><b>Comunidade</b> de assinantes</span></li>
+        <li><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v9H5v-9M7.5 8a2.5 2.5 0 010-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 010 5"/></svg></span><span><b>3 bônus em PDF</b> (R$ 171 de valor)</span></li>
+        <li><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><span><b>Garantia</b> incondicional de 7 dias</span></li>
+      </ul>
+      <a class="btn gold" href="https://pay.kiwify.com.br/mGgkkRc">Quero entrar no Grimório<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <div class="bar">
+        <div class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v5M12 18h.01"/></svg>Últimas 47 vagas disponíveis!</div>
+        <div class="track"><div class="fill" id="vagas"></div></div>
+      </div>
+      <p class="pnote">Condição especial para as primeiras 100 pessoas. Quando as vagas acabarem, o valor sobe e os bônus saem da oferta.</p>
+    </div>
+    <div class="trust rv">
+      <div><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></span><p><b>Compra 100% segura</b><span>Pagamento pela Kiwify</span></p></div>
+      <div><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span><p><b>Acesso imediato</b><span>Liberação automática</span></p></div>
+      <div><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><p><b>7 dias de garantia</b><span>Devolução integral</span></p></div>
     </div>
   </div>
 </section>
 
-<!-- SEÇÃO 6: Bônus -->
-<section class="sec sand">
-  <div class="wrap" style="display: flex; flex-direction: column; gap: 56px;">
-    <div class="head">
-      <div class="eyebrow">Bônus exclusivos</div>
-      <h2 class="h2">Três bônus para quem entrar agora</h2>
-    </div>
-
-    <div class="bonus">
-      <div class="cover" style="background: #402327;">
-        <div class="tag" style="color: #F4B1C8;">Bônus 1</div>
-        <h3>Guia das Perguntas que Funcionam</h3>
-        <div class="tag" style="color: #ECDF90;">Grimório Arcano</div>
-      </div>
-      <div>
-        <h3 class="t">Guia das Perguntas que Funcionam</h3>
-        <p style="font-size: 17px; margin-top: 12px;">Ensina a trocar perguntas de adivinhação por perguntas de quem está na mesa. Resolve a dúvida mais comum de quem estuda: o que fazer quando a carta não combina com a pergunta.</p>
-        <ul>
-          <li><b>Por que a pergunta decide a leitura:</b> pergunta de fato, pergunta sobre o outro e pergunta de padrão, com a diferença entre elas.</li>
-          <li><b>50 reformulações por tema:</b> amor, dinheiro, trabalho, família, saúde emocional e decisões. Exemplo: "ele vai voltar?" vira "o que em mim ainda espera por essa volta?".</li>
-          <li><b>Versão para atendimento:</b> como reformular junto com a consulente quando ela chega perguntando sobre terceiros.</li>
-          <li><b>Formato:</b> cerca de 15 páginas, para consultar antes de embaralhar.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="bonus">
-      <div class="cover" style="background: #431E3D;">
-        <div class="tag" style="color: #F4B1C8;">Bônus 2</div>
-        <h3>Diário de Padrões</h3>
-        <div class="tag" style="color: #ECDF90;">Grimório Arcano</div>
-      </div>
-      <div>
-        <h3 class="t">Diário de Padrões</h3>
-        <p style="font-size: 17px; margin-top: 12px;">Caderno imprimível para quem gosta de escrever à mão. Conversa com o diário de tiragens do app, mas no papel.</p>
-        <ul>
-          <li><b>Como usar:</b> uma página explicando o método de registro.</li>
-          <li><b>30 páginas de tiragem:</b> pergunta, desenho das posições, cartas, a cena real em que o padrão apareceu e o padrão numa frase.</li>
-          <li><b>4 páginas de revisão mensal:</b> cartas que mais apareceram, naipe dominante e padrão que se repetiu.</li>
-          <li><b>Formato:</b> cerca de 40 páginas em A4 ou A5, para imprimir e encadernar.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="bonus">
-      <div class="cover" style="background: #593122;">
-        <div class="tag" style="color: #F4B1C8;">Bônus 3</div>
-        <h3>Roteiro de Atendimento Ético</h3>
-        <div class="tag" style="color: #ECDF90;">Grimório Arcano</div>
-      </div>
-      <div>
-        <h3 class="t">Roteiro de Atendimento Ético</h3>
-        <p style="font-size: 17px; margin-top: 12px;">Para a taróloga que usa tarot na perspectiva terapêutica com consulentes.</p>
-        <ul>
-          <li><b>Antes da sessão:</b> como explicar o método e o que o tarot não faz, num combinado simples.</li>
-          <li><b>Durante:</b> roteiro de abertura, perguntas de aprofundamento, o que fazer quando a consulente insiste em saber do outro e quando parar e indicar ajuda profissional.</li>
-          <li><b>Frases a evitar e frases que funcionam:</b> "vai acontecer" ao lado de "essa carta indica", "a energia está baixa" ao lado de "o que pesa em você agora?".</li>
-          <li><b>Depois:</b> modelo de registro da sessão e de devolutiva.</li>
-          <li><b>Formato:</b> cerca de 20 páginas.</li>
-        </ul>
-      </div>
-    </div>
+<!-- 14. Garantia -->
+<section class="sec bg-paper">
+  <div class="narrow center rv" style="gap:20px;">
+    <img loading="lazy" decoding="async" class="seal" src="img/selo-7-dias.webp" alt="Selo de garantia de 7 dias">
+    <h2 class="h2">7 dias de garantia <em>incondicional</em></h2>
+    <p class="lead">Se em até 7 dias você sentir que o Grimório não é pra você, devolvemos 100% do valor. Sem perguntas, sem burocracia. Você não tem nada a perder.</p>
+    <p class="sign">Eu assumo esse compromisso com você. — Raquel</p>
+    <div class="ctabox" style="margin-top:12px;"><a class="btn" href="https://pay.kiwify.com.br/mGgkkRc">Quero começar sem risco<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
   </div>
 </section>
 
-<!-- SEÇÃO 7: Empilhamento de valor -->
-<section class="sec dark" id="oferta">
-  <div class="narrow" style="display: flex; flex-direction: column; gap: 30px;">
-    <div class="head">
-      <div class="eyebrow">Tudo o que você recebe</div>
-      <h2 class="h2">Veja tudo o que entra hoje</h2>
-    </div>
-    <div>
-      <div class="stack-row"><span class="check" style="font-size: inherit;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg><b>Grimório Arcano</b></span><span class="v">R$ 29,90/mês</span></div>
-      <div class="stack-row"><span class="check" style="font-size: inherit;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg><b>1. Guia das Perguntas que Funcionam</b></span><span class="v">R$ 37,00</span></div>
-      <div class="stack-row"><span class="check" style="font-size: inherit;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg><b>2. Diário de Padrões</b></span><span class="v">R$ 37,00</span></div>
-      <div class="stack-row"><span class="check" style="font-size: inherit;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ECDF90" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg><b>3. Roteiro de Atendimento Ético</b></span><span class="v">R$ 97,00</span></div>
-    </div>
-    <div style="text-align: center; display: flex; flex-direction: column; gap: 8px; align-items: center;">
-      <p style="font-size: 18px; color: #E6D8CA;">Preço total: <s>R$ 200,90</s></p>
-      <p style="font-size: 14px; letter-spacing: .16em; text-transform: uppercase; color: #F4B1C8; font-weight: 600;">Hoje você leva tudo por</p>
-      <p class="price">R$ 29,90</p>
-      <p style="font-size: 16px; color: #E6D8CA;">por mês</p>
-    </div>
-    <div style="text-align: center;"><a class="cta" href="https://pay.kiwify.com.br/mGgkkRc" style="min-width: 320px;">APROVEITAR ESTA OFERTA</a></div>
-    <div class="bar">
-      <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #F4B1C8;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l10 18H2L12 3z"></path><path d="M12 10v5"></path><path d="M12 18h.01"></path></svg>
-        Últimas 47 vagas disponíveis!
-      </div>
-      <div class="track"><div class="fill" id="vagas"></div></div>
-    </div>
-    <p style="font-size: 16px; color: #E6D8CA; line-height: 1.7;">Esta é uma condição especial que eu estou abrindo apenas para as primeiras 100 pessoas que clicarem nesse botão. Quando essas vagas esgotarem, o valor da inscrição voltará para um valor muito mais alto e você ainda perde o acesso a TODOS os bônus que eu te mostrei aqui. Ou seja, você pagará mais caro, recebendo muito menos que poderia. Eu só decidi liberar por esse preço porque eu sei que ele é exatamente para pessoas como você que querem começar arriscando pouco e que sabem aproveitar uma boa oportunidade.</p>
-  </div>
-</section>
-
-<!-- SEÇÃO 8: Ganhos vs perdas -->
-<section class="sec">
-  <div class="wrap" style="display: flex; flex-direction: column; gap: 40px;">
-    <div class="head">
-      <div class="eyebrow">A escolha é sua</div>
-      <h2 class="h2">Hoje existem dois caminhos</h2>
-    </div>
-    <div class="vs">
-      <div class="card" style="border-color: #3F6E4A; background: #F3F7F1;">
-        <h3 style="font-size: 30px; color: #2F5A33;">Se você agir hoje</h3>
-        <ol>
-          <li><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2F5A33" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg><span>Sua agenda lota porque clientes sentem que foram vistas de verdade.</span></li>
-          <li><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2F5A33" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg><span>Você para de adivinhar e começa a ler com autoridade real.</span></li>
-          <li><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2F5A33" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg><span>Indicações chegam sem parar porque sua precisão desconcerta qualquer cliente.</span></li>
-          <li><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2F5A33" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg><span>Você nunca mais hesita ou sente vergonha no meio da leitura.</span></li>
-          <li><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2F5A33" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg><span>Você se torna a taróloga mais poderosa da mesa, sempre.</span></li>
-        </ol>
-      </div>
-      <div class="card" style="border-color: #7E2C2C; background: #FBF1F0;">
-        <h3 style="font-size: 30px; color: #7E2C2C;">Se você não agir</h3>
-        <ol>
-          <li><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7E2C2C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg><span>Você continua hesitando enquanto outras tarólogas lotam agenda sem esforço.</span></li>
-          <li><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7E2C2C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg><span>A vergonha de oferecer previsões que o tempo vai desmentir persiste.</span></li>
-          <li><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7E2C2C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg><span>Você assiste outras prosperarem sem entender de onde vem a autoridade delas.</span></li>
-          <li><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7E2C2C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg><span>Cada cliente que vai embora sem indicar é uma derrota silenciosa.</span></li>
-          <li><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7E2C2C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg><span>Você continua presa em leituras frágeis que qualquer carta pode destruir.</span></li>
-        </ol>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SEÇÃO 9: Garantia final -->
-<section class="sec plum">
-  <div class="narrow" style="display: flex; flex-direction: column; gap: 24px; align-items: center; text-align: center;">
-    <img loading="lazy" decoding="async" class="seal big" src="img/selo-7-dias.webp" alt="Selo de garantia de 7 dias">
-    <div class="eyebrow">Garantia de 7 dias</div>
-    <h2 class="h2">Eu assumo esse compromisso com você</h2>
-    <p class="lead" style="color: #E6D8CA;">Se você aplicar Grimório Arcano e seguir o passo a passo como é orientado e, mesmo assim, não conseguir resultados em até 7 dias, eu devolvo 100% do valor investido na aquisição. Eu assumo esse compromisso com você. Confio tanto na facilidade e qualidade do meu método, que não tenho dúvidas que você terá resultados, como já acontece com diversas pessoas que também adquiriram este método.</p>
-    <a class="cta" href="https://pay.kiwify.com.br/mGgkkRc">GARANTIR MEU SUCESSO</a>
-  </div>
-</section>
-
-<!-- SEÇÃO 10: FAQ -->
-<section class="sec">
-  <div class="narrow" style="display: flex; flex-direction: column; gap: 24px;">
-    <div class="head">
-      <div class="eyebrow">Perguntas frequentes</div>
-      <h2 class="h2">Ficou alguma dúvida?</h2>
-    </div>
-    <div>
-      <details><summary>Sou iniciante, o Grimório Arcano vai funcionar para mim?<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#593122" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><p>Sim, vai funcionar. O Grimório Arcano foi desenvolvido para quem está começando no tarot e para quem já atende e quer ler com profundidade simbólica.</p></details>
-      <details><summary>Quais são as formas de pagamento?<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#593122" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><p>Cartão de crédito e Pix.</p></details>
-      <details><summary>Preciso de conhecimento técnico?<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#593122" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><p>Não! O Grimório Arcano é um app que abre no celular e no computador, criado para pessoas sem experiência técnica. Tudo é explicado passo a passo de forma simples.</p></details>
-      <details><summary>E se eu não conseguir implementar?<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#593122" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><p>Você tem a Ofélia, a coruja do Grimório, para tirar dúvidas dentro de cada tiragem, a Comunidade de assinantes e garantia de 7 dias. Se não ficar satisfeita, devolvemos 100% do seu dinheiro.</p></details>
-      <details><summary>Quanto tempo por dia preciso dedicar?<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#593122" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><p>Com 10 minutos por dia (a carta do dia, uma rodada de flashcards e um quiz) você já pratica o método.</p></details>
-      <details><summary>Posso acessar pelo celular?<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#593122" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><p>Claro! A plataforma é totalmente responsiva e você pode acessar de qualquer dispositivo.</p></details>
-      <details><summary>E se eu já tentei outros métodos?<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#593122" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><p>O Grimório Arcano é diferente dos métodos tradicionais. Utilizamos a Chave da Leitura Espelho, a leitura de padrão da psicologia junguiana, que a maioria não ensina.</p></details>
-      <details><summary>Tem suporte ao aluno?<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#593122" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><p>Sim! Oferecemos suporte pela Ofélia dentro do app, pela Comunidade de assinantes e pelo e-mail de resposta da Raquel.</p></details>
+<!-- 15. Perguntas -->
+<section class="sec bg-blush">
+  <div class="narrow">
+    <div class="head rv"><h2 class="h2">Ficou alguma <em>dúvida?</em></h2><p class="lead">As respostas mais procuradas estão aqui.</p></div>
+    <div class="faq rv">
+      <details><summary>Sou iniciante. Vai funcionar para mim?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><p>Sim. O Grimório foi feito para quem está começando e para quem já atende e quer ler com profundidade simbólica.</p></details>
+      <details><summary>Preciso de conhecimento técnico?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><p>Não. É um app que abre no celular e no computador, com tudo explicado passo a passo.</p></details>
+      <details><summary>Quanto tempo por dia preciso dedicar?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><p>Com 10 minutos (carta do dia, uma rodada de flashcards e um quiz) você já pratica o método.</p></details>
+      <details><summary>E se eu travar ou tiver dúvidas?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><p>A Ofélia responde dentro de cada tiragem. Você também conta com a Comunidade de assinantes e com o e-mail da Raquel.</p></details>
+      <details><summary>E se eu já tentei outros métodos?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><p>O Grimório ensina a Chave da Leitura Espelho, a leitura de padrão da psicologia junguiana, que a maioria dos cursos não ensina.</p></details>
+      <details><summary>Quais são as formas de pagamento?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><p>Cartão de crédito e Pix.</p></details>
+      <details><summary>Como funciona a garantia?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><p>Você tem 7 dias para conhecer o Grimório. Se não for pra você, devolvemos 100% do valor.</p></details>
     </div>
   </div>
 </section>
 
 <!-- Rodapé -->
-<footer class="dark" style="padding: 56px 0 48px;">
-  <div class="wrap" style="display: flex; flex-direction: column; gap: 18px; align-items: center; text-align: center;">
-    <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 30px; font-weight: 600;">Grimório Arcano</div>
-    <a class="cta" href="https://pay.kiwify.com.br/mGgkkRc">COMEÇAR MINHA JORNADA</a>
-    <p style="font-size: 13px; color: #C9B4A8; max-width: 760px; line-height: 1.7;"><b>Aviso legal:</b> os resultados variam de pessoa para pessoa e dependem da dedicação de cada uma ao estudo e à prática. O Grimório Arcano é um conteúdo educacional de tarot numa perspectiva simbólica e junguiana e não substitui acompanhamento psicológico, médico ou jurídico. Pagamento processado pela Kiwify.</p>
-    <p style="font-size: 13px; color: #C9B4A8;">© 2026 Raquel Lopes · @raquellopestarot</p>
+<footer>
+  <div class="wrap center" style="gap:20px;">
+    <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:32px;font-weight:600;">Grimório Arcano</div>
+    <a class="btn" href="https://pay.kiwify.com.br/mGgkkRc">Quero começar minha jornada<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <p style="font-size:13px;color:var(--muted);max-width:760px;line-height:1.7;"><b>Aviso legal:</b> os resultados variam de pessoa para pessoa e dependem da dedicação de cada uma ao estudo e à prática. O Grimório Arcano é um conteúdo educacional de tarot numa perspectiva simbólica e junguiana e não substitui acompanhamento psicológico, médico ou jurídico. Pagamento processado pela Kiwify.</p>
+    <p style="font-size:13px;color:var(--muted);">© 2026 Raquel Lopes · @raquellopestarot</p>
   </div>
 </footer>
 
 <!-- Barra fixa no celular -->
 <div class="sticky" id="sticky">
-  <div style="color: #F4ECE1; line-height: 1.2;"><div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 700; color: #ECDF90;">R$ 29,90</div><div style="font-size: 12px; opacity: .8;">por mês</div></div>
-  <a class="cta" href="https://pay.kiwify.com.br/mGgkkRc">APROVEITAR ESTA OFERTA</a>
+  <div style="line-height:1.15;"><div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:700;color:var(--plum);">R$ 29,90</div><div style="font-size:12px;color:var(--muted);">por mês</div></div>
+  <a class="btn" href="https://pay.kiwify.com.br/mGgkkRc">Quero entrar<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
 </div>
 
-</div>
 <script>
 (function(){var b=document.getElementById('sticky');if(!b)return;function f(){b.classList.toggle('on',window.scrollY>640);}window.addEventListener('scroll',f,{passive:true});f();})();
 (function(){var v=document.getElementById('vagas');if(!v)return;if(!('IntersectionObserver' in window)){v.classList.add('on');return;}var o=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){v.classList.add('on');o.disconnect();}});},{threshold:.6});o.observe(v.parentNode);})();
+(function(){var els=document.querySelectorAll('.rv');if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}var o=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');o.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px'});els.forEach(function(e){o.observe(e);});})();
 </script>
 </body>
 </html>
