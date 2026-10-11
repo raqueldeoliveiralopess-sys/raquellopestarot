@@ -20,7 +20,7 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 h1,h2,h3,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;margin:0;line-height:1.1}
 p{margin:0;line-height:1.6}
 a{color:var(--plum)}
-#app{min-height:100dvh;display:flex;flex-direction:column;max-width:760px;margin:0 auto}
+#app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;max-width:760px;margin:0 auto}
 main{flex:1;padding:20px 18px 28px;display:flex;flex-direction:column;gap:18px}
 nav{position:sticky;bottom:0;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--card);padding:6px 8px calc(10px + env(safe-area-inset-bottom,0px));z-index:5}
 nav button{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:52px;padding:6px 0;border:none;background:transparent;color:var(--muted);font-size:10.5px;font-weight:500}
@@ -30,11 +30,11 @@ nav button.on{color:var(--plum);font-weight:600}
 .h1{font-size:34px}
 .h2{font-size:26px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
-.night{background:var(--night);background-image:radial-gradient(circle at 80% 0%,rgba(244,177,200,.18),transparent 55%);color:#F4ECE1;border:none;border-radius:22px;padding:20px;display:flex;gap:18px;align-items:center}
+.night{border:1px solid transparent;background:var(--night);background-image:radial-gradient(circle at 80% 0%,rgba(244,177,200,.18),transparent 55%);color:#F4ECE1;border:none;border-radius:22px;padding:20px;display:flex;gap:18px;align-items:center}
 .night .eyebrow{color:var(--pink)}
 .night p{color:#E6D8CA}
 .btn{min-height:50px;border:none;border-radius:14px;background:var(--plum);color:#FFFDF9;font-size:15px;font-weight:600;padding:0 18px;width:100%}
-@media (prefers-color-scheme:dark){.btn{color:#2A1619}}
+@media (prefers-color-scheme:dark){.btn{color:#2A1619}.night{border-color:var(--line)}}
 .btn.ghost{background:transparent;color:var(--plum);border:1px solid var(--line)}
 .row{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:64px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-align:left;width:100%}
 .row .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
@@ -43,7 +43,7 @@ nav button.on{color:var(--plum);font-weight:600}
 .row .ic{width:42px;height:42px;border-radius:12px;background:var(--sand);display:flex;align-items:center;justify-content:center;color:var(--plum);flex-shrink:0}
 .row .ic svg{width:20px;height:20px}
 .chev{width:18px;height:18px;color:var(--muted);flex-shrink:0}
-.pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -18px;padding:0 18px}
+.pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -18px;padding:2px 18px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
 .pills::-webkit-scrollbar{display:none}
 .pill{min-height:40px;padding:8px 14px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:13px;font-weight:500;white-space:nowrap}
 .pill.on{border-color:var(--plum);background:var(--plum);color:#FFFDF9;font-weight:600}
@@ -56,12 +56,12 @@ nav button.on{color:var(--plum);font-weight:600}
 .warn{border-left:3px solid var(--caramel);background:var(--sand);padding:10px 12px;border-radius:0 12px 12px 0;font-size:14px;color:var(--ink2)}
 .back{display:inline-flex;align-items:center;gap:6px;border:none;background:none;padding:4px 0;color:var(--muted);font-size:14px;min-height:40px}
 .back svg{width:18px;height:18px}
-.search{width:100%;min-height:46px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:0 14px;font:inherit;font-size:15px}
+.search{width:100%;min-height:46px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:0 14px;font:inherit;font-size:16px}
 .bar{height:6px;border-radius:99px;background:var(--sand);overflow:hidden}.bar i{display:block;height:100%;background:var(--plum);border-radius:99px}
 .video{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:var(--night)}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .soon{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#E6D8CA;height:100%;text-align:center;padding:16px}
-textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:12px 14px;font:inherit;font-size:15px;line-height:1.5;resize:vertical}
+textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:12px 14px;font:inherit;font-size:16px;line-height:1.5;resize:vertical}
 .done{display:inline-flex;align-items:center;gap:6px;color:#3F6E4A;font-weight:600;font-size:13px}
 @media (prefers-color-scheme:dark){.done{color:#9CCB9F}}
 .moon{flex-shrink:0;display:block}
@@ -81,10 +81,22 @@ textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .swatch{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);flex-shrink:0}
 footer.note{font-size:12.5px;color:var(--muted);line-height:1.6}
+:focus-visible{outline:2px solid var(--plum);outline-offset:2px}
+.gl{display:flex;flex-direction:column;gap:8px}
+.gl details{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.gl summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;font-size:15.5px;font-weight:600;min-height:48px}
+.gl summary::-webkit-details-marker{display:none}
+.gl summary svg{width:18px;height:18px;color:var(--muted);flex-shrink:0;transition:transform .2s}
+.gl details[open] summary svg{transform:rotate(90deg)}
+.gl details p{padding:0 16px 14px;font-size:15px;color:var(--ink2)}
+.ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:15px;color:var(--ink2);line-height:1.5}
+.sug{display:flex;gap:12px;align-items:flex-start}
+.sug .sw{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:4px;border:1px solid rgba(0,0,0,.15)}
+.next{display:flex;flex-direction:column;gap:8px}
 /* estante */
 .shelf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .book{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:8px}
-.cover{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--plum);display:flex;align-items:flex-end;padding:12px;color:#F4ECE1;box-shadow:inset 6px 0 0 rgba(0,0,0,.18)}
+.cover{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:#431E3D;display:flex;align-items:flex-end;padding:12px;color:#F4ECE1;box-shadow:inset 6px 0 0 rgba(0,0,0,.18)}
 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .cover .ph{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;line-height:1.1;position:relative}
 .book .bt{font-size:15px;font-weight:600;line-height:1.25}
@@ -93,7 +105,7 @@ footer.note{font-size:12.5px;color:var(--muted);line-height:1.6}
 .book .btn{min-height:44px;font-size:14px;border-radius:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:auto}
 .book .btn svg{width:16px;height:16px}
 .field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
-.field input[type=text],.field textarea{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);padding:10px 12px;font:inherit;font-size:15px}
+.field input[type=text],.field textarea{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);padding:10px 12px;font:inherit;font-size:16px}
 .field textarea{min-height:80px}
 .field input[type=file]{font-size:14px;color:var(--ink2)}
 .msg{font-size:14px;color:var(--ink2);padding:10px 12px;border-radius:12px;background:var(--sand)}
@@ -118,7 +130,7 @@ footer.note{font-size:12.5px;color:var(--muted);line-height:1.6}
 <body>
 <div id="app"><main id="main"></main><nav id="nav"></nav></div>
 <script src="lua.js?v=1"></script>
-<script src="biblioteca.js?v=2"></script>
+<script src="biblioteca.js?v=3"></script>
 <script src="aulas.js?v=1"></script>
 <script src="config.js"></script>
 <script>
@@ -151,7 +163,9 @@ const I={
   elem:ic('<path d="M12 3l9 16H3z"/>'),
   cor:ic('<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 000 18"/>'),
   livro:ic('<path d="M4 5a2 2 0 012-2h3a3 3 0 013 3 3 3 0 013-3h3a2 2 0 012 2v13a2 2 0 01-2 2h-4a2 2 0 00-2 2 2 2 0 00-2-2H6a2 2 0 01-2-2z"/><path d="M12 6v14"/>'),
-  down:ic('<path d="M12 3v12M7 10l5 5 5-5M4 19h16"/>')
+  down:ic('<path d="M12 3v12M7 10l5 5 5-5M4 19h16"/>'),
+  altar:ic('<path d="M4 20h16M6 20V9l6-5 6 5v11"/><path d="M10 20v-5h4v5"/>'),
+  gloss:ic('<path d="M4 6h16M4 12h10M4 18h7"/>')
 };
 
 // ---------- desenho da Lua ----------
@@ -191,26 +205,26 @@ const quando=n=>n===0?'hoje':n===1?'amanhã':`em ${n} dias`;
 // ---------- navegação por endereço (#/…) ----------
 const TABS=[['hoje','Hoje',I.hoje],['aulas','Aulas',I.aulas],['estante','Estante',I.livro],['biblioteca','Biblioteca',I.bib],['lua','Lua',I.lua]];
 function rota(){return (location.hash.replace(/^#\/?/,'')||'hoje').split('/');}
-function ir(h){location.hash='#/'+h;}
+function ir(h,trocar){if(trocar)location.replace('#/'+h);else location.hash='#/'+h;}
 window.addEventListener('hashchange',render);
 
 function render(){
   const r=rota(), tab=r[0]==='aula'?'aulas':r[0]==='item'?'biblioteca':r[0];
-  $('#nav').innerHTML=TABS.map(([id,nome,svg])=>`<button data-go="${id}" class="${tab===id?'on':''}" aria-label="${nome}">${svg}<span>${nome}</span></button>`).join('');
+  $('#nav').innerHTML=TABS.map(([id,nome,svg])=>`<button data-go="${id}" class="${tab===id?'on':''}" aria-label="${nome}" ${tab===id?'aria-current="page"':''}>${svg}<span>${nome}</span></button>`).join('');
   const telas={hoje:telaHoje,aulas:telaAulas,aula:telaAula,estante:telaEstante,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua};
   $('#main').innerHTML=(telas[r[0]]||telaHoje)(r);
   window.scrollTo(0,0);
 }
 
 document.addEventListener('click',e=>{
-  const go=e.target.closest('[data-go]');if(go){ir(go.dataset.go);return;}
+  const go=e.target.closest('[data-go]');if(go){ir(go.dataset.go,go.hasAttribute('data-troca'));return;}
   const act=e.target.closest('[data-act]');if(!act)return;
   const a=act.dataset.act, v=act.dataset.v;
-  if(a==='voltar')history.length>1?history.back():ir('hoje');
+  if(a==='voltar')ir(v||'hoje');
   if(a==='feita'){S.feitas[v]=!S.feitas[v];salvar();render();}
   if(a==='hemi'){S.hemisferio=v;salvar();render();}
-  if(a==='mes'){ir('lua/'+v);}
-  if(a==='dia'){const r=rota();ir(`lua/${r[1]||''}/${v}`);}
+  if(a==='mes'){ir('lua/'+v,true);}
+  if(a==='dia'){const r=rota();ir(`lua/${r[1]||''}/${v}`,true);}
   if(a.startsWith('est-'))estanteAcao(a.slice(4),v,act);
 });
 document.addEventListener('input',e=>{
@@ -219,6 +233,7 @@ document.addEventListener('input',e=>{
 });
 
 // ---------- tela Hoje ----------
+const corHex=n=>{const c=B.cores.find(x=>x.nome.toLowerCase()===n.toLowerCase().replace('roxo-escuro','roxo'));return c?c.hex:'#CBB8AE';};
 function proximaAula(){
   for(const m of A.modulos)for(const a of m.aulas)if(!S.feitas[a.id])return {m,a};
   return null;
@@ -257,6 +272,7 @@ function telaHoje(){
   <div class="card">
     <div class="eyebrow">Hoje é dia de ${esc(dia.planeta)}</div>
     <p style="font-size:15px">Bom para <b>${esc(dia.temas.join(', '))}</b>. Cores do dia: ${esc(dia.cores.join(' e '))}.</p>
+    <div class="sug"><span class="sw" style="background:${corHex(dia.cores[0])}"></span><p style="font-size:14.5px;color:var(--ink2)"><b>Sugestão de prática:</b> ${esc(lua.info.praticas[doy%3])}. Se for acender vela, ${esc(dia.cores[0])} combina com o dia.</p></div>
   </div>
   <button class="row" data-go="item/ervas/${erva.id}">
     <span class="ic">${I.erva}</span>
@@ -297,7 +313,7 @@ function telaAula(r){
   const x=acharAula(r[1]);if(!x)return telaAulas();
   const {m,a}=x, src=embed(a.video);
   return `
-  <button class="back" data-act="voltar">${I.back}Aulas</button>
+  <button class="back" data-act="voltar" data-v="aulas">${I.back}Aulas</button>
   <div><div class="eyebrow">${esc(m.titulo)}</div><h1 class="h1" style="margin-top:6px">${esc(a.titulo)}</h1></div>
   <div class="video">${src?`<iframe src="${esc(src)}" title="${esc(a.titulo)}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen loading="lazy"></iframe>`
     :a.video?`<div class="soon"><a class="btn" style="max-width:240px;display:flex;align-items:center;justify-content:center;text-decoration:none" href="${esc(a.video)}" target="_blank" rel="noopener">Assistir a aula</a></div>`
@@ -307,16 +323,21 @@ function telaAula(r){
     <a class="row" href="${esc(mt.url)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="ic">${I.file}</span><span class="t"><span class="n">${esc(mt.nome)}</span><span class="s">Abrir</span></span><span class="chev">${I.chev}</span></a>`).join('')}</div>`:''}
   <div style="display:flex;flex-direction:column;gap:8px"><label class="eyebrow" for="notas">Minhas anotações</label>
   <textarea id="notas" data-v="${a.id}" placeholder="Anote o que mais te marcou nesta aula. Fica salvo neste aparelho.">${esc(S.notas[a.id]||'')}</textarea></div>
-  <button class="btn ${S.feitas[a.id]?'ghost':''}" data-act="feita" data-v="${a.id}">${S.feitas[a.id]?'Marcar como não concluída':'Marcar como concluída'}</button>`;
+  <div class="next"><button class="btn ${S.feitas[a.id]?'ghost':''}" data-act="feita" data-v="${a.id}">${S.feitas[a.id]?'Marcar como não concluída':'Marcar como concluída'}</button>
+  ${(()=>{const n=aulaSeguinte(a.id);return n?`<button class="row" data-go="aula/${n.a.id}"><span class="ic">${I.play}</span><span class="t"><span class="s" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase">Próxima aula</span><span class="n">${esc(n.a.titulo)}</span></span><span class="chev">${I.chev}</span></button>`:'';})()}</div>`;
 }
+function aulaSeguinte(id){const todas=[];for(const m of A.modulos)for(const a of m.aulas)todas.push({m,a});const i=todas.findIndex(x=>x.a.id===id);return i>=0&&todas[i+1]?todas[i+1]:null;}
 
 // ---------- Biblioteca ----------
-const SECOES=[['ervas','Ervas',I.erva],['cristais','Cristais',I.cristal],['lua','Fases da Lua',I.lua],['sabas','Roda do Ano',I.roda],['dias','Dias da semana',I.sol],['elementos','Elementos',I.elem],['cores','Cores',I.cor]];
+const SECOES=[['ervas','Ervas',I.erva],['cristais','Cristais',I.cristal],['lua','Fases da Lua',I.lua],['sabas','Roda do Ano',I.roda],['ferramentas','Altar',I.altar],['glossario','Glossário',I.gloss],['dias','Dias da semana',I.sol],['elementos','Elementos',I.elem],['cores','Cores',I.cor]];
+const NOME_SECAO=Object.fromEntries(SECOES.map(s=>[s[0],s[1]]));
 function itensDe(sec){
   if(sec==='lua')return Object.entries(B.lua).map(([id,v])=>({id,nome:v.nome,sub:v.temas.join(' · '),busca:v.nome+' '+v.temas.join(' ')}));
   if(sec==='sabas')return Object.entries(B.sabas).map(([id,v])=>({id,nome:v.nome,sub:v.subtitulo,busca:v.nome+' '+v.subtitulo+' '+v.temas.join(' ')}));
   if(sec==='dias')return B.dias.map(v=>({id:String(v.dia),nome:v.nome,sub:v.planeta+' · '+v.temas.join(', '),busca:v.nome+' '+v.planeta+' '+v.temas.join(' ')}));
   if(sec==='cores')return B.cores.map((v,i)=>({id:String(i),nome:v.nome,sub:v.temas.join(' · '),hex:v.hex,busca:v.nome+' '+v.temas.join(' ')}));
+  if(sec==='ferramentas')return B.ferramentas.map(v=>({id:v.id,nome:v.nome,sub:v.elemento,busca:v.nome+' '+v.elemento+' '+v.uso}));
+  if(sec==='glossario')return B.glossario.map((v,i)=>({id:String(i),nome:v.termo,sub:v.def.slice(0,70)+'…',busca:v.termo+' '+v.def}));
   return B[sec].map(v=>({id:v.id,nome:v.nome,sub:(v.temas||[]).join(' · '),busca:[v.nome,v.cientifico,v.elemento,v.planeta,v.cor,(v.temas||[]).join(' ')].join(' ')}));
 }
 function telaBiblioteca(r){
@@ -324,30 +345,38 @@ function telaBiblioteca(r){
   const icone=SECOES.find(s=>s[0]===sec)[2];
   return `
   <div><div class="eyebrow">Consulta rápida</div><h1 class="h1" style="margin-top:6px">Biblioteca</h1></div>
-  <div class="pills">${SECOES.map(([id,nome])=>`<button class="pill ${id===sec?'on':''}" data-go="biblioteca/${id}">${nome}</button>`).join('')}</div>
-  <input id="busca" class="search" type="search" placeholder="Buscar por nome ou intenção (ex.: proteção)" autocomplete="off">
+  <div class="pills">${SECOES.map(([id,nome])=>`<button class="pill ${id===sec?'on':''}" data-go="biblioteca/${id}" data-troca>${nome}</button>`).join('')}</div>
+  <input id="busca" class="search" type="search" placeholder="Buscar em toda a biblioteca (ex.: proteção)" autocomplete="off" aria-label="Buscar na biblioteca">
   ${sec==='elementos'?`<p class="warn">${esc(B.notaElementos)}</p>`:''}
-  <div class="list" id="itens">${itensDe(sec).map(it=>`
-    <button class="row" data-go="item/${sec}/${it.id}" data-busca="${esc(it.busca.toLowerCase())}">
+  <div id="itens">${sec==='glossario'?`<div class="gl">${B.glossario.map(v=>`<details><summary>${esc(v.termo)}${I.chev}</summary><p>${esc(v.def)}</p></details>`).join('')}</div>`:`<div class="list">${itensDe(sec).map(it=>linhaItem(sec,it,icone)).join('')}</div>`}</div>
+  <div id="achados" style="display:none"></div>
+  <footer class="note">${sec==='ervas'?'As correspondências são tradicionais e variam entre tradições e autoras(es). As ervas aqui são para uso ritual: não ingira nenhuma sem orientação, e redobre o cuidado na gravidez, com crianças e com animais.':sec==='cristais'?'Cristais são apoio simbólico e não substituem tratamento de saúde. Compre de fontes que informem a origem da pedra.':'As correspondências são tradicionais e variam entre tradições e autoras(es). Use o que fizer sentido na sua prática.'}</footer>`;
+}
+function linhaItem(sec,it,icone){
+  return `<button class="row" data-go="item/${sec}/${it.id}">
       <span class="ic" ${it.hex?`style="background:${it.hex}"`:''}>${it.hex?'':icone}</span>
       <span class="t"><span class="n">${esc(it.nome)}</span><span class="s">${esc(it.sub)}</span></span>
       <span class="chev">${I.chev}</span>
-    </button>`).join('')}</div>
-  <p id="vazio" style="display:none;color:var(--muted);font-size:14px">Nada encontrado nesta seção.</p>
-  <footer class="note">As correspondências são tradicionais e variam entre tradições e autoras. As ervas aqui são para uso ritual: não ingira nenhuma sem orientação, e redobre o cuidado na gravidez, com crianças e com animais.</footer>`;
+    </button>`;
 }
+// a busca procura em todas as seções, não só na aberta
+const semAcento=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 function filtrar(q){
-  const t=q.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
-  let n=0;
-  document.querySelectorAll('#itens .row').forEach(el=>{
-    const ok=!t||el.dataset.busca.normalize('NFD').replace(/[̀-ͯ]/g,'').includes(t);
-    el.style.display=ok?'':'none';if(ok)n++;
-  });
-  const v=$('#vazio');if(v)v.style.display=n?'none':'block';
+  const t=semAcento(q.trim()), itens=$('#itens'), ach=$('#achados');
+  if(!itens||!ach)return;
+  if(!t){itens.style.display='';ach.style.display='none';return;}
+  const grupos=[];
+  for(const [sec,nome,icone] of SECOES){
+    const hits=itensDe(sec).filter(it=>semAcento(it.busca).includes(t));
+    if(hits.length)grupos.push(`<div class="eyebrow" style="margin-top:6px">${nome}</div><div class="list">${hits.map(it=>sec==='glossario'?`<div class="gl"><details open><summary>${esc(it.nome)}${I.chev}</summary><p>${esc(B.glossario[+it.id].def)}</p></details></div>`:linhaItem(sec,it,icone)).join('')}</div>`);
+  }
+  itens.style.display='none';ach.style.display='flex';ach.style.flexDirection='column';ach.style.gap='10px';
+  ach.innerHTML=grupos.length?grupos.join(''):'<p style="color:var(--muted);font-size:14px">Nada encontrado. Tente outra palavra, como "proteção" ou "amor".</p>';
 }
 function telaItem(r){
   const sec=r[1], id=r[2];
-  const voltar=`<button class="back" data-act="voltar">${I.back}Biblioteca</button>`;
+  const voltar=`<button class="back" data-act="voltar" data-v="biblioteca/${esc(sec)}">${I.back}${esc(NOME_SECAO[sec]||'Biblioteca')}</button>`;
+  const praticas=v=>v.praticas?`<div class="card"><div class="eyebrow">Práticas sugeridas</div><ul class="ul">${v.praticas.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:'';
   const tags=t=>`<div class="tags">${t.map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div>`;
   if(sec==='ervas'||sec==='cristais'){
     const v=B[sec].find(x=>x.id===id);if(!v)return telaBiblioteca(['biblioteca',sec]);
@@ -362,13 +391,13 @@ function telaItem(r){
   if(sec==='lua'){
     const v=B.lua[id];if(!v)return telaBiblioteca(['biblioteca',sec]);
     const ilum={nova:0,crescente:.25,'quarto-crescente':.5,'crescente-gibosa':.78,cheia:1,'minguante-gibosa':.78,'quarto-minguante':.5,minguante:.25}[id];
-    return `${voltar}<div style="display:flex;gap:18px;align-items:center">${luaSvg(ilum,CRESCE.has(id),80)}<div><div class="eyebrow">Fase da Lua</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1></div></div>${tags(v.temas)}<div class="card"><p>${esc(v.texto)}</p></div>`;
+    return `${voltar}<div style="display:flex;gap:18px;align-items:center">${luaSvg(ilum,CRESCE.has(id),80)}<div><div class="eyebrow">Fase da Lua</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1></div></div>${tags(v.temas)}<div class="card"><p>${esc(v.texto)}</p></div>${praticas(v)}`;
   }
   if(sec==='sabas'){
     const v=B.sabas[id];if(!v)return telaBiblioteca(['biblioteca',sec]);
     const ano=new Date().getFullYear();
     const datas=['sul','norte'].map(h=>{const x=L.sabas(ano,h).find(s=>s.id===id);return `<dt>Hemisfério ${h}</dt><dd>${dataLonga(x.data)}${x.astronomico?` às ${hora(x.data)}`:''}</dd>`;}).join('');
-    return `${voltar}<div><div class="eyebrow">Roda do Ano</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1><p style="color:var(--muted);margin-top:4px">${esc(v.subtitulo)}</p></div>${tags(v.temas)}<div class="card"><p>${esc(v.texto)}</p></div><div class="card"><div class="eyebrow">Em ${ano}</div><dl class="kv">${datas}</dl></div>
+    return `${voltar}<div><div class="eyebrow">Roda do Ano</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1><p style="color:var(--muted);margin-top:4px">${esc(v.subtitulo)}</p></div>${tags(v.temas)}<div class="card"><p>${esc(v.texto)}</p></div>${praticas(v)}<div class="card"><div class="eyebrow">Em ${ano}</div><dl class="kv">${datas}</dl></div>
     <footer class="note">No hemisfério sul a roda gira ao contrário da europeia, para acompanhar as estações daqui. Os sabás de equinócio e solstício seguem o momento astronômico exato; os outros quatro têm data tradicional.</footer>`;
   }
   if(sec==='dias'){
@@ -379,6 +408,11 @@ function telaItem(r){
     const v=B.elementos.find(x=>x.id===id);if(!v)return telaBiblioteca(['biblioteca',sec]);
     return `${voltar}<div><div class="eyebrow">Elemento</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1></div>${tags(v.temas)}<div class="card"><dl class="kv"><dt>Direção</dt><dd>${esc(v.direcao)}</dd><dt>No altar</dt><dd>${esc(v.instrumentos)}</dd><dt>Signos</dt><dd>${esc(v.signos)}</dd></dl></div><p class="warn">${esc(B.notaElementos)}</p>`;
   }
+  if(sec==='ferramentas'){
+    const v=B.ferramentas.find(x=>x.id===id);if(!v)return telaBiblioteca(['biblioteca',sec]);
+    return `${voltar}<div><div class="eyebrow">Ferramenta do altar</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1><p style="color:var(--muted);margin-top:4px">${esc(v.elemento)}</p></div><div class="card"><div class="eyebrow">Para que serve</div><p>${esc(v.uso)}</p></div><div class="card"><div class="eyebrow">Não tem? Use</div><p>${esc(v.substituto)}</p></div><footer class="note">Nenhuma ferramenta é obrigatória. A intenção vem antes do objeto.</footer>`;
+  }
+  if(sec==='glossario')return telaBiblioteca(['biblioteca','glossario']);
   if(sec==='cores'){
     const v=B.cores[+id];if(!v)return telaBiblioteca(['biblioteca',sec]);
     return `${voltar}<div style="display:flex;gap:16px;align-items:center"><span class="swatch" style="width:64px;height:64px;background:${v.hex}"></span><div><div class="eyebrow">Cor</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1></div></div>${tags(v.temas)}<footer class="note">Na magia de velas, a vela branca pode substituir qualquer outra cor.</footer>`;

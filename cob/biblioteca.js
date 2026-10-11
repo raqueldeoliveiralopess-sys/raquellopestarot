@@ -50,14 +50,14 @@ cristais:[
 
 // Sentido mágico das oito fases (o nome técnico fica no app; aqui os temas de trabalho)
 lua:{
- 'nova':{nome:'Lua Nova',temas:['inícios','plantar intenções','silêncio e recolhimento'],texto:'A Lua não aparece no céu. Tempo de olhar para dentro, escolher o que você quer começar e escrever suas intenções.'},
- 'crescente':{nome:'Lua Crescente',temas:['atrair','dar os primeiros passos','coragem'],texto:'Um fio de luz aparece. Bom para feitiços de atração e para colocar em prática o que foi plantado na Lua Nova.'},
- 'quarto-crescente':{nome:'Quarto Crescente',temas:['ação','persistência','superar obstáculos'],texto:'Metade da Lua iluminada. Momento de agir com firmeza e ajustar o caminho.'},
- 'crescente-gibosa':{nome:'Crescente Gibosa',temas:['refinar','paciência','preparar'],texto:'Quase cheia. Hora de revisar, aperfeiçoar e preparar o que será celebrado na Lua Cheia.'},
- 'cheia':{nome:'Lua Cheia',temas:['plenitude','celebração','gratidão','carregar objetos'],texto:'A Lua inteira iluminada. Tempo de potência, rituais de gratidão, esbás e de deixar cristais e água sob a luz da Lua.'},
- 'minguante-gibosa':{nome:'Minguante Gibosa',temas:['partilhar','agradecer','compreender'],texto:'A luz começa a diminuir. Bom para refletir sobre o que se colheu e partilhar o que aprendeu.'},
- 'quarto-minguante':{nome:'Quarto Minguante',temas:['soltar','limpar','encerrar ciclos'],texto:'Metade da Lua iluminada, agora diminuindo. Tempo de limpeza, banimento e de cortar o que não serve mais.'},
- 'minguante':{nome:'Lua Minguante',temas:['descanso','cura','preparar o recomeço'],texto:'Também chamada de Lua Balsâmica. Um fio de luz antes da escuridão: descanse, cuide de você e prepare o próximo ciclo.'}
+ 'nova':{praticas:['Escrever as intenções do ciclo numa folha e guardar no altar','Banho de limpeza com sal grosso e alecrim','Meditação em silêncio, de preferência com a casa escura'],nome:'Lua Nova',temas:['inícios','plantar intenções','silêncio e recolhimento'],texto:'A Lua não aparece no céu. Tempo de olhar para dentro, escolher o que você quer começar e escrever suas intenções.'},
+ 'crescente':{praticas:['Acender uma vela verde ou dourada pela intenção plantada','Plantar uma semente ou regar uma planta como gesto de atração','Dar o primeiro passo concreto do que foi pedido na Lua Nova'],nome:'Lua Crescente',temas:['atrair','dar os primeiros passos','coragem'],texto:'Um fio de luz aparece. Bom para feitiços de atração e para colocar em prática o que foi plantado na Lua Nova.'},
+ 'quarto-crescente':{praticas:['Revisar o que travou e ajustar o plano','Feitiço de coragem com cornalina ou vela laranja','Sachê de manjericão e louro na bolsa ou na carteira'],nome:'Quarto Crescente',temas:['ação','persistência','superar obstáculos'],texto:'Metade da Lua iluminada. Momento de agir com firmeza e ajustar o caminho.'},
+ 'crescente-gibosa':{praticas:['Limpar e organizar o altar para a Lua Cheia','Chá de camomila ou melissa e um diário do que já mudou','Preparar a água ou os cristais que serão carregados na Cheia'],nome:'Crescente Gibosa',temas:['refinar','paciência','preparar'],texto:'Quase cheia. Hora de revisar, aperfeiçoar e preparar o que será celebrado na Lua Cheia.'},
+ 'cheia':{praticas:['Deixar cristais e um jarro de água sob a luz da Lua (menos a selenita)','Ritual de gratidão: escrever três coisas que floresceram','Esbá: acender uma vela branca ou prata e consagrar objetos novos'],nome:'Lua Cheia',temas:['plenitude','celebração','gratidão','carregar objetos'],texto:'A Lua inteira iluminada. Tempo de potência, rituais de gratidão, esbás e de deixar cristais e água sob a luz da Lua.'},
+ 'minguante-gibosa':{praticas:['Partilhar o que aprendeu com alguém','Agradecer por escrito o que foi recebido','Começar a listar o que precisa sair da sua vida'],nome:'Minguante Gibosa',temas:['partilhar','agradecer','compreender'],texto:'A luz começa a diminuir. Bom para refletir sobre o que se colheu e partilhar o que aprendeu.'},
+ 'quarto-minguante':{praticas:['Banho de descarrego do pescoço para baixo com arruda ou guiné','Defumação da casa com sálvia ou alecrim','Queimar a folha com o que você quer cortar, em local seguro'],nome:'Quarto Minguante',temas:['soltar','limpar','encerrar ciclos'],texto:'Metade da Lua iluminada, agora diminuindo. Tempo de limpeza, banimento e de cortar o que não serve mais.'},
+ 'minguante':{praticas:['Descansar: é a fase de não fazer feitiço nenhum','Banho morno com lavanda e um sono cedo','Reler o diário do ciclo e preparar as intenções da próxima Nova'],nome:'Lua Minguante',temas:['descanso','cura','preparar o recomeço'],texto:'Também chamada de Lua Balsâmica. Um fio de luz antes da escuridão: descanse, cuide de você e prepare o próximo ciclo.'}
 },
 
 dias:[
@@ -94,13 +94,54 @@ cores:[
 ],
 
 sabas:{
- samhain:{nome:'Samhain',subtitulo:'Ano-novo das bruxas(os)',temas:['ancestrais','fim de ciclo','o véu entre os mundos'],texto:'Fim da colheita e início do ano mágico. Tempo de honrar quem veio antes de você, olhar para a morte como parte do ciclo e soltar o que terminou.'},
- yule:{nome:'Yule',subtitulo:'Solstício de inverno',temas:['renascimento da luz','esperança','recolhimento'],texto:'A noite mais longa do ano. A partir daqui, os dias voltam a crescer: celebra-se o retorno do sol com velas, sempre-vivas e esperança.'},
- imbolc:{nome:'Imbolc',subtitulo:'Despertar da terra',temas:['purificação','inspiração','novos projetos'],texto:'O inverno começa a ceder. Festa ligada à deusa Brigid: velas, limpeza da casa e intenções para o que vai brotar.'},
- ostara:{nome:'Ostara',subtitulo:'Equinócio de primavera',temas:['equilíbrio','fertilidade','renovação'],texto:'Dia e noite do mesmo tamanho. A vida desperta: sementes, ovos, flores e o equilíbrio entre luz e sombra.'},
- beltane:{nome:'Beltane',subtitulo:'Festa do fogo e das flores',temas:['união','prazer','vitalidade'],texto:'O auge da primavera. Celebra a fertilidade, o amor e a alegria de estar vivo(a), com fogueiras, flores e danças.'},
- litha:{nome:'Litha',subtitulo:'Solstício de verão',temas:['plenitude','força','abundância'],texto:'O dia mais longo do ano, o sol no seu auge. Tempo de celebrar a força, colher ervas e agradecer o que floresceu.'},
- lammas:{nome:'Lammas',subtitulo:'Lughnasadh, a primeira colheita',temas:['gratidão','colheita','partilha'],texto:'Festa dos grãos e do pão. Agradecer pelo que já foi colhido e partilhar a abundância.'},
- mabon:{nome:'Mabon',subtitulo:'Equinócio de outono',temas:['equilíbrio','gratidão','preparar o recolhimento'],texto:'De novo, dia e noite iguais. Segunda colheita: tempo de agradecer, fazer balanço e se preparar para os dias mais curtos.'}
-}
+ samhain:{praticas:['Montar um altar com fotos de quem já partiu e uma vela acesa por eles','Jantar silencioso ou um prato a mais na mesa para os ancestrais','Escrever o que terminou no ano e queimar com gratidão'],nome:'Samhain',subtitulo:'Ano-novo das bruxas(os)',temas:['ancestrais','fim de ciclo','o véu entre os mundos'],texto:'Fim da colheita e início do ano mágico. Tempo de honrar quem veio antes de você, olhar para a morte como parte do ciclo e soltar o que terminou.'},
+ yule:{praticas:['Acender velas ao anoitecer para chamar o sol de volta','Decorar a casa com ramos sempre-vivos, pinhas e laranjas','Noite de descanso, chá quente e intenções para a luz que volta'],nome:'Yule',subtitulo:'Solstício de inverno',temas:['renascimento da luz','esperança','recolhimento'],texto:'A noite mais longa do ano. A partir daqui, os dias voltam a crescer: celebra-se o retorno do sol com velas, sempre-vivas e esperança.'},
+ imbolc:{praticas:['Faxina da casa e do altar, janelas abertas','Acender velas brancas no entardecer','Plantar uma intenção do que vai brotar no ano'],nome:'Imbolc',subtitulo:'Despertar da terra',temas:['purificação','inspiração','novos projetos'],texto:'O inverno começa a ceder. Festa ligada à deusa Brigid: velas, limpeza da casa e intenções para o que vai brotar.'},
+ ostara:{praticas:['Pintar ovos e decorar o altar com flores da estação','Plantar sementes ou mudas','Equilibrar: anotar o que pede luz e o que pede sombra em você'],nome:'Ostara',subtitulo:'Equinócio de primavera',temas:['equilíbrio','fertilidade','renovação'],texto:'Dia e noite do mesmo tamanho. A vida desperta: sementes, ovos, flores e o equilíbrio entre luz e sombra.'},
+ beltane:{praticas:['Coroa ou vaso de flores na porta de casa','Fogueira (ou uma vela vermelha) para celebrar a vitalidade','Dançar, cantar, cozinhar com flores e frutas da estação'],nome:'Beltane',subtitulo:'Festa do fogo e das flores',temas:['união','prazer','vitalidade'],texto:'O auge da primavera. Celebra a fertilidade, o amor e a alegria de estar vivo(a), com fogueiras, flores e danças.'},
+ litha:{praticas:['Colher e secar ervas: é o auge da força delas','Acordar para ver o nascer do sol','Banho de ervas solares: alecrim, calêndula, louro'],nome:'Litha',subtitulo:'Solstício de verão',temas:['plenitude','força','abundância'],texto:'O dia mais longo do ano, o sol no seu auge. Tempo de celebrar a força, colher ervas e agradecer o que floresceu.'},
+ lammas:{praticas:['Assar um pão e partilhar','Agradecer por escrito as primeiras colheitas do ano','Trançar espigas ou palha para o altar'],nome:'Lammas',subtitulo:'Lughnasadh, a primeira colheita',temas:['gratidão','colheita','partilha'],texto:'Festa dos grãos e do pão. Agradecer pelo que já foi colhido e partilhar a abundância.'},
+ mabon:{praticas:['Mesa de gratidão com frutas, maçãs e vinho ou suco de uva','Balanço do ano: o que foi colhido, o que ficou pelo caminho','Guardar sementes e preparar a casa para os dias curtos'],nome:'Mabon',subtitulo:'Equinócio de outono',temas:['equilíbrio','gratidão','preparar o recolhimento'],texto:'De novo, dia e noite iguais. Segunda colheita: tempo de agradecer, fazer balanço e se preparar para os dias mais curtos.'}
+},
+
+ferramentas:[
+ {id:'athame',nome:'Athame',elemento:'Fogo (ou Ar, em algumas tradições)',uso:'Faca ritual, geralmente de cabo preto e sem fio. Direciona energia: traça o círculo, consagra, corta laços simbólicos. Não corta nada físico.',substituto:'O dedo indicador ou uma varinha.'},
+ {id:'varinha',nome:'Varinha',elemento:'Ar (ou Fogo)',uso:'Canaliza intenção e convida energias. Tradicionalmente feita de madeira colhida com permissão e do tamanho do antebraço.',substituto:'Um galho seco encontrado no chão, lixado e untado com óleo.'},
+ {id:'calice',nome:'Cálice',elemento:'Água',uso:'Guarda a água, o vinho ou o suco da oferenda. Representa o ventre, a receptividade e o feminino sagrado.',substituto:'Qualquer taça ou copo bonito reservado só para o altar.'},
+ {id:'pentaculo',nome:'Pentáculo',elemento:'Terra',uso:'Disco com a estrela de cinco pontas: os quatro elementos mais o espírito. Serve de base para consagrar e carregar objetos e de proteção do altar.',substituto:'Desenhar o pentagrama num prato, numa pedra ou numa madeira.'},
+ {id:'caldeirao',nome:'Caldeirão',elemento:'Água e Fogo',uso:'Transformação: nele se queimam papéis, se misturam ervas, se faz infusão e se recolhe cinza. Símbolo da deusa e do renascimento.',substituto:'Uma panela de ferro pequena ou uma tigela de cerâmica à prova de fogo.'},
+ {id:'vassoura',nome:'Vassoura (besom)',elemento:'Ar',uso:'Limpa a energia do espaço antes do ritual, varrendo o ar sem encostar no chão. Atrás da porta, protege a casa.',substituto:'Um ramo de alecrim ou de arruda amarrado com fita.'},
+ {id:'bolline',nome:'Bolline',elemento:'Terra',uso:'Faca de cabo branco e com fio, para o trabalho prático: colher ervas, cortar cordões, entalhar velas.',substituto:'Um canivete ou uma faca pequena reservada para isso.'},
+ {id:'velas',nome:'Velas',elemento:'Fogo',uso:'Representam o elemento Fogo e carregam a intenção pela cor. Entalhar o pedido na cera e untar com óleo é um feitiço completo.',substituto:'Vela branca substitui qualquer cor.'},
+ {id:'incensario',nome:'Incensário ou turíbulo',elemento:'Ar',uso:'Queima incensos, resinas e ervas no carvão. A fumaça leva o pedido e limpa o ambiente.',substituto:'Uma tigela com areia ou sal grosso.'},
+ {id:'sino',nome:'Sino',elemento:'Ar',uso:'Abre e fecha o ritual, afasta energias paradas e marca os momentos de passagem.',substituto:'Bater duas vezes numa taça ou palmas.'},
+ {id:'livro',nome:'Livro das Sombras',elemento:'Espírito',uso:'O caderno pessoal da bruxa(o): feitiços, receitas, registros de lua, o que deu certo e o que não deu. É o grimório vivo de cada praticante.',substituto:'Qualquer caderno. O app serve como apoio, mas o papel continua insubstituível.'}
+],
+
+glossario:[
+ {termo:'Altar',def:'Espaço sagrado de trabalho: uma mesa, prateleira ou bandeja com os símbolos dos elementos e as ferramentas. Não precisa ser grande nem fixo.'},
+ {termo:'Aterramento',def:'Prática de voltar o foco ao corpo e ao chão depois de meditar ou fazer ritual: pés descalços na terra, comer algo, segurar uma pedra escura.'},
+ {termo:'Banimento',def:'Trabalho para afastar ou encerrar algo: um hábito, uma energia pesada, uma situação. Costuma ser feito na Lua Minguante.'},
+ {termo:'Círculo mágico',def:'Limite traçado antes do ritual (com o athame, a varinha, sal ou só a intenção) para proteger e concentrar a energia. Abre-se no início e fecha-se no fim.'},
+ {termo:'Consagrar',def:'Dedicar um objeto ao uso ritual, limpando-o e apresentando-o aos quatro elementos ou à divindade com que você trabalha.'},
+ {termo:'Correspondência',def:'Relação simbólica entre uma coisa e uma intenção: a cor verde e a prosperidade, o alecrim e a proteção, a sexta-feira e o amor.'},
+ {termo:'Coven',def:'Grupo fechado de praticantes que celebra junto. Quem pratica sozinha(o) é chamada(o) de solitária(o).'},
+ {termo:'Defumação',def:'Queima de ervas ou resinas para limpar um ambiente, uma pessoa ou um objeto com a fumaça.'},
+ {termo:'Deosil e widdershins',def:'Deosil: no sentido do sol (horário no hemisfério norte), para atrair e construir. Widdershins: contra o sol, para banir e desfazer. No hemisfério sul, o sol gira no sentido anti-horário, e muitas bruxas(os) invertem.'},
+ {termo:'Esbá',def:'Celebração da Lua Cheia (em algumas tradições, de qualquer fase). Momento de ritual, consagração e carregamento de objetos.'},
+ {termo:'Familiar',def:'Animal companheiro de magia, na tradição. Hoje, o bicho de estimação que se deita no altar sem ninguém chamar.'},
+ {termo:'Feitiço',def:'Ação ritual com intenção definida: velas, ervas, palavras, gestos. É uma oração em forma de trabalho.'},
+ {termo:'Grimório',def:'Livro de magia com feitiços, correspondências e instruções. O Livro das Sombras é o grimório pessoal.'},
+ {termo:'Intenção',def:'O pedido claro por trás de todo trabalho mágico. Sem intenção definida, o feitiço não tem direção.'},
+ {termo:'Lua Negra',def:'Nome dado à segunda Lua Nova dentro de um mesmo mês. Pela raridade, costuma ser usada para trabalhos de recomeço profundo.'},
+ {termo:'Lua Azul',def:'Segunda Lua Cheia no mesmo mês (ou a terceira de uma estação com quatro). Vale como uma Lua Cheia extra, de potência redobrada.'},
+ {termo:'Oráculo',def:'Ferramenta de consulta e reflexão: tarot, runas, pêndulo, baralho cigano. No COB, usamos como espelho, não como previsão.'},
+ {termo:'Pentagrama e pentáculo',def:'Pentagrama é a estrela de cinco pontas; pentáculo é a estrela dentro do círculo, ou o disco do altar que a carrega. Com a ponta para cima, é símbolo de proteção e equilíbrio.'},
+ {termo:'Roda do Ano',def:'O calendário dos oito sabás, que acompanha as estações: dois solstícios, dois equinócios e quatro festas de meio de estação.'},
+ {termo:'Sabá',def:'Cada uma das oito festas da Roda do Ano. Celebram o sol e as estações; os esbás celebram a Lua.'},
+ {termo:'Sigilo',def:'Símbolo criado a partir de uma intenção (em geral, das letras de uma frase) e carregado com energia. Depois, costuma-se esquecer o significado para ele trabalhar sozinho.'},
+ {termo:'Solitária(o)',def:'Quem pratica sem coven, no próprio ritmo. A maior parte das bruxas(os) de hoje.'},
+ {termo:'Wicca',def:'Religião neopagã estruturada por Gerald Gardner na Inglaterra dos anos 1950, com deus e deusa, Roda do Ano e covens. Nem toda bruxaria é Wicca.'},
+ {termo:'Bruxaria tradicional',def:'Nome geral para práticas que não seguem a estrutura wiccana: magia popular, benzeduras, feitiçaria regional e caminhos ancestrais.'}
+]
 };
