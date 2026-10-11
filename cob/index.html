@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>COB · Curso Online de Bruxaria</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="App das alunas do Curso Online de Bruxaria da Raquel Lopes: aulas, biblioteca de bruxa e calendário lunar.">
+<meta name="theme-color" content="#431E3D">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@400;500;600&display=swap">
+<style>
+:root{--paper:#F4ECE1;--card:#FFFDF9;--line:#E2D3C2;--ink:#402327;--ink2:#5E4038;--muted:#7A5A4E;--plum:#431E3D;--plum2:#5A2A52;--wood:#593122;--caramel:#AD7E62;--pink:#F4B1C8;--butter:#ECDF90;--sand:#EDE1D2;--night:#2A1619;--moonlit:#F3E7C4;--moondark:#4A3340}
+@media (prefers-color-scheme:dark){:root{--paper:#171013;--card:#221A1D;--line:#3A2C31;--ink:#F4ECE1;--ink2:#E2D3C8;--muted:#B8A096;--sand:#2E2327;--plum:#E3B6D6;--plum2:#F0CBE4;--night:#0F0A0C;--moondark:#3A2A33}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:'Jost',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;color:inherit}
+h1,h2,h3,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;margin:0;line-height:1.1}
+p{margin:0;line-height:1.6}
+a{color:var(--plum)}
+#app{min-height:100dvh;display:flex;flex-direction:column;max-width:760px;margin:0 auto}
+main{flex:1;padding:20px 18px 28px;display:flex;flex-direction:column;gap:18px}
+nav{position:sticky;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--card);padding:6px 8px calc(10px + env(safe-area-inset-bottom,0px));z-index:5}
+nav button{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:52px;padding:6px 0;border:none;background:transparent;color:var(--muted);font-size:11px;font-weight:500}
+nav button svg{width:22px;height:22px}
+nav button.on{color:var(--plum);font-weight:600}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.h1{font-size:34px}
+.h2{font-size:26px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.night{background:var(--night);background-image:radial-gradient(circle at 80% 0%,rgba(244,177,200,.18),transparent 55%);color:#F4ECE1;border:none;border-radius:22px;padding:20px;display:flex;gap:18px;align-items:center}
+.night .eyebrow{color:var(--pink)}
+.night p{color:#E6D8CA}
+.btn{min-height:50px;border:none;border-radius:14px;background:var(--plum);color:#FFFDF9;font-size:15px;font-weight:600;padding:0 18px;width:100%}
+@media (prefers-color-scheme:dark){.btn{color:#2A1619}}
+.btn.ghost{background:transparent;color:var(--plum);border:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:64px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-align:left;width:100%}
+.row .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.row .n{font-size:16px;font-weight:600}
+.row .s{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .ic{width:42px;height:42px;border-radius:12px;background:var(--sand);display:flex;align-items:center;justify-content:center;color:var(--plum);flex-shrink:0}
+.row .ic svg{width:20px;height:20px}
+.chev{width:18px;height:18px;color:var(--muted);flex-shrink:0}
+.pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -18px;padding:0 18px}
+.pills::-webkit-scrollbar{display:none}
+.pill{min-height:40px;padding:8px 14px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:13px;font-weight:500;white-space:nowrap}
+.pill.on{border-color:var(--plum);background:var(--plum);color:#FFFDF9;font-weight:600}
+@media (prefers-color-scheme:dark){.pill.on{color:#2A1619}}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{padding:5px 10px;border-radius:99px;background:var(--sand);color:var(--ink2);font-size:12.5px}
+.list{display:flex;flex-direction:column;gap:10px}
+.kv{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14.5px}
+.kv dt{color:var(--muted)}.kv dd{margin:0;font-weight:500}
+.warn{border-left:3px solid var(--caramel);background:var(--sand);padding:10px 12px;border-radius:0 12px 12px 0;font-size:14px;color:var(--ink2)}
+.back{display:inline-flex;align-items:center;gap:6px;border:none;background:none;padding:4px 0;color:var(--muted);font-size:14px;min-height:40px}
+.back svg{width:18px;height:18px}
+.search{width:100%;min-height:46px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:0 14px;font:inherit;font-size:15px}
+.bar{height:6px;border-radius:99px;background:var(--sand);overflow:hidden}.bar i{display:block;height:100%;background:var(--plum);border-radius:99px}
+.video{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:var(--night)}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.soon{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#E6D8CA;height:100%;text-align:center;padding:16px}
+textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:12px 14px;font:inherit;font-size:15px;line-height:1.5;resize:vertical}
+.done{display:inline-flex;align-items:center;gap:6px;color:#3F6E4A;font-weight:600;font-size:13px}
+@media (prefers-color-scheme:dark){.done{color:#9CCB9F}}
+.moon{flex-shrink:0;display:block}
+/* calendário */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .wd{font-size:11px;text-align:center;color:var(--muted);font-weight:600;padding:4px 0}
+.cal button{position:relative;aspect-ratio:1/1.12;border:1px solid transparent;border-radius:12px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;padding:6px 0 0;font-size:14px;font-weight:500}
+.cal button.out{visibility:hidden}
+.cal button.hoje{border-color:var(--plum)}
+.cal button.sel{background:var(--plum);color:#FFFDF9}
+@media (prefers-color-scheme:dark){.cal button.sel{color:#2A1619}}
+.cal button .dot{position:absolute;bottom:6px;width:6px;height:6px;border-radius:50%;background:var(--caramel)}
+.calhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.calhead button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center}
+.calhead button svg{width:18px;height:18px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--muted);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);flex-shrink:0}
+footer.note{font-size:12.5px;color:var(--muted);line-height:1.6}
+@media (min-width:900px){
+  #app{max-width:1080px;flex-direction:row}
+  nav{order:-1;position:sticky;top:0;height:100dvh;display:flex;flex-direction:column;gap:6px;width:220px;border-top:none;border-right:1px solid var(--line);padding:28px 14px;justify-content:flex-start}
+  nav::before{content:'COB';font-family:'Cormorant Garamond',Georgia,serif;font-size:30px;font-weight:700;color:var(--plum);padding:0 12px 18px}
+  nav button{flex-direction:row;justify-content:flex-start;gap:12px;padding:10px 12px;border-radius:12px;font-size:15px;min-height:46px}
+  nav button.on{background:var(--sand)}
+  main{padding:36px 40px 48px;max-width:820px}
+  .h1{font-size:42px}
+  .cal button{aspect-ratio:auto;height:68px}
+}
+</style>
+</head>
+<body>
+<div id="app"><main id="main"></main><nav id="nav"></nav></div>
+<script src="lua.js?v=1"></script>
+<script src="biblioteca.js?v=1"></script>
+<script src="aulas.js?v=1"></script>
+<script>
+(function(){
+const B=window.BIBLIOTECA, A=window.AULAS, L=window.LUA;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// ---------- estado salvo no aparelho ----------
+let S={feitas:{},notas:{},hemisferio:'sul'};
+try{Object.assign(S,JSON.parse(localStorage.getItem('cob')||'{}'));}catch(e){}
+const salvar=()=>{try{localStorage.setItem('cob',JSON.stringify(S));}catch(e){}};
+
+// ---------- ícones ----------
+const ic=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const I={
+  hoje:ic('<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>'),
+  aulas:ic('<path d="M4 19.5A2.5 2.5 0 016.5 17H20V3H6.5A2.5 2.5 0 004 5.5z"/><path d="M4 19.5A2.5 2.5 0 006.5 22H20v-5"/>'),
+  bib:ic('<path d="M12 22c-4-3-7-6.5-7-11a7 7 0 0114 0c0 4.5-3 8-7 11z"/><path d="M12 11V6M12 11l-3 3M12 11l3 3"/>'),
+  lua:ic('<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>'),
+  chev:ic('<path d="M9 6l6 6-6 6"/>'),
+  back:ic('<path d="M15 6l-6 6 6 6"/>'),
+  play:ic('<circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4z"/>'),
+  file:ic('<path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6"/>'),
+  check:ic('<path d="M5 12.5l4.5 4.5L19 7"/>'),
+  erva:ic('<path d="M5 21c0-9 5-14 14-16-1 9-6 14-14 16z"/><path d="M5 21l8-8"/>'),
+  cristal:ic('<path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M12 21L8 9l4-6 4 6z"/>'),
+  sol:ic('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
+  roda:ic('<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/>'),
+  elem:ic('<path d="M12 3l9 16H3z"/>'),
+  cor:ic('<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 000 18"/>')
+};
+
+// ---------- desenho da Lua ----------
+// ilum: fração iluminada (0 a 1); crescendo: true entre a Nova e a Cheia
+function luaSvg(ilum,crescendo,tam){
+  const r=48;
+  let lit='';
+  if(ilum>0.985)lit=`<circle r="${r}" fill="var(--moonlit)"/>`;
+  else if(ilum>0.015){
+    const rx=Math.abs(1-2*ilum)*r;
+    const inner=ilum<0.5?0:1;
+    // no hemisfério norte a Lua crescente acende pela direita; no sul, pela esquerda
+    let dir=crescendo?1:-1; if(S.hemisferio!=='norte')dir=-dir;
+    lit=`<path transform="scale(${dir},1)" d="M0,-${r} A${r},${r} 0 0 1 0,${r} A${rx.toFixed(2)},${r} 0 0 ${inner} 0,-${r}Z" fill="var(--moonlit)"/>`;
+  }
+  return `<svg class="moon" width="${tam}" height="${tam}" viewBox="-50 -50 100 100" aria-hidden="true"><circle r="48" fill="var(--moondark)"/>${lit}<circle r="48" fill="none" stroke="rgba(243,231,196,.35)" stroke-width="1.5"/></svg>`;
+}
+const CRESCE=new Set(['nova','crescente','quarto-crescente','crescente-gibosa']);
+function luaDoDia(d){
+  const f=L.faseDoDia(d);
+  const ilumFase={nova:0,'quarto-crescente':0.5,cheia:1,'quarto-minguante':0.5};
+  // fora do dia exato da Nova, mantém um fio de luz visível no desenho
+  const ilum=f.exata?ilumFase[f.fase]:Math.max(f.ilum,0.07);
+  const crescendo=f.idade<14.765;
+  const ilumReal=f.exata?ilumFase[f.fase]:f.ilum;
+  return {...f,ilum,ilumReal,crescendo,info:B.lua[f.fase]};
+}
+
+// ---------- datas ----------
+const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const dataLonga=d=>`${d.getDate()} de ${MESES[d.getMonth()]}`;
+const hora=d=>d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+const inicioDia=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
+const diasAte=d=>Math.round((inicioDia(d)-inicioDia(new Date()))/86400000);
+const quando=n=>n===0?'hoje':n===1?'amanhã':`em ${n} dias`;
+
+// ---------- navegação por endereço (#/…) ----------
+const TABS=[['hoje','Hoje',I.hoje],['aulas','Aulas',I.aulas],['biblioteca','Biblioteca',I.bib],['lua','Lua',I.lua]];
+function rota(){return (location.hash.replace(/^#\/?/,'')||'hoje').split('/');}
+function ir(h){location.hash='#/'+h;}
+window.addEventListener('hashchange',render);
+
+function render(){
+  const r=rota(), tab=r[0]==='aula'?'aulas':r[0]==='item'?'biblioteca':r[0];
+  $('#nav').innerHTML=TABS.map(([id,nome,svg])=>`<button data-go="${id}" class="${tab===id?'on':''}" aria-label="${nome}">${svg}<span>${nome}</span></button>`).join('');
+  const telas={hoje:telaHoje,aulas:telaAulas,aula:telaAula,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua};
+  $('#main').innerHTML=(telas[r[0]]||telaHoje)(r);
+  window.scrollTo(0,0);
+}
+
+document.addEventListener('click',e=>{
+  const go=e.target.closest('[data-go]');if(go){ir(go.dataset.go);return;}
+  const act=e.target.closest('[data-act]');if(!act)return;
+  const a=act.dataset.act, v=act.dataset.v;
+  if(a==='voltar')history.length>1?history.back():ir('hoje');
+  if(a==='feita'){S.feitas[v]=!S.feitas[v];salvar();render();}
+  if(a==='hemi'){S.hemisferio=v;salvar();render();}
+  if(a==='mes'){ir('lua/'+v);}
+  if(a==='dia'){const r=rota();ir(`lua/${r[1]||''}/${v}`);}
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='notas'){S.notas[e.target.dataset.v]=e.target.value;salvar();}
+  if(e.target.id==='busca'){filtrar(e.target.value);}
+});
+
+// ---------- tela Hoje ----------
+function proximaAula(){
+  for(const m of A.modulos)for(const a of m.aulas)if(!S.feitas[a.id])return {m,a};
+  return null;
+}
+function telaHoje(){
+  const agora=new Date(), lua=luaDoDia(agora);
+  const saba=L.proximoSaba(agora,S.hemisferio), sb=B.sabas[saba.id];
+  const dia=B.dias[agora.getDay()];
+  const doy=Math.floor((inicioDia(agora)-new Date(agora.getFullYear(),0,0))/86400000);
+  const erva=B.ervas[doy%B.ervas.length];
+  const prox=proximaAula();
+  const h=agora.getHours(), saud=h<5?'Boa noite':h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
+  const px=lua.proxima;
+  return `
+  <div><div class="eyebrow">${esc(dia.nome)}, ${dataLonga(agora)}</div><h1 class="h1" style="margin-top:6px">${saud}, bruxa.</h1></div>
+  <button class="night" data-go="lua" style="text-align:left;width:100%">
+    ${luaSvg(lua.ilum,lua.crescendo,84)}
+    <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+      <div class="eyebrow">Lua de hoje</div>
+      <div class="serif" style="font-size:26px">${esc(lua.info.nome)}</div>
+      <p style="font-size:14px">${Math.round(lua.ilumReal*100)}% iluminada · bom para ${esc(lua.info.temas.slice(0,2).join(' e '))}</p>
+      ${px?`<p style="font-size:13px;opacity:.8">${esc(B.lua[px.fase].nome)} ${quando(diasAte(px.data))}, ${dataLonga(px.data)} às ${hora(px.data)}</p>`:''}
+    </div>
+  </button>
+  <div class="card">
+    <div class="eyebrow">Próximo sabá</div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 class="h2">${esc(sb.nome)}</h2><span class="tag">${quando(diasAte(saba.data))} · ${dataLonga(saba.data)}</span></div>
+    <p style="font-size:14.5px;color:var(--ink2)">${esc(sb.subtitulo)}. ${esc(sb.texto)}</p>
+  </div>
+  ${prox?`<div class="card">
+    <div class="eyebrow">Continue o curso</div>
+    <h2 class="h2">${esc(prox.a.titulo)}</h2>
+    <p style="font-size:14px;color:var(--muted)">${esc(prox.m.titulo)}</p>
+    <button class="btn" data-go="aula/${prox.a.id}">Abrir aula</button>
+  </div>`:`<div class="card"><div class="eyebrow">Curso</div><p>Você concluiu todas as aulas publicadas. As próximas aparecem aqui assim que saírem.</p></div>`}
+  <div class="card">
+    <div class="eyebrow">Hoje é dia de ${esc(dia.planeta)}</div>
+    <p style="font-size:15px">Bom para <b>${esc(dia.temas.join(', '))}</b>. Cores do dia: ${esc(dia.cores.join(' e '))}.</p>
+  </div>
+  <button class="row" data-go="item/ervas/${erva.id}">
+    <span class="ic">${I.erva}</span>
+    <span class="t"><span class="s" style="font-size:12px;letter-spacing:.12em;text-transform:uppercase">Erva do dia</span><span class="n">${esc(erva.nome)}</span><span class="s">${esc(erva.temas.join(' · '))}</span></span>
+    <span class="chev">${I.chev}</span>
+  </button>`;
+}
+
+// ---------- Aulas ----------
+function totais(){let t=0,f=0;for(const m of A.modulos)for(const a of m.aulas){t++;if(S.feitas[a.id])f++;}return {t,f};}
+function telaAulas(){
+  const {t,f}=totais();
+  return `
+  <div><div class="eyebrow">${esc(A.curso)}</div><h1 class="h1" style="margin-top:6px">Aulas</h1></div>
+  <div class="card"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${f} de ${t} aula${t===1?'':'s'} concluída${t===1?'':'s'}</span><b>${t?Math.round(f/t*100):0}%</b></div><div class="bar"><i style="width:${t?f/t*100:0}%"></i></div></div>
+  ${A.modulos.map(m=>`
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div><h2 class="h2">${esc(m.titulo)}</h2>${m.descricao?`<p style="font-size:14px;color:var(--muted);margin-top:4px">${esc(m.descricao)}</p>`:''}</div>
+      <div class="list">${m.aulas.map((a,i)=>`
+        <button class="row" data-go="aula/${a.id}">
+          <span class="ic">${S.feitas[a.id]?I.check:I.play}</span>
+          <span class="t"><span class="n">${esc(a.titulo)}</span><span class="s">${S.feitas[a.id]?'Concluída':a.video?(a.duracao||'Assistir'):'Em breve'}</span></span>
+          <span class="chev">${I.chev}</span>
+        </button>`).join('')}</div>
+    </div>`).join('')}
+  <footer class="note">Novas aulas aparecem aqui conforme forem liberadas.</footer>`;
+}
+function embed(url){
+  if(!url)return '';
+  let m;
+  if((m=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/)))return `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0`;
+  if((m=url.match(/vimeo\.com\/(?:video\/)?(\d+)/)))return `https://player.vimeo.com/video/${m[1]}`;
+  if(/pandavideo/.test(url))return url;
+  return '';
+}
+function acharAula(id){for(const m of A.modulos){const a=m.aulas.find(x=>x.id===id);if(a)return {m,a};}return null;}
+function telaAula(r){
+  const x=acharAula(r[1]);if(!x)return telaAulas();
+  const {m,a}=x, src=embed(a.video);
+  return `
+  <button class="back" data-act="voltar">${I.back}Aulas</button>
+  <div><div class="eyebrow">${esc(m.titulo)}</div><h1 class="h1" style="margin-top:6px">${esc(a.titulo)}</h1></div>
+  <div class="video">${src?`<iframe src="${esc(src)}" title="${esc(a.titulo)}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen loading="lazy"></iframe>`
+    :a.video?`<div class="soon"><a class="btn" style="max-width:240px;display:flex;align-items:center;justify-content:center;text-decoration:none" href="${esc(a.video)}" target="_blank" rel="noopener">Assistir a aula</a></div>`
+    :`<div class="soon">${luaSvg(0.3,true,56)}<b class="serif" style="font-size:22px">Vídeo em breve</b><span style="font-size:13px">A aula será liberada aqui.</span></div>`}</div>
+  <p style="font-size:16px;color:var(--ink2)">${esc(a.resumo)}</p>
+  ${a.materiais&&a.materiais.length?`<div style="display:flex;flex-direction:column;gap:10px"><div class="eyebrow">Materiais da aula</div>${a.materiais.map(mt=>`
+    <a class="row" href="${esc(mt.url)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="ic">${I.file}</span><span class="t"><span class="n">${esc(mt.nome)}</span><span class="s">Abrir</span></span><span class="chev">${I.chev}</span></a>`).join('')}</div>`:''}
+  <div style="display:flex;flex-direction:column;gap:8px"><label class="eyebrow" for="notas">Minhas anotações</label>
+  <textarea id="notas" data-v="${a.id}" placeholder="Anote o que mais te marcou nesta aula. Fica salvo neste aparelho.">${esc(S.notas[a.id]||'')}</textarea></div>
+  <button class="btn ${S.feitas[a.id]?'ghost':''}" data-act="feita" data-v="${a.id}">${S.feitas[a.id]?'Marcar como não concluída':'Marcar como concluída'}</button>`;
+}
+
+// ---------- Biblioteca ----------
+const SECOES=[['ervas','Ervas',I.erva],['cristais','Cristais',I.cristal],['lua','Fases da Lua',I.lua],['sabas','Roda do Ano',I.roda],['dias','Dias da semana',I.sol],['elementos','Elementos',I.elem],['cores','Cores',I.cor]];
+function itensDe(sec){
+  if(sec==='lua')return Object.entries(B.lua).map(([id,v])=>({id,nome:v.nome,sub:v.temas.join(' · '),busca:v.nome+' '+v.temas.join(' ')}));
+  if(sec==='sabas')return Object.entries(B.sabas).map(([id,v])=>({id,nome:v.nome,sub:v.subtitulo,busca:v.nome+' '+v.subtitulo+' '+v.temas.join(' ')}));
+  if(sec==='dias')return B.dias.map(v=>({id:String(v.dia),nome:v.nome,sub:v.planeta+' · '+v.temas.join(', '),busca:v.nome+' '+v.planeta+' '+v.temas.join(' ')}));
+  if(sec==='cores')return B.cores.map((v,i)=>({id:String(i),nome:v.nome,sub:v.temas.join(' · '),hex:v.hex,busca:v.nome+' '+v.temas.join(' ')}));
+  return B[sec].map(v=>({id:v.id,nome:v.nome,sub:(v.temas||[]).join(' · '),busca:[v.nome,v.cientifico,v.elemento,v.planeta,v.cor,(v.temas||[]).join(' ')].join(' ')}));
+}
+function telaBiblioteca(r){
+  const sec=r[1]&&SECOES.some(s=>s[0]===r[1])?r[1]:'ervas';
+  const icone=SECOES.find(s=>s[0]===sec)[2];
+  return `
+  <div><div class="eyebrow">Consulta rápida</div><h1 class="h1" style="margin-top:6px">Biblioteca</h1></div>
+  <div class="pills">${SECOES.map(([id,nome])=>`<button class="pill ${id===sec?'on':''}" data-go="biblioteca/${id}">${nome}</button>`).join('')}</div>
+  <input id="busca" class="search" type="search" placeholder="Buscar por nome ou intenção (ex.: proteção)" autocomplete="off">
+  ${sec==='elementos'?`<p class="warn">${esc(B.notaElementos)}</p>`:''}
+  <div class="list" id="itens">${itensDe(sec).map(it=>`
+    <button class="row" data-go="item/${sec}/${it.id}" data-busca="${esc(it.busca.toLowerCase())}">
+      <span class="ic" ${it.hex?`style="background:${it.hex}"`:''}>${it.hex?'':icone}</span>
+      <span class="t"><span class="n">${esc(it.nome)}</span><span class="s">${esc(it.sub)}</span></span>
+      <span class="chev">${I.chev}</span>
+    </button>`).join('')}</div>
+  <p id="vazio" style="display:none;color:var(--muted);font-size:14px">Nada encontrado nesta seção.</p>
+  <footer class="note">As correspondências são tradicionais e variam entre tradições e autoras. As ervas aqui são para uso ritual: não ingira nenhuma sem orientação, e redobre o cuidado na gravidez, com crianças e com animais.</footer>`;
+}
+function filtrar(q){
+  const t=q.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  let n=0;
+  document.querySelectorAll('#itens .row').forEach(el=>{
+    const ok=!t||el.dataset.busca.normalize('NFD').replace(/[̀-ͯ]/g,'').includes(t);
+    el.style.display=ok?'':'none';if(ok)n++;
+  });
+  const v=$('#vazio');if(v)v.style.display=n?'none':'block';
+}
+function telaItem(r){
+  const sec=r[1], id=r[2];
+  const voltar=`<button class="back" data-act="voltar">${I.back}Biblioteca</button>`;
+  const tags=t=>`<div class="tags">${t.map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div>`;
+  if(sec==='ervas'||sec==='cristais'){
+    const v=B[sec].find(x=>x.id===id);if(!v)return telaBiblioteca(['biblioteca',sec]);
+    return `${voltar}
+    <div><div class="eyebrow">${sec==='ervas'?'Erva':'Cristal'}</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1>${v.cientifico?`<p style="font-style:italic;color:var(--muted);margin-top:4px">${esc(v.cientifico)}</p>`:''}</div>
+    ${tags(v.temas)}
+    <div class="card"><dl class="kv">${v.elemento?`<dt>Elemento</dt><dd>${esc(v.elemento)}</dd>`:''}${v.planeta?`<dt>Planeta</dt><dd>${esc(v.planeta)}</dd>`:''}${v.cor?`<dt>Cor</dt><dd>${esc(v.cor)}</dd>`:''}</dl></div>
+    ${v.usos?`<div class="card"><div class="eyebrow">Como usar</div><p>${esc(v.usos)}</p></div>`:''}
+    ${v.curiosidade?`<div class="card"><div class="eyebrow">Curiosidade</div><p>${esc(v.curiosidade)}</p></div>`:''}
+    <p class="warn"><b>Cuidado:</b> ${esc(v.cuidado)}</p>`;
+  }
+  if(sec==='lua'){
+    const v=B.lua[id];if(!v)return telaBiblioteca(['biblioteca',sec]);
+    const ilum={nova:0,crescente:.25,'quarto-crescente':.5,'crescente-gibosa':.78,cheia:1,'minguante-gibosa':.78,'quarto-minguante':.5,minguante:.25}[id];
+    return `${voltar}<div style="display:flex;gap:18px;align-items:center">${luaSvg(ilum,CRESCE.has(id),80)}<div><div class="eyebrow">Fase da Lua</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1></div></div>${tags(v.temas)}<div class="card"><p>${esc(v.texto)}</p></div>`;
+  }
+  if(sec==='sabas'){
+    const v=B.sabas[id];if(!v)return telaBiblioteca(['biblioteca',sec]);
+    const ano=new Date().getFullYear();
+    const datas=['sul','norte'].map(h=>{const x=L.sabas(ano,h).find(s=>s.id===id);return `<dt>Hemisfério ${h}</dt><dd>${dataLonga(x.data)}${x.astronomico?` às ${hora(x.data)}`:''}</dd>`;}).join('');
+    return `${voltar}<div><div class="eyebrow">Roda do Ano</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1><p style="color:var(--muted);margin-top:4px">${esc(v.subtitulo)}</p></div>${tags(v.temas)}<div class="card"><p>${esc(v.texto)}</p></div><div class="card"><div class="eyebrow">Em ${ano}</div><dl class="kv">${datas}</dl></div>
+    <footer class="note">No hemisfério sul a roda gira ao contrário da europeia, para acompanhar as estações daqui. Os sabás de equinócio e solstício seguem o momento astronômico exato; os outros quatro têm data tradicional.</footer>`;
+  }
+  if(sec==='dias'){
+    const v=B.dias[+id];if(!v)return telaBiblioteca(['biblioteca',sec]);
+    return `${voltar}<div><div class="eyebrow">Dia da semana</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1></div>${tags(v.temas)}<div class="card"><dl class="kv"><dt>Planeta</dt><dd>${esc(v.planeta)}</dd><dt>Cores</dt><dd>${esc(v.cores.join(', '))}</dd></dl></div>`;
+  }
+  if(sec==='elementos'){
+    const v=B.elementos.find(x=>x.id===id);if(!v)return telaBiblioteca(['biblioteca',sec]);
+    return `${voltar}<div><div class="eyebrow">Elemento</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1></div>${tags(v.temas)}<div class="card"><dl class="kv"><dt>Direção</dt><dd>${esc(v.direcao)}</dd><dt>No altar</dt><dd>${esc(v.instrumentos)}</dd><dt>Signos</dt><dd>${esc(v.signos)}</dd></dl></div><p class="warn">${esc(B.notaElementos)}</p>`;
+  }
+  if(sec==='cores'){
+    const v=B.cores[+id];if(!v)return telaBiblioteca(['biblioteca',sec]);
+    return `${voltar}<div style="display:flex;gap:16px;align-items:center"><span class="swatch" style="width:64px;height:64px;background:${v.hex}"></span><div><div class="eyebrow">Cor</div><h1 class="h1" style="margin-top:6px">${esc(v.nome)}</h1></div></div>${tags(v.temas)}<footer class="note">Na magia de velas, a vela branca pode substituir qualquer outra cor.</footer>`;
+  }
+  return telaBiblioteca(['biblioteca']);
+}
+
+// ---------- Lua (calendário) ----------
+function telaLua(r){
+  const hoje=new Date();
+  let [ano,mes]=(r[1]||'').split('-').map(Number);
+  if(!ano||!mes){ano=hoje.getFullYear();mes=hoje.getMonth()+1;}
+  const ini=new Date(ano,mes-1,1), fim=new Date(ano,mes,0,23,59,59);
+  const fases=L.fasesEntre(new Date(ano,mes-1,1),new Date(ano,mes,1));
+  const sabas=L.sabas(ano,S.hemisferio).filter(s=>s.data.getMonth()===mes-1);
+  const sel=r[2]?+r[2]:(hoje.getFullYear()===ano&&hoje.getMonth()===mes-1?hoje.getDate():1);
+  const ant=mes===1?`${ano-1}-12`:`${ano}-${mes-1}`, prox=mes===12?`${ano+1}-1`:`${ano}-${mes+1}`;
+  const ilumFase={nova:0,'quarto-crescente':.5,cheia:1,'quarto-minguante':.5};
+  const celulas=[];
+  for(let i=0;i<ini.getDay();i++)celulas.push('<button class="out" tabindex="-1" aria-hidden="true"></button>');
+  for(let d=1;d<=fim.getDate();d++){
+    const f=fases.find(x=>x.data.getDate()===d&&x.data.getMonth()===mes-1);
+    const sb=sabas.find(x=>x.data.getDate()===d);
+    const ehHoje=hoje.getFullYear()===ano&&hoje.getMonth()===mes-1&&hoje.getDate()===d;
+    celulas.push(`<button data-act="dia" data-v="${d}" class="${ehHoje?'hoje':''} ${d===sel?'sel':''}" aria-label="${d} de ${MESES[mes-1]}${f?', '+B.lua[f.fase].nome:''}${sb?', '+B.sabas[sb.id].nome:''}"><span>${d}</span>${f?luaSvg(ilumFase[f.fase],CRESCE.has(f.fase),18):''}${sb?'<i class="dot"></i>':''}</button>`);
+  }
+  // detalhes do dia escolhido
+  const dsel=new Date(ano,mes-1,sel,12), lua=luaDoDia(dsel);
+  const fSel=fases.find(x=>x.data.getDate()===sel), sbSel=sabas.find(x=>x.data.getDate()===sel), diaSem=B.dias[dsel.getDay()];
+  const lista=fases.map(f=>`<div style="display:flex;align-items:center;gap:12px">${luaSvg(ilumFase[f.fase],CRESCE.has(f.fase),26)}<span style="flex:1">${esc(B.lua[f.fase].nome)}</span><span style="color:var(--muted);font-size:14px">${f.data.getDate()}/${f.data.getMonth()+1} · ${hora(f.data)}</span></div>`).join('');
+  return `
+  <div><div class="eyebrow">Calendário lunar</div><h1 class="h1" style="margin-top:6px">Lua</h1></div>
+  <div class="pills" style="margin:0;padding:0"><button class="pill ${S.hemisferio!=='norte'?'on':''}" data-act="hemi" data-v="sul">Hemisfério sul</button><button class="pill ${S.hemisferio==='norte'?'on':''}" data-act="hemi" data-v="norte">Hemisfério norte</button></div>
+  <div class="card">
+    <div class="calhead"><button data-act="mes" data-v="${ant}" aria-label="Mês anterior">${I.back}</button><h2 class="h2" style="text-transform:capitalize">${MESES[mes-1]} ${ano}</h2><button data-act="mes" data-v="${prox}" aria-label="Próximo mês">${I.chev}</button></div>
+    <div class="cal">${['D','S','T','Q','Q','S','S'].map(x=>`<span class="wd">${x}</span>`).join('')}${celulas.join('')}</div>
+    <div class="legend"><span>${luaSvg(0,true,14)} Nova</span><span>${luaSvg(.5,true,14)} Quarto crescente</span><span>${luaSvg(1,true,14)} Cheia</span><span>${luaSvg(.5,false,14)} Quarto minguante</span><span><i class="dot" style="position:static;display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--caramel)"></i> Sabá</span></div>
+  </div>
+  <div class="night">
+    ${luaSvg(lua.ilum,lua.crescendo,72)}
+    <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+      <div class="eyebrow">${sel} de ${MESES[mes-1]} · ${esc(diaSem.nome)}</div>
+      <div class="serif" style="font-size:24px">${esc(lua.info.nome)}${fSel?` às ${hora(fSel.data)}`:''}</div>
+      <p style="font-size:14px">${esc(lua.info.texto)}</p>
+      <p style="font-size:13px;opacity:.85">Dia de ${esc(diaSem.planeta)}: ${esc(diaSem.temas.join(', '))}.</p>
+    </div>
+  </div>
+  ${sbSel?`<button class="row" data-go="item/sabas/${sbSel.id}"><span class="ic">${I.roda}</span><span class="t"><span class="n">${esc(B.sabas[sbSel.id].nome)}</span><span class="s">${esc(B.sabas[sbSel.id].subtitulo)}${sbSel.astronomico?' · '+hora(sbSel.data):''}</span></span><span class="chev">${I.chev}</span></button>`:''}
+  <div class="card"><div class="eyebrow">Fases do mês</div>${lista||'<p>—</p>'}</div>
+  ${sabas.length?`<div class="card"><div class="eyebrow">Sabás do mês</div>${sabas.map(s=>`<div style="display:flex;justify-content:space-between;gap:10px"><b>${esc(B.sabas[s.id].nome)}</b><span style="color:var(--muted);font-size:14px">${dataLonga(s.data)}${s.astronomico?' · '+hora(s.data):''}</span></div>`).join('')}</div>`:''}
+  <footer class="note">Horários no fuso do seu aparelho, calculados com os algoritmos astronômicos de Jean Meeus.</footer>`;
+}
+
+render();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js',{scope:'./'}).catch(()=>{});
+})();
+</script>
+</body>
+</html>

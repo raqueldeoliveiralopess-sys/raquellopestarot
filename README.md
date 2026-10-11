@@ -10,6 +10,17 @@ Fica em `vendas/index.html` e é publicada junto com o app em `https://ogrimorio
 
 O Pixel da Meta (id 2279176922944295) está no fim do `<head>`, com o evento PageView; o código original está em `tools/vendas/pixel.html`. Todos os botões levam ao checkout da Kiwify. No celular, a barra fixa de compra só aparece depois que a pessoa passa do topo.
 
+## App do COB (Curso Online de Bruxaria)
+
+Fica em `cob/` e é publicado em `https://ogrimorioarcano.netlify.app/cob/`. É um app separado do Grimório (PWA próprio, com service worker de escopo `/cob/`), sem login por enquanto: o progresso e as anotações ficam no aparelho (`localStorage`, chave `cob`). Quatro abas:
+
+- **Hoje:** Lua do dia (fase, % iluminada e próxima fase), próximo sabá, próxima aula, correspondência do dia da semana e erva do dia.
+- **Aulas:** módulos e aulas com vídeo, materiais, anotações e "marcar como concluída". O conteúdo fica em `cob/aulas.js`: para publicar uma aula, preencha `video` com o link do YouTube, Vimeo ou Panda Video e `materiais` com `{nome, url}` dos slides e PDFs. Aula sem vídeo aparece como "em breve".
+- **Biblioteca:** ervas (com cuidados e toxicidade), cristais, fases da Lua, Roda do Ano, dias da semana, elementos e cores, com busca por nome ou intenção. Conteúdo em `cob/biblioteca.js`.
+- **Lua:** calendário do mês com as quatro fases principais e os sabás, hemisfério sul (padrão) ou norte.
+
+`cob/lua.js` calcula as fases da Lua e os equinócios e solstícios com os algoritmos de Jean Meeus (conferidos ao minuto com datas publicadas). No hemisfério sul a Roda do Ano gira ao contrário: Samhain em 30 de abril, Yule no solstício de junho, Beltane em 31 de outubro, Litha no solstício de dezembro. Ao mudar `lua.js`, `biblioteca.js` ou `aulas.js`, suba o `?v=` no `cob/index.html` e o `CACHE` em `cob/sw.js`.
+
 ## Layout no computador
 
 A partir de 1024 px de largura, o app deixa de ser uma coluna de celular: a barra de abas vira um menu lateral fixo à esquerda e o conteúdo ocupa o resto da tela (até 1200 px). O Início fica em duas colunas (carta do dia, metas e progresso à esquerda; Jornada, conquistas e backup à direita), a biblioteca e a lista de tiragens viram grade, a ficha da carta deixa a imagem e o resumo fixos à esquerda com a leitura à direita, e a prática da tiragem põe o tabuleiro à esquerda e a escrita e a Ofélia à direita. Flashcards, quiz, Comunidade e perfil ficam numa coluna de leitura de 820 px. As regras estão no fim do CSS do `index.html` (`@media (min-width:1024px)`), e a tela atual vai em `main[data-screen]`. No celular nada muda: os blocos novos (`.hgrid`, `.fgrid`, `.prgrid`) empilham na mesma ordem de antes.
