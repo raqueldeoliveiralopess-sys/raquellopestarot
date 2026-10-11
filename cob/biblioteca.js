@@ -1,4 +1,4 @@
-// COB — Biblioteca de bruxa
+// COB — Biblioteca de bruxa(o)
 // Correspondências tradicionais: variam entre tradições e autores. Nada aqui é orientação médica.
 window.BIBLIOTECA={
 
@@ -76,7 +76,7 @@ elementos:[
  {id:'fogo',nome:'Fogo',direcao:'Sul',temas:['vontade','transformação','paixão'],instrumentos:'Vela, carvão, athame.',signos:'Áries, Leão, Sagitário'},
  {id:'agua',nome:'Água',direcao:'Oeste',temas:['emoções','intuição','cura'],instrumentos:'Cálice, conchas, água.',signos:'Câncer, Escorpião, Peixes'}
 ],
-notaElementos:'As direções seguem a tradição europeia. No hemisfério sul, muitas bruxas trocam Fogo e Terra de lugar (Fogo ao Norte, de onde vem o sol do meio-dia), já que aqui o calor vem do norte.',
+notaElementos:'As direções seguem a tradição europeia. No hemisfério sul, muitas bruxas(os) trocam Fogo e Terra de lugar (Fogo ao Norte, de onde vem o sol do meio-dia), já que aqui o calor vem do norte.',
 
 cores:[
  {nome:'Branco',hex:'#F7F3EC',temas:['pureza','paz','substitui qualquer cor']},
@@ -94,11 +94,11 @@ cores:[
 ],
 
 sabas:{
- samhain:{nome:'Samhain',subtitulo:'Ano-novo das bruxas',temas:['ancestrais','fim de ciclo','o véu entre os mundos'],texto:'Fim da colheita e início do ano mágico. Tempo de honrar quem veio antes de você, olhar para a morte como parte do ciclo e soltar o que terminou.'},
+ samhain:{nome:'Samhain',subtitulo:'Ano-novo das bruxas(os)',temas:['ancestrais','fim de ciclo','o véu entre os mundos'],texto:'Fim da colheita e início do ano mágico. Tempo de honrar quem veio antes de você, olhar para a morte como parte do ciclo e soltar o que terminou.'},
  yule:{nome:'Yule',subtitulo:'Solstício de inverno',temas:['renascimento da luz','esperança','recolhimento'],texto:'A noite mais longa do ano. A partir daqui, os dias voltam a crescer: celebra-se o retorno do sol com velas, sempre-vivas e esperança.'},
  imbolc:{nome:'Imbolc',subtitulo:'Despertar da terra',temas:['purificação','inspiração','novos projetos'],texto:'O inverno começa a ceder. Festa ligada à deusa Brigid: velas, limpeza da casa e intenções para o que vai brotar.'},
  ostara:{nome:'Ostara',subtitulo:'Equinócio de primavera',temas:['equilíbrio','fertilidade','renovação'],texto:'Dia e noite do mesmo tamanho. A vida desperta: sementes, ovos, flores e o equilíbrio entre luz e sombra.'},
- beltane:{nome:'Beltane',subtitulo:'Festa do fogo e das flores',temas:['união','prazer','vitalidade'],texto:'O auge da primavera. Celebra a fertilidade, o amor e a alegria de estar viva, com fogueiras, flores e danças.'},
+ beltane:{nome:'Beltane',subtitulo:'Festa do fogo e das flores',temas:['união','prazer','vitalidade'],texto:'O auge da primavera. Celebra a fertilidade, o amor e a alegria de estar vivo(a), com fogueiras, flores e danças.'},
  litha:{nome:'Litha',subtitulo:'Solstício de verão',temas:['plenitude','força','abundância'],texto:'O dia mais longo do ano, o sol no seu auge. Tempo de celebrar a força, colher ervas e agradecer o que floresceu.'},
  lammas:{nome:'Lammas',subtitulo:'Lughnasadh, a primeira colheita',temas:['gratidão','colheita','partilha'],texto:'Festa dos grãos e do pão. Agradecer pelo que já foi colhido e partilhar a abundância.'},
  mabon:{nome:'Mabon',subtitulo:'Equinócio de outono',temas:['equilíbrio','gratidão','preparar o recolhimento'],texto:'De novo, dia e noite iguais. Segunda colheita: tempo de agradecer, fazer balanço e se preparar para os dias mais curtos.'}

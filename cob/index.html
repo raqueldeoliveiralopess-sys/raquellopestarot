@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>COB · Curso Online de Bruxaria</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="App das alunas do Curso Online de Bruxaria da Raquel Lopes: aulas, biblioteca de bruxa e calendário lunar.">
+<meta name="description" content="App de quem estuda no Curso Online de Bruxaria da Raquel Lopes: aulas, biblioteca de bruxa(o) e calendário lunar.">
 <meta name="theme-color" content="#431E3D">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
@@ -118,7 +118,7 @@ footer.note{font-size:12.5px;color:var(--muted);line-height:1.6}
 <body>
 <div id="app"><main id="main"></main><nav id="nav"></nav></div>
 <script src="lua.js?v=1"></script>
-<script src="biblioteca.js?v=1"></script>
+<script src="biblioteca.js?v=2"></script>
 <script src="aulas.js?v=1"></script>
 <script src="config.js"></script>
 <script>
@@ -233,7 +233,7 @@ function telaHoje(){
   const h=agora.getHours(), saud=h<5?'Boa noite':h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
   const px=lua.proxima;
   return `
-  <div><div class="eyebrow">${esc(dia.nome)}, ${dataLonga(agora)}</div><h1 class="h1" style="margin-top:6px">${saud}, bruxa.</h1></div>
+  <div><div class="eyebrow">${esc(dia.nome)}, ${dataLonga(agora)}</div><h1 class="h1" style="margin-top:6px">${saud}, bruxa(o).</h1></div>
   <button class="night" data-go="lua" style="text-align:left;width:100%">
     ${luaSvg(lua.ilum,lua.crescendo,84)}
     <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
@@ -437,14 +437,14 @@ function telaEstante(){
       <label class="field">Arquivo PDF (até 50 MB)<input type="file" id="l-pdf" accept="application/pdf,.pdf"></label>
       ${E.msg?`<p class="msg ${E.erroMsg?'erro':''}">${esc(E.msg)}</p>`:''}
       <button class="btn" data-act="est-enviar" ${E.ocupado?'disabled':''}>${E.ocupado?'Enviando…':'Enviar para a estante'}</button>
-      <button class="link" data-act="est-sair">Sair da conta de administradora</button>
+      <button class="link" data-act="est-sair">Sair da conta de admin</button>
     </div>`;
   }else if(E.etapa==='email'){
-    adm=`<div class="card"><div class="eyebrow">Entrar como administradora</div><label class="field">Seu e-mail<input type="text" id="adm-email" inputmode="email" autocomplete="email" value="${esc(E.email)}"></label>${E.msg?`<p class="msg ${E.erroMsg?'erro':''}">${esc(E.msg)}</p>`:''}<button class="btn" data-act="est-codigo" ${E.ocupado?'disabled':''}>${E.ocupado?'Enviando…':'Receber código por e-mail'}</button><button class="link" data-act="est-fechar">Cancelar</button></div>`;
+    adm=`<div class="card"><div class="eyebrow">Entrar como admin</div><label class="field">Seu e-mail<input type="text" id="adm-email" inputmode="email" autocomplete="email" value="${esc(E.email)}"></label>${E.msg?`<p class="msg ${E.erroMsg?'erro':''}">${esc(E.msg)}</p>`:''}<button class="btn" data-act="est-codigo" ${E.ocupado?'disabled':''}>${E.ocupado?'Enviando…':'Receber código por e-mail'}</button><button class="link" data-act="est-fechar">Cancelar</button></div>`;
   }else if(E.etapa==='codigo'){
     adm=`<div class="card"><div class="eyebrow">Código enviado para ${esc(E.email)}</div><label class="field">Código de 6 dígitos<input type="text" id="adm-codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="8"></label>${E.msg?`<p class="msg ${E.erroMsg?'erro':''}">${esc(E.msg)}</p>`:''}<button class="btn" data-act="est-entrar" ${E.ocupado?'disabled':''}>${E.ocupado?'Conferindo…':'Entrar'}</button><button class="link" data-act="est-fechar">Cancelar</button></div>`;
   }else{
-    adm=`<div style="text-align:center"><button class="link" data-act="est-abrir">Sou a administradora</button></div>`;
+    adm=`<div style="text-align:center"><button class="link" data-act="est-abrir">Sou admin</button></div>`;
   }
   return `
   <div><div class="eyebrow">Para baixar e ler no celular</div><h1 class="h1" style="margin-top:6px">Estante</h1></div>
@@ -484,7 +484,7 @@ async function estanteAcao(a,v){
       const sb=await carregarSupabase();
       const {data,error}=await sb.auth.verifyOtp({email:E.email,token:codigo,type:'email'});if(error)throw error;
       E.sessao=data.session;const r=await sb.rpc('e_admin');E.admin=!!r.data;E.ocupado=false;E.etapa='fechado';
-      if(!E.admin){await sb.auth.signOut();E.sessao=null;E.etapa='email';aviso('Esse e-mail não está cadastrado como administradora.',true);return;}
+      if(!E.admin){await sb.auth.signOut();E.sessao=null;E.etapa='email';aviso('Esse e-mail não está cadastrado como admin.',true);return;}
       aviso('');
     }catch(e){E.ocupado=false;aviso('Código inválido ou vencido. Peça um novo.',true);}
     return;
@@ -520,7 +520,7 @@ async function estanteAcao(a,v){
   }
   if(a==='remover'){
     const l=(E.livros||[]).find(x=>String(x.id)===String(v));if(!l)return;
-    if(!confirm(`Remover "${l.titulo}" da estante? As alunas não vão mais conseguir baixar.`))return;
+    if(!confirm(`Remover "${l.titulo}" da estante? Ninguém vai mais conseguir baixar.`))return;
     try{
       const sb=await carregarSupabase();
       const del=await sb.from('cob_livros').delete().eq('id',l.id);if(del.error)throw del.error;

@@ -1,7 +1,7 @@
 {
   "name": "COB · Curso Online de Bruxaria",
   "short_name": "COB",
-  "description": "Aulas, biblioteca de bruxa e calendário lunar do Curso Online de Bruxaria.",
+  "description": "Aulas, biblioteca de bruxa(o) e calendário lunar do Curso Online de Bruxaria.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
