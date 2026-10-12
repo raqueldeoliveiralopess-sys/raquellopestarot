@@ -6,5 +6,5 @@ window.COB_CONFIG = {
   supabaseAnonKey: 'sb_publishable_PQ7lWZMrCMPS7KXX16gjpg_u8NZ6n9P',
   bucket: 'cob-livros',
   // tamanho máximo de cada PDF (precisa bater com o file_size_limit do bucket no Supabase)
-  limiteMB: 1024
+  limiteMB: 150
 };
