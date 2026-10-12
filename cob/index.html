@@ -129,6 +129,20 @@ main.cheia{padding:0;gap:0}
 .msg.erro{background:#FBEDED;color:#7E2C2C}
 @media (prefers-color-scheme:dark){.msg.erro{background:#3A2225;color:#F0B8B8}}
 .link{border:none;background:none;padding:6px 0;color:var(--muted);font-size:13px;text-decoration:underline;min-height:40px}
+.buy{display:flex;align-items:center;justify-content:center;gap:6px;min-height:40px;border-radius:10px;border:1px dashed var(--line);color:var(--plum);font-size:13px;font-weight:600;text-decoration:none}
+.buy svg{width:14px;height:14px}
+.adm-tabs{display:flex;gap:6px}
+.lote{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow:auto}
+.lote .li{display:grid;grid-template-columns:1fr auto;gap:4px 8px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+.lote .li input{grid-column:1/-1;width:100%;min-height:40px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:6px 10px;font:inherit;font-size:16px}
+.lote .li small{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lote .st{font-size:12px;font-weight:600;white-space:nowrap}
+.st.ok{color:#3F6E4A}.st.erro{color:#7E2C2C}.st.vai{color:var(--plum)}
+@media (prefers-color-scheme:dark){.st.ok{color:#9CCB9F}.st.erro{color:#F0B8B8}}
+.ed{display:flex;flex-direction:column;gap:8px}
+.ed input,.ed textarea{width:100%;min-height:40px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);padding:6px 10px;font:inherit;font-size:16px}
+.ed textarea{min-height:64px}
+.ed .row2{display:flex;gap:6px}.ed .row2 button{flex:1}
 .rm{min-height:40px;border:1px solid var(--line);border-radius:10px;background:transparent;color:#7E2C2C;font-size:13px;font-weight:500;padding:0 12px}
 @media (prefers-color-scheme:dark){.rm{color:#F0B8B8}}
 @media (min-width:900px){
@@ -185,6 +199,7 @@ const I={
   gloss:ic('<path d="M4 6h16M4 12h10M4 18h7"/>'),
   ler:ic('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
   menos:ic('<path d="M5 12h14"/>'),
+  sacola:ic('<path d="M6 7h12l1 13H5z"/><path d="M9 7a3 3 0 016 0"/>'),
   mais:ic('<path d="M12 5v14M5 12h14"/>')
 };
 
@@ -228,7 +243,7 @@ function rota(){return (location.hash.replace(/^#\/?/,'')||'hoje').split('/');}
 function ir(h,trocar){if(trocar)location.replace('#/'+h);else location.hash='#/'+h;}
 window.addEventListener('hashchange',render);
 
-function render(){
+function render(manter){
   const r=rota(), tab=r[0]==='aula'?'aulas':r[0]==='item'?'biblioteca':r[0]==='ler'?'estante':r[0];
   if(leitor.ativo&&r[0]!=='ler')fecharLeitor();
   $('#nav').innerHTML=TABS.map(([id,nome,svg])=>`<button data-go="${id}" class="${tab===id?'on':''}" aria-label="${nome}" ${tab===id?'aria-current="page"':''}>${svg}<span>${nome}</span></button>`).join('');
@@ -236,7 +251,7 @@ function render(){
   $('#main').classList.toggle('cheia',r[0]==='ler');
   $('#main').innerHTML=(telas[r[0]]||telaHoje)(r);
   if(r[0]==='ler')iniciarLeitor(r[1]);
-  window.scrollTo(0,0);
+  if(!manter)window.scrollTo(0,0);
 }
 
 document.addEventListener('click',e=>{
@@ -254,6 +269,17 @@ document.addEventListener('click',e=>{
 document.addEventListener('input',e=>{
   if(e.target.id==='notas'){S.notas[e.target.dataset.v]=e.target.value;salvar();}
   if(e.target.id==='busca'){filtrar(e.target.value);}
+  if(e.target.classList.contains('lote-tit')){const x=E.lote[+e.target.dataset.i];if(x)x.titulo=e.target.value;}
+  if(e.target.id==='lote-autor')E.loteAutor=e.target.value;
+  if(e.target.id==='lote-link')E.loteLink=e.target.value;
+});
+document.addEventListener('change',e=>{
+  if(e.target.id!=='lote-pdfs')return;
+  const fs=[...e.target.files].filter(f=>/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name));
+  const grandes=fs.filter(f=>f.size>LIMITE_MB*1048576);
+  E.lote=E.lote.filter(x=>x.st!=='ok').concat(fs.filter(f=>f.size<=LIMITE_MB*1048576).map(f=>({file:f,titulo:tituloDoArquivo(f.name),st:'espera',erro:''})));
+  E.msg=grandes.length?`${grandes.length} arquivo(s) acima de ${LIMITE_MB} MB ficaram de fora: ${grandes.map(f=>f.name).join(', ')}`:'';E.erroMsg=!!grandes.length;
+  render(true);
 });
 
 // ---------- tela Hoje ----------
@@ -446,7 +472,9 @@ function telaItem(r){
 
 // ---------- Estante de livros (Supabase: lista pública, envio só de admin) ----------
 const CFG=window.COB_CONFIG||{};
-const E={livros:null,erro:'',sb:null,sessao:null,admin:false,etapa:'fechado',email:'',msg:'',erroMsg:false,ocupado:false};
+const E={livros:null,erro:'',sb:null,sessao:null,admin:false,etapa:'fechado',email:'',msg:'',erroMsg:false,ocupado:false,modo:'lote',lote:[],loteAutor:'',loteLink:'',editando:null};
+const LIMITE_MB=CFG.limiteMB||500;
+const linkOk=u=>/^https?:\/\/[^\s]+\.[^\s]+/i.test(u||'');
 function carregarSupabase(){
   if(E.sb)return Promise.resolve(E.sb);
   return new Promise((ok,falha)=>{
@@ -464,7 +492,7 @@ async function carregarLivros(){
     const {data:ses}=await sb.auth.getSession();
     if(ses&&ses.session){E.sessao=ses.session;const r=await sb.rpc('e_admin');E.admin=!!r.data;}
   }catch(e){E.erro=navigator.onLine?'Não consegui carregar a estante agora. Tente de novo em instantes.':'Sem internet. A estante precisa de conexão para listar os livros.';}
-  if(rota()[0]==='estante')render();
+  if(rota()[0]==='estante')render(true);
 }
 const urlPublica=(path,download)=>E.sb?E.sb.storage.from(CFG.bucket).getPublicUrl(path,download?{download}:undefined).data.publicUrl:'';
 const mb=n=>n?(n/1048576).toFixed(n>10485760?0:1).replace('.',',')+' MB':'';
@@ -479,22 +507,39 @@ function telaEstante(){
       ${l.autor?`<div class="ba">${esc(l.autor)}</div>`:''}
       ${l.descricao?`<div class="bd">${esc(l.descricao)}</div>`:''}
       <div class="acoes"><button class="btn" data-go="ler/${l.id}">${I.ler}Ler</button><a class="btn ghost" href="${esc(urlPublica(l.arquivo,slug(l.titulo)+'.pdf'))}" target="_blank" rel="noopener" aria-label="Baixar PDF${l.tamanho?' ('+mb(l.tamanho)+')':''}" title="Baixar PDF${l.tamanho?' · '+mb(l.tamanho):''}">${I.down}</a></div>
-      ${E.admin?`<button class="rm" data-act="est-remover" data-v="${l.id}">Remover da estante</button>`:''}
+      ${l.link_compra&&linkOk(l.link_compra)?`<a class="buy" href="${esc(l.link_compra)}" target="_blank" rel="noopener sponsored">${I.sacola}Comprar o livro físico</a>`:''}
+      ${E.admin?(String(E.editando)===String(l.id)?formEditar(l):`<div class="ed"><div class="row2"><button class="rm" style="color:var(--plum)" data-act="est-editar" data-v="${l.id}">Editar</button><button class="rm" data-act="est-remover" data-v="${l.id}">Remover</button></div></div>`):''}
     </div>`).join('')}</div>`
     :E.livros?`<div class="card"><p>A estante ainda está vazia. Os livros aparecem aqui assim que forem enviados.</p></div>`
     :E.erro?`<p class="msg erro">${esc(E.erro)} <button class="link" data-act="est-recarregar">Tentar de novo</button></p>`
     :`<div class="card"><p style="color:var(--muted)">Carregando a estante…</p></div>`;
   let adm='';
   if(E.admin){
+    const umLivro=E.modo==='um';
     adm=`<div class="card" id="adm">
-      <div class="eyebrow">Enviar um livro</div>
+      <div class="eyebrow">Enviar para a estante</div>
+      <div class="adm-tabs"><button class="pill ${!umLivro?'on':''}" data-act="est-modo" data-v="lote" ${E.ocupado?'disabled':''}>Vários de uma vez</button><button class="pill ${umLivro?'on':''}" data-act="est-modo" data-v="um" ${E.ocupado?'disabled':''}>Um livro, com capa própria</button></div>
+      ${umLivro?`
       <label class="field">Título<input type="text" id="l-titulo" maxlength="120" autocomplete="off"></label>
       <label class="field">Autora ou autor<input type="text" id="l-autor" maxlength="120" autocomplete="off"></label>
       <label class="field">Descrição curta (opcional)<textarea id="l-desc" maxlength="400"></textarea></label>
-      <label class="field">Capa (imagem JPG, PNG ou WebP; opcional)<input type="file" id="l-capa" accept="image/*"></label>
-      <label class="field">Arquivo PDF (até 50 MB)<input type="file" id="l-pdf" accept="application/pdf,.pdf"></label>
+      <label class="field">Onde comprar o físico (link, opcional)<input type="text" id="l-link" inputmode="url" autocomplete="off" placeholder="https://…"></label>
+      <label class="field">Capa (imagem; opcional, se não escolher uso a 1ª página do PDF)<input type="file" id="l-capa" accept="image/*"></label>
+      <label class="field">Arquivo PDF (até ${LIMITE_MB} MB)<input type="file" id="l-pdf" accept="application/pdf,.pdf"></label>
       ${E.msg?`<p class="msg ${E.erroMsg?'erro':''}">${esc(E.msg)}</p>`:''}
-      <button class="btn" data-act="est-enviar" ${E.ocupado?'disabled':''}>${E.ocupado?'Enviando…':'Enviar para a estante'}</button>
+      <button class="btn" data-act="est-enviar" ${E.ocupado?'disabled':''}>${E.ocupado?'Enviando…':'Enviar para a estante'}</button>`
+      :`
+      <label class="field">Escolha os PDFs (pode selecionar vários)<input type="file" id="lote-pdfs" accept="application/pdf,.pdf" multiple ${E.ocupado?'disabled':''}></label>
+      ${E.lote.length?`
+      <p style="font-size:13px;color:var(--muted)">Confira os títulos (vieram do nome do arquivo). A capa é a 1ª página de cada PDF.</p>
+      <div class="lote" id="lote-lista">${loteLinhas()}</div>
+      <label class="field">Autoria (opcional, vale para todos)<input type="text" id="lote-autor" maxlength="120" autocomplete="off" value="${esc(E.loteAutor)}"></label>
+      <label class="field">Onde comprar o físico (link, opcional, vale para todos)<input type="text" id="lote-link" inputmode="url" autocomplete="off" placeholder="https://…" value="${esc(E.loteLink)}"></label>
+      <div class="bar"><i id="lote-barra" style="width:${loteFeitos()/E.lote.length*100}%"></i></div>
+      <p class="msg" id="lote-msg" ${E.msg?'':'style="display:none"'}>${esc(E.msg)}</p>
+      <button class="btn" data-act="est-lote" ${E.ocupado?'disabled':''}>${E.ocupado?'Enviando… não feche a página':`Enviar ${E.lote.filter(x=>x.st!=='ok').length} livro(s)`}</button>
+      ${!E.ocupado?`<button class="link" data-act="est-limpar">Limpar a lista</button>`:''}`
+      :(E.msg?`<p class="msg ${E.erroMsg?'erro':''}">${esc(E.msg)}</p>`:'')}`}
       <button class="link" data-act="est-sair">Sair da conta de admin</button>
     </div>`;
   }else if(E.etapa==='email'){
@@ -510,7 +555,65 @@ function telaEstante(){
   ${adm}
   <footer class="note">"Ler" abre o livro aqui no app e guarda a página em que você parou. A seta baixa o PDF: no iPhone ele abre na tela e você salva pelo botão de compartilhar; no Android, vai para a pasta Downloads.</footer>`;
 }
-function aviso(t,erro){E.msg=t;E.erroMsg=!!erro;render();}
+function aviso(t,erro){E.msg=t;E.erroMsg=!!erro;render(true);}
+// título a partir do nome do arquivo: tira extensão, números de upload, sublinhados e marcas de site
+function tituloDoArquivo(n){
+  let t=n.replace(/\.pdf$/i,'').replace(/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}/gi,'').replace(/^\d{6,}[-_ ]*/,'').replace(/[-_ ]?\d{6,}([-_]\d+)*/g,'');
+  t=/\s/.test(t.replace(/_/g,''))&&!/^[^\s]*$/.test(t)?t.replace(/_+/g,' '):t.replace(/[-_]+/g,' ');
+  t=t.replace(/^(byld|ilide[. ]info|toaz?[. ]?info|DIGITAL[ _]DOWNLOAD)[\s._-]*/i,'').replace(/\b(compress(ed)?|Z-Library|z-lib\.org|Unknown)\b/gi,'').replace(/\(\s*\)/g,'');
+  t=t.replace(/(\s+\d){2,}\s*$/,'').replace(/\s+/g,' ').trim().replace(/^[-.\s]+|[-.\s]+$/g,'');
+  return t?t.charAt(0).toUpperCase()+t.slice(1):n;
+}
+
+const loteFeitos=()=>E.lote.filter(x=>x.st==='ok').length;
+function loteLinhas(){
+  const rot={espera:'',vai:'enviando…',capa:'gerando capa…',ok:'✓ na estante',erro:'erro'};
+  return E.lote.map((x,i)=>`<div class="li"><small>${esc(x.file.name)} · ${mb(x.file.size)||'—'}</small><span class="st ${x.st==='ok'?'ok':x.st==='erro'?'erro':x.st==='espera'?'':'vai'}">${rot[x.st]||''}</span>${x.st==='ok'?`<b style="grid-column:1/-1;font-size:14px">${esc(x.titulo)}</b>`:`<input class="lote-tit" data-i="${i}" value="${esc(x.titulo)}" maxlength="120" ${E.ocupado?'disabled':''} aria-label="Título">`}${x.erro?`<small style="grid-column:1/-1;color:#7E2C2C;white-space:normal">${esc(x.erro)}</small>`:''}</div>`).join('');
+}
+function atualizarLote(){
+  const l=$('#lote-lista');if(l)l.innerHTML=loteLinhas();
+  const b=$('#lote-barra');if(b)b.style.width=(E.lote.length?loteFeitos()/E.lote.length*100:0)+'%';
+  const m=$('#lote-msg');if(m){m.textContent=E.msg;m.style.display=E.msg?'':'none';m.classList.toggle('erro',!!E.erroMsg);}
+}
+function formEditar(l){
+  return `<div class="ed">
+    <input id="ed-titulo" value="${esc(l.titulo)}" maxlength="120" aria-label="Título" placeholder="Título">
+    <input id="ed-autor" value="${esc(l.autor||'')}" maxlength="120" aria-label="Autoria" placeholder="Autoria">
+    <textarea id="ed-desc" maxlength="400" aria-label="Descrição" placeholder="Descrição curta">${esc(l.descricao||'')}</textarea>
+    <input id="ed-link" value="${esc(l.link_compra||'')}" inputmode="url" aria-label="Onde comprar" placeholder="Onde comprar (https://…)">
+    <div class="row2"><button class="btn" style="min-height:40px" data-act="est-salvar" data-v="${l.id}">Salvar</button><button class="rm" style="color:var(--muted)" data-act="est-cancelar">Cancelar</button></div>
+  </div>`;
+}
+// 1ª página do PDF como capa (600 px de largura, WebP), usando o mesmo pdf.js do leitor
+async function capaDoPdf(file){
+  try{
+    const pdfjs=await carregarPdfjs();
+    const doc=await pdfjs.getDocument({url:URL.createObjectURL(file),disableAutoFetch:true,disableStream:false}).promise;
+    const pg=await doc.getPage(1);const v=pg.getViewport({scale:1});const vp=pg.getViewport({scale:Math.min(600/v.width,800/v.height,2)});
+    const c=document.createElement('canvas');c.width=Math.floor(vp.width);c.height=Math.floor(vp.height);
+    await pg.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:vp}).promise;doc.destroy();
+    return await new Promise(ok=>c.toBlob(b=>ok(b?{blob:b,ext:b.type==='image/webp'?'webp':'png'}:null),'image/webp',.85));
+  }catch(e){return null;}
+}
+function msgErro(e){
+  const m=String(e&&(e.message||e.error)||e||'');
+  return /row-level|policy|permission|403|401|JWT/i.test(m)?'Sem permissão. Confira se o e-mail está na tabela admins.'
+    :/exceeded|too large|413|maximum allowed size/i.test(m)?`Arquivo acima do limite do bucket. Rode o SQL que sobe o limite para ${LIMITE_MB} MB.`
+    :/link_compra/i.test(m)?'Falta a coluna link_compra: rode o cob.sql atualizado no Supabase.'
+    :/Failed to fetch|NetworkError|network/i.test(m)?'A conexão caiu durante o envio. Tente de novo no Wi-Fi.':m;
+}
+async function enviarUm(sb,file,{titulo,autor,desc,link,capa}){
+  const base=`${Date.now()}-${slug(titulo)}`;
+  const up=await sb.storage.from(CFG.bucket).upload(`${base}.pdf`,file,{contentType:'application/pdf',upsert:false});
+  if(up.error)throw up.error;
+  let capaPath=null;
+  const r=capa||await capaDoPdf(file);
+  if(r){const up2=await sb.storage.from(CFG.bucket).upload(`${base}-capa.${r.ext}`,r.blob,{contentType:r.blob.type,upsert:false});if(!up2.error)capaPath=`${base}-capa.${r.ext}`;}
+  const linha={titulo,autor:autor||null,descricao:desc||null,capa:capaPath,arquivo:`${base}.pdf`,tamanho:file.size};
+  if(link)linha.link_compra=link;
+  const ins=await sb.from('cob_livros').insert(linha);
+  if(ins.error){await sb.storage.from(CFG.bucket).remove([`${base}.pdf`].concat(capaPath?[capaPath]:[]));throw ins.error;}
+}
 // a capa é reduzida no aparelho antes de subir (até 600×800), para carregar rápido na estante
 function reduzirCapa(file){
   return new Promise(ok=>{
@@ -548,37 +651,62 @@ async function estanteAcao(a,v){
     return;
   }
   if(a==='sair'){const sb=await carregarSupabase();await sb.auth.signOut();E.sessao=null;E.admin=false;E.msg='';render();return;}
+  if(a==='modo'){E.modo=v;E.msg='';render(true);return;}
+  if(a==='limpar'){E.lote=[];E.msg='';render(true);return;}
+  if(a==='editar'){E.editando=v;E.msg='';render(true);return;}
+  if(a==='cancelar'){E.editando=null;render(true);return;}
+  if(a==='salvar'){
+    const titulo=($('#ed-titulo').value||'').trim(), link=($('#ed-link').value||'').trim();
+    if(!titulo)return aviso('O título não pode ficar vazio.',true);
+    if(link&&!linkOk(link))return aviso('O link de compra precisa começar com https://',true);
+    try{
+      const sb=await carregarSupabase();
+      const dados={titulo,autor:($('#ed-autor').value||'').trim()||null,descricao:($('#ed-desc').value||'').trim()||null,link_compra:link||null};
+      const r=await sb.from('cob_livros').update(dados).eq('id',v).select();
+      if(r.error)throw r.error;
+      const l=E.livros.find(x=>String(x.id)===String(v));if(l)Object.assign(l,dados);
+      E.editando=null;E.msg='';render(true);
+    }catch(e){aviso('Não consegui salvar: '+msgErro(e),true);}
+    return;
+  }
+  if(a==='lote'){
+    const pend=E.lote.filter(x=>x.st!=='ok');if(!pend.length)return;
+    const link=E.loteLink.trim();if(link&&!linkOk(link))return aviso('O link de compra precisa começar com https://',true);
+    const vazio=pend.find(x=>!x.titulo.trim());if(vazio)return aviso('Há um livro sem título na lista.',true);
+    E.ocupado=true;E.msg='';render(true);
+    const sb=await carregarSupabase();let falhas=0;
+    for(const [k,x] of pend.entries()){
+      x.st='vai';x.erro='';E.msg=`Enviando ${k+1} de ${pend.length}: ${x.titulo}`;E.erroMsg=false;atualizarLote();
+      try{await enviarUm(sb,x.file,{titulo:x.titulo.trim(),autor:E.loteAutor.trim(),link});x.st='ok';}
+      catch(e){x.st='erro';x.erro=msgErro(e);falhas++;}
+      atualizarLote();
+    }
+    E.ocupado=false;E.livros=null;
+    E.msg=falhas?`${pend.length-falhas} enviado(s), ${falhas} com erro. Corrija e toque em Enviar de novo: só os que faltam vão subir.`:`Pronto: ${pend.length} livro(s) na estante.`;E.erroMsg=!!falhas;
+    if(!falhas)E.lote=[];
+    await carregarLivros();render(true);
+    return;
+  }
   if(a==='enviar'){
-    const titulo=($('#l-titulo').value||'').trim(), autor=($('#l-autor').value||'').trim(), desc=($('#l-desc').value||'').trim();
-    const capa=$('#l-capa').files[0], pdf=$('#l-pdf').files[0];
+    const titulo=($('#l-titulo').value||'').trim(), autor=($('#l-autor').value||'').trim(), desc=($('#l-desc').value||'').trim(), link=($('#l-link').value||'').trim();
+    const capaImg=$('#l-capa').files[0], pdf=$('#l-pdf').files[0];
     if(!titulo)return aviso('Dê um título ao livro.',true);
     if(!pdf)return aviso('Escolha o arquivo PDF.',true);
     if(!/pdf$/i.test(pdf.type)&&!/\.pdf$/i.test(pdf.name))return aviso('O arquivo precisa ser um PDF.',true);
-    if(pdf.size>52428800)return aviso('O PDF passa de 50 MB. Comprima o arquivo antes de enviar.',true);
+    if(pdf.size>LIMITE_MB*1048576)return aviso(`O PDF passa de ${LIMITE_MB} MB. Comprima o arquivo antes de enviar.`,true);
+    if(link&&!linkOk(link))return aviso('O link de compra precisa começar com https://',true);
     E.ocupado=true;aviso('Enviando o PDF… não feche a página.');
     try{
-      const sb=await carregarSupabase(), base=`${Date.now()}-${slug(titulo)}`;
-      const up1=await sb.storage.from(CFG.bucket).upload(`${base}.pdf`,pdf,{contentType:'application/pdf',upsert:false});
-      if(up1.error)throw up1.error;
-      let capaPath=null;
-      if(capa){
-        aviso('Enviando a capa…');
-        const r=await reduzirCapa(capa);
-        if(r){const up2=await sb.storage.from(CFG.bucket).upload(`${base}-capa.${r.ext}`,r.blob,{contentType:r.blob.type,upsert:false});if(!up2.error)capaPath=`${base}-capa.${r.ext}`;}
-      }
-      const ins=await sb.from('cob_livros').insert({titulo,autor:autor||null,descricao:desc||null,capa:capaPath,arquivo:`${base}.pdf`,tamanho:pdf.size});
-      if(ins.error)throw ins.error;
-      E.ocupado=false;E.livros=null;E.msg='';render();
-    }catch(e){
-      E.ocupado=false;
-      const m=String(e&&e.message||'');
-      aviso(/row-level|policy|permission|403|401|JWT/i.test(m)?'Sem permissão para enviar. Confira se o seu e-mail está na tabela admins e se o cob.sql foi executado.':/exceeded|too large|413/i.test(m)?'O arquivo é grande demais para o plano atual do Supabase.':'Não deu certo: '+m,true);
-    }
+      const sb=await carregarSupabase();
+      const capa=capaImg?await reduzirCapa(capaImg):null;
+      await enviarUm(sb,pdf,{titulo,autor,desc,link,capa});
+      E.ocupado=false;E.livros=null;E.msg='';render(true);
+    }catch(e){E.ocupado=false;aviso('Não deu certo: '+msgErro(e),true);}
     return;
   }
   if(a==='remover'){
     const l=(E.livros||[]).find(x=>String(x.id)===String(v));if(!l)return;
-    if(!confirm(`Remover "${l.titulo}" da estante? Ninguém vai mais conseguir baixar.`))return;
+    if(!confirm(`Remover "${l.titulo}" da estante? Ninguém vai mais conseguir ler nem baixar.`))return;
     try{
       const sb=await carregarSupabase();
       const del=await sb.from('cob_livros').delete().eq('id',l.id);if(del.error)throw del.error;
@@ -592,6 +720,13 @@ async function estanteAcao(a,v){
 // ---------- Leitor de PDF (pdf.js, carregado só quando abre um livro) ----------
 const PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/';
 const leitor={ativo:false,doc:null,obs:null,zoom:1,id:null,paginas:[],base:0,ticket:0};
+// a importação tenta de novo uma vez: redes móveis derrubam o primeiro carregamento com frequência
+let pdfjsP=null;
+function carregarPdfjs(){
+  if(!pdfjsP)pdfjsP=import(PDFJS+'pdf.min.mjs').catch(()=>new Promise(r=>setTimeout(r,1500)).then(()=>import(PDFJS+'pdf.min.mjs')))
+    .then(m=>{m.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.mjs';return m;}).catch(e=>{pdfjsP=null;throw e;});
+  return pdfjsP;
+}
 if(!S.leitura)S.leitura={};
 function telaLer(r){
   const l=(E.livros||[]).find(x=>String(x.id)===String(r[1]));
@@ -614,9 +749,7 @@ async function iniciarLeitor(id){
   const cont=$('#lpaginas');
   try{
     await carregarSupabase();
-    // a importação tenta de novo uma vez: redes móveis derrubam o primeiro carregamento com frequência
-    const pdfjs=await import(PDFJS+'pdf.min.mjs').catch(()=>new Promise(r=>setTimeout(r,1500)).then(()=>import(PDFJS+'pdf.min.mjs')));
-    pdfjs.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.mjs';
+    const pdfjs=await carregarPdfjs();
     const doc=await pdfjs.getDocument({url:urlPublica(l.arquivo),withCredentials:false}).promise;
     if(ticket!==leitor.ticket)return doc.destroy();
     leitor.doc=doc;

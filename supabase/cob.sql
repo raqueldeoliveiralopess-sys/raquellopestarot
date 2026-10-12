@@ -33,6 +33,8 @@ create table if not exists public.cob_livros (
   criado_em  timestamptz not null default now()
 );
 alter table public.cob_livros enable row level security;
+-- link de compra do livro físico (código de influencer, loja da editora); pode ficar vazio
+alter table public.cob_livros add column if not exists link_compra text;
 
 drop policy if exists "estante: todos leem"    on public.cob_livros;
 drop policy if exists "estante: admin inclui"  on public.cob_livros;
@@ -47,9 +49,9 @@ grant select on public.cob_livros to anon, authenticated;
 grant insert, update, delete on public.cob_livros to authenticated;
 
 -- 3) Os arquivos: bucket público para leitura (as alunas baixam sem login), escrita só de admin.
---    Limite de 50 MB por arquivo (teto do plano gratuito do Supabase).
+--    Limite de 500 MB por arquivo (plano Pro; no gratuito o teto é 50 MB e o Supabase recusa acima disso).
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('cob-livros', 'cob-livros', true, 52428800, array['application/pdf', 'image/webp', 'image/jpeg', 'image/png'])
+values ('cob-livros', 'cob-livros', true, 524288000, array['application/pdf', 'image/webp', 'image/jpeg', 'image/png'])
 on conflict (id) do update
   set public = excluded.public,
       file_size_limit = excluded.file_size_limit,

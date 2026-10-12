@@ -1,7 +1,7 @@
 // COB — service worker (escopo /cob/, separado do Grimório)
 // index.html e manifest: rede primeiro. Scripts com ?v=N, ícones e fontes: cache primeiro.
 // Ao mudar lua.js, biblioteca.js ou aulas.js, suba o ?v= no index.html e o CACHE aqui.
-const CACHE='cob-v5';
+const CACHE='cob-v6';
 const SHELL=['./','index.html','config.js','manifest.webmanifest'];
 const STATIC=['lua.js?v=1','biblioteca.js?v=3','aulas.js?v=1','icon-192.png','icon-512.png'];
 self.addEventListener('install',e=>{
