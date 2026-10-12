@@ -49,10 +49,10 @@ grant select on public.cob_livros to anon, authenticated;
 grant insert, update, delete on public.cob_livros to authenticated;
 
 -- 3) Os arquivos: bucket público para leitura (as alunas baixam sem login), escrita só de admin.
---    Limite de 150 MB por arquivo. O limite geral em Storage → Settings → "Upload file size limit" precisa ser igual ou maior.
+--    Limite de 500 MB por arquivo (plano Pro). O limite geral em Storage → Settings → "Upload file size limit" precisa ser igual ou maior.
 --    Arquivos acima de 6 MB são enviados em partes (upload retomável), então quedas de conexão não perdem o envio.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('cob-livros', 'cob-livros', true, 157286400, array['application/pdf', 'image/webp', 'image/jpeg', 'image/png'])
+values ('cob-livros', 'cob-livros', true, 524288000, array['application/pdf', 'image/webp', 'image/jpeg', 'image/png'])
 on conflict (id) do update
   set public = excluded.public,
       file_size_limit = excluded.file_size_limit,
