@@ -99,6 +99,10 @@ main.portao{padding-top:28px}
 .check input{width:22px;height:22px;flex-shrink:0;margin:1px 0 0;accent-color:var(--plum)}
 .lk{border:none;background:none;padding:0;color:var(--plum);text-decoration:underline;font:inherit;font-weight:500;cursor:pointer}
 .dica{font-size:13px;color:var(--muted);line-height:1.5}
+.ob{color:#9B3B3B;font-style:normal}
+.invalido input,.invalido select,input.invalido{border-color:#B44A4A!important;box-shadow:0 0 0 3px rgba(180,74,74,.15)}
+.check.invalido,.radio.invalido{outline:2px solid #B44A4A;outline-offset:4px;border-radius:8px}
+@media (prefers-color-scheme:dark){.ob{color:#F0B8B8}}
 .resp{background:var(--sand);border-color:transparent}
 .radio{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink2)}
 .radio legend{font-size:13px;color:var(--muted);margin-bottom:6px;padding:0}
@@ -372,24 +376,24 @@ function erroConta(e){
 // valida o formulário; devolve {dados} ou {erro}
 function validarCadastro(f,comEmail){
   const nome=(f.nome||'').trim().replace(/\s+/g,' '), idade=idadeDe(f.nasc);
-  if(!/\S+\s+\S+/.test(nome))return {erro:'Escreva o nome completo (nome e sobrenome).'};
-  if(!cpfOk(f.cpf))return {erro:'O CPF não é válido. Confira os números.'};
-  if(comEmail&&!emailOk((f.email||'').trim()))return {erro:'Digite um e-mail válido.'};
-  if(so(f.whats).length<10)return {erro:'O WhatsApp precisa ter DDD e número.'};
-  if(idade===null||idade>110||idade<0)return {erro:'Preencha a data de nascimento.'};
-  if(idade<16)return {erro:'A comunidade é para pessoas com 16 anos ou mais.'};
+  if(!/\S+\s+\S+/.test(nome))return {erro:'Escreva o nome completo (nome e sobrenome).',campo:'nome'};
+  if(!cpfOk(f.cpf))return {erro:'O CPF não é válido. Confira os números.',campo:'cpf'};
+  if(comEmail&&!emailOk((f.email||'').trim()))return {erro:'Digite um e-mail válido.',campo:'email'};
+  if(so(f.whats).length<10)return {erro:'O WhatsApp precisa ter DDD e número.',campo:'whats'};
+  if(idade===null||idade>110||idade<0)return {erro:'Preencha a data de nascimento.',campo:'nasc'};
+  if(idade<16)return {erro:'A comunidade é para pessoas com 16 anos ou mais.',campo:'nasc'};
   const d={nome,cpf:so(f.cpf),whatsapp:so(f.whats),nascimento:f.nasc,aceite:!!f.aceite,aceite_versao:T.VERSAO};
   if(idade<18){
-    if(!/\S+\s+\S+/.test((f.rnome||'').trim()))return {erro:'Escreva o nome completo do responsável.'};
-    if(!cpfOk(f.rcpf)||so(f.rcpf)===so(f.cpf))return {erro:'O CPF do responsável não é válido (e precisa ser diferente do seu).'};
-    if(so(f.rtel).length<10)return {erro:'Preencha o telefone do responsável com DDD.'};
-    if(!emailOk((f.remail||'').trim()))return {erro:'Preencha o e-mail do responsável.'};
-    if(!f.rpar)return {erro:'Escolha o parentesco do responsável.'};
-    if(f.rimg!=='sim'&&f.rimg!=='nao')return {erro:'O responsável precisa escolher se autoriza ou não câmera e microfone nas aulas.'};
-    if(!f.rdecl)return {erro:'O responsável precisa marcar a declaração.'};
+    if(!/\S+\s+\S+/.test((f.rnome||'').trim()))return {erro:'Escreva o nome completo do responsável.',campo:'rnome'};
+    if(!cpfOk(f.rcpf)||so(f.rcpf)===so(f.cpf))return {erro:'O CPF do responsável não é válido (e precisa ser diferente do seu).',campo:'rcpf'};
+    if(so(f.rtel).length<10)return {erro:'Preencha o telefone do responsável com DDD.',campo:'rtel'};
+    if(!emailOk((f.remail||'').trim()))return {erro:'Preencha o e-mail do responsável.',campo:'remail'};
+    if(!f.rpar)return {erro:'Escolha o parentesco do responsável.',campo:'rpar'};
+    if(f.rimg!=='sim'&&f.rimg!=='nao')return {erro:'O responsável precisa escolher se autoriza ou não câmera e microfone nas aulas.',campo:'rimg'};
+    if(!f.rdecl)return {erro:'O responsável precisa marcar a declaração.',campo:'rdecl'};
     Object.assign(d,{resp_nome:f.rnome.trim(),resp_cpf:so(f.rcpf),resp_telefone:so(f.rtel),resp_email:f.remail.trim().toLowerCase(),resp_parentesco:f.rpar,resp_imagem:f.rimg==='sim',resp_declara:true});
   }
-  if(!d.aceite)return {erro:'Para continuar, marque que leu e concorda com os termos.'};
+  if(!d.aceite)return {erro:'Para continuar, marque que leu e concorda com os termos.',campo:'aceite'};
   return {dados:d};
 }
 async function gravarCadastro(dados){
@@ -449,7 +453,8 @@ async function contaAcao(a,v){
   if(a==='aba'){G.aba=v;G.etapa='form';G.msg='';render(true);return;}
   if(a==='voltar'){G.etapa='form';G.msg='';render(true);return;}
   if(a==='cadastrar'||a==='completar'){
-    const r=validarCadastro(G.form,a==='cadastrar');if(r.erro)return aviso2(r.erro,true);
+    const r=validarCadastro(G.form,a==='cadastrar');if(r.erro){G.campo=r.campo||'';aviso2(r.erro,true);return marcarCampo();}
+    G.campo='';
     G.ocupado=true;aviso2('');
     if(a==='completar'){try{await gravarCadastro(r.dados);G.ocupado=false;G.msg='';registrarAcesso();render();}catch(e){G.ocupado=false;aviso2(erroConta(e),true);}return;}
     const email=G.form.email.trim().toLowerCase();
@@ -492,8 +497,14 @@ document.addEventListener('input',e=>{
     G.form[k]=e.target.value;
   }
   if(k==='nasc')mostrarResponsavel();
+  const box=e.target.closest('.invalido');if(box)box.classList.remove('invalido');
 });
 document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.f;if(k&&(e.target.type==='radio'||e.target.tagName==='SELECT'||e.target.type==='date')){G.form[k]=e.target.value;if(k==='nasc')mostrarResponsavel();}});
+function marcarCampo(){
+  const el=G.campo&&document.querySelector(`[data-f="${G.campo}"]`);if(!el)return;
+  const alvo=el.closest('.field,.check,.radio')||el;alvo.classList.add('invalido');
+  alvo.scrollIntoView({behavior:'instant',block:'center'});if(el.type!=='radio'&&el.type!=='checkbox')el.focus({preventScroll:true});
+}
 function mostrarResponsavel(){
   const i=idadeDe(G.form.nasc), r=$('#c-resp'), av=$('#c-idade');
   if(r)r.hidden=!(i!==null&&i>=16&&i<18);
@@ -503,28 +514,29 @@ const fv=k=>esc(G.form[k]||'');
 function camposCadastro(comEmail){
   const i=idadeDe(G.form.nasc), menor=i!==null&&i>=16&&i<18;
   return `
-    <label class="field">Nome completo<input type="text" data-f="nome" autocomplete="name" maxlength="120" value="${fv('nome')}"></label>
-    <label class="field">CPF<input type="text" data-f="cpf" data-mask="cpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" value="${fv('cpf')}"></label>
-    ${comEmail?`<label class="field">E-mail<input type="email" data-f="email" autocomplete="email" inputmode="email" placeholder="voce@email.com" value="${fv('email')}"></label>`
-      :`<label class="field">E-mail<input type="email" value="${esc(G.email)}" disabled></label>`}
-    <label class="field">WhatsApp<input type="tel" data-f="whats" data-mask="tel" autocomplete="tel-national" inputmode="tel" placeholder="(11) 90000-0000" value="${fv('whats')}"></label>
-    <label class="field">Data de nascimento<input type="date" data-f="nasc" autocomplete="bday" max="${new Date().toISOString().slice(0,10)}" value="${fv('nasc')}"></label>
+    <p class="dica">Todos os campos são obrigatórios.</p>
+    <label class="field"><span>Nome completo<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="text" data-f="nome" autocomplete="name" maxlength="120" value="${fv('nome')}"></label>
+    <label class="field"><span>CPF<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="text" data-f="cpf" data-mask="cpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" value="${fv('cpf')}"></label>
+    ${comEmail?`<label class="field"><span>E-mail<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="email" data-f="email" autocomplete="email" inputmode="email" placeholder="voce@email.com" value="${fv('email')}"></label>`
+      :`<label class="field"><span>E-mail<i class="ob" aria-hidden="true"> *</i></span><input type="email" value="${esc(G.email)}" disabled></label>`}
+    <label class="field"><span>WhatsApp<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="tel" data-f="whats" data-mask="tel" autocomplete="tel-national" inputmode="tel" placeholder="(11) 90000-0000" value="${fv('whats')}"></label>
+    <label class="field"><span>Data de nascimento<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="date" data-f="nasc" autocomplete="bday" max="${new Date().toISOString().slice(0,10)}" value="${fv('nasc')}"></label>
     <p class="msg erro" id="c-idade" ${i!==null&&i<16&&i>=0?'':'hidden'}>A comunidade é para pessoas com 16 anos ou mais. Quando você completar 16, vai ser um prazer te receber.</p>
     <div class="card resp" id="c-resp" ${menor?'':'hidden'}>
       <div class="eyebrow">Responsável legal</div>
       <p class="dica">Para 16 e 17 anos, a participação depende da autorização do(a) responsável. Peça para ele(a) preencher esta parte e ler o <button type="button" class="lk" data-go="termos/responsavel">Termo de ciência e autorização</button>.</p>
-      <label class="field">Nome completo do responsável<input type="text" data-f="rnome" maxlength="120" value="${fv('rnome')}"></label>
-      <label class="field">CPF do responsável<input type="text" data-f="rcpf" data-mask="cpf" inputmode="numeric" placeholder="000.000.000-00" value="${fv('rcpf')}"></label>
-      <label class="field">Telefone do responsável<input type="tel" data-f="rtel" data-mask="tel" inputmode="tel" placeholder="(11) 90000-0000" value="${fv('rtel')}"></label>
-      <label class="field">E-mail do responsável<input type="email" data-f="remail" inputmode="email" value="${fv('remail')}"></label>
-      <label class="field">Parentesco<select data-f="rpar">${['','Pai','Mãe','Tutor(a)','Guardião(ã) legal'].map(o=>`<option value="${o}" ${G.form.rpar===o?'selected':''}>${o||'Escolha'}</option>`).join('')}</select></label>
-      <fieldset class="radio"><legend>Câmera e microfone nas aulas gravadas</legend>
-        <label><input type="radio" name="rimg" data-f="rimg" value="sim" ${G.form.rimg==='sim'?'checked':''}> Autorizo</label>
-        <label><input type="radio" name="rimg" data-f="rimg" value="nao" ${G.form.rimg==='nao'?'checked':''}> Não autorizo (participa pelo chat)</label>
+      <label class="field"><span>Nome completo do responsável<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="text" data-f="rnome" maxlength="120" value="${fv('rnome')}"></label>
+      <label class="field"><span>CPF do responsável<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="text" data-f="rcpf" data-mask="cpf" inputmode="numeric" placeholder="000.000.000-00" value="${fv('rcpf')}"></label>
+      <label class="field"><span>Telefone do responsável<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="tel" data-f="rtel" data-mask="tel" inputmode="tel" placeholder="(11) 90000-0000" value="${fv('rtel')}"></label>
+      <label class="field"><span>E-mail do responsável<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="email" data-f="remail" inputmode="email" value="${fv('remail')}"></label>
+      <label class="field"><span>Parentesco<i class="ob" aria-hidden="true"> *</i></span><select required aria-required="true" data-f="rpar">${['','Pai','Mãe','Tutor(a)','Guardião(ã) legal'].map(o=>`<option value="${o}" ${G.form.rpar===o?'selected':''}>${o||'Escolha'}</option>`).join('')}</select></label>
+      <fieldset class="radio"><legend>Câmera e microfone nas aulas gravadas<i class="ob" aria-hidden="true"> *</i></legend>
+        <label><input required aria-required="true" type="radio" name="rimg" data-f="rimg" value="sim" ${G.form.rimg==='sim'?'checked':''}> Autorizo</label>
+        <label><input required aria-required="true" type="radio" name="rimg" data-f="rimg" value="nao" ${G.form.rimg==='nao'?'checked':''}> Não autorizo (participa pelo chat)</label>
       </fieldset>
-      <label class="check"><input type="checkbox" data-f="rdecl" ${G.form.rdecl?'checked':''}><span>Sou o(a) responsável legal, li e aceito o <button type="button" class="lk" data-go="termos/responsavel">Termo de ciência e autorização</button>, e declaro que as informações acima são verdadeiras.</span></label>
+      <label class="check"><input required aria-required="true" type="checkbox" data-f="rdecl" ${G.form.rdecl?'checked':''}><span>Sou o(a) responsável legal, li e aceito o <button type="button" class="lk" data-go="termos/responsavel">Termo de ciência e autorização</button>, e declaro que as informações acima são verdadeiras.<i class="ob" aria-hidden="true"> *</i></span></label>
     </div>
-    <label class="check"><input type="checkbox" data-f="aceite" ${G.form.aceite?'checked':''}><span>Li e concordo com as <button type="button" class="lk" data-go="termos/regras">Regras da comunidade</button>, os <button type="button" class="lk" data-go="termos/uso">Termos de uso</button> e a <button type="button" class="lk" data-go="termos/privacidade">Política de privacidade</button>.</span></label>`;
+    <label class="check"><input required aria-required="true" type="checkbox" data-f="aceite" ${G.form.aceite?'checked':''}><span>Li e concordo com as <button type="button" class="lk" data-go="termos/regras">Regras da comunidade</button>, os <button type="button" class="lk" data-go="termos/uso">Termos de uso</button> e a <button type="button" class="lk" data-go="termos/privacidade">Política de privacidade</button>.<i class="ob" aria-hidden="true"> *</i></span></label>`;
 }
 const marcaConta=`<div class="marca"><img src="icon-192.png" alt="" width="72" height="72"><div class="eyebrow">Curso Online de Bruxaria</div></div>`;
 const msgConta=()=>G.msg?`<p class="msg ${G.erro?'erro':''}" role="alert">${esc(G.msg)}</p>`:'';
@@ -550,9 +562,9 @@ function telaEntrar(){
     <h1 class="h1 c">${cad?'Crie seu perfil':'Entre no COB'}</h1>
     <p class="c">${cad?'O acesso é gratuito. Preencha seus dados uma vez; depois você entra pelo link que chega no e-mail, sem senha.':'Digite o e-mail do seu cadastro. Mandamos um link para você entrar, sem senha.'}</p>
     <div class="adm-tabs" role="tablist"><button class="pill ${cad?'on':''}" role="tab" aria-selected="${cad}" data-act="conta-aba" data-v="cadastro">Criar conta</button><button class="pill ${!cad?'on':''}" role="tab" aria-selected="${!cad}" data-act="conta-aba" data-v="entrar">Já tenho conta</button></div>
-    ${cad?`<form class="auth-form" onsubmit="return false">${camposCadastro(true)}${msgConta()}
+    ${cad?`<form class="auth-form" novalidate onsubmit="return false">${camposCadastro(true)}${msgConta()}
       <button class="btn" data-act="conta-cadastrar" ${G.ocupado?'disabled':''}>${G.ocupado?'Enviando…':'Criar conta e receber o link'}</button></form>`
-    :`<form class="auth-form" onsubmit="return false"><label class="field">E-mail<input type="email" data-f="lemail" autocomplete="email" inputmode="email" placeholder="voce@email.com" value="${fv('lemail')}"></label>${msgConta()}
+    :`<form class="auth-form" novalidate onsubmit="return false"><label class="field">E-mail<input type="email" data-f="lemail" autocomplete="email" inputmode="email" placeholder="voce@email.com" value="${fv('lemail')}"></label>${msgConta()}
       <button class="btn" data-act="conta-entrar" ${G.ocupado?'disabled':''}>${G.ocupado?'Enviando…':'Receber link de acesso'}</button></form>`}
     <button class="link c" data-go="termos">Regras, termos e privacidade</button>
   </div>`;
@@ -561,7 +573,7 @@ function telaCompletar(){
   return `<div class="auth">${marcaConta}
     <h1 class="h1 c">Complete seu perfil</h1>
     <p class="c">Falta pouco: preencha seus dados para liberar o app.</p>
-    <form class="auth-form" onsubmit="return false">${camposCadastro(false)}${msgConta()}
+    <form class="auth-form" novalidate onsubmit="return false">${camposCadastro(false)}${msgConta()}
     <button class="btn" data-act="conta-completar" ${G.ocupado?'disabled':''}>${G.ocupado?'Salvando…':'Concluir cadastro'}</button></form>
     <button class="link c" data-act="conta-sair">Sair (${esc(G.email)})</button>
   </div>`;
