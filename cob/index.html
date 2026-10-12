@@ -567,8 +567,8 @@ function tituloDoArquivo(n){
 
 const loteFeitos=()=>E.lote.filter(x=>x.st==='ok').length;
 function loteLinhas(){
-  const rot={espera:'',vai:'enviando…',capa:'gerando capa…',ok:'✓ na estante',erro:'erro'};
-  return E.lote.map((x,i)=>`<div class="li"><small>${esc(x.file.name)} · ${mb(x.file.size)||'—'}</small><span class="st ${x.st==='ok'?'ok':x.st==='erro'?'erro':x.st==='espera'?'':'vai'}">${rot[x.st]||''}</span>${x.st==='ok'?`<b style="grid-column:1/-1;font-size:14px">${esc(x.titulo)}</b>`:`<input class="lote-tit" data-i="${i}" value="${esc(x.titulo)}" maxlength="120" ${E.ocupado?'disabled':''} aria-label="Título">`}${x.erro?`<small style="grid-column:1/-1;color:#7E2C2C;white-space:normal">${esc(x.erro)}</small>`:''}</div>`).join('');
+  const rot={espera:'',capa:'gerando capa…',ok:'✓ na estante',erro:'erro'};
+  return E.lote.map((x,i)=>`<div class="li"><small>${esc(x.file.name)} · ${mb(x.file.size)||'—'}</small><span class="st ${x.st==='ok'?'ok':x.st==='erro'?'erro':x.st==='espera'?'':'vai'}" data-st="${i}">${x.st==='vai'?`enviando ${Math.round((x.pct||0)*100)}%`:(rot[x.st]||'')}</span>${x.st==='ok'?`<b style="grid-column:1/-1;font-size:14px">${esc(x.titulo)}</b>`:`<input class="lote-tit" data-i="${i}" value="${esc(x.titulo)}" maxlength="120" ${E.ocupado?'disabled':''} aria-label="Título">`}${x.erro?`<small style="grid-column:1/-1;color:#7E2C2C;white-space:normal">${esc(x.erro)}</small>`:''}</div>`).join('');
 }
 function atualizarLote(){
   const l=$('#lote-lista');if(l)l.innerHTML=loteLinhas();
@@ -585,15 +585,54 @@ function formEditar(l){
   </div>`;
 }
 // 1ª página do PDF como capa (600 px de largura, WebP), usando o mesmo pdf.js do leitor
+// PDF aberto por partes: o pdf.js pede só os trechos de que precisa (essencial para arquivos de centenas de MB)
+async function abrirPorPartes(pdfjs,tamanho,ler){
+  const inicial=new Uint8Array(await ler(0,Math.min(tamanho,262144)));
+  const t=new pdfjs.PDFDataRangeTransport(tamanho,inicial);
+  t.requestDataRange=(ini,fim)=>{ler(ini,fim).then(b=>t.onDataRange(ini,new Uint8Array(b))).catch(()=>{});};
+  return pdfjs.getDocument({range:t,length:tamanho,rangeChunkSize:524288,disableAutoFetch:true,disableStream:true}).promise;
+}
+const lerArquivo=f=>(ini,fim)=>f.slice(ini,fim).arrayBuffer();
+const lerUrl=u=>(ini,fim)=>fetch(u,{headers:{Range:`bytes=${ini}-${fim-1}`}}).then(r=>{if(r.status!==206&&r.status!==200)throw new Error('HTTP '+r.status);return r.arrayBuffer();}).then(b=>b.byteLength>fim-ini?b.slice(ini,fim):b);
+// 1ª página do PDF como capa (600 px de largura, WebP), usando o mesmo pdf.js do leitor
 async function capaDoPdf(file){
+  let doc=null;
   try{
     const pdfjs=await carregarPdfjs();
-    const doc=await pdfjs.getDocument({url:URL.createObjectURL(file),disableAutoFetch:true,disableStream:false}).promise;
+    doc=await abrirPorPartes(pdfjs,file.size,lerArquivo(file));
     const pg=await doc.getPage(1);const v=pg.getViewport({scale:1});const vp=pg.getViewport({scale:Math.min(600/v.width,800/v.height,2)});
     const c=document.createElement('canvas');c.width=Math.floor(vp.width);c.height=Math.floor(vp.height);
-    await pg.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:vp}).promise;doc.destroy();
+    await pg.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:vp}).promise;
     return await new Promise(ok=>c.toBlob(b=>ok(b?{blob:b,ext:b.type==='image/webp'?'webp':'png'}:null),'image/webp',.85));
-  }catch(e){return null;}
+  }catch(e){return null;}finally{if(doc)try{doc.destroy();}catch(e){}}
+}
+// Envio retomável (TUS) do Supabase: blocos de 6 MB, cada bloco tenta de novo até 4 vezes;
+// se a conexão cair no meio, pergunta ao servidor até onde chegou e continua dali.
+const BLOCO=6*1024*1024;
+const b64=t=>btoa(unescape(encodeURIComponent(t)));
+async function enviarRetomavel(sb,caminho,file,tipo,progresso){
+  const {data}=await sb.auth.getSession();const tok=data&&data.session&&data.session.access_token;
+  if(!tok)throw new Error('Sessão expirada. Saia e entre de novo como admin.');
+  const base={authorization:'Bearer '+tok,apikey:CFG.supabaseAnonKey,'tus-resumable':'1.0.0'};
+  const cria=await fetch(CFG.supabaseUrl+'/storage/v1/upload/resumable',{method:'POST',headers:{...base,'upload-length':String(file.size),'x-upsert':'false',
+    'upload-metadata':['bucketName '+b64(CFG.bucket),'objectName '+b64(caminho),'contentType '+b64(tipo),'cacheControl '+b64('3600')].join(',')}});
+  if(cria.status!==201){const t=await cria.text().catch(()=>'');throw new Error(t||('HTTP '+cria.status));}
+  let url=cria.headers.get('location');if(!url)throw new Error('O servidor não devolveu o endereço do envio.');
+  if(url.startsWith('/'))url=CFG.supabaseUrl+url;
+  let ofs=0,tent=0;
+  while(ofs<file.size){
+    try{
+      const r=await fetch(url,{method:'PATCH',headers:{...base,'upload-offset':String(ofs),'content-type':'application/offset+octet-stream'},body:file.slice(ofs,ofs+BLOCO)});
+      if(r.status===204||r.status===200){ofs=+(r.headers.get('upload-offset')||ofs+BLOCO);tent=0;progresso&&progresso(Math.min(ofs,file.size)/file.size);continue;}
+      if(r.status===409||r.status===412){throw new Error('desalinhado');}
+      const t=await r.text().catch(()=>'');throw new Error(t||('HTTP '+r.status));
+    }catch(e){
+      if(/exceeded|too large|413|maximum/i.test(String(e.message)))throw e;
+      if(++tent>4)throw e;
+      await new Promise(r=>setTimeout(r,1500*tent));
+      try{const h=await fetch(url,{method:'HEAD',headers:base});const o=h.headers.get('upload-offset');if(o!=null)ofs=+o;}catch(_){}
+    }
+  }
 }
 function msgErro(e){
   const m=String(e&&(e.message||e.error)||e||'');
@@ -602,10 +641,10 @@ function msgErro(e){
     :/link_compra/i.test(m)?'Falta a coluna link_compra: rode o cob.sql atualizado no Supabase.'
     :/Failed to fetch|NetworkError|network/i.test(m)?'A conexão caiu durante o envio. Tente de novo no Wi-Fi.':m;
 }
-async function enviarUm(sb,file,{titulo,autor,desc,link,capa}){
+async function enviarUm(sb,file,{titulo,autor,desc,link,capa,progresso}){
   const base=`${Date.now()}-${slug(titulo)}`;
-  const up=await sb.storage.from(CFG.bucket).upload(`${base}.pdf`,file,{contentType:'application/pdf',upsert:false});
-  if(up.error)throw up.error;
+  if(file.size>BLOCO)await enviarRetomavel(sb,`${base}.pdf`,file,'application/pdf',progresso);
+  else{const up=await sb.storage.from(CFG.bucket).upload(`${base}.pdf`,file,{contentType:'application/pdf',upsert:false});if(up.error)throw up.error;progresso&&progresso(1);}
   let capaPath=null;
   const r=capa||await capaDoPdf(file);
   if(r){const up2=await sb.storage.from(CFG.bucket).upload(`${base}-capa.${r.ext}`,r.blob,{contentType:r.blob.type,upsert:false});if(!up2.error)capaPath=`${base}-capa.${r.ext}`;}
@@ -677,7 +716,7 @@ async function estanteAcao(a,v){
     const sb=await carregarSupabase();let falhas=0;
     for(const [k,x] of pend.entries()){
       x.st='vai';x.erro='';E.msg=`Enviando ${k+1} de ${pend.length}: ${x.titulo}`;E.erroMsg=false;atualizarLote();
-      try{await enviarUm(sb,x.file,{titulo:x.titulo.trim(),autor:E.loteAutor.trim(),link});x.st='ok';}
+      try{await enviarUm(sb,x.file,{titulo:x.titulo.trim(),autor:E.loteAutor.trim(),link,progresso:f=>{x.pct=f;const el=document.querySelector(`[data-st="${E.lote.indexOf(x)}"]`);if(el)el.textContent=f>=1?'gerando capa…':`enviando ${Math.round(f*100)}%`;}});x.st='ok';}
       catch(e){x.st='erro';x.erro=msgErro(e);falhas++;}
       atualizarLote();
     }
@@ -699,7 +738,7 @@ async function estanteAcao(a,v){
     try{
       const sb=await carregarSupabase();
       const capa=capaImg?await reduzirCapa(capaImg):null;
-      await enviarUm(sb,pdf,{titulo,autor,desc,link,capa});
+      await enviarUm(sb,pdf,{titulo,autor,desc,link,capa,progresso:f=>{const m=$('#adm .msg');if(m)m.textContent=f>=1?'Gerando a capa…':`Enviando o PDF… ${Math.round(f*100)}% (não feche a página)`;}});
       E.ocupado=false;E.livros=null;E.msg='';render(true);
     }catch(e){E.ocupado=false;aviso('Não deu certo: '+msgErro(e),true);}
     return;
@@ -718,7 +757,8 @@ async function estanteAcao(a,v){
 
 
 // ---------- Leitor de PDF (pdf.js, carregado só quando abre um livro) ----------
-const PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/';
+// pdf.js da Mozilla hospedado no próprio site (cob/vendor), sem depender de CDN externo
+const PDFJS=new URL('vendor/pdfjs-4.10.38/',location.href).href;
 const leitor={ativo:false,doc:null,obs:null,zoom:1,id:null,paginas:[],base:0,ticket:0};
 // a importação tenta de novo uma vez: redes móveis derrubam o primeiro carregamento com frequência
 let pdfjsP=null;
@@ -750,7 +790,9 @@ async function iniciarLeitor(id){
   try{
     await carregarSupabase();
     const pdfjs=await carregarPdfjs();
-    const doc=await pdfjs.getDocument({url:urlPublica(l.arquivo),withCredentials:false}).promise;
+    // por partes quando o tamanho é conhecido: o celular baixa só as páginas que aparecem na tela
+    const doc=l.tamanho?await abrirPorPartes(pdfjs,l.tamanho,lerUrl(urlPublica(l.arquivo))).catch(()=>pdfjs.getDocument({url:urlPublica(l.arquivo)}).promise)
+      :await pdfjs.getDocument({url:urlPublica(l.arquivo)}).promise;
     if(ticket!==leitor.ticket)return doc.destroy();
     leitor.doc=doc;
     await montarPaginas(ticket);
