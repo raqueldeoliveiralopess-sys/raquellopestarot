@@ -83,6 +83,45 @@ textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .swatch{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);flex-shrink:0}
 footer.note{font-size:12.5px;color:var(--muted);line-height:1.6}
+/* conta */
+main.portao{padding-top:28px}
+.auth{max-width:460px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.auth .c{text-align:center;align-self:center}
+.auth p.c{color:var(--ink2);font-size:15px}
+.auth-form{display:flex;flex-direction:column;gap:14px}
+.marca{display:flex;flex-direction:column;align-items:center;gap:8px}
+.marca img{width:72px;height:72px;border-radius:18px;display:block}
+.field input[type=email],.field input[type=tel],.field input[type=date]{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:10px 12px;font:inherit;font-size:16px;-webkit-appearance:none;appearance:none}
+.auth .field input[type=text],.auth .field select{background:var(--card)}
+.field input:disabled{opacity:.7}
+.field input[type=date]{display:block;min-width:0}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink2);line-height:1.5}
+.check input{width:22px;height:22px;flex-shrink:0;margin:1px 0 0;accent-color:var(--plum)}
+.lk{border:none;background:none;padding:0;color:var(--plum);text-decoration:underline;font:inherit;font-weight:500;cursor:pointer}
+.dica{font-size:13px;color:var(--muted);line-height:1.5}
+.resp{background:var(--sand);border-color:transparent}
+.radio{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink2)}
+.radio legend{font-size:13px;color:var(--muted);margin-bottom:6px;padding:0}
+.radio label{display:flex;gap:10px;align-items:center;min-height:40px;padding:6px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.radio input{width:20px;height:20px;margin:0;accent-color:var(--plum)}
+.doc h3{font-size:20px;margin:6px 0 0}
+.doc p,.doc li{font-size:14.5px;color:var(--ink2);line-height:1.6}
+.doc ul,.doc ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.lacuna{background:#FCEFC7;color:#7A4B00;padding:0 4px;border-radius:4px}
+@media (prefers-color-scheme:dark){.lacuna{background:#4A3A12;color:#F5DD9B}}
+a.pill{text-decoration:none;display:inline-flex;align-items:center}
+.conta{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;font-size:13px;color:var(--muted);padding:10px 0 4px;border-top:1px solid var(--line)}
+.conta .lk{font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px}
+.stats b{font-size:24px;font-family:'Cormorant Garamond',Georgia,serif}.stats span{font-size:12px;color:var(--muted)}
+.mb{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.mb summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;min-height:56px}
+.mb summary::-webkit-details-marker{display:none}
+.mb summary>span:first-child{display:flex;flex-direction:column;gap:2px;min-width:0;overflow-wrap:anywhere}
+.mb summary small{font-size:12.5px;color:var(--muted)}
+.mb .kv{padding:0 14px 14px;font-size:13.5px;overflow-wrap:anywhere}
+[hidden]{display:none!important}
 /* leitor de PDF */
 main.cheia{padding:0;gap:0}
 .leitor{display:flex;flex-direction:column;min-height:100%}
@@ -171,6 +210,7 @@ main.cheia{padding:0;gap:0}
 <script src="lua.js?v=1"></script>
 <script src="biblioteca.js?v=3"></script>
 <script src="aulas.js?v=1"></script>
+<script src="termos.js?v=1"></script>
 <script src="config.js"></script>
 <script>
 (function(){
@@ -255,8 +295,13 @@ function render(manter){
   const r=rota(), tab=r[0]==='aula'?'aulas':r[0]==='item'?'biblioteca':r[0]==='ler'?'estante':r[0];
   if(leitor.ativo&&r[0]!=='ler')fecharLeitor();
   $('#nav').innerHTML=TABS.map(([id,nome,svg])=>`<button data-go="${id}" class="${tab===id?'on':''}" aria-label="${nome}" ${tab===id?'aria-current="page"':''}>${svg}<span>${nome}</span></button>`).join('');
-  const telas={hoje:telaHoje,aulas:telaAulas,aula:telaAula,estante:telaEstante,ler:telaLer,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua};
-  $('#main').classList.toggle('cheia',r[0]==='ler');
+  const telas={hoje:telaHoje,aulas:telaAulas,aula:telaAula,estante:telaEstante,ler:telaLer,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua,termos:telaTermos,membros:telaMembros};
+  // portão: sem sessão, só a tela de entrada e os termos; com sessão sem cadastro, só completar o perfil
+  const portao=G.off?'':!G.pronto?'carregando':!G.sessao?(r[0]==='termos'?'':'entrar'):(!G.perfil&&!G.admin&&r[0]!=='termos')?'completar':'';
+  $('#nav').hidden=!!portao||(!G.sessao&&r[0]==='termos');
+  $('#main').classList.toggle('cheia',r[0]==='ler'&&!portao);
+  $('#main').classList.toggle('portao',!!portao);
+  if(portao){if(leitor.ativo)fecharLeitor();$('#main').innerHTML=portao==='carregando'?`<div class="auth">${marcaConta}<p class="c" style="color:var(--muted)">Abrindo…</p></div>`:portao==='entrar'?telaEntrar():telaCompletar();if(!manter)window.scrollTo(0,0);return;}
   $('#main').innerHTML=(telas[r[0]]||telaHoje)(r);
   if(r[0]==='ler')iniciarLeitor(r[1]);
   if(!manter)window.scrollTo(0,0);
@@ -272,6 +317,7 @@ document.addEventListener('click',e=>{
   if(a==='mes'){ir('lua/'+v,true);}
   if(a==='dia'){const r=rota();ir(`lua/${r[1]||''}/${v}`,true);}
   if(a.startsWith('est-'))estanteAcao(a.slice(4),v,act);
+  if(a.startsWith('conta-'))contaAcao(a.slice(6),v);
   if(a==='zoom')zoomLeitor(v);
 });
 document.addEventListener('input',e=>{
@@ -292,6 +338,292 @@ document.addEventListener('change',e=>{
   render(true);
 });
 
+// ---------- Conta: cadastro, entrada por link mágico e registro de acessos ----------
+// O app só abre para quem tem sessão e cadastro em cob_membros (a admin não precisa de cadastro).
+// O cadastro preenchido antes do link fica guardado no aparelho e é gravado no banco assim que o link é aberto.
+const T=window.COB_TERMOS;
+const G={off:false,pronto:false,sessao:null,perfil:null,admin:false,aba:'cadastro',etapa:'form',email:'',msg:'',erro:false,ocupado:false,form:{},espera:0,membros:null,mbusca:''};
+const PEND='cob-cadastro', URL_APP=location.origin+location.pathname.replace(/index\.html$/,'');
+const so=t=>String(t||'').replace(/\D/g,'');
+function cpfOk(c){c=so(c);if(c.length!==11||/^(\d)\1{10}$/.test(c))return false;
+  for(const n of [9,10]){let s=0;for(let i=0;i<n;i++)s+=+c[i]*(n+1-i);let r=s*10%11;if(r===10)r=0;if(r!==+c[n])return false;}return true;}
+const fmtCpf=c=>{c=so(c).slice(0,11);return c.replace(/^(\d{3})(\d)/,'$1.$2').replace(/^(\d{3})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d{1,2})$/,'.$1-$2');};
+const fmtTel=t=>{t=so(t).slice(0,11);if(t.length<3)return t;const d=t.slice(0,2),r=t.slice(2);return `(${d}) `+(r.length>8?r.slice(0,5)+'-'+r.slice(5):r.length>4?r.slice(0,4)+'-'+r.slice(4):r);};
+function idadeDe(iso){if(!/^\d{4}-\d{2}-\d{2}$/.test(iso||''))return null;const [a,m,d]=iso.split('-').map(Number),h=new Date();let i=h.getFullYear()-a;if(h.getMonth()+1<m||(h.getMonth()+1===m&&h.getDate()<d))i--;return i;}
+const emailOk=e=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e||'');
+const lerPend=()=>{try{return JSON.parse(localStorage.getItem(PEND)||'null');}catch(e){return null;}};
+const aviso2=(t,erro)=>{G.msg=t;G.erro=!!erro;render(true);};
+function erroConta(e){
+  const m=String(e&&(e.message||e.error_description||e.error)||e||'');
+  return /cob_membros_cpf_key|duplicate key/i.test(m)?'Este CPF já tem cadastro. Entre com o e-mail usado nele, ou fale com a moderação.'
+    :/cpf_invalido/.test(m)?'O CPF não é válido. Confira os números.'
+    :/idade_minima/.test(m)?'A comunidade é para pessoas com 16 anos ou mais.'
+    :/responsavel_incompleto/.test(m)?'Para 16 e 17 anos, preencha todos os dados do responsável e a declaração.'
+    :/nome_incompleto/.test(m)?'Escreva o nome completo (nome e sobrenome).'
+    :/whatsapp_invalido/.test(m)?'O WhatsApp precisa ter DDD e número.'
+    :/nascimento_invalido/.test(m)?'Confira a data de nascimento.'
+    :/sem_aceite/.test(m)?'É preciso marcar o aceite dos termos.'
+    :/cob_membros|relation .* does not exist|schema cache/i.test(m)?'O cadastro ainda não foi ativado no Supabase (falta rodar o SQL do COB).'
+    :/rate limit|too many|seconds/i.test(m)?'Muitos pedidos seguidos. Espere um minuto e tente de novo.'
+    :/Signups not allowed|not found|Invalid login/i.test(m)?'Não achei cadastro com esse e-mail. Toque em "Criar conta".'
+    :/expired|invalid.*token|otp/i.test(m)?'Código inválido ou vencido. Peça um novo.'
+    :/Failed to fetch|NetworkError|network/i.test(m)?'Sem conexão. Confira a internet e tente de novo.':m;
+}
+// valida o formulário; devolve {dados} ou {erro}
+function validarCadastro(f,comEmail){
+  const nome=(f.nome||'').trim().replace(/\s+/g,' '), idade=idadeDe(f.nasc);
+  if(!/\S+\s+\S+/.test(nome))return {erro:'Escreva o nome completo (nome e sobrenome).'};
+  if(!cpfOk(f.cpf))return {erro:'O CPF não é válido. Confira os números.'};
+  if(comEmail&&!emailOk((f.email||'').trim()))return {erro:'Digite um e-mail válido.'};
+  if(so(f.whats).length<10)return {erro:'O WhatsApp precisa ter DDD e número.'};
+  if(idade===null||idade>110||idade<0)return {erro:'Preencha a data de nascimento.'};
+  if(idade<16)return {erro:'A comunidade é para pessoas com 16 anos ou mais.'};
+  const d={nome,cpf:so(f.cpf),whatsapp:so(f.whats),nascimento:f.nasc,aceite:!!f.aceite,aceite_versao:T.VERSAO};
+  if(idade<18){
+    if(!/\S+\s+\S+/.test((f.rnome||'').trim()))return {erro:'Escreva o nome completo do responsável.'};
+    if(!cpfOk(f.rcpf)||so(f.rcpf)===so(f.cpf))return {erro:'O CPF do responsável não é válido (e precisa ser diferente do seu).'};
+    if(so(f.rtel).length<10)return {erro:'Preencha o telefone do responsável com DDD.'};
+    if(!emailOk((f.remail||'').trim()))return {erro:'Preencha o e-mail do responsável.'};
+    if(!f.rpar)return {erro:'Escolha o parentesco do responsável.'};
+    if(f.rimg!=='sim'&&f.rimg!=='nao')return {erro:'O responsável precisa escolher se autoriza ou não câmera e microfone nas aulas.'};
+    if(!f.rdecl)return {erro:'O responsável precisa marcar a declaração.'};
+    Object.assign(d,{resp_nome:f.rnome.trim(),resp_cpf:so(f.rcpf),resp_telefone:so(f.rtel),resp_email:f.remail.trim().toLowerCase(),resp_parentesco:f.rpar,resp_imagem:f.rimg==='sim',resp_declara:true});
+  }
+  if(!d.aceite)return {erro:'Para continuar, marque que leu e concorda com os termos.'};
+  return {dados:d};
+}
+async function gravarCadastro(dados){
+  const sb=await carregarSupabase();
+  const {data,error}=await sb.from('cob_membros').insert(dados).select().single();
+  if(error)throw error;
+  try{localStorage.removeItem(PEND);}catch(e){}
+  G.perfil=data;
+}
+async function registrarAcesso(){
+  try{const ult=+localStorage.getItem('cob-acesso-em')||0;if(Date.now()-ult<30*60000)return;localStorage.setItem('cob-acesso-em',String(Date.now()));
+    const sb=await carregarSupabase();const {error}=await sb.from('cob_acessos').insert({});if(error)localStorage.removeItem('cob-acesso-em');}catch(e){}
+}
+// verifyOtp e o aviso SIGNED_IN chegam juntos: uma entrada por usuário de cada vez, para não gravar o cadastro duas vezes
+let entrando=null;
+function aoEntrar(ses){
+  if(entrando&&entrando.id===ses.user.id)return entrando.p;
+  const p=entrar_(ses).finally(()=>{if(entrando&&entrando.p===p)entrando=null;});
+  entrando={id:ses.user.id,p};return p;
+}
+async function entrar_(ses){
+  G.sessao=ses;E.sessao=ses;G.email=(ses.user.email||'').toLowerCase();
+  const sb=await carregarSupabase();
+  const [p,a]=await Promise.all([sb.from('cob_membros').select('*').eq('user_id',ses.user.id).maybeSingle(),sb.rpc('e_admin')]);
+  G.admin=E.admin=!!a.data;G.perfil=p.data||null;
+  if(!G.perfil&&!G.admin){
+    const pend=lerPend();
+    if(pend&&pend.email===G.email){
+      const {email,form,...dados}=pend;
+      try{await gravarCadastro(dados);}catch(e){G.form={...G.form,...pend.form};G.msg=erroConta(e);G.erro=true;}
+    }
+  }
+  if(G.perfil||G.admin)registrarAcesso();
+}
+async function iniciarConta(){
+  // volta do link mágico: o token vem depois do # e o pdf.js/rotas não devem vê-lo
+  const h=location.hash, doLink=/access_token=|error_description=/.test(h);
+  let erroLink='';
+  if(/error_description=/.test(h)){const q=new URLSearchParams(h.slice(1));erroLink=/expired|invalid/i.test(q.get('error_code')+q.get('error_description'))?'O link venceu ou já foi usado. Peça um novo abaixo.':'Não consegui entrar com esse link. Peça um novo abaixo.';}
+  try{
+    const sb=await carregarSupabase();
+    // enquanto o SQL do cadastro não foi rodado no Supabase, o app segue aberto como antes (sem portão)
+    const t=await sb.from('cob_membros').select('user_id').limit(0);
+    if(t.error&&(/PGRST205|42P01/.test(t.error.code||'')||t.status===404)){G.off=true;G.pronto=true;render();return;}
+    const {data}=await sb.auth.getSession();
+    if(data&&data.session)await aoEntrar(data.session);
+    sb.auth.onAuthStateChange((ev,ses)=>{
+      if(ev==='SIGNED_IN'&&ses&&(!G.sessao||G.sessao.user.id!==ses.user.id)){aoEntrar(ses).then(()=>render());}
+      if(ev==='SIGNED_OUT'){G.sessao=null;G.perfil=null;G.admin=E.admin=false;E.sessao=null;render();}
+    });
+  }catch(e){G.msg=navigator.onLine?'Não consegui conectar agora. Tente de novo em instantes.':'Sem internet. Conecte-se para entrar.';G.erro=true;}
+  if(erroLink){G.aba='entrar';G.etapa='form';G.msg=erroLink;G.erro=true;}
+  if(doLink)history.replaceState(null,'',location.pathname+'#/hoje');
+  G.pronto=true;render();
+}
+async function contaAcao(a,v){
+  if(a==='aba'){G.aba=v;G.etapa='form';G.msg='';render(true);return;}
+  if(a==='voltar'){G.etapa='form';G.msg='';render(true);return;}
+  if(a==='cadastrar'||a==='completar'){
+    const r=validarCadastro(G.form,a==='cadastrar');if(r.erro)return aviso2(r.erro,true);
+    G.ocupado=true;aviso2('');
+    if(a==='completar'){try{await gravarCadastro(r.dados);G.ocupado=false;G.msg='';registrarAcesso();render();}catch(e){G.ocupado=false;aviso2(erroConta(e),true);}return;}
+    const email=G.form.email.trim().toLowerCase();
+    try{localStorage.setItem(PEND,JSON.stringify({...r.dados,email,form:{...G.form,aceite:false,rdecl:false}}));}catch(e){}
+    return enviarLink(email,true);
+  }
+  if(a==='entrar'){
+    const email=(G.form.lemail||'').trim().toLowerCase();if(!emailOk(email))return aviso2('Digite o e-mail do seu cadastro.',true);
+    return enviarLink(email,false);
+  }
+  if(a==='reenviar'){if(Date.now()<G.espera)return;return enviarLink(G.email,G.aba==='cadastro');}
+  if(a==='codigo'){
+    const tok=so(G.form.codigo);if(tok.length<6)return aviso2('Digite o código de 6 dígitos do e-mail.',true);
+    G.ocupado=true;aviso2('');
+    try{const sb=await carregarSupabase();const {data,error}=await sb.auth.verifyOtp({email:G.email,token:tok,type:'email'});if(error)throw error;await aoEntrar(data.session);G.ocupado=false;G.msg='';render();}
+    catch(e){G.ocupado=false;aviso2(erroConta(e),true);}
+    return;
+  }
+  if(a==='sair'){try{const sb=await carregarSupabase();await sb.auth.signOut();}catch(e){}G.sessao=null;G.perfil=null;G.admin=E.admin=false;E.sessao=null;G.aba='entrar';G.etapa='form';G.msg='';G.membros=null;ir('hoje');render();return;}
+  if(a==='csv')return baixarCsv();
+}
+async function enviarLink(email,novo){
+  G.ocupado=true;G.email=email;aviso2('');
+  try{
+    const sb=await carregarSupabase();
+    const {error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:novo,emailRedirectTo:URL_APP}});
+    if(error)throw error;
+    G.ocupado=false;G.etapa='enviado';G.form.codigo='';G.espera=Date.now()+60000;G.msg='';render(true);
+    setTimeout(()=>{if(G.etapa==='enviado')render(true);},60500);
+  }catch(e){G.ocupado=false;aviso2(erroConta(e),true);}
+}
+// campos do formulário: o valor fica em G.form (não se perde ao trocar de tela) e CPF/telefone ganham máscara
+document.addEventListener('input',e=>{
+  const k=e.target.dataset&&e.target.dataset.f;if(!k)return;
+  if(e.target.type==='checkbox')G.form[k]=e.target.checked;
+  else if(e.target.type==='radio'){if(e.target.checked)G.form[k]=e.target.value;}
+  else{
+    if(e.target.dataset.mask==='cpf'){const v=fmtCpf(e.target.value);if(v!==e.target.value)e.target.value=v;}
+    if(e.target.dataset.mask==='tel'){const v=fmtTel(e.target.value);if(v!==e.target.value)e.target.value=v;}
+    G.form[k]=e.target.value;
+  }
+  if(k==='nasc')mostrarResponsavel();
+});
+document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.f;if(k&&(e.target.type==='radio'||e.target.tagName==='SELECT'||e.target.type==='date')){G.form[k]=e.target.value;if(k==='nasc')mostrarResponsavel();}});
+function mostrarResponsavel(){
+  const i=idadeDe(G.form.nasc), r=$('#c-resp'), av=$('#c-idade');
+  if(r)r.hidden=!(i!==null&&i>=16&&i<18);
+  if(av){av.hidden=!(i!==null&&i<16&&i>=0);}
+}
+const fv=k=>esc(G.form[k]||'');
+function camposCadastro(comEmail){
+  const i=idadeDe(G.form.nasc), menor=i!==null&&i>=16&&i<18;
+  return `
+    <label class="field">Nome completo<input type="text" data-f="nome" autocomplete="name" maxlength="120" value="${fv('nome')}"></label>
+    <label class="field">CPF<input type="text" data-f="cpf" data-mask="cpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" value="${fv('cpf')}"></label>
+    ${comEmail?`<label class="field">E-mail<input type="email" data-f="email" autocomplete="email" inputmode="email" placeholder="voce@email.com" value="${fv('email')}"></label>`
+      :`<label class="field">E-mail<input type="email" value="${esc(G.email)}" disabled></label>`}
+    <label class="field">WhatsApp<input type="tel" data-f="whats" data-mask="tel" autocomplete="tel-national" inputmode="tel" placeholder="(11) 90000-0000" value="${fv('whats')}"></label>
+    <label class="field">Data de nascimento<input type="date" data-f="nasc" autocomplete="bday" max="${new Date().toISOString().slice(0,10)}" value="${fv('nasc')}"></label>
+    <p class="msg erro" id="c-idade" ${i!==null&&i<16&&i>=0?'':'hidden'}>A comunidade é para pessoas com 16 anos ou mais. Quando você completar 16, vai ser um prazer te receber.</p>
+    <div class="card resp" id="c-resp" ${menor?'':'hidden'}>
+      <div class="eyebrow">Responsável legal</div>
+      <p class="dica">Para 16 e 17 anos, a participação depende da autorização do(a) responsável. Peça para ele(a) preencher esta parte e ler o <button type="button" class="lk" data-go="termos/responsavel">Termo de ciência e autorização</button>.</p>
+      <label class="field">Nome completo do responsável<input type="text" data-f="rnome" maxlength="120" value="${fv('rnome')}"></label>
+      <label class="field">CPF do responsável<input type="text" data-f="rcpf" data-mask="cpf" inputmode="numeric" placeholder="000.000.000-00" value="${fv('rcpf')}"></label>
+      <label class="field">Telefone do responsável<input type="tel" data-f="rtel" data-mask="tel" inputmode="tel" placeholder="(11) 90000-0000" value="${fv('rtel')}"></label>
+      <label class="field">E-mail do responsável<input type="email" data-f="remail" inputmode="email" value="${fv('remail')}"></label>
+      <label class="field">Parentesco<select data-f="rpar">${['','Pai','Mãe','Tutor(a)','Guardião(ã) legal'].map(o=>`<option value="${o}" ${G.form.rpar===o?'selected':''}>${o||'Escolha'}</option>`).join('')}</select></label>
+      <fieldset class="radio"><legend>Câmera e microfone nas aulas gravadas</legend>
+        <label><input type="radio" name="rimg" data-f="rimg" value="sim" ${G.form.rimg==='sim'?'checked':''}> Autorizo</label>
+        <label><input type="radio" name="rimg" data-f="rimg" value="nao" ${G.form.rimg==='nao'?'checked':''}> Não autorizo (participa pelo chat)</label>
+      </fieldset>
+      <label class="check"><input type="checkbox" data-f="rdecl" ${G.form.rdecl?'checked':''}><span>Sou o(a) responsável legal, li e aceito o <button type="button" class="lk" data-go="termos/responsavel">Termo de ciência e autorização</button>, e declaro que as informações acima são verdadeiras.</span></label>
+    </div>
+    <label class="check"><input type="checkbox" data-f="aceite" ${G.form.aceite?'checked':''}><span>Li e concordo com as <button type="button" class="lk" data-go="termos/regras">Regras da comunidade</button>, os <button type="button" class="lk" data-go="termos/uso">Termos de uso</button> e a <button type="button" class="lk" data-go="termos/privacidade">Política de privacidade</button>.</span></label>`;
+}
+const marcaConta=`<div class="marca"><img src="icon-192.png" alt="" width="72" height="72"><div class="eyebrow">Curso Online de Bruxaria</div></div>`;
+const msgConta=()=>G.msg?`<p class="msg ${G.erro?'erro':''}" role="alert">${esc(G.msg)}</p>`:'';
+function telaEntrar(){
+  if(G.etapa==='enviado'){
+    const falta=Math.max(0,Math.ceil((G.espera-Date.now())/1000));
+    return `<div class="auth">${marcaConta}
+      <h1 class="h1 c">Confira seu e-mail</h1>
+      <p class="c">Mandamos um link de acesso para <b>${esc(G.email)}</b>. Abra o e-mail <b>neste aparelho</b> e toque no link para entrar.</p>
+      <div class="card">
+        <p class="dica">Se o e-mail trouxer um código de 6 dígitos, você também pode digitá-lo aqui (útil quando o app está instalado na tela inicial).</p>
+        <label class="field">Código<input type="text" data-f="codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="8" value="${fv('codigo')}"></label>
+        ${msgConta()}
+        <button class="btn" data-act="conta-codigo" ${G.ocupado?'disabled':''}>${G.ocupado?'Conferindo…':'Entrar com o código'}</button>
+      </div>
+      <p class="dica c">Não chegou? Olhe o spam e a aba Promoções.</p>
+      <button class="link c" data-act="conta-reenviar" ${falta?'disabled':''}>${falta?`Reenviar em ${falta}s`:'Reenviar o link'}</button>
+      <button class="link c" data-act="conta-voltar">Usar outro e-mail</button>
+    </div>`;
+  }
+  const cad=G.aba==='cadastro';
+  return `<div class="auth">${marcaConta}
+    <h1 class="h1 c">${cad?'Crie seu perfil':'Entre no COB'}</h1>
+    <p class="c">${cad?'O acesso é gratuito. Preencha seus dados uma vez; depois você entra pelo link que chega no e-mail, sem senha.':'Digite o e-mail do seu cadastro. Mandamos um link para você entrar, sem senha.'}</p>
+    <div class="adm-tabs" role="tablist"><button class="pill ${cad?'on':''}" role="tab" aria-selected="${cad}" data-act="conta-aba" data-v="cadastro">Criar conta</button><button class="pill ${!cad?'on':''}" role="tab" aria-selected="${!cad}" data-act="conta-aba" data-v="entrar">Já tenho conta</button></div>
+    ${cad?`<form class="auth-form" onsubmit="return false">${camposCadastro(true)}${msgConta()}
+      <button class="btn" data-act="conta-cadastrar" ${G.ocupado?'disabled':''}>${G.ocupado?'Enviando…':'Criar conta e receber o link'}</button></form>`
+    :`<form class="auth-form" onsubmit="return false"><label class="field">E-mail<input type="email" data-f="lemail" autocomplete="email" inputmode="email" placeholder="voce@email.com" value="${fv('lemail')}"></label>${msgConta()}
+      <button class="btn" data-act="conta-entrar" ${G.ocupado?'disabled':''}>${G.ocupado?'Enviando…':'Receber link de acesso'}</button></form>`}
+    <button class="link c" data-go="termos">Regras, termos e privacidade</button>
+  </div>`;
+}
+function telaCompletar(){
+  return `<div class="auth">${marcaConta}
+    <h1 class="h1 c">Complete seu perfil</h1>
+    <p class="c">Falta pouco: preencha seus dados para liberar o app.</p>
+    <form class="auth-form" onsubmit="return false">${camposCadastro(false)}${msgConta()}
+    <button class="btn" data-act="conta-completar" ${G.ocupado?'disabled':''}>${G.ocupado?'Salvando…':'Concluir cadastro'}</button></form>
+    <button class="link c" data-act="conta-sair">Sair (${esc(G.email)})</button>
+  </div>`;
+}
+function telaTermos(r){
+  const alvo=r[1];
+  const docs=T.docs.filter(d=>d.id!=='responsavel'||alvo==='responsavel'||G.admin||(G.perfil&&G.perfil.resp_nome));
+  if(alvo)setTimeout(()=>{const el=document.getElementById('doc-'+alvo);if(el)el.scrollIntoView({behavior:'instant',block:'start'});},0);
+  return `<button class="back" data-act="voltar" data-v="${G.sessao?'hoje':''}">${I.back} Voltar</button>
+  <div><div class="eyebrow">O Coven da Raquel</div><h1 class="h1" style="margin-top:6px">Regras, termos e privacidade</h1></div>
+  <div class="pills" style="margin:0;padding:0">${docs.map(d=>`<a class="pill" href="#/termos/${d.id}">${esc(d.titulo)}</a>`).join('')}</div>
+  ${docs.map(d=>`<section class="card doc" id="doc-${d.id}"><h2 class="h2">${esc(d.titulo)}</h2>${d.html()}</section>`).join('')}`;
+}
+function rodapeConta(){
+  if(!G.sessao)return '';
+  const n=G.perfil?G.perfil.nome:G.email;
+  return `<div class="conta">
+    <span>Conectado(a) como <b>${esc(n)}</b></span>
+    <div class="conta-l">${G.admin?`<button class="lk" data-go="membros">Membros cadastrados</button> · `:''}<button class="lk" data-go="termos">Termos e privacidade</button> · <button class="lk" data-act="conta-sair">Sair</button></div>
+  </div>`;
+}
+// ---------- Membros (só admin) ----------
+async function carregarMembros(){
+  try{const sb=await carregarSupabase();const {data,error}=await sb.from('cob_membros').select('*').order('criado_em',{ascending:false});if(error)throw error;G.membros=data;}
+  catch(e){G.membros={erro:erroConta(e)};}
+  if(rota()[0]==='membros')render(true);
+}
+const dataHora=s=>s?new Date(s).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+function membrosFiltrados(){
+  const q=semAcento(G.mbusca).trim(), qd=so(q), l=Array.isArray(G.membros)?G.membros:[];
+  return q?l.filter(m=>semAcento(m.nome+' '+m.email).includes(q)||(qd.length>=3&&(m.cpf.includes(qd)||m.whatsapp.includes(qd)))):l;
+}
+function listaMembros(){
+  const l=membrosFiltrados();
+  return `<p class="econta">${l.length} de ${(G.membros||[]).length} membro(s)</p>`+l.map(m=>{const i=idadeDe(m.nascimento);return `<details class="mb"><summary><span><b>${esc(m.nome)}</b><small>${esc(m.email)} · cadastro ${dataHora(m.criado_em)}</small></span>${i<18?'<span class="tag">16–17</span>':''}</summary>
+    <dl class="kv"><dt>CPF</dt><dd>${esc(fmtCpf(m.cpf))}</dd><dt>WhatsApp</dt><dd><a href="https://wa.me/55${esc(so(m.whatsapp).replace(/^55(?=\d{10,11}$)/,''))}" target="_blank" rel="noopener">${esc(fmtTel(m.whatsapp))}</a></dd>
+    <dt>Nascimento</dt><dd>${esc(m.nascimento.split('-').reverse().join('/'))} (${i} anos)</dd><dt>Último acesso</dt><dd>${dataHora(m.ultimo_acesso)}</dd>
+    <dt>Aceite</dt><dd>${dataHora(m.aceite_em)} · versão ${esc(m.aceite_versao||'—')}${m.aceite_ip?` · IP ${esc(m.aceite_ip)}`:''}</dd>
+    ${m.resp_nome?`<dt>Responsável</dt><dd>${esc(m.resp_nome)} (${esc(m.resp_parentesco)}) · CPF ${esc(fmtCpf(m.resp_cpf))} · ${esc(fmtTel(m.resp_telefone))} · ${esc(m.resp_email)} · imagem: ${m.resp_imagem?'autoriza':'não autoriza'}</dd>`:''}</dl></details>`;}).join('');
+}
+function telaMembros(){
+  if(!G.admin)return `<div class="card"><p>Área só da administradora.</p></div>`;
+  if(G.membros===null){carregarMembros();return `<div><h1 class="h1">Membros</h1></div><div class="card"><p style="color:var(--muted)">Carregando…</p></div>`;}
+  if(G.membros.erro)return `<div><h1 class="h1">Membros</h1></div><p class="msg erro">${esc(G.membros.erro)}</p>`;
+  const sem=G.membros.filter(m=>Date.now()-new Date(m.criado_em)<7*864e5).length, ativos=G.membros.filter(m=>m.ultimo_acesso&&Date.now()-new Date(m.ultimo_acesso)<7*864e5).length;
+  return `<button class="back" data-act="voltar" data-v="hoje">${I.back} Voltar</button>
+  <div><div class="eyebrow">Só para a admin</div><h1 class="h1" style="margin-top:6px">Membros</h1></div>
+  <div class="stats"><div><b>${G.membros.length}</b><span>cadastros</span></div><div><b>${sem}</b><span>novos em 7 dias</span></div><div><b>${ativos}</b><span>entraram em 7 dias</span></div></div>
+  <input class="search" id="m-busca" type="search" placeholder="Buscar por nome, e-mail, CPF ou WhatsApp" value="${esc(G.mbusca)}" autocomplete="off">
+  <button class="btn ghost" data-act="conta-csv">Baixar planilha (CSV)</button>
+  <div id="m-lista" class="list">${listaMembros()}</div>
+  <footer class="note">Os dados são pessoais (LGPD): use só para segurança e gestão da comunidade, não compartilhe a planilha e apague cópias que não precisar mais.</footer>`;
+}
+document.addEventListener('input',e=>{if(e.target.id==='m-busca'){G.mbusca=e.target.value;const l=$('#m-lista');if(l)l.innerHTML=listaMembros();}});
+function baixarCsv(){
+  const cols=[['nome','Nome'],['cpf','CPF'],['email','E-mail'],['whatsapp','WhatsApp'],['nascimento','Nascimento'],['criado_em','Cadastro'],['ultimo_acesso','Último acesso'],['aceite_versao','Versão dos termos'],['aceite_em','Aceite em'],['aceite_ip','IP do aceite'],['resp_nome','Responsável'],['resp_cpf','CPF do responsável'],['resp_telefone','Telefone do responsável'],['resp_email','E-mail do responsável'],['resp_parentesco','Parentesco'],['resp_imagem','Imagem autorizada']];
+  const q=x=>{let s=x==null?'':String(x);if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};
+  const linhas=[cols.map(c=>q(c[1])).join(';')].concat(membrosFiltrados().map(m=>cols.map(c=>q(m[c[0]])).join(';')));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+linhas.join('\r\n')],{type:'text/csv;charset=utf-8'}));
+  a.download=`membros-cob-${new Date().toISOString().slice(0,10)}.csv`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+}
+
 // ---------- tela Hoje ----------
 const corHex=n=>{const c=B.cores.find(x=>x.nome.toLowerCase()===n.toLowerCase().replace('roxo-escuro','roxo'));return c?c.hex:'#CBB8AE';};
 function proximaAula(){
@@ -308,7 +640,7 @@ function telaHoje(){
   const h=agora.getHours(), saud=h<5?'Boa noite':h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
   const px=lua.proxima;
   return `
-  <div><div class="eyebrow">${esc(dia.nome)}, ${dataLonga(agora)}</div><h1 class="h1" style="margin-top:6px">${saud}, bruxa(o).</h1></div>
+  <div><div class="eyebrow">${esc(dia.nome)}, ${dataLonga(agora)}</div><h1 class="h1" style="margin-top:6px">${saud}, ${G.perfil?esc(G.perfil.nome.split(' ')[0]):'bruxa(o)'}.</h1></div>
   <button class="night" data-go="lua" style="text-align:left;width:100%">
     ${luaSvg(lua.ilum,lua.crescendo,84)}
     <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
@@ -338,7 +670,8 @@ function telaHoje(){
     <span class="ic">${I.erva}</span>
     <span class="t"><span class="s" style="font-size:12px;letter-spacing:.12em;text-transform:uppercase">Erva do dia</span><span class="n">${esc(erva.nome)}</span><span class="s">${esc(erva.temas.join(' · '))}</span></span>
     <span class="chev">${I.chev}</span>
-  </button>`;
+  </button>
+  ${rodapeConta()}`;
 }
 
 // ---------- Aulas ----------
@@ -523,7 +856,7 @@ function livrosFiltrados(){
 function carregarSupabase(){
   if(E.sb)return Promise.resolve(E.sb);
   return new Promise((ok,falha)=>{
-    const fim=()=>{try{E.sb=window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'cob-sessao'}});ok(E.sb);}catch(e){falha(e);}};
+    const fim=()=>{try{E.sb=window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:'implicit',storageKey:'cob-sessao'}});ok(E.sb);}catch(e){falha(e);}};
     if(window.supabase&&window.supabase.createClient)return fim();
     const sc=document.createElement('script');sc.src='../vendor/supabase-2.117.2.js';sc.onload=fim;sc.onerror=()=>falha(new Error('vendor'));document.head.appendChild(sc);
   });
@@ -579,7 +912,7 @@ function telaEstante(){
     :E.erro?`<p class="msg erro">${esc(E.erro)} <button class="link" data-act="est-recarregar">Tentar de novo</button></p>`
     :`<div class="card"><p style="color:var(--muted)">Carregando a estante…</p></div>`;
   const comCat=temColunaCat();
-  let adm='',entrar='';
+  let adm='';
   if(E.admin){
     const umLivro=E.modo==='um';
     adm=`<div class="card" id="adm">
@@ -608,20 +941,13 @@ function telaEstante(){
       <button class="btn" data-act="est-lote" ${E.ocupado?'disabled':''}>${E.ocupado?'Enviando… não feche a página':`Enviar ${E.lote.filter(x=>x.st!=='ok').length} livro(s)`}</button>
       ${!E.ocupado?`<button class="link" data-act="est-limpar">Limpar a lista</button>`:''}`
       :(E.msg?`<p class="msg ${E.erroMsg?'erro':''}">${esc(E.msg)}</p>`:'')}`}
-      <button class="link" data-act="est-sair">Sair da conta de admin</button>
+      <button class="link" data-go="membros">Ver membros cadastrados</button>
     </div>`;
-  }else if(E.etapa==='email'){
-    adm=`<div class="card"><div class="eyebrow">Entrar como admin</div><label class="field">Seu e-mail<input type="text" id="adm-email" inputmode="email" autocomplete="email" value="${esc(E.email)}"></label>${E.msg?`<p class="msg ${E.erroMsg?'erro':''}">${esc(E.msg)}</p>`:''}<button class="btn" data-act="est-codigo" ${E.ocupado?'disabled':''}>${E.ocupado?'Enviando…':'Receber código por e-mail'}</button><button class="link" data-act="est-fechar">Cancelar</button></div>`;
-  }else if(E.etapa==='codigo'){
-    adm=`<div class="card"><div class="eyebrow">Código enviado para ${esc(E.email)}</div><label class="field">Código de 6 dígitos<input type="text" id="adm-codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="8"></label>${E.msg?`<p class="msg ${E.erroMsg?'erro':''}">${esc(E.msg)}</p>`:''}<button class="btn" data-act="est-entrar" ${E.ocupado?'disabled':''}>${E.ocupado?'Conferindo…':'Entrar'}</button><button class="link" data-act="est-fechar">Cancelar</button></div>`;
-  }else{
-    entrar=`<div style="text-align:center"><button class="link" data-act="est-abrir">Sou admin</button></div>`;
   }
   return `
   <div><div class="eyebrow">Para baixar e ler no celular</div><h1 class="h1" style="margin-top:6px">Estante</h1></div>
   ${adm}
   ${grade}
-  ${entrar}
   <footer class="note">"Ler" abre o livro aqui no app e guarda a página em que você parou. A seta baixa o PDF: no iPhone ele abre na tela e você salva pelo botão de compartilhar; no Android, vai para a pasta Downloads.</footer>`;
 }
 function aviso(t,erro){E.msg=t;E.erroMsg=!!erro;render(true);}
@@ -977,6 +1303,7 @@ function telaLua(r){
 }
 
 render();
+iniciarConta();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js',{scope:'./'}).catch(()=>{});
 })();
 </script>
