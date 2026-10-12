@@ -637,7 +637,7 @@ async function enviarRetomavel(sb,caminho,file,tipo,progresso){
 function msgErro(e){
   const m=String(e&&(e.message||e.error)||e||'');
   return /row-level|policy|permission|403|401|JWT/i.test(m)?'Sem permissão. Confira se o e-mail está na tabela admins.'
-    :/exceeded|too large|413|maximum allowed size/i.test(m)?`Arquivo acima do limite do bucket. Rode o SQL que sobe o limite para ${LIMITE_MB} MB.`
+    :/exceeded|too large|413|maximum allowed size/i.test(m)?`O Supabase recusou pelo tamanho. No painel do Supabase, em Storage → Settings, suba o "Global file size limit" para ${LIMITE_MB} MB e salve.`
     :/link_compra/i.test(m)?'Falta a coluna link_compra: rode o cob.sql atualizado no Supabase.'
     :/Failed to fetch|NetworkError|network/i.test(m)?'A conexão caiu durante o envio. Tente de novo no Wi-Fi.':m;
 }
