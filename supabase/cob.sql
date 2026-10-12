@@ -218,3 +218,43 @@ create policy "acessos: grava o proprio" on public.cob_acessos for insert to aut
 create policy "acessos: admin le"        on public.cob_acessos for select to authenticated using (public.e_admin());
 revoke all on public.cob_acessos from anon;
 grant select, insert on public.cob_acessos to authenticated;
+
+-- 6) Quem leu ou baixou cada livro da Estante (para rastrear vazamentos). Guardado por 6 meses, como os acessos.
+create table if not exists public.cob_leituras (
+  id        bigint generated always as identity primary key,
+  user_id   uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  livro_id  bigint references public.cob_livros(id) on delete set null,
+  titulo    text,              -- cópia do título na hora (continua legível se o livro for removido)
+  arquivo   text,
+  tipo      text not null check (tipo in ('ler', 'baixar')),
+  em        timestamptz not null default now(),
+  ip        text,
+  ua        text
+);
+create index if not exists cob_leituras_em on public.cob_leituras (em desc);
+create index if not exists cob_leituras_user on public.cob_leituras (user_id, em desc);
+create index if not exists cob_leituras_livro on public.cob_leituras (livro_id, em desc);
+alter table public.cob_leituras enable row level security;
+
+create or replace function public.cob_leituras_antes() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  new.user_id := auth.uid();
+  new.em := now();
+  new.ip := nullif(btrim(split_part(coalesce(public.cob_cabecalho('x-forwarded-for'), ''), ',', 1)), '');
+  new.ua := left(public.cob_cabecalho('user-agent'), 300);
+  select l.titulo, l.arquivo into new.titulo, new.arquivo from public.cob_livros l where l.id = new.livro_id;
+  if new.titulo is null then raise exception 'livro_inexistente'; end if;
+  if random() < 0.02 then delete from public.cob_leituras where em < now() - interval '7 months'; end if;
+  return new;
+end $$;
+drop trigger if exists cob_leituras_antes on public.cob_leituras;
+create trigger cob_leituras_antes before insert on public.cob_leituras
+  for each row execute function public.cob_leituras_antes();
+
+drop policy if exists "leituras: membro grava a propria" on public.cob_leituras;
+drop policy if exists "leituras: admin le"               on public.cob_leituras;
+create policy "leituras: membro grava a propria" on public.cob_leituras for insert to authenticated with check (user_id = auth.uid() and (public.e_membro() or public.e_admin()));
+create policy "leituras: admin le"               on public.cob_leituras for select to authenticated using (public.e_admin());
+revoke all on public.cob_leituras from anon;
+grant select, insert on public.cob_leituras to authenticated;

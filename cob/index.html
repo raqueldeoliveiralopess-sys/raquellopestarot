@@ -125,6 +125,9 @@ a.pill{text-decoration:none;display:inline-flex;align-items:center}
 .mb summary>span:first-child{display:flex;flex-direction:column;gap:2px;min-width:0;overflow-wrap:anywhere}
 .mb summary small{font-size:12.5px;color:var(--muted)}
 .mb .kv{padding:0 14px 14px;font-size:13.5px;overflow-wrap:anywhere}
+.hist{display:flex;flex-direction:column;gap:6px;padding:12px 14px 14px;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink2);overflow-wrap:anywhere}
+.hist small{color:var(--muted)}
+.hist i{font-style:normal;font-weight:600;color:var(--muted)}.hist i.baixar{color:var(--plum)}
 [hidden]{display:none!important}
 /* leitor de PDF */
 main.cheia{padding:0;gap:0}
@@ -312,6 +315,7 @@ function render(manter){
 }
 
 document.addEventListener('click',e=>{
+  const bx=e.target.closest('[data-baixar]');if(bx){registrarLeitura(bx.dataset.baixar,'baixar');return;}
   const go=e.target.closest('[data-go]');if(go){ir(go.dataset.go,go.hasAttribute('data-troca'));return;}
   const act=e.target.closest('[data-act]');if(!act)return;
   const a=act.dataset.act, v=act.dataset.v;
@@ -346,7 +350,7 @@ document.addEventListener('change',e=>{
 // O app só abre para quem tem sessão e cadastro em cob_membros (a admin não precisa de cadastro).
 // O cadastro preenchido antes do link fica guardado no aparelho e é gravado no banco assim que o link é aberto.
 const T=window.COB_TERMOS;
-const G={off:false,pronto:false,sessao:null,perfil:null,admin:false,aba:'cadastro',etapa:'form',email:'',msg:'',erro:false,ocupado:false,form:{},espera:0,membros:null,mbusca:''};
+const G={leituras:null,maba:'membros',lbusca:'',off:false,pronto:false,sessao:null,perfil:null,admin:false,aba:'cadastro',etapa:'form',email:'',msg:'',erro:false,ocupado:false,form:{},espera:0,membros:null,mbusca:''};
 const PEND='cob-cadastro', URL_APP=location.origin+location.pathname.replace(/index\.html$/,'');
 const so=t=>String(t||'').replace(/\D/g,'');
 function cpfOk(c){c=so(c);if(c.length!==11||/^(\d)\1{10}$/.test(c))return false;
@@ -473,8 +477,10 @@ async function contaAcao(a,v){
     catch(e){G.ocupado=false;aviso2(erroConta(e),true);}
     return;
   }
-  if(a==='sair'){try{const sb=await carregarSupabase();await sb.auth.signOut();}catch(e){}G.sessao=null;G.perfil=null;G.admin=E.admin=false;E.sessao=null;G.aba='entrar';G.etapa='form';G.msg='';G.membros=null;ir('hoje');render();return;}
+  if(a==='sair'){try{const sb=await carregarSupabase();await sb.auth.signOut();}catch(e){}G.sessao=null;G.perfil=null;G.admin=E.admin=false;E.sessao=null;G.aba='entrar';G.etapa='form';G.msg='';G.membros=null;G.leituras=null;ir('hoje');render();return;}
   if(a==='csv')return baixarCsv();
+  if(a==='csvl')return baixarCsvLeituras();
+  if(a==='maba'){G.maba=v;render(true);return;}
 }
 async function enviarLink(email,novo){
   G.ocupado=true;G.email=email;aviso2('');
@@ -595,6 +601,58 @@ function rodapeConta(){
     <div class="conta-l">${G.admin?`<button class="lk" data-go="membros">Membros cadastrados</button> · `:''}<button class="lk" data-go="termos">Termos e privacidade</button> · <button class="lk" data-act="conta-sair">Sair</button></div>
   </div>`;
 }
+// ---------- Quem leu ou baixou cada livro (cob_leituras) ----------
+// "Ler" conta uma vez a cada 30 min por livro; cada toque em baixar conta sempre.
+const regLeitura={};
+function registrarLeitura(id,tipo){
+  const k=tipo+':'+id, agora=Date.now();
+  if(tipo==='ler'&&regLeitura[k]&&agora-regLeitura[k]<30*60000)return;
+  regLeitura[k]=agora;
+  carregarSupabase().then(sb=>sb.from('cob_leituras').insert({livro_id:+id,tipo})).catch(()=>{});
+}
+async function carregarLeituras(){
+  try{
+    const sb=await carregarSupabase();let todas=[];
+    for(let i=0;i<20000;i+=1000){
+      const {data,error}=await sb.from('cob_leituras').select('*').order('em',{ascending:false}).range(i,i+999);
+      if(error)throw error;todas=todas.concat(data);if(data.length<1000)break;
+    }
+    G.leituras=todas;
+  }catch(e){G.leituras={erro:/cob_leituras|does not exist|schema cache/i.test(String(e&&e.message))?'O registro de leituras ainda não foi ativado (falta rodar o SQL).':erroConta(e)};}
+  if(rota()[0]==='membros')render(true);
+}
+const nomeDe=uid=>{const m=Array.isArray(G.membros)&&G.membros.find(x=>x.user_id===uid);return m?m.nome:'Admin (sem cadastro)';};
+const rotTipo=t=>t==='baixar'?'baixou':'leu';
+function leiturasDo(uid){
+  if(!Array.isArray(G.leituras))return '';
+  const l=G.leituras.filter(x=>x.user_id===uid);
+  if(!l.length)return `<p class="dica" style="padding:0 14px 14px">Ainda não leu nem baixou nenhum livro.</p>`;
+  const b=l.filter(x=>x.tipo==='baixar').length;
+  return `<div class="hist"><b>Estante: ${l.length-b} leitura(s), ${b} download(s)</b>${l.slice(0,15).map(x=>`<span><i class="${x.tipo}">${rotTipo(x.tipo)}</i> ${esc(x.titulo||'—')} · ${dataHora(x.em)}</span>`).join('')}${l.length>15?`<small>e mais ${l.length-15} na planilha de leituras</small>`:''}</div>`;
+}
+function painelLivros(){
+  if(G.leituras===null)return `<div class="card"><p style="color:var(--muted)">Carregando…</p></div>`;
+  if(G.leituras.erro)return `<p class="msg erro">${esc(G.leituras.erro)}</p>`;
+  const por={};G.leituras.forEach(x=>{const k=x.livro_id||('t:'+x.titulo);(por[k]=por[k]||{titulo:x.titulo,ler:0,baixar:0,itens:[]});por[k][x.tipo]++;por[k].itens.push(x);});
+  const q=semAcento(G.lbusca||'').trim();
+  const lista=Object.values(por).filter(x=>!q||semAcento(x.titulo).includes(q)).sort((a,b)=>(b.ler+b.baixar)-(a.ler+a.baixar));
+  if(!G.leituras.length)return `<div class="card"><p>Ninguém leu ou baixou livros ainda. Os registros começam a aparecer aqui a partir de agora.</p></div>`;
+  return `<input class="search" id="l-busca" type="search" placeholder="Buscar livro" value="${esc(G.lbusca||'')}" autocomplete="off">
+  <p class="econta">${lista.length} livro(s) com atividade · ${G.leituras.length} registro(s) nos últimos 6 meses</p>
+  <div class="list" id="l-lista">${lista.map(x=>{const pessoas={};x.itens.forEach(i=>{const p=pessoas[i.user_id]=pessoas[i.user_id]||{ler:0,baixar:0,ult:i.em};p[i.tipo]++;});
+    return `<details class="mb"><summary><span><b>${esc(x.titulo||'—')}</b><small>${x.ler} leitura(s) · ${x.baixar} download(s) · ${Object.keys(pessoas).length} pessoa(s)</small></span></summary>
+    <div class="hist">${Object.entries(pessoas).map(([u,p])=>`<span>${esc(nomeDe(u))} · ${p.ler?`leu ${p.ler}x`:''}${p.ler&&p.baixar?', ':''}${p.baixar?`<i class="baixar">baixou ${p.baixar}x</i>`:''} · último ${dataHora(p.ult)}</span>`).join('')}</div></details>`;}).join('')}</div>`;
+}
+document.addEventListener('input',e=>{if(e.target.id==='l-busca'){G.lbusca=e.target.value;const pos=e.target.selectionStart;render(true);const n=$('#l-busca');if(n){n.focus();n.setSelectionRange(pos,pos);}}});
+function baixarCsvLeituras(){
+  const m=uid=>(Array.isArray(G.membros)&&G.membros.find(x=>x.user_id===uid))||{};
+  const q=x=>{let s=x==null?'':String(x);if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};
+  const linhas=[['Data','Ação','Livro','Nome','E-mail','CPF','WhatsApp','IP','Aparelho'].map(q).join(';')]
+    .concat((G.leituras||[]).map(x=>{const p=m(x.user_id);return [new Date(x.em).toLocaleString('pt-BR'),x.tipo==='baixar'?'baixou':'leu',x.titulo,p.nome||'Admin (sem cadastro)',p.email,p.cpf,p.whatsapp,x.ip,x.ua].map(q).join(';');}));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+linhas.join('\r\n')],{type:'text/csv;charset=utf-8'}));
+  a.download=`leituras-cob-${new Date().toISOString().slice(0,10)}.csv`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+}
+
 // ---------- Membros (só admin) ----------
 async function carregarMembros(){
   try{const sb=await carregarSupabase();const {data,error}=await sb.from('cob_membros').select('*').order('criado_em',{ascending:false});if(error)throw error;G.membros=data;}
@@ -612,19 +670,22 @@ function listaMembros(){
     <dl class="kv"><dt>CPF</dt><dd>${esc(fmtCpf(m.cpf))}</dd><dt>WhatsApp</dt><dd><a href="https://wa.me/55${esc(so(m.whatsapp).replace(/^55(?=\d{10,11}$)/,''))}" target="_blank" rel="noopener">${esc(fmtTel(m.whatsapp))}</a></dd>
     <dt>Nascimento</dt><dd>${esc(m.nascimento.split('-').reverse().join('/'))} (${i} anos)</dd><dt>Último acesso</dt><dd>${dataHora(m.ultimo_acesso)}</dd>
     <dt>Aceite</dt><dd>${dataHora(m.aceite_em)} · versão ${esc(m.aceite_versao||'—')}${m.aceite_ip?` · IP ${esc(m.aceite_ip)}`:''}</dd>
-    ${m.resp_nome?`<dt>Responsável</dt><dd>${esc(m.resp_nome)} (${esc(m.resp_parentesco)}) · CPF ${esc(fmtCpf(m.resp_cpf))} · ${esc(fmtTel(m.resp_telefone))} · ${esc(m.resp_email)} · imagem: ${m.resp_imagem?'autoriza':'não autoriza'}</dd>`:''}</dl></details>`;}).join('');
+    ${m.resp_nome?`<dt>Responsável</dt><dd>${esc(m.resp_nome)} (${esc(m.resp_parentesco)}) · CPF ${esc(fmtCpf(m.resp_cpf))} · ${esc(fmtTel(m.resp_telefone))} · ${esc(m.resp_email)} · imagem: ${m.resp_imagem?'autoriza':'não autoriza'}</dd>`:''}</dl>${leiturasDo(m.user_id)}</details>`;}).join('');
 }
 function telaMembros(){
   if(!G.admin)return `<div class="card"><p>Área só da administradora.</p></div>`;
+  if(G.leituras===undefined||G.leituras===null&&!G.carregandoLeituras){G.carregandoLeituras=true;G.leituras=null;carregarLeituras().finally(()=>{G.carregandoLeituras=false;});}
   if(G.membros===null){carregarMembros();return `<div><h1 class="h1">Membros</h1></div><div class="card"><p style="color:var(--muted)">Carregando…</p></div>`;}
   if(G.membros.erro)return `<div><h1 class="h1">Membros</h1></div><p class="msg erro">${esc(G.membros.erro)}</p>`;
   const sem=G.membros.filter(m=>Date.now()-new Date(m.criado_em)<7*864e5).length, ativos=G.membros.filter(m=>m.ultimo_acesso&&Date.now()-new Date(m.ultimo_acesso)<7*864e5).length;
   return `<button class="back" data-act="voltar" data-v="hoje">${I.back} Voltar</button>
   <div><div class="eyebrow">Só para a admin</div><h1 class="h1" style="margin-top:6px">Membros</h1></div>
   <div class="stats"><div><b>${G.membros.length}</b><span>cadastros</span></div><div><b>${sem}</b><span>novos em 7 dias</span></div><div><b>${ativos}</b><span>entraram em 7 dias</span></div></div>
-  <input class="search" id="m-busca" type="search" placeholder="Buscar por nome, e-mail, CPF ou WhatsApp" value="${esc(G.mbusca)}" autocomplete="off">
-  <button class="btn ghost" data-act="conta-csv">Baixar planilha (CSV)</button>
-  <div id="m-lista" class="list">${listaMembros()}</div>
+  <div class="adm-tabs" role="tablist"><button class="pill ${G.maba!=='livros'?'on':''}" data-act="conta-maba" data-v="membros">Membros</button><button class="pill ${G.maba==='livros'?'on':''}" data-act="conta-maba" data-v="livros">Leituras e downloads</button></div>
+  ${G.maba==='livros'?`${painelLivros()}${Array.isArray(G.leituras)&&G.leituras.length?`<button class="btn ghost" data-act="conta-csvl">Baixar planilha de leituras (CSV)</button>`:''}`
+  :`<input class="search" id="m-busca" type="search" placeholder="Buscar por nome, e-mail, CPF ou WhatsApp" value="${esc(G.mbusca)}" autocomplete="off">
+  <button class="btn ghost" data-act="conta-csv">Baixar planilha de membros (CSV)</button>
+  <div id="m-lista" class="list">${listaMembros()}</div>`}
   <footer class="note">Os dados são pessoais (LGPD): use só para segurança e gestão da comunidade, não compartilhe a planilha e apague cópias que não precisar mais.</footer>`;
 }
 document.addEventListener('input',e=>{if(e.target.id==='m-busca'){G.mbusca=e.target.value;const l=$('#m-lista');if(l)l.innerHTML=listaMembros();}});
@@ -913,7 +974,7 @@ function cartaoLivro(l){
       ${l.autor?`<div class="ba">${esc(l.autor)}</div>`:''}
       ${l.descricao?`<div class="bd">${esc(l.descricao)}</div>`:''}
       ${E.cat==='todas'?`<span class="bc">${esc(CAT_NOME[catDe(l)])}</span>`:''}
-      <div class="acoes"><button class="btn" data-go="ler/${l.id}">${I.ler}Ler</button><a class="btn ghost" href="${esc(urlBaixar(l.arquivo,slug(l.titulo)+'.pdf'))}" target="_blank" rel="noopener" aria-label="Baixar PDF${l.tamanho?' ('+mb(l.tamanho)+')':''}" title="Baixar PDF${l.tamanho?' · '+mb(l.tamanho):''}">${I.down}</a></div>
+      <div class="acoes"><button class="btn" data-go="ler/${l.id}">${I.ler}Ler</button><a class="btn ghost" href="${esc(urlBaixar(l.arquivo,slug(l.titulo)+'.pdf'))}" data-baixar="${l.id}" target="_blank" rel="noopener" aria-label="Baixar PDF${l.tamanho?' ('+mb(l.tamanho)+')':''}" title="Baixar PDF${l.tamanho?' · '+mb(l.tamanho):''}">${I.down}</a></div>
       ${l.link_compra&&linkOk(l.link_compra)?`<a class="buy" href="${esc(l.link_compra)}" target="_blank" rel="noopener sponsored">${I.sacola}Comprar o livro físico</a>`:''}
       ${E.admin?(String(E.editando)===String(l.id)?formEditar(l):`<div class="ed"><div class="row2"><button class="rm" style="color:var(--plum)" data-act="est-editar" data-v="${l.id}">Editar</button><button class="rm" data-act="est-remover" data-v="${l.id}">Remover</button></div></div>`):''}
     </div>`;
@@ -1211,7 +1272,7 @@ function telaLer(r){
       <span class="lpag" id="lpag">…</span>
       <button data-act="zoom" data-v="-" aria-label="Diminuir">${I.menos}</button>
       <button data-act="zoom" data-v="+" aria-label="Aumentar">${I.mais}</button>
-      <a href="${esc(urlBaixar(l.arquivo,slug(l.titulo)+'.pdf'))}" target="_blank" rel="noopener" aria-label="Baixar PDF">${I.down}</a>
+      <a href="${esc(urlBaixar(l.arquivo,slug(l.titulo)+'.pdf'))}" data-baixar="${l.id}" target="_blank" rel="noopener" aria-label="Baixar PDF">${I.down}</a>
     </div>
     <div class="lpaginas" id="lpaginas"><p class="lmsg">Carregando o livro…</p></div>
   </div>`;
@@ -1229,6 +1290,7 @@ async function iniciarLeitor(id){
     if(ticket!==leitor.ticket)return doc.destroy();
     leitor.doc=doc;
     await montarPaginas(ticket);
+    registrarLeitura(id,'ler');
     const salva=(S.leitura[id]&&S.leitura[id].pagina)||1;
     if(salva>1){const el=leitor.paginas[salva-1];if(el)el.scrollIntoView({block:'start'});}
   }catch(e){
