@@ -16,12 +16,14 @@
 @media (prefers-color-scheme:dark){:root{--paper:#171013;--card:#221A1D;--line:#3A2C31;--ink:#F4ECE1;--ink2:#E2D3C8;--muted:#B8A096;--sand:#2E2327;--plum:#E3B6D6;--plum2:#F0CBE4;--night:#0F0A0C;--moondark:#3A2A33}}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--paper);color:var(--ink);font-family:'Jost',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+html{overflow-x:hidden;overflow-x:clip}body{overflow-x:clip}
 button{font-family:inherit;cursor:pointer;color:inherit}
 h1,h2,h3,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;margin:0;line-height:1.1}
 p{margin:0;line-height:1.6}
 a{color:var(--plum)}
 #app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;max-width:760px;margin:0 auto}
-main{flex:1;padding:20px 18px 28px;display:flex;flex-direction:column;gap:18px}
+main{flex:1;min-width:0;padding:20px 18px 28px;display:flex;flex-direction:column;gap:18px}
+main>*{min-width:0}
 nav{position:sticky;bottom:0;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--card);padding:6px 8px calc(10px + env(safe-area-inset-bottom,0px));z-index:5}
 nav button{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:52px;padding:6px 0;border:none;background:transparent;color:var(--muted);font-size:10.5px;font-weight:500}
 nav button svg{width:22px;height:22px}
@@ -110,10 +112,12 @@ main.cheia{padding:0;gap:0}
 .next{display:flex;flex-direction:column;gap:8px}
 /* estante */
 .shelf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.book{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.book{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.book .bt,.book .ba,.book .bd{overflow-wrap:anywhere}.book .rm{padding:0 6px;white-space:nowrap}
 .cover{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:#431E3D;display:flex;align-items:flex-end;padding:12px;color:#F4ECE1;box-shadow:inset 6px 0 0 rgba(0,0,0,.18)}
 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.cover .ph{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;line-height:1.1;position:relative}
+.cover .ph{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;line-height:1.1;position:relative;min-width:0;overflow-wrap:anywhere}
+.book .bc{align-self:flex-start;font-size:11px;letter-spacing:.04em;color:var(--muted);background:var(--sand);padding:3px 8px;border-radius:99px}
 .book .bt{font-size:15px;font-weight:600;line-height:1.25}
 .book .ba{font-size:12.5px;color:var(--muted)}
 .book .bd{font-size:13px;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
@@ -122,16 +126,20 @@ main.cheia{padding:0;gap:0}
 .book .btn.ghost{flex:0 0 44px;padding:0}
 .book .btn svg{width:16px;height:16px}
 .field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
-.field input[type=text],.field textarea{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);padding:10px 12px;font:inherit;font-size:16px}
+.field input[type=text],.field textarea,.field select{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);padding:10px 12px;font:inherit;font-size:16px}
 .field textarea{min-height:80px}
-.field input[type=file]{font-size:14px;color:var(--ink2)}
+.field input[type=file]{font-size:14px;color:var(--ink2);max-width:100%;min-width:0}
+.field select,.ed select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:34px}
+.msg{overflow-wrap:anywhere}
+.ebusca{display:flex;flex-direction:column;gap:10px}
+.econta{font-size:13px;color:var(--muted)}
 .msg{font-size:14px;color:var(--ink2);padding:10px 12px;border-radius:12px;background:var(--sand)}
 .msg.erro{background:#FBEDED;color:#7E2C2C}
 @media (prefers-color-scheme:dark){.msg.erro{background:#3A2225;color:#F0B8B8}}
 .link{border:none;background:none;padding:6px 0;color:var(--muted);font-size:13px;text-decoration:underline;min-height:40px}
 .buy{display:flex;align-items:center;justify-content:center;gap:6px;min-height:40px;border-radius:10px;border:1px dashed var(--line);color:var(--plum);font-size:13px;font-weight:600;text-decoration:none}
 .buy svg{width:14px;height:14px}
-.adm-tabs{display:flex;gap:6px}
+.adm-tabs{display:flex;gap:6px}.adm-tabs .pill{flex:1;white-space:normal;line-height:1.25}
 .lote{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow:auto}
 .lote .li{display:grid;grid-template-columns:1fr auto;gap:4px 8px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
 .lote .li input{grid-column:1/-1;width:100%;min-height:40px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:6px 10px;font:inherit;font-size:16px}
@@ -140,7 +148,7 @@ main.cheia{padding:0;gap:0}
 .st.ok{color:#3F6E4A}.st.erro{color:#7E2C2C}.st.vai{color:var(--plum)}
 @media (prefers-color-scheme:dark){.st.ok{color:#9CCB9F}.st.erro{color:#F0B8B8}}
 .ed{display:flex;flex-direction:column;gap:8px}
-.ed input,.ed textarea{width:100%;min-height:40px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);padding:6px 10px;font:inherit;font-size:16px}
+.ed input,.ed textarea,.ed select{width:100%;min-height:40px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);padding:6px 10px;font:inherit;font-size:16px}
 .ed textarea{min-height:64px}
 .ed .row2{display:flex;gap:6px}.ed .row2 button{flex:1}
 .rm{min-height:40px;border:1px solid var(--line);border-radius:10px;background:transparent;color:#7E2C2C;font-size:13px;font-weight:500;padding:0 12px}
@@ -272,8 +280,10 @@ document.addEventListener('input',e=>{
   if(e.target.classList.contains('lote-tit')){const x=E.lote[+e.target.dataset.i];if(x)x.titulo=e.target.value;}
   if(e.target.id==='lote-autor')E.loteAutor=e.target.value;
   if(e.target.id==='lote-link')E.loteLink=e.target.value;
+  if(e.target.id==='est-busca'){E.busca=e.target.value;atualizarGrade();}
 });
 document.addEventListener('change',e=>{
+  if(e.target.id==='lote-cat'){E.loteCat=e.target.value;return;}
   if(e.target.id!=='lote-pdfs')return;
   const fs=[...e.target.files].filter(f=>/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name));
   const grandes=fs.filter(f=>f.size>LIMITE_MB*1048576);
@@ -410,7 +420,7 @@ function linhaItem(sec,it,icone){
     </button>`;
 }
 // a busca procura em todas as seções, não só na aberta
-const semAcento=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const semAcento=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 function filtrar(q){
   const t=semAcento(q.trim()), itens=$('#itens'), ach=$('#achados');
   if(!itens||!ach)return;
@@ -472,9 +482,44 @@ function telaItem(r){
 
 // ---------- Estante de livros (Supabase: lista pública, envio só de admin) ----------
 const CFG=window.COB_CONFIG||{};
-const E={livros:null,erro:'',sb:null,sessao:null,admin:false,etapa:'fechado',email:'',msg:'',erroMsg:false,ocupado:false,modo:'lote',lote:[],loteAutor:'',loteLink:'',editando:null};
+const E={livros:null,erro:'',sb:null,sessao:null,admin:false,etapa:'fechado',email:'',msg:'',erroMsg:false,ocupado:false,modo:'lote',lote:[],loteAutor:'',loteLink:'',loteCat:'',editando:null,busca:'',cat:'todas'};
 const LIMITE_MB=CFG.limiteMB||500;
 const linkOk=u=>/^https?:\/\/[^\s]+\.[^\s]+/i.test(u||'');
+// categorias da estante: a admin escolhe (coluna categoria); sem escolha, o app deduz pelo título
+const CATS=[
+  ['tarot','Tarot','Tarot',/\btaro|arcano|tiragen|thoth|rider|waite|marselha|sibila|78 graus|setenta e oito graus/],
+  ['oraculos','Oráculos','Oráculos e adivinhação',/lenormand|cigan|oracul|baralho|cartomancia|cartas|adivinh|mancia\b|leitura das maos|pendulo|buzios|i ?ching|\brunas?\b|ogham/],
+  ['astrologia','Astrologia','Astrologia e numerologia',/astrolog|mapa astral|signos?\b|planeta|numerolog|zodiac/],
+  ['hoodoo','Hoodoo e vodu','Hoodoo, vodu e conjure',/hoodoo|hodoo|voodoo|vodu|vodou|conjur|rootwork|santa muerte|mojo/],
+  ['afro','Umbanda e afro','Umbanda, candomblé e Quimbanda',/umband|candombl|quimband|\bexu|pomba ?gira|orix|ogum|iansa|iemanja|oxum|xango|caboclo|preto velho|terreiro|\bifa\b|jurema|\bebos?\b|\bodu\b|oferenda|pelintra|guias de prote/],
+  ['grimorios','Grimórios','Grimórios, Cipriano e goétia',/goetia|goeta|salomao|lemegeton|demon|cipriano|daemon|lucifer|shedim|pantacular|maldi/],
+  ['cristais','Cristais','Cristais e pedras',/cristai|cristal|pedras?\b|gemas?\b/],
+  ['ervas','Ervas','Ervas, plantas e cozinha',/erva|herb|planta|\bflor|floriograf|banhos?\b|\bchas?\b|aromaterap|oleo|incenso|tintura|cozinha|culin|tempero|panela|biblia verde|jardim|botanic/],
+  ['historia','História','História e mitologia',/historia|inquisi|malleus|martelo das feiticeiras|caca as bruxas|hereges|antropolog|mitolog|\bmitos?\b|dicionario/],
+  ['velas','Feitiços e velas','Velas, feitiços e rituais',/vela|candle|feitic|fetic|simpatia|encanto|ritua|sigilo|amarra|protec|limpez|benzi|patua|talism|amulet|grimorio|spell|livro das sombras|magia (pratica|do amor|para)/],
+  ['espiritualidade','Espiritualidade','Espiritualidade, energia e cura',/reiki|chakra|energ|medita|aura\b|espirit|mediun|kardec|anjo|oraca|salmo|psalm|oponopono|lei da atra|\bcura|radiest|passes?\b|passista|magnetism|fluidoterap|neville|consciencia|hindu|religios|biometro|obsess|intuic/],
+  ['jung','Ocultismo e Jung','Psicologia, Jung e ocultismo',/jung|arquetip|psicolog|sombra|inconsciente|simbolo|sonho|alquim|hermet|caibalion|kybalion|ocult|esoteric|caos|caotico|crowley|thelem|iniciatic|mister|secret/],
+  ['bruxaria','Bruxaria','Bruxaria e paganismo',/brux|witch|wicca|paga|deusa|deuses|afrodite|coven|gardner|cunningham|buckland|valiente|ravenwolf|sabas?\b|roda do ano|celta|druid|xama|nord|hecate|lilith|fadas?\b|elementa|elemento|circulo magico|altar|chama|lua|solar|magia/],
+];
+const CAT_NOME=Object.fromEntries(CATS.map(c=>[c[0],c[1]]).concat([['outros','Outros']]));
+const CAT_LONGO=Object.fromEntries(CATS.map(c=>[c[0],c[2]]).concat([['outros','Outros']]));
+function catDe(l){
+  if(l.categoria&&CAT_NOME[l.categoria])return l.categoria;
+  if(l._cat)return l._cat;
+  const t=semAcento(l.titulo+' '+(l.descricao||''));
+  return l._cat=(CATS.find(c=>c[3].test(t))||['outros'])[0];
+}
+const temColunaCat=()=>!!(E.livros&&E.livros.length&&('categoria' in E.livros[0]));
+const opcoesCat=(sel,auto)=>(auto?`<option value="">${auto}</option>`:'')+CATS.concat([['outros','Outros','Outros']]).map(c=>`<option value="${c[0]}" ${sel===c[0]?'selected':''}>${c[2]}</option>`).join('');
+function livrosFiltrados(){
+  const q=semAcento(E.busca).trim().split(/\s+/).filter(Boolean);
+  return (E.livros||[]).filter(l=>{
+    if(E.cat!=='todas'&&catDe(l)!==E.cat)return false;
+    if(!q.length)return true;
+    const t=semAcento([l.titulo,l.autor,l.descricao].join(' '));
+    return q.every(w=>t.includes(w));
+  });
+}
 function carregarSupabase(){
   if(E.sb)return Promise.resolve(E.sb);
   return new Promise((ok,falha)=>{
@@ -497,23 +542,44 @@ async function carregarLivros(){
 const urlPublica=(path,download)=>E.sb?E.sb.storage.from(CFG.bucket).getPublicUrl(path,download?{download}:undefined).data.publicUrl:'';
 const mb=n=>n?(n/1048576).toFixed(n>10485760?0:1).replace('.',',')+' MB':'';
 const slug=t=>t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'livro';
-function telaEstante(){
-  if(E.livros===null&&!E.erro)carregarLivros();
-  const lista=E.livros||[];
-  const grade=lista.length?`<div class="shelf">${lista.map(l=>`
-    <div class="book">
+function cartaoLivro(l){
+  return `<div class="book">
       <div class="cover">${l.capa?`<img src="${esc(urlPublica(l.capa))}" alt="" loading="lazy">`:`<span class="ph">${esc(l.titulo)}</span>`}</div>
       <div class="bt">${esc(l.titulo)}</div>
       ${l.autor?`<div class="ba">${esc(l.autor)}</div>`:''}
       ${l.descricao?`<div class="bd">${esc(l.descricao)}</div>`:''}
+      ${E.cat==='todas'?`<span class="bc">${esc(CAT_NOME[catDe(l)])}</span>`:''}
       <div class="acoes"><button class="btn" data-go="ler/${l.id}">${I.ler}Ler</button><a class="btn ghost" href="${esc(urlPublica(l.arquivo,slug(l.titulo)+'.pdf'))}" target="_blank" rel="noopener" aria-label="Baixar PDF${l.tamanho?' ('+mb(l.tamanho)+')':''}" title="Baixar PDF${l.tamanho?' · '+mb(l.tamanho):''}">${I.down}</a></div>
       ${l.link_compra&&linkOk(l.link_compra)?`<a class="buy" href="${esc(l.link_compra)}" target="_blank" rel="noopener sponsored">${I.sacola}Comprar o livro físico</a>`:''}
       ${E.admin?(String(E.editando)===String(l.id)?formEditar(l):`<div class="ed"><div class="row2"><button class="rm" style="color:var(--plum)" data-act="est-editar" data-v="${l.id}">Editar</button><button class="rm" data-act="est-remover" data-v="${l.id}">Remover</button></div></div>`):''}
-    </div>`).join('')}</div>`
-    :E.livros?`<div class="card"><p>A estante ainda está vazia. Os livros aparecem aqui assim que forem enviados.</p></div>`
+    </div>`;
+}
+// grade e contagem separadas: a busca troca só esta parte, sem perder o foco do campo
+function gradeEstante(){
+  const lista=livrosFiltrados(), total=(E.livros||[]).length;
+  const conta=E.busca.trim()||E.cat!=='todas'?`${lista.length} de ${total} livro(s)`:`${total} livro(s)`;
+  return `<p class="econta" role="status">${conta}</p>`+(lista.length?`<div class="shelf">${lista.map(cartaoLivro).join('')}</div>`
+    :`<div class="card"><p>Nenhum livro encontrado${E.busca.trim()?` para "${esc(E.busca.trim())}"`:''}${E.cat!=='todas'?` em ${esc(CAT_LONGO[E.cat])}`:''}.</p>${E.busca.trim()||E.cat!=='todas'?`<button class="link" style="align-self:flex-start" data-act="est-limparfiltro">Ver todos os livros</button>`:''}</div>`);
+}
+function atualizarGrade(){const g=$('#estante-grade');if(g)g.innerHTML=gradeEstante();}
+function telaEstante(){
+  if(E.livros===null&&!E.erro)carregarLivros();
+  const lista=E.livros||[];
+  let grade;
+  if(lista.length){
+    const cont={};lista.forEach(l=>{const c=catDe(l);cont[c]=(cont[c]||0)+1;});
+    const pills=[['todas','Todas']].concat(CATS.map(c=>[c[0],c[1]]),[['outros','Outros']]).filter(([id])=>id==='todas'||cont[id]);
+    if(E.cat!=='todas'&&!cont[E.cat])E.cat='todas';
+    grade=`<div class="ebusca">
+      <input class="search" id="est-busca" type="search" placeholder="Buscar por título, autoria ou tema" autocomplete="off" enterkeyhint="search" aria-label="Buscar livros" value="${esc(E.busca)}">
+      <div class="pills" role="tablist" aria-label="Categorias">${pills.map(([id,nome])=>`<button class="pill ${E.cat===id?'on':''}" role="tab" aria-selected="${E.cat===id}" data-act="est-cat" data-v="${id}">${esc(nome)}${id!=='todas'?` · ${cont[id]}`:''}</button>`).join('')}</div>
+    </div>
+    <div id="estante-grade" style="display:flex;flex-direction:column;gap:10px">${gradeEstante()}</div>`;
+  }else grade=E.livros?`<div class="card"><p>A estante ainda está vazia. Os livros aparecem aqui assim que forem enviados.</p></div>`
     :E.erro?`<p class="msg erro">${esc(E.erro)} <button class="link" data-act="est-recarregar">Tentar de novo</button></p>`
     :`<div class="card"><p style="color:var(--muted)">Carregando a estante…</p></div>`;
-  let adm='';
+  const comCat=temColunaCat();
+  let adm='',entrar='';
   if(E.admin){
     const umLivro=E.modo==='um';
     adm=`<div class="card" id="adm">
@@ -522,6 +588,7 @@ function telaEstante(){
       ${umLivro?`
       <label class="field">Título<input type="text" id="l-titulo" maxlength="120" autocomplete="off"></label>
       <label class="field">Autora ou autor<input type="text" id="l-autor" maxlength="120" autocomplete="off"></label>
+      ${comCat?`<label class="field">Categoria<select id="l-cat">${opcoesCat('','Automática (pelo título)')}</select></label>`:''}
       <label class="field">Descrição curta (opcional)<textarea id="l-desc" maxlength="400"></textarea></label>
       <label class="field">Onde comprar o físico (link, opcional)<input type="text" id="l-link" inputmode="url" autocomplete="off" placeholder="https://…"></label>
       <label class="field">Capa (imagem; opcional, se não escolher uso a 1ª página do PDF)<input type="file" id="l-capa" accept="image/*"></label>
@@ -534,6 +601,7 @@ function telaEstante(){
       <p style="font-size:13px;color:var(--muted)">Confira os títulos (vieram do nome do arquivo). A capa é a 1ª página de cada PDF.</p>
       <div class="lote" id="lote-lista">${loteLinhas()}</div>
       <label class="field">Autoria (opcional, vale para todos)<input type="text" id="lote-autor" maxlength="120" autocomplete="off" value="${esc(E.loteAutor)}"></label>
+      ${comCat?`<label class="field">Categoria (vale para todos)<select id="lote-cat">${opcoesCat(E.loteCat,'Automática (cada um pelo título)')}</select></label>`:''}
       <label class="field">Onde comprar o físico (link, opcional, vale para todos)<input type="text" id="lote-link" inputmode="url" autocomplete="off" placeholder="https://…" value="${esc(E.loteLink)}"></label>
       <div class="bar"><i id="lote-barra" style="width:${loteFeitos()/E.lote.length*100}%"></i></div>
       <p class="msg" id="lote-msg" ${E.msg?'':'style="display:none"'}>${esc(E.msg)}</p>
@@ -547,18 +615,19 @@ function telaEstante(){
   }else if(E.etapa==='codigo'){
     adm=`<div class="card"><div class="eyebrow">Código enviado para ${esc(E.email)}</div><label class="field">Código de 6 dígitos<input type="text" id="adm-codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="8"></label>${E.msg?`<p class="msg ${E.erroMsg?'erro':''}">${esc(E.msg)}</p>`:''}<button class="btn" data-act="est-entrar" ${E.ocupado?'disabled':''}>${E.ocupado?'Conferindo…':'Entrar'}</button><button class="link" data-act="est-fechar">Cancelar</button></div>`;
   }else{
-    adm=`<div style="text-align:center"><button class="link" data-act="est-abrir">Sou admin</button></div>`;
+    entrar=`<div style="text-align:center"><button class="link" data-act="est-abrir">Sou admin</button></div>`;
   }
   return `
   <div><div class="eyebrow">Para baixar e ler no celular</div><h1 class="h1" style="margin-top:6px">Estante</h1></div>
-  ${grade}
   ${adm}
+  ${grade}
+  ${entrar}
   <footer class="note">"Ler" abre o livro aqui no app e guarda a página em que você parou. A seta baixa o PDF: no iPhone ele abre na tela e você salva pelo botão de compartilhar; no Android, vai para a pasta Downloads.</footer>`;
 }
 function aviso(t,erro){E.msg=t;E.erroMsg=!!erro;render(true);}
 // título a partir do nome do arquivo: tira extensão, números de upload, sublinhados e marcas de site
 function tituloDoArquivo(n){
-  let t=n.replace(/\.pdf$/i,'').replace(/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}/gi,'').replace(/^\d{6,}[-_ ]*/,'').replace(/[-_ ]?\d{6,}([-_]\d+)*/g,'');
+  let t=n.replace(/\.pdf$/i,'').replace(/\+/g,' ').replace(/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}/gi,'').replace(/^\d{6,}[-_ ]*/,'').replace(/[-_ ]?\d{6,}([-_]\d+)*/g,'');
   t=/\s/.test(t.replace(/_/g,''))&&!/^[^\s]*$/.test(t)?t.replace(/_+/g,' '):t.replace(/[-_]+/g,' ');
   t=t.replace(/^(byld|ilide[. ]info|toaz?[. ]?info|DIGITAL[ _]DOWNLOAD)[\s._-]*/i,'').replace(/\b(compress(ed)?|Z-Library|z-lib\.org|Unknown)\b/gi,'').replace(/\(\s*\)/g,'');
   t=t.replace(/(\s+\d){2,}\s*$/,'').replace(/\s+/g,' ').trim().replace(/^[-.\s]+|[-.\s]+$/g,'');
@@ -581,6 +650,7 @@ function formEditar(l){
     <input id="ed-autor" value="${esc(l.autor||'')}" maxlength="120" aria-label="Autoria" placeholder="Autoria">
     <textarea id="ed-desc" maxlength="400" aria-label="Descrição" placeholder="Descrição curta">${esc(l.descricao||'')}</textarea>
     <input id="ed-link" value="${esc(l.link_compra||'')}" inputmode="url" aria-label="Onde comprar" placeholder="Onde comprar (https://…)">
+    ${temColunaCat()?`<select id="ed-cat" aria-label="Categoria">${opcoesCat(l.categoria||'',`Automática (${CAT_LONGO[catDe({titulo:l.titulo,descricao:l.descricao})]})`)}</select>`:''}
     <div class="row2"><button class="btn" style="min-height:40px" data-act="est-salvar" data-v="${l.id}">Salvar</button><button class="rm" style="color:var(--muted)" data-act="est-cancelar">Cancelar</button></div>
   </div>`;
 }
@@ -639,9 +709,10 @@ function msgErro(e){
   return /row-level|policy|permission|403|401|JWT/i.test(m)?'Sem permissão. Confira se o e-mail está na tabela admins.'
     :/exceeded|too large|413|maximum allowed size/i.test(m)?`O Supabase recusou pelo tamanho. No painel do Supabase, em Storage → Settings, suba o "Global file size limit" para ${LIMITE_MB} MB e salve.`
     :/link_compra/i.test(m)?'Falta a coluna link_compra: rode o cob.sql atualizado no Supabase.'
+    :/categoria/i.test(m)?'Falta a coluna categoria: rode o cob.sql atualizado no Supabase.'
     :/Failed to fetch|NetworkError|network/i.test(m)?'A conexão caiu durante o envio. Tente de novo no Wi-Fi.':m;
 }
-async function enviarUm(sb,file,{titulo,autor,desc,link,capa,progresso}){
+async function enviarUm(sb,file,{titulo,autor,desc,link,capa,categoria,progresso}){
   const base=`${Date.now()}-${slug(titulo)}`;
   if(file.size>BLOCO)await enviarRetomavel(sb,`${base}.pdf`,file,'application/pdf',progresso);
   else{const up=await sb.storage.from(CFG.bucket).upload(`${base}.pdf`,file,{contentType:'application/pdf',upsert:false});if(up.error)throw up.error;progresso&&progresso(1);}
@@ -650,6 +721,7 @@ async function enviarUm(sb,file,{titulo,autor,desc,link,capa,progresso}){
   if(r){const up2=await sb.storage.from(CFG.bucket).upload(`${base}-capa.${r.ext}`,r.blob,{contentType:r.blob.type,upsert:false});if(!up2.error)capaPath=`${base}-capa.${r.ext}`;}
   const linha={titulo,autor:autor||null,descricao:desc||null,capa:capaPath,arquivo:`${base}.pdf`,tamanho:file.size};
   if(link)linha.link_compra=link;
+  if(categoria)linha.categoria=categoria;
   const ins=await sb.from('cob_livros').insert(linha);
   if(ins.error){await sb.storage.from(CFG.bucket).remove([`${base}.pdf`].concat(capaPath?[capaPath]:[]));throw ins.error;}
 }
@@ -691,6 +763,8 @@ async function estanteAcao(a,v){
   }
   if(a==='sair'){const sb=await carregarSupabase();await sb.auth.signOut();E.sessao=null;E.admin=false;E.msg='';render();return;}
   if(a==='modo'){E.modo=v;E.msg='';render(true);return;}
+  if(a==='cat'){E.cat=v;render(true);return;}
+  if(a==='limparfiltro'){E.cat='todas';E.busca='';render(true);return;}
   if(a==='limpar'){E.lote=[];E.msg='';render(true);return;}
   if(a==='editar'){E.editando=v;E.msg='';render(true);return;}
   if(a==='cancelar'){E.editando=null;render(true);return;}
@@ -701,9 +775,10 @@ async function estanteAcao(a,v){
     try{
       const sb=await carregarSupabase();
       const dados={titulo,autor:($('#ed-autor').value||'').trim()||null,descricao:($('#ed-desc').value||'').trim()||null,link_compra:link||null};
+      if($('#ed-cat'))dados.categoria=$('#ed-cat').value||null;
       const r=await sb.from('cob_livros').update(dados).eq('id',v).select();
       if(r.error)throw r.error;
-      const l=E.livros.find(x=>String(x.id)===String(v));if(l)Object.assign(l,dados);
+      const l=E.livros.find(x=>String(x.id)===String(v));if(l){Object.assign(l,dados);delete l._cat;}
       E.editando=null;E.msg='';render(true);
     }catch(e){aviso('Não consegui salvar: '+msgErro(e),true);}
     return;
@@ -716,7 +791,7 @@ async function estanteAcao(a,v){
     const sb=await carregarSupabase();let falhas=0;
     for(const [k,x] of pend.entries()){
       x.st='vai';x.erro='';E.msg=`Enviando ${k+1} de ${pend.length}: ${x.titulo}`;E.erroMsg=false;atualizarLote();
-      try{await enviarUm(sb,x.file,{titulo:x.titulo.trim(),autor:E.loteAutor.trim(),link,progresso:f=>{x.pct=f;const el=document.querySelector(`[data-st="${E.lote.indexOf(x)}"]`);if(el)el.textContent=f>=1?'gerando capa…':`enviando ${Math.round(f*100)}%`;}});x.st='ok';}
+      try{await enviarUm(sb,x.file,{titulo:x.titulo.trim(),autor:E.loteAutor.trim(),link,categoria:E.loteCat,progresso:f=>{x.pct=f;const el=document.querySelector(`[data-st="${E.lote.indexOf(x)}"]`);if(el)el.textContent=f>=1?'gerando capa…':`enviando ${Math.round(f*100)}%`;}});x.st='ok';}
       catch(e){x.st='erro';x.erro=msgErro(e);falhas++;}
       atualizarLote();
     }
@@ -728,7 +803,7 @@ async function estanteAcao(a,v){
   }
   if(a==='enviar'){
     const titulo=($('#l-titulo').value||'').trim(), autor=($('#l-autor').value||'').trim(), desc=($('#l-desc').value||'').trim(), link=($('#l-link').value||'').trim();
-    const capaImg=$('#l-capa').files[0], pdf=$('#l-pdf').files[0];
+    const capaImg=$('#l-capa').files[0], pdf=$('#l-pdf').files[0], categoria=$('#l-cat')?$('#l-cat').value:'';
     if(!titulo)return aviso('Dê um título ao livro.',true);
     if(!pdf)return aviso('Escolha o arquivo PDF.',true);
     if(!/pdf$/i.test(pdf.type)&&!/\.pdf$/i.test(pdf.name))return aviso('O arquivo precisa ser um PDF.',true);
@@ -738,7 +813,7 @@ async function estanteAcao(a,v){
     try{
       const sb=await carregarSupabase();
       const capa=capaImg?await reduzirCapa(capaImg):null;
-      await enviarUm(sb,pdf,{titulo,autor,desc,link,capa,progresso:f=>{const m=$('#adm .msg');if(m)m.textContent=f>=1?'Gerando a capa…':`Enviando o PDF… ${Math.round(f*100)}% (não feche a página)`;}});
+      await enviarUm(sb,pdf,{titulo,autor,desc,link,capa,categoria,progresso:f=>{const m=$('#adm .msg');if(m)m.textContent=f>=1?'Gerando a capa…':`Enviando o PDF… ${Math.round(f*100)}% (não feche a página)`;}});
       E.ocupado=false;E.livros=null;E.msg='';render(true);
     }catch(e){E.ocupado=false;aviso('Não deu certo: '+msgErro(e),true);}
     return;

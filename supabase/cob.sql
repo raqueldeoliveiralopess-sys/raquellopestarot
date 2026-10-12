@@ -35,6 +35,8 @@ create table if not exists public.cob_livros (
 alter table public.cob_livros enable row level security;
 -- link de compra do livro físico (código de influencer, loja da editora); pode ficar vazio
 alter table public.cob_livros add column if not exists link_compra text;
+-- categoria do livro (tarot, ervas, hoodoo…); vazia = o app deduz pelo título
+alter table public.cob_livros add column if not exists categoria text;
 
 drop policy if exists "estante: todos leem"    on public.cob_livros;
 drop policy if exists "estante: admin inclui"  on public.cob_livros;
