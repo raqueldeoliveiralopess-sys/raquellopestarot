@@ -214,7 +214,7 @@ main.cheia{padding:0;gap:0}
 <script src="lua.js?v=1"></script>
 <script src="biblioteca.js?v=3"></script>
 <script src="aulas.js?v=1"></script>
-<script src="termos.js?v=1"></script>
+<script src="termos.js?v=2"></script>
 <script src="config.js"></script>
 <script>
 (function(){
@@ -879,22 +879,41 @@ async function carregarLivros(){
     const {data,error}=await sb.from('cob_livros').select('*').order('criado_em',{ascending:false});
     if(error)throw error;
     E.livros=data;E.erro='';
+    await assinar().catch(()=>{});
     const {data:ses}=await sb.auth.getSession();
     if(ses&&ses.session){E.sessao=ses.session;const r=await sb.rpc('e_admin');E.admin=!!r.data;}
   }catch(e){E.erro=navigator.onLine?'Não consegui carregar a estante agora. Tente de novo em instantes.':'Sem internet. A estante precisa de conexão para listar os livros.';}
   if(rota()[0]==='estante')render(true);
 }
-const urlPublica=(path,download)=>E.sb?E.sb.storage.from(CFG.bucket).getPublicUrl(path,download?{download}:undefined).data.publicUrl:'';
+// os arquivos da Estante são privados (só membros): capas e downloads usam links assinados de 6 h,
+// pedidos todos de uma vez; o leitor lê o PDF com a sessão de quem está logado
+const ASSIN={};let assinEm=0,assinando=null;
+function assinar(){
+  if(assinando)return assinando;
+  return assinando=(async()=>{
+    const sb=await carregarSupabase(), l=E.livros||[];
+    const caminhos=[...new Set(l.flatMap(x=>[x.arquivo,x.capa]).filter(Boolean))];
+    for(let i=0;i<caminhos.length;i+=500){
+      const {data,error}=await sb.storage.from(CFG.bucket).createSignedUrls(caminhos.slice(i,i+500),21600);
+      if(error)throw error;(data||[]).forEach(x=>{if(x.signedUrl)ASSIN[x.path]=x.signedUrl;});
+    }
+    assinEm=Date.now();
+  })().finally(()=>{assinando=null;});
+}
+const urlCapa=p=>ASSIN[p]||'';
+const urlBaixar=(p,nome)=>ASSIN[p]?ASSIN[p]+'&download='+encodeURIComponent(nome):'#';
+const urlAuth=p=>`${CFG.supabaseUrl}/storage/v1/object/authenticated/${CFG.bucket}/${p.split('/').map(encodeURIComponent).join('/')}`;
+async function cabecalhoAuth(){const sb=await carregarSupabase();const {data}=await sb.auth.getSession();return {Authorization:'Bearer '+(data&&data.session?data.session.access_token:CFG.supabaseAnonKey),apikey:CFG.supabaseAnonKey};}
 const mb=n=>n?(n/1048576).toFixed(n>10485760?0:1).replace('.',',')+' MB':'';
 const slug=t=>t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'livro';
 function cartaoLivro(l){
   return `<div class="book">
-      <div class="cover">${l.capa?`<img src="${esc(urlPublica(l.capa))}" alt="" loading="lazy">`:`<span class="ph">${esc(l.titulo)}</span>`}</div>
+      <div class="cover">${l.capa?`<img src="${esc(urlCapa(l.capa))}" alt="" loading="lazy">`:`<span class="ph">${esc(l.titulo)}</span>`}</div>
       <div class="bt">${esc(l.titulo)}</div>
       ${l.autor?`<div class="ba">${esc(l.autor)}</div>`:''}
       ${l.descricao?`<div class="bd">${esc(l.descricao)}</div>`:''}
       ${E.cat==='todas'?`<span class="bc">${esc(CAT_NOME[catDe(l)])}</span>`:''}
-      <div class="acoes"><button class="btn" data-go="ler/${l.id}">${I.ler}Ler</button><a class="btn ghost" href="${esc(urlPublica(l.arquivo,slug(l.titulo)+'.pdf'))}" target="_blank" rel="noopener" aria-label="Baixar PDF${l.tamanho?' ('+mb(l.tamanho)+')':''}" title="Baixar PDF${l.tamanho?' · '+mb(l.tamanho):''}">${I.down}</a></div>
+      <div class="acoes"><button class="btn" data-go="ler/${l.id}">${I.ler}Ler</button><a class="btn ghost" href="${esc(urlBaixar(l.arquivo,slug(l.titulo)+'.pdf'))}" target="_blank" rel="noopener" aria-label="Baixar PDF${l.tamanho?' ('+mb(l.tamanho)+')':''}" title="Baixar PDF${l.tamanho?' · '+mb(l.tamanho):''}">${I.down}</a></div>
       ${l.link_compra&&linkOk(l.link_compra)?`<a class="buy" href="${esc(l.link_compra)}" target="_blank" rel="noopener sponsored">${I.sacola}Comprar o livro físico</a>`:''}
       ${E.admin?(String(E.editando)===String(l.id)?formEditar(l):`<div class="ed"><div class="row2"><button class="rm" style="color:var(--plum)" data-act="est-editar" data-v="${l.id}">Editar</button><button class="rm" data-act="est-remover" data-v="${l.id}">Remover</button></div></div>`):''}
     </div>`;
@@ -909,6 +928,7 @@ function gradeEstante(){
 function atualizarGrade(){const g=$('#estante-grade');if(g)g.innerHTML=gradeEstante();}
 function telaEstante(){
   if(E.livros===null&&!E.erro)carregarLivros();
+  else if(E.livros&&Date.now()-assinEm>5*3600e3&&!assinando)assinar().then(()=>{if(rota()[0]==='estante')render(true);}).catch(()=>{});
   const lista=E.livros||[];
   let grade;
   if(lista.length){
@@ -1001,7 +1021,7 @@ async function abrirPorPartes(pdfjs,tamanho,ler){
   return pdfjs.getDocument({range:t,length:tamanho,rangeChunkSize:524288,disableAutoFetch:true,disableStream:true}).promise;
 }
 const lerArquivo=f=>(ini,fim)=>f.slice(ini,fim).arrayBuffer();
-const lerUrl=u=>(ini,fim)=>fetch(u,{headers:{Range:`bytes=${ini}-${fim-1}`}}).then(r=>{if(r.status!==206&&r.status!==200)throw new Error('HTTP '+r.status);return r.arrayBuffer();}).then(b=>b.byteLength>fim-ini?b.slice(ini,fim):b);
+const lerUrl=u=>async(ini,fim)=>fetch(u,{headers:{...(await cabecalhoAuth()),Range:`bytes=${ini}-${fim-1}`}}).then(r=>{if(r.status!==206&&r.status!==200)throw new Error('HTTP '+r.status);return r.arrayBuffer();}).then(b=>b.byteLength>fim-ini?b.slice(ini,fim):b);
 // 1ª página do PDF como capa (600 px de largura, WebP), usando o mesmo pdf.js do leitor
 async function capaDoPdf(file){
   let doc=null;
@@ -1191,7 +1211,7 @@ function telaLer(r){
       <span class="lpag" id="lpag">…</span>
       <button data-act="zoom" data-v="-" aria-label="Diminuir">${I.menos}</button>
       <button data-act="zoom" data-v="+" aria-label="Aumentar">${I.mais}</button>
-      <a href="${esc(urlPublica(l.arquivo,slug(l.titulo)+'.pdf'))}" target="_blank" rel="noopener" aria-label="Baixar PDF">${I.down}</a>
+      <a href="${esc(urlBaixar(l.arquivo,slug(l.titulo)+'.pdf'))}" target="_blank" rel="noopener" aria-label="Baixar PDF">${I.down}</a>
     </div>
     <div class="lpaginas" id="lpaginas"><p class="lmsg">Carregando o livro…</p></div>
   </div>`;
@@ -1204,8 +1224,8 @@ async function iniciarLeitor(id){
     await carregarSupabase();
     const pdfjs=await carregarPdfjs();
     // por partes quando o tamanho é conhecido: o celular baixa só as páginas que aparecem na tela
-    const doc=l.tamanho?await abrirPorPartes(pdfjs,l.tamanho,lerUrl(urlPublica(l.arquivo))).catch(()=>pdfjs.getDocument({url:urlPublica(l.arquivo)}).promise)
-      :await pdfjs.getDocument({url:urlPublica(l.arquivo)}).promise;
+    const u=urlAuth(l.arquivo), inteiro=async()=>pdfjs.getDocument({url:u,httpHeaders:await cabecalhoAuth()}).promise;
+    const doc=l.tamanho?await abrirPorPartes(pdfjs,l.tamanho,lerUrl(u)).catch(inteiro):await inteiro();
     if(ticket!==leitor.ticket)return doc.destroy();
     leitor.doc=doc;
     await montarPaginas(ticket);

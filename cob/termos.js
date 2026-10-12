@@ -2,13 +2,13 @@
 // Preencha DADOS com as lacunas que estavam entre [colchetes]. Campo vazio aparece como [a preencher].
 // Ao mudar qualquer texto, suba VERSAO: o cadastro grava qual versão cada membro aceitou.
 (function(){
-const VERSAO='2026-10-12-v1';
+const VERSAO='2026-10-12-v2';
 const DADOS={
-  nomeCompleto:'',          // nome completo da Raquel
-  cpf:'',                   // CPF da mantenedora
-  email:'',                 // e-mail de contato, dúvidas, denúncias e privacidade
-  encarregada:'',           // nome e e-mail da encarregada de dados (pode ser a própria Raquel)
-  comarca:'',               // foro eleito
+  nomeCompleto:'Raquel de Oliveira Lopes',          // nome completo da Raquel
+  cpf:'394.706.278-81',                   // CPF da mantenedora
+  email:'raquellopesgalante@gmail.com',                 // e-mail de contato, dúvidas, denúncias e privacidade
+  encarregada:'Raquel de Oliveira Lopes (raquellopesgalante@gmail.com)',           // nome e e-mail da encarregada de dados (pode ser a própria Raquel)
+  comarca:'Campinas (SP)',               // foro eleito
   prazoTermo:'cinco anos',  // guarda do termo do responsável depois da saída
   site:'https://ogrimorioarcano.netlify.app/cob/',
   provedores:'Supabase (cadastro, login e banco de dados) e Netlify (hospedagem do site)'

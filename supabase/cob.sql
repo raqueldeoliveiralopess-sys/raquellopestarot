@@ -21,7 +21,17 @@ $$;
 revoke all on function public.e_admin() from public, anon;
 grant execute on function public.e_admin() to authenticated;
 
--- 2) Os livros: quem vê (todo mundo) e quem mexe (só admin)
+-- membro = quem tem cadastro no COB (tabela cob_membros, seção 4). plpgsql para poder existir antes da tabela.
+create or replace function public.e_membro() returns boolean
+language plpgsql stable security definer set search_path = public as $$
+begin
+  return exists (select 1 from public.cob_membros where user_id = auth.uid());
+exception when undefined_table then return false;
+end $$;
+revoke all on function public.e_membro() from public, anon;
+grant execute on function public.e_membro() to authenticated;
+
+-- 2) Os livros: quem vê (membros cadastrados e admin) e quem mexe (só admin)
 create table if not exists public.cob_livros (
   id         bigint generated always as identity primary key,
   titulo     text not null,
@@ -42,19 +52,22 @@ drop policy if exists "estante: todos leem"    on public.cob_livros;
 drop policy if exists "estante: admin inclui"  on public.cob_livros;
 drop policy if exists "estante: admin edita"   on public.cob_livros;
 drop policy if exists "estante: admin remove"  on public.cob_livros;
-create policy "estante: todos leem"   on public.cob_livros for select to anon, authenticated using (true);
+drop policy if exists "estante: membros leem" on public.cob_livros;
+create policy "estante: membros leem" on public.cob_livros for select to authenticated using (public.e_membro() or public.e_admin());
 create policy "estante: admin inclui" on public.cob_livros for insert to authenticated with check (public.e_admin());
 create policy "estante: admin edita"  on public.cob_livros for update to authenticated using (public.e_admin()) with check (public.e_admin());
 create policy "estante: admin remove" on public.cob_livros for delete to authenticated using (public.e_admin());
 
-grant select on public.cob_livros to anon, authenticated;
+revoke all on public.cob_livros from anon;
+grant select on public.cob_livros to authenticated;
 grant insert, update, delete on public.cob_livros to authenticated;
 
--- 3) Os arquivos: bucket público para leitura (as alunas baixam sem login), escrita só de admin.
+-- 3) Os arquivos: bucket PRIVADO. Só membros cadastrados (e a admin) leem e baixam; escrita só de admin.
+--    O app usa links assinados para capas e downloads, e a sessão de quem está logado para o leitor.
 --    Limite de 500 MB por arquivo (plano Pro). O limite geral em Storage → Settings → "Upload file size limit" precisa ser igual ou maior.
 --    Arquivos acima de 6 MB são enviados em partes (upload retomável), então quedas de conexão não perdem o envio.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('cob-livros', 'cob-livros', true, 524288000, array['application/pdf', 'image/webp', 'image/jpeg', 'image/png'])
+values ('cob-livros', 'cob-livros', false, 524288000, array['application/pdf', 'image/webp', 'image/jpeg', 'image/png'])
 on conflict (id) do update
   set public = excluded.public,
       file_size_limit = excluded.file_size_limit,
@@ -64,7 +77,8 @@ drop policy if exists "cob-livros: todos leem"   on storage.objects;
 drop policy if exists "cob-livros: admin envia"  on storage.objects;
 drop policy if exists "cob-livros: admin troca"  on storage.objects;
 drop policy if exists "cob-livros: admin apaga"  on storage.objects;
-create policy "cob-livros: todos leem"  on storage.objects for select to anon, authenticated using (bucket_id = 'cob-livros');
+drop policy if exists "cob-livros: membros leem" on storage.objects;
+create policy "cob-livros: membros leem" on storage.objects for select to authenticated using (bucket_id = 'cob-livros' and (public.e_membro() or public.e_admin()));
 create policy "cob-livros: admin envia" on storage.objects for insert to authenticated with check (bucket_id = 'cob-livros' and public.e_admin());
 create policy "cob-livros: admin troca" on storage.objects for update to authenticated using (bucket_id = 'cob-livros' and public.e_admin());
 create policy "cob-livros: admin apaga" on storage.objects for delete to authenticated using (bucket_id = 'cob-livros' and public.e_admin());
