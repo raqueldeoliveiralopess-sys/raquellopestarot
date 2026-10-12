@@ -81,6 +81,21 @@ textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .swatch{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);flex-shrink:0}
 footer.note{font-size:12.5px;color:var(--muted);line-height:1.6}
+/* leitor de PDF */
+main.cheia{padding:0;gap:0}
+.leitor{display:flex;flex-direction:column;min-height:100%}
+.lbar{position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--card);border-bottom:1px solid var(--line)}
+.lbar .lt{flex:1;min-width:0;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lbar button,.lbar a{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0;text-decoration:none;font-size:13px;font-weight:600}
+.lbar button:disabled{opacity:.4}
+.lbar svg{width:18px;height:18px}
+.lpag{font-size:12.5px;color:var(--muted);white-space:nowrap;min-width:52px;text-align:center}
+.lpaginas{flex:1;background:#3A2C31;padding:10px 0 24px;display:flex;flex-direction:column;align-items:center;gap:10px}
+@media (prefers-color-scheme:light){.lpaginas{background:#D9CDBF}}
+.pg{background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.25);position:relative}
+.pg canvas{display:block;width:100%;height:100%}
+.pg .num{position:absolute;right:6px;bottom:6px;font-size:11px;background:rgba(0,0,0,.45);color:#fff;padding:2px 6px;border-radius:99px}
+.lmsg{color:var(--muted);font-size:14px;padding:40px 20px;text-align:center}
 :focus-visible{outline:2px solid var(--plum);outline-offset:2px}
 .gl{display:flex;flex-direction:column;gap:8px}
 .gl details{background:var(--card);border:1px solid var(--line);border-radius:14px}
@@ -102,7 +117,9 @@ footer.note{font-size:12.5px;color:var(--muted);line-height:1.6}
 .book .bt{font-size:15px;font-weight:600;line-height:1.25}
 .book .ba{font-size:12.5px;color:var(--muted)}
 .book .bd{font-size:13px;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.book .btn{min-height:44px;font-size:14px;border-radius:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:auto}
+.book .acoes{display:flex;gap:6px;margin-top:auto}
+.book .btn{min-height:44px;font-size:14px;border-radius:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;flex:1;padding:0 8px}
+.book .btn.ghost{flex:0 0 44px;padding:0}
 .book .btn svg{width:16px;height:16px}
 .field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
 .field input[type=text],.field textarea{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);padding:10px 12px;font:inherit;font-size:16px}
@@ -165,7 +182,10 @@ const I={
   livro:ic('<path d="M4 5a2 2 0 012-2h3a3 3 0 013 3 3 3 0 013-3h3a2 2 0 012 2v13a2 2 0 01-2 2h-4a2 2 0 00-2 2 2 2 0 00-2-2H6a2 2 0 01-2-2z"/><path d="M12 6v14"/>'),
   down:ic('<path d="M12 3v12M7 10l5 5 5-5M4 19h16"/>'),
   altar:ic('<path d="M4 20h16M6 20V9l6-5 6 5v11"/><path d="M10 20v-5h4v5"/>'),
-  gloss:ic('<path d="M4 6h16M4 12h10M4 18h7"/>')
+  gloss:ic('<path d="M4 6h16M4 12h10M4 18h7"/>'),
+  ler:ic('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
+  menos:ic('<path d="M5 12h14"/>'),
+  mais:ic('<path d="M12 5v14M5 12h14"/>')
 };
 
 // ---------- desenho da Lua ----------
@@ -209,10 +229,13 @@ function ir(h,trocar){if(trocar)location.replace('#/'+h);else location.hash='#/'
 window.addEventListener('hashchange',render);
 
 function render(){
-  const r=rota(), tab=r[0]==='aula'?'aulas':r[0]==='item'?'biblioteca':r[0];
+  const r=rota(), tab=r[0]==='aula'?'aulas':r[0]==='item'?'biblioteca':r[0]==='ler'?'estante':r[0];
+  if(leitor.ativo&&r[0]!=='ler')fecharLeitor();
   $('#nav').innerHTML=TABS.map(([id,nome,svg])=>`<button data-go="${id}" class="${tab===id?'on':''}" aria-label="${nome}" ${tab===id?'aria-current="page"':''}>${svg}<span>${nome}</span></button>`).join('');
-  const telas={hoje:telaHoje,aulas:telaAulas,aula:telaAula,estante:telaEstante,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua};
+  const telas={hoje:telaHoje,aulas:telaAulas,aula:telaAula,estante:telaEstante,ler:telaLer,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua};
+  $('#main').classList.toggle('cheia',r[0]==='ler');
   $('#main').innerHTML=(telas[r[0]]||telaHoje)(r);
+  if(r[0]==='ler')iniciarLeitor(r[1]);
   window.scrollTo(0,0);
 }
 
@@ -226,6 +249,7 @@ document.addEventListener('click',e=>{
   if(a==='mes'){ir('lua/'+v,true);}
   if(a==='dia'){const r=rota();ir(`lua/${r[1]||''}/${v}`,true);}
   if(a.startsWith('est-'))estanteAcao(a.slice(4),v,act);
+  if(a==='zoom')zoomLeitor(v);
 });
 document.addEventListener('input',e=>{
   if(e.target.id==='notas'){S.notas[e.target.dataset.v]=e.target.value;salvar();}
@@ -454,7 +478,7 @@ function telaEstante(){
       <div class="bt">${esc(l.titulo)}</div>
       ${l.autor?`<div class="ba">${esc(l.autor)}</div>`:''}
       ${l.descricao?`<div class="bd">${esc(l.descricao)}</div>`:''}
-      <a class="btn" href="${esc(urlPublica(l.arquivo,slug(l.titulo)+'.pdf'))}" target="_blank" rel="noopener">${I.down}Baixar PDF${l.tamanho?` · ${mb(l.tamanho)}`:''}</a>
+      <div class="acoes"><button class="btn" data-go="ler/${l.id}">${I.ler}Ler</button><a class="btn ghost" href="${esc(urlPublica(l.arquivo,slug(l.titulo)+'.pdf'))}" target="_blank" rel="noopener" aria-label="Baixar PDF${l.tamanho?' ('+mb(l.tamanho)+')':''}" title="Baixar PDF${l.tamanho?' · '+mb(l.tamanho):''}">${I.down}</a></div>
       ${E.admin?`<button class="rm" data-act="est-remover" data-v="${l.id}">Remover da estante</button>`:''}
     </div>`).join('')}</div>`
     :E.livros?`<div class="card"><p>A estante ainda está vazia. Os livros aparecem aqui assim que forem enviados.</p></div>`
@@ -484,7 +508,7 @@ function telaEstante(){
   <div><div class="eyebrow">Para baixar e ler no celular</div><h1 class="h1" style="margin-top:6px">Estante</h1></div>
   ${grade}
   ${adm}
-  <footer class="note">Toque em "Baixar PDF" para salvar o livro no aparelho. No iPhone, o arquivo abre na tela e você salva pelo botão de compartilhar; no Android, ele vai para a pasta Downloads.</footer>`;
+  <footer class="note">"Ler" abre o livro aqui no app e guarda a página em que você parou. A seta baixa o PDF: no iPhone ele abre na tela e você salva pelo botão de compartilhar; no Android, vai para a pasta Downloads.</footer>`;
 }
 function aviso(t,erro){E.msg=t;E.erroMsg=!!erro;render();}
 // a capa é reduzida no aparelho antes de subir (até 600×800), para carregar rápido na estante
@@ -563,6 +587,98 @@ async function estanteAcao(a,v){
     }catch(e){aviso('Não consegui remover: '+String(e&&e.message||''),true);}
   }
 }
+
+
+// ---------- Leitor de PDF (pdf.js, carregado só quando abre um livro) ----------
+const PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/';
+const leitor={ativo:false,doc:null,obs:null,zoom:1,id:null,paginas:[],base:0,ticket:0};
+if(!S.leitura)S.leitura={};
+function telaLer(r){
+  const l=(E.livros||[]).find(x=>String(x.id)===String(r[1]));
+  if(!l){if(E.livros===null&&!E.erro)carregarLivros();return `<div class="leitor"><div class="lbar"><button data-act="voltar" data-v="estante" aria-label="Voltar">${I.back}</button><span class="lt">Estante</span></div><p class="lmsg">${E.erro?esc(E.erro):'Abrindo a estante…'}</p></div>`;}
+  return `<div class="leitor">
+    <div class="lbar">
+      <button data-act="voltar" data-v="estante" aria-label="Voltar para a estante">${I.back}</button>
+      <span class="lt" title="${esc(l.titulo)}">${esc(l.titulo)}</span>
+      <span class="lpag" id="lpag">…</span>
+      <button data-act="zoom" data-v="-" aria-label="Diminuir">${I.menos}</button>
+      <button data-act="zoom" data-v="+" aria-label="Aumentar">${I.mais}</button>
+      <a href="${esc(urlPublica(l.arquivo,slug(l.titulo)+'.pdf'))}" target="_blank" rel="noopener" aria-label="Baixar PDF">${I.down}</a>
+    </div>
+    <div class="lpaginas" id="lpaginas"><p class="lmsg">Carregando o livro…</p></div>
+  </div>`;
+}
+async function iniciarLeitor(id){
+  const l=(E.livros||[]).find(x=>String(x.id)===String(id));if(!l)return;
+  const ticket=++leitor.ticket;leitor.ativo=true;leitor.id=id;leitor.zoom=(S.leitura[id]&&S.leitura[id].zoom)||1;
+  const cont=$('#lpaginas');
+  try{
+    await carregarSupabase();
+    // a importação tenta de novo uma vez: redes móveis derrubam o primeiro carregamento com frequência
+    const pdfjs=await import(PDFJS+'pdf.min.mjs').catch(()=>new Promise(r=>setTimeout(r,1500)).then(()=>import(PDFJS+'pdf.min.mjs')));
+    pdfjs.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.mjs';
+    const doc=await pdfjs.getDocument({url:urlPublica(l.arquivo),withCredentials:false}).promise;
+    if(ticket!==leitor.ticket)return doc.destroy();
+    leitor.doc=doc;
+    await montarPaginas(ticket);
+    const salva=(S.leitura[id]&&S.leitura[id].pagina)||1;
+    if(salva>1){const el=leitor.paginas[salva-1];if(el)el.scrollIntoView({block:'start'});}
+  }catch(e){
+    console.error('leitor:',e);
+    if(cont)cont.innerHTML=`<p class="lmsg">${navigator.onLine?'Não consegui abrir este PDF aqui. Use a seta para baixar.':'Sem internet. Para ler sem conexão, baixe o PDF pela seta.'}</p>`;
+  }
+}
+async function montarPaginas(ticket){
+  const doc=leitor.doc, cont=$('#lpaginas');if(!doc||!cont)return;
+  if(leitor.obs)leitor.obs.disconnect();
+  const larg=Math.min(cont.clientWidth-16,900)*leitor.zoom;
+  const p1=await doc.getPage(1);const v1=p1.getViewport({scale:1});leitor.base=larg/v1.width;
+  cont.innerHTML='';leitor.paginas=[];
+  for(let n=1;n<=doc.numPages;n++){
+    const d=document.createElement('div');d.className='pg';d.dataset.n=n;d.style.width=larg+'px';d.style.height=Math.round(v1.height*leitor.base)+'px';
+    d.innerHTML=`<span class="num">${n}</span>`;cont.appendChild(d);leitor.paginas.push(d);
+  }
+  leitor.obs=new IntersectionObserver(es=>{
+    es.forEach(e=>{const d=e.target;if(e.isIntersecting){if(!d.dataset.ok)desenhar(+d.dataset.n,ticket);}else if(d.dataset.ok&&Math.abs(e.boundingClientRect.top)>innerHeight*4){const c=d.querySelector('canvas');if(c)c.remove();delete d.dataset.ok;}});
+    atualizarPagina();
+  },{rootMargin:'120% 0px'});
+  leitor.paginas.forEach(d=>leitor.obs.observe(d));
+}
+async function desenhar(n,ticket){
+  const d=leitor.paginas[n-1];if(!d||d.dataset.ok||d.dataset.rodando)return;d.dataset.rodando='1';
+  try{
+    const pg=await leitor.doc.getPage(n);if(ticket!==leitor.ticket)return;
+    const dpr=Math.min(devicePixelRatio||1,2.5);const vp=pg.getViewport({scale:leitor.base*dpr});
+    const c=document.createElement('canvas');c.width=Math.floor(vp.width);c.height=Math.floor(vp.height);
+    d.style.height=Math.round(vp.height/dpr)+'px';
+    await pg.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:vp}).promise;
+    if(ticket!==leitor.ticket)return;
+    d.insertBefore(c,d.firstChild);d.dataset.ok='1';
+  }finally{delete d.dataset.rodando;}
+}
+let tPag=null;
+function atualizarPagina(){
+  clearTimeout(tPag);tPag=setTimeout(()=>{
+    if(!leitor.doc)return;
+    const meio=innerHeight/2;let atual=1;
+    for(const d of leitor.paginas){const r=d.getBoundingClientRect();if(r.top<=meio)atual=+d.dataset.n;else break;}
+    const el=$('#lpag');if(el)el.textContent=`${atual} / ${leitor.doc.numPages}`;
+    S.leitura[leitor.id]={pagina:atual,zoom:leitor.zoom,em:Date.now()};salvar();
+  },150);
+}
+function fecharLeitor(){
+  leitor.ticket++;leitor.ativo=false;if(leitor.obs)leitor.obs.disconnect();leitor.obs=null;
+  if(leitor.doc){try{leitor.doc.destroy();}catch(e){}}leitor.doc=null;leitor.paginas=[];
+}
+async function zoomLeitor(dir){
+  if(!leitor.doc)return;
+  const passos=[0.7,0.85,1,1.25,1.5,2];let i=passos.indexOf(leitor.zoom);if(i<0)i=2;
+  i=Math.max(0,Math.min(passos.length-1,i+(dir==='+'?1:-1)));if(passos[i]===leitor.zoom)return;
+  const pagina=(S.leitura[leitor.id]&&S.leitura[leitor.id].pagina)||1;
+  leitor.zoom=passos[i];await montarPaginas(leitor.ticket);
+  const el=leitor.paginas[pagina-1];if(el)el.scrollIntoView({block:'start'});
+}
+window.addEventListener('scroll',()=>{if(leitor.ativo)atualizarPagina();},{passive:true});
 
 // ---------- Lua (calendário) ----------
 function telaLua(r){
