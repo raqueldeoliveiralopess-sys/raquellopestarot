@@ -258,3 +258,52 @@ create policy "leituras: membro grava a propria" on public.cob_leituras for inse
 create policy "leituras: admin le"               on public.cob_leituras for select to authenticated using (public.e_admin());
 revoke all on public.cob_leituras from anon;
 grant select, insert on public.cob_leituras to authenticated;
+
+-- 7) Vídeo e apostilas de cada aula (a admin envia pelo app, dentro da aula). Só membros e admin assistem e baixam.
+create table if not exists public.cob_aula_midia (
+  id            bigint generated always as identity primary key,
+  aula_id       text not null,                 -- id da aula em cob/aulas.js (ex.: a1)
+  tipo          text not null check (tipo in ('video', 'apostila')),
+  titulo        text not null,
+  arquivo       text,                          -- caminho no bucket cob-aulas (vídeo ou apostila enviada)
+  link          text,                          -- ou um link externo (YouTube não listado, Vimeo, Panda)
+  nome_arquivo  text,
+  tamanho       bigint,
+  ordem         int not null default 0,
+  criado_em     timestamptz not null default now(),
+  check (arquivo is not null or link is not null)
+);
+create index if not exists cob_aula_midia_aula on public.cob_aula_midia (aula_id, ordem);
+alter table public.cob_aula_midia enable row level security;
+
+drop policy if exists "aula midia: membros leem"   on public.cob_aula_midia;
+drop policy if exists "aula midia: admin inclui"   on public.cob_aula_midia;
+drop policy if exists "aula midia: admin edita"    on public.cob_aula_midia;
+drop policy if exists "aula midia: admin remove"   on public.cob_aula_midia;
+create policy "aula midia: membros leem" on public.cob_aula_midia for select to authenticated using (public.e_membro() or public.e_admin());
+create policy "aula midia: admin inclui" on public.cob_aula_midia for insert to authenticated with check (public.e_admin());
+create policy "aula midia: admin edita"  on public.cob_aula_midia for update to authenticated using (public.e_admin()) with check (public.e_admin());
+create policy "aula midia: admin remove" on public.cob_aula_midia for delete to authenticated using (public.e_admin());
+revoke all on public.cob_aula_midia from anon;
+grant select, insert, update, delete on public.cob_aula_midia to authenticated;
+
+-- bucket privado das aulas: até 2 GB por arquivo (o limite geral em Storage → Settings precisa ser igual ou maior)
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('cob-aulas', 'cob-aulas', false, 2147483648, array[
+  'video/mp4', 'video/quicktime', 'video/webm', 'video/x-m4v',
+  'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'image/png', 'image/jpeg', 'image/webp'])
+on conflict (id) do update
+  set public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "cob-aulas: membros leem" on storage.objects;
+drop policy if exists "cob-aulas: admin envia"  on storage.objects;
+drop policy if exists "cob-aulas: admin troca"  on storage.objects;
+drop policy if exists "cob-aulas: admin apaga"  on storage.objects;
+create policy "cob-aulas: membros leem" on storage.objects for select to authenticated using (bucket_id = 'cob-aulas' and (public.e_membro() or public.e_admin()));
+create policy "cob-aulas: admin envia"  on storage.objects for insert to authenticated with check (bucket_id = 'cob-aulas' and public.e_admin());
+create policy "cob-aulas: admin troca"  on storage.objects for update to authenticated using (bucket_id = 'cob-aulas' and public.e_admin());
+create policy "cob-aulas: admin apaga"  on storage.objects for delete to authenticated using (bucket_id = 'cob-aulas' and public.e_admin());

@@ -62,6 +62,7 @@ nav button.on{color:var(--plum);font-weight:600}
 .bar{height:6px;border-radius:99px;background:var(--sand);overflow:hidden}.bar i{display:block;height:100%;background:var(--plum);border-radius:99px}
 .video{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:var(--night)}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video video{position:absolute;inset:0;width:100%;height:100%;background:#000;object-fit:contain}
 .soon{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#E6D8CA;height:100%;text-align:center;padding:16px}
 textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:12px 14px;font:inherit;font-size:16px;line-height:1.5;resize:vertical}
 .done{display:inline-flex;align-items:center;gap:6px;color:#3F6E4A;font-weight:600;font-size:13px}
@@ -325,6 +326,7 @@ document.addEventListener('click',e=>{
   if(a==='mes'){ir('lua/'+v,true);}
   if(a==='dia'){const r=rota();ir(`lua/${r[1]||''}/${v}`,true);}
   if(a.startsWith('est-'))estanteAcao(a.slice(4),v,act);
+  if(a.startsWith('aula-'))aulaAcao(a.slice(5),v);
   if(a.startsWith('conta-'))contaAcao(a.slice(6),v);
   if(a==='zoom')zoomLeitor(v);
 });
@@ -750,6 +752,7 @@ function telaHoje(){
 // ---------- Aulas ----------
 function totais(){let t=0,f=0;for(const m of A.modulos)for(const a of m.aulas){t++;if(S.feitas[a.id])f++;}return {t,f};}
 function telaAulas(){
+  if(M.porAula===null&&!M.erro)carregarMidia();
   const {t,f}=totais();
   return `
   <div><div class="eyebrow">${esc(A.curso)}</div><h1 class="h1" style="margin-top:6px">Aulas</h1></div>
@@ -760,7 +763,7 @@ function telaAulas(){
       <div class="list">${m.aulas.map((a,i)=>`
         <button class="row" data-go="aula/${a.id}">
           <span class="ic">${S.feitas[a.id]?I.check:I.play}</span>
-          <span class="t"><span class="n">${esc(a.titulo)}</span><span class="s">${S.feitas[a.id]?'Concluída':a.video?(a.duracao||'Assistir'):'Em breve'}</span></span>
+          <span class="t"><span class="n">${esc(a.titulo)}</span><span class="s">${S.feitas[a.id]?'Concluída':temVideo(a)?(a.duracao||'Assistir'):'Em breve'}</span></span>
           <span class="chev">${I.chev}</span>
         </button>`).join('')}</div>
     </div>`).join('')}
@@ -777,20 +780,122 @@ function embed(url){
 function acharAula(id){for(const m of A.modulos){const a=m.aulas.find(x=>x.id===id);if(a)return {m,a};}return null;}
 function telaAula(r){
   const x=acharAula(r[1]);if(!x)return telaAulas();
-  const {m,a}=x, src=embed(a.video);
+  const {m,a}=x;
+  if(M.porAula===null&&!M.erro)carregarMidia();
+  const md=midiaDe(a.id), vid=md.video, link=vid&&vid.link?vid.link:(!vid?a.video:''), src=embed(link);
+  const player=vid&&vid.arquivo?(M.assin[vid.arquivo]?`<video controls playsinline preload="metadata" src="${esc(M.assin[vid.arquivo])}" title="${esc(a.titulo)}"></video>`:`<div class="soon"><span style="font-size:14px">Carregando o vídeo…</span></div>`)
+    :src?`<iframe src="${esc(src)}" title="${esc(a.titulo)}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen loading="lazy"></iframe>`
+    :link?`<div class="soon"><a class="btn" style="max-width:240px;display:flex;align-items:center;justify-content:center;text-decoration:none" href="${esc(link)}" target="_blank" rel="noopener">Assistir a aula</a></div>`
+    :`<div class="soon">${luaSvg(0.3,true,56)}<b class="serif" style="font-size:22px">Vídeo em breve</b><span style="font-size:13px">A aula será liberada aqui.</span></div>`;
+  const apostilas=md.apostilas.map(ap=>`
+    <a class="row" href="${esc(M.assin[ap.arquivo]?M.assin[ap.arquivo]+'&download='+encodeURIComponent(ap.nome_arquivo||slug(ap.titulo)):'#')}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="ic">${I.file}</span><span class="t"><span class="n">${esc(ap.titulo)}</span><span class="s">${ap.tamanho?mb(ap.tamanho)+' · ':''}Baixar</span></span><span class="chev">${I.down}</span></a>`).join('')
+    +(a.materiais||[]).map(mt=>`
+    <a class="row" href="${esc(mt.url)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="ic">${I.file}</span><span class="t"><span class="n">${esc(mt.nome)}</span><span class="s">Abrir</span></span><span class="chev">${I.chev}</span></a>`).join('');
   return `
   <button class="back" data-act="voltar" data-v="aulas">${I.back}Aulas</button>
   <div><div class="eyebrow">${esc(m.titulo)}</div><h1 class="h1" style="margin-top:6px">${esc(a.titulo)}</h1></div>
-  <div class="video">${src?`<iframe src="${esc(src)}" title="${esc(a.titulo)}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen loading="lazy"></iframe>`
-    :a.video?`<div class="soon"><a class="btn" style="max-width:240px;display:flex;align-items:center;justify-content:center;text-decoration:none" href="${esc(a.video)}" target="_blank" rel="noopener">Assistir a aula</a></div>`
-    :`<div class="soon">${luaSvg(0.3,true,56)}<b class="serif" style="font-size:22px">Vídeo em breve</b><span style="font-size:13px">A aula será liberada aqui.</span></div>`}</div>
+  <div class="video">${player}</div>
   <p style="font-size:16px;color:var(--ink2)">${esc(a.resumo)}</p>
-  ${a.materiais&&a.materiais.length?`<div style="display:flex;flex-direction:column;gap:10px"><div class="eyebrow">Materiais da aula</div>${a.materiais.map(mt=>`
-    <a class="row" href="${esc(mt.url)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="ic">${I.file}</span><span class="t"><span class="n">${esc(mt.nome)}</span><span class="s">Abrir</span></span><span class="chev">${I.chev}</span></a>`).join('')}</div>`:''}
+  ${apostilas?`<div style="display:flex;flex-direction:column;gap:10px"><div class="eyebrow">Apostilas e materiais</div>${apostilas}</div>`:''}
+  ${G.admin?painelAula(a,md):''}
   <div style="display:flex;flex-direction:column;gap:8px"><label class="eyebrow" for="notas">Minhas anotações</label>
   <textarea id="notas" data-v="${a.id}" placeholder="Anote o que mais te marcou nesta aula. Fica salvo neste aparelho.">${esc(S.notas[a.id]||'')}</textarea></div>
   <div class="next"><button class="btn ${S.feitas[a.id]?'ghost':''}" data-act="feita" data-v="${a.id}">${S.feitas[a.id]?'Marcar como não concluída':'Marcar como concluída'}</button>
   ${(()=>{const n=aulaSeguinte(a.id);return n?`<button class="row" data-go="aula/${n.a.id}"><span class="ic">${I.play}</span><span class="t"><span class="s" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase">Próxima aula</span><span class="n">${esc(n.a.titulo)}</span></span><span class="chev">${I.chev}</span></button>`:'';})()}</div>`;
+}
+
+// ---------- Vídeo e apostilas das aulas (Supabase: tabela cob_aula_midia, bucket privado cob-aulas) ----------
+// A admin envia pelo próprio app, dentro de cada aula. Vídeos grandes sobem em partes (retomável).
+const BUCKET_AULAS='cob-aulas', LIMITE_AULA_MB=(window.COB_CONFIG||{}).limiteAulaMB||2048;
+const M={porAula:null,erro:'',assin:{},carregando:null,ocupado:false,msg:'',erroMsg:false};
+const midiaDe=id=>{const l=(M.porAula&&M.porAula[id])||[];return {video:l.find(x=>x.tipo==='video')||null,apostilas:l.filter(x=>x.tipo==='apostila')};};
+const temVideo=a=>!!(a.video||midiaDe(a.id).video);
+function carregarMidia(){
+  if(M.carregando)return M.carregando;
+  return M.carregando=(async()=>{
+    try{
+      const sb=await carregarSupabase();
+      const {data,error}=await sb.from('cob_aula_midia').select('*').order('ordem',{ascending:true}).order('criado_em',{ascending:true});
+      if(error)throw error;
+      const por={};data.forEach(x=>{(por[x.aula_id]=por[x.aula_id]||[]).push(x);});
+      const caminhos=data.map(x=>x.arquivo).filter(Boolean);
+      if(caminhos.length){const r=await sb.storage.from(BUCKET_AULAS).createSignedUrls(caminhos,21600);(r.data||[]).forEach(x=>{if(x.signedUrl)M.assin[x.path]=x.signedUrl;});}
+      M.porAula=por;M.erro='';
+    }catch(e){M.porAula={};M.erro=/cob_aula_midia|does not exist|schema cache/i.test(String(e&&e.message))?'falta-sql':'falha';}
+    M.carregando=null;
+    if(['aula','aulas','hoje'].includes(rota()[0]))render(true);
+  })();
+}
+function painelAula(a,md){
+  const v=md.video;
+  return `<div class="card" id="painel-aula">
+    <div class="eyebrow">Só para a admin · conteúdo desta aula</div>
+    ${M.erro==='falta-sql'?`<p class="msg erro">O envio de vídeos e apostilas ainda não foi ativado no Supabase (falta rodar o SQL das aulas).</p>`:''}
+    <h3 class="serif" style="font-size:20px">Vídeo</h3>
+    <p class="dica">${v?(v.arquivo?`Vídeo enviado: <b>${esc(v.titulo)}</b>${v.tamanho?' · '+mb(v.tamanho):''}`:`Link: <b>${esc(v.link)}</b>`):a.video?'Usando o link fixo do arquivo de aulas.':'Nenhum vídeo ainda.'}</p>
+    <label class="field">Enviar arquivo de vídeo (MP4 ou MOV, até ${LIMITE_AULA_MB>=1024?(LIMITE_AULA_MB/1024).toString().replace('.',',')+' GB':LIMITE_AULA_MB+' MB'})<input type="file" id="aula-video" accept="video/mp4,video/quicktime,video/webm,video/x-m4v,.mp4,.mov,.m4v,.webm" ${M.ocupado?'disabled':''}></label>
+    <label class="field">Ou colar um link (YouTube não listado, Vimeo ou Panda)<input type="text" id="aula-link" inputmode="url" placeholder="https://…" autocomplete="off"></label>
+    <div class="row2" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" style="flex:1" data-act="aula-video" data-v="${a.id}" ${M.ocupado?'disabled':''}>${M.ocupado?'Enviando…':'Salvar vídeo'}</button>${v?`<button class="rm" data-act="aula-remover" data-v="${v.id}" ${M.ocupado?'disabled':''}>Remover vídeo</button>`:''}</div>
+    <h3 class="serif" style="font-size:20px;margin-top:8px">Apostilas</h3>
+    ${md.apostilas.length?`<div class="list">${md.apostilas.map(ap=>`<div class="row" style="min-height:56px"><span class="t"><span class="n">${esc(ap.titulo)}</span><span class="s">${ap.tamanho?mb(ap.tamanho):''}</span></span><button class="rm" data-act="aula-remover" data-v="${ap.id}" ${M.ocupado?'disabled':''}>Remover</button></div>`).join('')}</div>`:'<p class="dica">Nenhuma apostila ainda.</p>'}
+    <label class="field">Adicionar apostilas (PDF, Word, PowerPoint ou imagem; pode escolher várias)<input type="file" id="aula-apostilas" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg,.webp,application/pdf" ${M.ocupado?'disabled':''}></label>
+    <button class="btn ghost" data-act="aula-apostilas" data-v="${a.id}" ${M.ocupado?'disabled':''}>${M.ocupado?'Enviando…':'Enviar apostilas'}</button>
+    <p class="msg ${M.erroMsg?'erro':''}" id="aula-msg" role="status" ${M.msg?'':'hidden'}>${esc(M.msg)}</p>
+  </div>`;
+}
+const TIPOS_EXT={mp4:'video/mp4',mov:'video/quicktime',m4v:'video/x-m4v',webm:'video/webm',pdf:'application/pdf',doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',ppt:'application/vnd.ms-powerpoint',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp'};
+const extDe=n=>(String(n).match(/\.([a-z0-9]+)$/i)||[,''])[1].toLowerCase();
+function avisoAula(t,erro){M.msg=t;M.erroMsg=!!erro;const el=$('#aula-msg');if(el){el.textContent=t;el.hidden=!t;el.classList.toggle('erro',!!erro);}}
+async function subirArquivoAula(sb,aulaId,file,rotulo){
+  const ext=extDe(file.name), tipo=TIPOS_EXT[ext]||file.type;
+  if(!tipo)throw new Error('Tipo de arquivo não aceito: .'+ext);
+  if(file.size>LIMITE_AULA_MB*1048576)throw new Error(`O arquivo passa de ${LIMITE_AULA_MB} MB.`);
+  const caminho=`${aulaId}/${Date.now()}-${slug(file.name.replace(/\.[^.]+$/,''))}.${ext}`;
+  const prog=f=>avisoAula(`${rotulo}: ${f>=1?'concluindo…':Math.round(f*100)+'%'} (não feche a página)`);
+  if(file.size>BLOCO)await enviarRetomavel(sb,caminho,file,tipo,prog,BUCKET_AULAS);
+  else{const up=await sb.storage.from(BUCKET_AULAS).upload(caminho,file,{contentType:tipo,upsert:false});if(up.error)throw up.error;}
+  return caminho;
+}
+async function aulaAcao(a,v){
+  const sb=await carregarSupabase();
+  if(a==='video'){
+    const file=($('#aula-video')||{}).files&&$('#aula-video').files[0], link=(($('#aula-link')||{}).value||'').trim();
+    if(!file&&!link)return avisoAula('Escolha um arquivo de vídeo ou cole um link.',true);
+    if(!file&&!linkOk(link))return avisoAula('O link precisa começar com https://',true);
+    M.ocupado=true;render(true);avisoAula(file?'Enviando o vídeo…':'Salvando o link…');
+    const antigo=midiaDe(v).video;
+    try{
+      const linha={aula_id:v,tipo:'video',titulo:file?file.name:link,ordem:0};
+      if(file){linha.arquivo=await subirArquivoAula(sb,v,file,'Enviando o vídeo');linha.tamanho=file.size;linha.nome_arquivo=file.name;}else linha.link=link;
+      const ins=await sb.from('cob_aula_midia').insert(linha);
+      if(ins.error){if(linha.arquivo)await sb.storage.from(BUCKET_AULAS).remove([linha.arquivo]);throw ins.error;}
+      if(antigo){await sb.from('cob_aula_midia').delete().eq('id',antigo.id);if(antigo.arquivo)await sb.storage.from(BUCKET_AULAS).remove([antigo.arquivo]);}
+      M.ocupado=false;M.porAula=null;await carregarMidia();avisoAula('Vídeo salvo. A turma já vê na aula.');
+    }catch(e){M.ocupado=false;render(true);avisoAula('Não deu certo: '+msgErro(e),true);}
+    return;
+  }
+  if(a==='apostilas'){
+    const fs=[...((($('#aula-apostilas')||{}).files)||[])];if(!fs.length)return avisoAula('Escolha um ou mais arquivos.',true);
+    M.ocupado=true;render(true);
+    const base=midiaDe(v).apostilas.length;let ok=0,erros=[];
+    for(const [k,f] of fs.entries()){
+      try{
+        const caminho=await subirArquivoAula(sb,v,f,`Apostila ${k+1} de ${fs.length}`);
+        const ins=await sb.from('cob_aula_midia').insert({aula_id:v,tipo:'apostila',titulo:tituloDoArquivo(f.name),arquivo:caminho,tamanho:f.size,nome_arquivo:f.name,ordem:base+k+1});
+        if(ins.error){await sb.storage.from(BUCKET_AULAS).remove([caminho]);throw ins.error;}
+        ok++;
+      }catch(e){erros.push(f.name+': '+msgErro(e));}
+    }
+    M.ocupado=false;M.porAula=null;await carregarMidia();
+    avisoAula(erros.length?`${ok} enviada(s); com erro: ${erros.join(' · ')}`:`${ok} apostila(s) na aula.`,!!erros.length);
+    return;
+  }
+  if(a==='remover'){
+    const l=Object.values(M.porAula||{}).flat().find(x=>String(x.id)===String(v));if(!l)return;
+    if(!confirm(`Remover "${l.titulo}" desta aula? A turma deixa de ver.`))return;
+    try{const del=await sb.from('cob_aula_midia').delete().eq('id',l.id);if(del.error)throw del.error;if(l.arquivo)await sb.storage.from(BUCKET_AULAS).remove([l.arquivo]);M.porAula=null;await carregarMidia();avisoAula('Removido.');}
+    catch(e){avisoAula('Não consegui remover: '+msgErro(e),true);}
+  }
 }
 function aulaSeguinte(id){const todas=[];for(const m of A.modulos)for(const a of m.aulas)todas.push({m,a});const i=todas.findIndex(x=>x.a.id===id);return i>=0&&todas[i+1]?todas[i+1]:null;}
 
@@ -965,7 +1070,7 @@ const urlCapa=p=>ASSIN[p]||'';
 const urlBaixar=(p,nome)=>ASSIN[p]?ASSIN[p]+'&download='+encodeURIComponent(nome):'#';
 const urlAuth=p=>`${CFG.supabaseUrl}/storage/v1/object/authenticated/${CFG.bucket}/${p.split('/').map(encodeURIComponent).join('/')}`;
 async function cabecalhoAuth(){const sb=await carregarSupabase();const {data}=await sb.auth.getSession();return {Authorization:'Bearer '+(data&&data.session?data.session.access_token:CFG.supabaseAnonKey),apikey:CFG.supabaseAnonKey};}
-const mb=n=>n?(n/1048576).toFixed(n>10485760?0:1).replace('.',',')+' MB':'';
+const mb=n=>!n?'':n<1048576?Math.max(1,Math.round(n/1024))+' KB':(n/1048576).toFixed(n>10485760?0:1).replace('.',',')+' MB';
 const slug=t=>t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'livro';
 function cartaoLivro(l){
   return `<div class="book">
@@ -1099,12 +1204,12 @@ async function capaDoPdf(file){
 // se a conexão cair no meio, pergunta ao servidor até onde chegou e continua dali.
 const BLOCO=6*1024*1024;
 const b64=t=>btoa(unescape(encodeURIComponent(t)));
-async function enviarRetomavel(sb,caminho,file,tipo,progresso){
+async function enviarRetomavel(sb,caminho,file,tipo,progresso,bucket){
   const {data}=await sb.auth.getSession();const tok=data&&data.session&&data.session.access_token;
   if(!tok)throw new Error('Sessão expirada. Saia e entre de novo como admin.');
   const base={authorization:'Bearer '+tok,apikey:CFG.supabaseAnonKey,'tus-resumable':'1.0.0'};
   const cria=await fetch(CFG.supabaseUrl+'/storage/v1/upload/resumable',{method:'POST',headers:{...base,'upload-length':String(file.size),'x-upsert':'false',
-    'upload-metadata':['bucketName '+b64(CFG.bucket),'objectName '+b64(caminho),'contentType '+b64(tipo),'cacheControl '+b64('3600')].join(',')}});
+    'upload-metadata':['bucketName '+b64(bucket||CFG.bucket),'objectName '+b64(caminho),'contentType '+b64(tipo),'cacheControl '+b64('3600')].join(',')}});
   if(cria.status!==201){const t=await cria.text().catch(()=>'');throw new Error(t||('HTTP '+cria.status));}
   let url=cria.headers.get('location');if(!url)throw new Error('O servidor não devolveu o endereço do envio.');
   if(url.startsWith('/'))url=CFG.supabaseUrl+url;
