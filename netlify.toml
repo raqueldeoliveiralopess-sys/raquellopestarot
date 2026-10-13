@@ -1,0 +1,17 @@
+# Netlify publica a raiz do repositório como está (site estático, sem build).
+# Os cabeçalhos de cache ficam no arquivo _headers.
+[build]
+  publish = "."
+  command = ""
+
+# Funções do servidor (webhook da Kiwify)
+[functions]
+  directory = "netlify/functions"
+
+# O lembrete diário lê as cartas e as perguntas do próprio app
+[functions."lembrete-diario"]
+  included_files = ["cards.js", "diario.js"]
+
+# A Ofélia (chat de dúvidas) monta o contexto com as fichas das cartas e das tiragens do próprio app
+[functions."ofelia"]
+  included_files = ["cards.js", "tiragens.js"]

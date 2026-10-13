@@ -1,0 +1,215 @@
+# Grimório Arcano
+
+App de estudo das 78 cartas do tarot (fichas, flashcards com repetição espaçada, quiz e tiragens para leitura de padrão).
+
+Os flashcards seguem o modelo do Anki (SM-2 simplificado): cada carta tem uma data de revisão; a aluna responde Errei, Difícil, Bom ou Fácil e o intervalo cresce ou volta ao começo. Limite de cartas novas por dia (5, 10 ou 20). Cada sessão fica registrada em "Meu histórico" na aba Flashcards, com as respostas carta a carta, as cartas mais erradas e os dias seguidos de estudo. Agendamento (`S.srs`) e histórico (`S.flashHistory`) entram no backup e na nuvem. PWA: pode ser adicionado à tela inicial do celular e funciona offline.
+
+## Página de vendas
+
+Fica em `vendas/index.html` e é publicada junto com o app em `https://ogrimorioarcano.netlify.app/vendas/`. É a página "Chave da Leitura Espelho" em HTML puro, com copy enxuta e diagramação de página de app (fundos claros em degradê, etiquetas em pílula, um recurso por bloco com o celular ao lado, botão de compra depois de cada bloco, cartões de bônus e um cartão escuro de preço), nas cores e fontes do Grimório. As animações são em CSS (três celulares que mostram o app funcionando, leque de cartas, barra de vagas que enche ao aparecer na tela, blocos que surgem ao rolar) e desligam para quem pede movimento reduzido. As cartas vêm de `img/`; a foto da Raquel e o selo de garantia ficam em `vendas/img/`. As imagens abaixo da primeira dobra carregam sob demanda, então a abertura baixa cerca de 130 KB.
+
+O Pixel da Meta (id 2279176922944295) está no fim do `<head>`, com o evento PageView; o código original está em `tools/vendas/pixel.html`. Todos os botões levam ao checkout da Kiwify. No celular, a barra fixa de compra só aparece depois que a pessoa passa do topo.
+
+## App do COB (Curso Online de Bruxaria)
+
+Fica em `cob/` e é publicado em `https://ogrimorioarcano.netlify.app/cob/`. É um app separado do Grimório (PWA próprio, com service worker de escopo `/cob/`), sem login por enquanto: o progresso e as anotações ficam no aparelho (`localStorage`, chave `cob`). Quatro abas:
+
+- **Hoje:** Lua do dia (fase, % iluminada e próxima fase), próximo sabá, próxima aula, correspondência do dia da semana e erva do dia.
+- **Aulas:** módulos e aulas com vídeo, materiais, anotações e "marcar como concluída". O conteúdo fica em `cob/aulas.js`: para publicar uma aula, preencha `video` com o link do YouTube, Vimeo ou Panda Video e `materiais` com `{nome, url}` dos slides e PDFs. Aula sem vídeo aparece como "em breve".
+- **Biblioteca:** ervas (com cuidados e toxicidade), cristais, fases da Lua e Roda do Ano (cada uma com três práticas sugeridas), ferramentas do altar (com o que usar no lugar), glossário em sanfona, dias da semana, elementos e cores. A busca procura em todas as seções ao mesmo tempo, sem acento. Conteúdo em `cob/biblioteca.js`.
+- **Lua:** calendário do mês com as quatro fases principais e os sabás, hemisfério sul (padrão) ou norte.
+- **Cadastro e entrada:** o app só abre com conta. "Criar conta" pede nome completo, CPF, e-mail, WhatsApp, data de nascimento e o aceite das Regras, Termos de uso e Política de privacidade (textos em `cob/termos.js`; as lacunas entre colchetes ficam em `DADOS` no topo do arquivo e, ao mudar qualquer texto, sobe-se `VERSAO`). Menores de 16 não entram; 16 e 17 anos preenchem também os dados e a declaração do responsável (Documento 4). O acesso é por link mágico no e-mail (sem senha), com o código de 6 dígitos como alternativa quando o app está instalado na tela inicial. O cadastro preenchido fica no aparelho até o link ser aberto e então vai para `cob_membros`; o banco valida CPF, idade e responsável e grava data, hora, IP e navegador do aceite. Cada abertura do app registra um acesso em `cob_acessos` (no máximo a cada 30 min; apagados depois de 7 meses). Cada toque em Ler (no máximo um a cada 30 min por livro) e em baixar fica em `cob_leituras` (quem, qual livro, data, IP e aparelho; título copiado na hora; apagados depois de 7 meses). A admin não precisa de cadastro e vê "Membros cadastrados" (busca, detalhes com as leituras e downloads de cada pessoa, aba "Leituras e downloads" por livro e planilhas CSV de membros e de leituras) no fim da aba Hoje e no painel da Estante. Enquanto o SQL não foi rodado, o app segue aberto como antes. No Supabase: Authentication → URL Configuration → Redirect URLs precisa ter `https://ogrimorioarcano.netlify.app/cob/**`, e os modelos de e-mail "Magic Link" e "Confirm signup" precisam ter o link (`{{ .ConfirmationURL }}`) e o código (`{{ .Token }}`).
+- **Vídeo e apostilas das aulas:** dentro de cada aula, a admin vê um painel para enviar o vídeo gravado (MP4 ou MOV, até 2 GB, em partes e retomável) ou colar um link (YouTube não listado, Vimeo, Panda), e para enviar apostilas (PDF, Word, PowerPoint ou imagem, várias de uma vez). Ficam na tabela `cob_aula_midia` e no bucket privado `cob-aulas`; só membros cadastrados e a admin assistem e baixam, por links assinados de 6 horas. O vídeo enviado tem prioridade sobre o campo `video` de `cob/aulas.js`.
+- **Estante:** livros em PDF com capa, só para membros cadastrados (e a admin). Fica no Supabase do Grimório: tabela `cob_livros` e bucket **privado** `cob-livros`, ambos liberados por `e_membro()` ou `e_admin()`. Capas e downloads usam links assinados de 6 horas, pedidos de uma vez ao abrir a estante (`assinar()`); o leitor lê o PDF pelo endpoint autenticado do Storage com a sessão de quem está logado (SQL em `supabase/cob.sql`; configuração em `cob/config.js`). Para enviar ou remover livros, a Raquel toca em "Sou a administradora" no fim da aba, recebe um código por e-mail e entra; só funciona para e-mails da tabela `admins` (`insert into public.admins (email) values ('…')`). O formulário de admin tem duas abas: **Vários de uma vez** (seleciona vários PDFs; o título vem do nome do arquivo e pode ser corrigido na lista; autoria e link de compra valem para o lote; a capa é a 1ª página de cada PDF, desenhada no aparelho com o pdf.js; os envios são em sequência e, se algum falhar, um novo toque envia só os que faltaram) e **Um livro, com capa própria**. Cada livro pode ter um **link de compra** do físico (coluna `link_compra`), que aparece como "Comprar o livro físico"; no modo admin, cada cartão tem Editar (título, autoria, descrição, link) e Remover. O limite por PDF é `limiteMB` em `cob/config.js` (500 MB, plano Pro) e precisa bater com o `file_size_limit` do bucket e com o limite geral em Storage → Settings. PDFs acima de 6 MB sobem pelo upload retomável do Supabase (TUS, blocos de 6 MB): o progresso aparece em porcentagem e, se a conexão cair, o envio continua de onde parou. A capa de um PDF grande é desenhada lendo só os pedaços necessários do arquivo, sem carregar tudo na memória. No topo da aba ficam a **busca** (título, autoria e descrição, sem diferenciar acentos) e as **categorias** em pílulas com a contagem de cada uma (Tarot, Oráculos, Astrologia, Hoodoo e vodu, Umbanda e afro, Grimórios, Cristais, Ervas, História, Feitiços e velas, Espiritualidade, Ocultismo e Jung, Bruxaria, Outros; a lista fica em `CATS` no `cob/index.html`). A categoria vem da coluna `categoria` quando a admin escolhe uma (no envio ou em Editar); vazia, o app deduz pelo título com as palavras-chave de `CATS`. Para a admin, o formulário de envio aparece no topo, antes dos livros. Cada livro tem **Ler** (abre dentro do app) e a seta de baixar (`?download=`, para o navegador salvar o arquivo). O leitor usa o pdf.js da Mozilla, hospedado no próprio site (`cob/vendor/pdfjs-4.10.38`) e carregado só quando um livro é aberto; ele baixa o PDF por partes (requisições Range), então um livro grande abre baixando só as páginas vistas: as páginas são desenhadas em canvas conforme entram na tela (e descartadas quando saem, para não estourar a memória do celular), com zoom em seis níveis e a última página lida guardada por livro em `S.leitura`. Sem internet o leitor não funciona; o aviso manda baixar o PDF.
+
+A tela Hoje combina a fase da Lua com o dia da semana numa sugestão de prática. Trocar de seção na biblioteca, de mês ou de dia no calendário usa `location.replace`, para o botão Voltar do celular não ter que desfazer cada toque; o Voltar das fichas leva à seção de origem.
+
+`cob/lua.js` calcula as fases da Lua e os equinócios e solstícios com os algoritmos de Jean Meeus (conferidos ao minuto com datas publicadas). No hemisfério sul a Roda do Ano gira ao contrário: Samhain em 30 de abril, Yule no solstício de junho, Beltane em 31 de outubro, Litha no solstício de dezembro. Ao mudar `lua.js`, `biblioteca.js` ou `aulas.js`, suba o `?v=` no `cob/index.html` e o `CACHE` em `cob/sw.js`.
+
+## Layout no computador
+
+A partir de 1024 px de largura, o app deixa de ser uma coluna de celular: a barra de abas vira um menu lateral fixo à esquerda e o conteúdo ocupa o resto da tela (até 1200 px). O Início fica em duas colunas (carta do dia, metas e progresso à esquerda; Jornada, conquistas e backup à direita), a biblioteca e a lista de tiragens viram grade, a ficha da carta deixa a imagem e o resumo fixos à esquerda com a leitura à direita, e a prática da tiragem põe o tabuleiro à esquerda e a escrita e a Ofélia à direita. Flashcards, quiz, Comunidade e perfil ficam numa coluna de leitura de 820 px. As regras estão no fim do CSS do `index.html` (`@media (min-width:1024px)`), e a tela atual vai em `main[data-screen]`. No celular nada muda: os blocos novos (`.hgrid`, `.fgrid`, `.prgrid`) empilham na mesma ordem de antes.
+
+## Consumo de banda (créditos da Netlify)
+
+A Netlify cobra por bytes servidos, então o app é montado para baixar o mínimo:
+
+- `index.html`, `config.js` e o manifest são "rede primeiro" com revalidação: o navegador pergunta se mudou e recebe 304 sem corpo quando não mudou.
+- `cards.js`, `tiragens.js`, `diario.js`, `auth.js` e `comunidade.js` são pedidos pelo `index.html` com `?v=N` e servidos com cache de um ano. **Quando mudar um deles, suba o `?v=` nas cinco tags do `index.html` e o `CACHE` do `sw.js` para o mesmo número.** Sem isso a aluna continua com a cópia antiga.
+- As cartas são WebP (metade do tamanho dos JPEG) e entram no cache do aparelho só quando são vistas; o service worker não pré-baixa as 78 na instalação. Os JPEG ficam no repositório para o e-mail do lembrete e para a imagem de compartilhamento da página de vendas.
+- Acompanhe em Netlify > Usage (Bandwidth). Cada versão nova publicada custa uma revalidação por aparelho, não um download inteiro.
+
+## Como atualizar
+
+1. Edite os arquivos (`index.html`, `cards.js` com as fichas, `tiragens.js` com as tiragens, imagens em `img/`).
+2. Faça o deploy na Netlify (arraste a pasta ou conecte este repositório ao site da Netlify para o deploy ser automático a cada `git push`).
+3. Pronto. No celular, basta abrir o app: ele busca a versão nova sozinho e recarrega. Não precisa remover e adicionar à tela de novo.
+
+Não é necessário trocar o número `CACHE` em `sw.js` a cada atualização. Troque só se quiser forçar a limpeza completa do cache antigo.
+
+## Como funciona
+
+- `sw.js`: `index.html`, `cards.js`, `tiragens.js` e o manifest são buscados sempre da rede (cache só como reserva offline). Imagens e ícones ficam em cache permanente.
+- `index.html`: quando um service worker novo assume, a página recarrega uma vez; ao voltar para o app, ele verifica se há atualização.
+- `_headers`: impede a Netlify e o navegador de guardarem em cache os arquivos que mudam.
+
+## Ritual diário, conquistas e modo escuro
+
+- **Carta do dia**: no Início, uma carta sorteada pela data (a mesma para todas as alunas), com uma pergunta de reflexão. Dá para responder uma pergunta de quiz sobre ela ou escrever uma reflexão (vira post na Comunidade com tema Reflexão, ou anotação na ficha para quem não está logada).
+- **Hoje**: quatro metas (carta do dia, flashcards, uma carta nova, um quiz) e a sequência de dias de estudo. Qualquer atividade conta o dia.
+- **Conquistas**: marcos pessoais (naipes completos, baralho completo, quiz sem erro, dias seguidos, cartas dominadas, primeira tiragem, primeiro post…). Ficam no Início e no próprio perfil, sincronizam com a nuvem e só a própria aluna vê. Ao ganhar uma, aparece um aviso com confete e uma vibração curta.
+- **Modo escuro**: segue a preferência do aparelho, sem botão.
+- Nos históricos de quiz e flashcards, "Cartas que mais erro" tem um botão que abre uma sessão de flashcards só com elas.
+
+## Cartas irmãs e flashcards por área
+
+- Na ficha de cada carta, a seção **Cartas irmãs** mostra o mesmo número nos outros naipes (menores) ou as cartas de mesma raiz numerológica entre os Maiores (Mago, Roda e Sol; Sacerdotisa, Força e Julgamento…; o Louco conversa com o Mundo e o Mago). Tocar abre a tela **Lado a lado**: imagem, palavras-chave, polaridade, luz, sombra, significado geral e invertida das duas, com atalho para trocar a segunda carta.
+- Nos **Flashcards**, o seletor **Área** (Geral, Amor, Financeiro, Espiritualidade, Invertida) troca o texto do verso pelo da área escolhida. O agendamento da repetição espaçada continua um por carta; o histórico registra a área de cada sessão.
+
+## Lembrete diário por e-mail
+
+A aluna liga e desliga em **Editar perfil** ("Lembrete diário por e-mail"). Todo dia às 8h de Brasília, a função agendada `netlify/functions/lembrete-diario.mjs` envia pela Brevo um e-mail curto com a carta do dia (a mesma que o app mostra), a pergunta de reflexão, quantas cartas esperam revisão nos flashcards e a sequência de dias. O rodapé tem o link "Parar de receber", assinado, que chama `lembrete-sair.mjs` e desliga o lembrete no perfil.
+
+Para ligar:
+1. Rode `supabase/lembretes.sql` no SQL Editor (coluna `perfis.lembrete` e função `lembretes_pendentes`, que só a chave de serviço pode chamar). Enquanto não rodar, o interruptor aparece no app, mas o perfil salva sem ele e avisa que o lembrete ainda não está disponível.
+2. Na Netlify, as variáveis `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` e `BREVO_API_KEY` já existem por causa do webhook. Opcional: `LEMBRETE_SECRET` (um texto longo qualquer) para assinar o link de descadastro; sem ele, a chave de serviço é usada para isso.
+3. O horário fica em `config.schedule` dentro da função (`0 11 * * *`, em UTC). O arquivo `netlify.toml` inclui `cards.js` e `diario.js` no pacote da função, e `diario.js` é o único lugar onde ficam as perguntas e o sorteio da carta do dia, usado pelo app e pelo e-mail.
+
+## Ofélia, a coruja do Grimório (chat de dúvidas)
+
+Dentro de uma prática de tiragem (depois do box "Minha interpretação") e na ficha de cada carta, a aluna tem a caixa **Perguntar à Ofélia**. Ofélia é uma coruja-da-igreja (suindara) que "mora na torre do Grimório": o personagem está no prompt do sistema e no ícone em SVG da caixa; ela fala pouco, com humor seco, e nunca se apresenta como vidente. A função `netlify/functions/ofelia.mjs` recebe só os ids da tiragem (ou da carta), a pergunta registrada, a síntese e a interpretação da aluna, monta o contexto com as fichas oficiais de `cards.js` e `tiragens.js` e chama a API da Anthropic (modelo `claude-opus-5-5`, resposta em streaming). O prompt do sistema carrega as regras da marca: perspectiva junguiana e não divinatória, nunca sim ou não sobre fatos (gravidez, volta de alguém, dinheiro), nunca ler quem não está na mesa, nunca prometer resultado, resposta curta que termina com uma pergunta de reflexão ou uma reformulação. Tudo o que a aluna escreve entra como texto dela, nunca como instrução.
+
+A conversa fica salva com a prática (`chat` em cada item de `readings`) ou com a carta (`chatCarta`), sincroniza com o resto do progresso e aparece de novo ao reabrir. Só aparece logada. Erros viram avisos curtos (sem sessão, limite do dia, serviço fora).
+
+Para ligar:
+1. Crie uma conta em console.anthropic.com, gere uma chave de API e defina um limite de gasto mensal lá.
+2. Na Netlify, em Site configuration → Environment variables, crie `ANTHROPIC_API_KEY` com essa chave. Nunca a cole no app nem em conversas. Opcionais: `OFELIA_LIMITE_DIA` (mensagens por aluna por dia; padrão 30) e `OFELIA_MODELO`.
+3. Rode `supabase/ofelia.sql` no SQL Editor: cria `ofelia_uso` (mensagens e tokens por aluna e por dia, só a chave de serviço escreve) e `ofelia_registrar`. O arquivo termina com a consulta que mostra o gasto por dia.
+4. O `package.json` da raiz declara `@anthropic-ai/sdk`; a Netlify instala na build. O site continua estático, sem comando de build.
+
+Custo de referência (Opus 5.5): cerca de US$ 0,012 por mensagem, com o prompt do sistema em cache. Cem alunas com dez mensagens por mês ficam em torno de US$ 12. Se a chave não estiver configurada, a função responde 503 e o app mostra "A Ofélia ainda não foi ligada neste app".
+
+## Jornada
+
+No Início, a lista de módulos virou a **Jornada**: sete capítulos em trilha (três setenários dos Arcanos Maiores: Formar o eu, Encontrar a sombra, Individuação; e as quatro casas de naipe). Um capítulo fecha quando todas as cartas dele estão estudadas e o quiz do capítulo tem 70% ou mais. O capítulo atual aparece em destaque com os botões Estudar (abre Cartas na primeira carta pendente) e Quiz do capítulo (setenários: todas as cartas do capítulo; naipes: o quiz clássico do naipe). Nada trava: qualquer capítulo pode ser aberto. Concluir os setenários e a Jornada inteira dá conquistas.
+
+## Tiragens como diário e desafio da semana
+
+- Na prática de uma tiragem há dois campos: **Minha pergunta** (antes de sortear) e **O padrão em uma frase** (depois). Os dois ficam gravados na prática salva e aparecem na lista "Minhas práticas". Editar a frase depois de salvar atualiza a prática.
+- Abaixo da síntese, a caixa **Minha interpretação** (texto livre, até 3.000 caracteres) fica gravada na prática e pode ser editada depois de salva. Na tela Tiragens, **Minhas práticas** lista todas as práticas salvas, de qualquer tiragem, com contadores (total, neste mês, com escrita); tocar reabre a prática com as cartas e os textos. Ficam guardadas as 100 mais recentes, sincronizadas na nuvem.
+- Logada, o botão **Compartilhar na roda** abre a tela Escrever com o tema Tiragem e o texto já montado (tiragem, pergunta, cartas por posição, síntese e interpretação). Se já havia um rascunho, o texto é anexado ao fim.
+- **Desafio da semana**: a Raquel escreve um post começando com "Desafio da semana:" (a primeira linha vira o título) e fixa nos três pontos do post. Ele aparece no Início de todas as assinantes, com a contagem de respostas e o botão Participar, que abre os comentários desse post. Um post fixado que não comece com "Desafio" aparece como "Aviso fixado". Só o post fixado mais recente é mostrado.
+
+## Quiz: quatro modos
+
+- **Clássico**: 10 perguntas sorteadas das fichas, sem o nome da carta na pergunta.
+- **Relâmpago**: 60 segundos; a próxima pergunta vem sozinha e o quiz não acaba antes do relógio.
+- **Só as que errei**: monta o quiz com as cartas mais erradas no quiz e nos flashcards.
+- **Luz ou sombra?**: a carta é nomeada e a aluna diz de que lado dela vem a frase.
+- **Dificuldade** (Clássico e Relâmpago): no nível Difícil, as opções erradas são do mesmo naipe ou do mesmo número da carta certa.
+- O feedback de erro mostra também as palavras-chave da carta escolhida, para a diferença ficar clara. O histórico guarda o modo de cada quiz; "melhor nota" conta só o Clássico.
+
+## Login, perfil e acesso só para assinantes
+
+O app tem login por código enviado ao e-mail, perfil com foto e progresso salvo na nuvem. O acesso pode ser liberado só para quem tem assinatura ativa na Kiwify.
+
+**Situação atual:** ligado em `modo: 'assinantes'` (`config.js`), com Supabase em São Paulo, e-mail pelo Brevo (`nao-responda@raquellopestarot.com.br`) e webhook da Kiwify ativo. Para voltar ao app sem login, mude `modo` para `'desligado'`. Com `'assinantes'` ligado, os links de teste `?modo=` não afrouxam a conferência de assinatura.
+
+### Arquivos
+
+- `config.js`: modo de acesso, endereço e chave pública do Supabase, link de compra da Kiwify.
+- `auth.js`: login, conferência da assinatura, sincronização do progresso e perfil.
+- `vendor/supabase-2.117.2.js`: biblioteca oficial do Supabase, servida pelo próprio site para o app abrir sem internet.
+- `supabase/schema.sql`: tabelas, regras de segurança e pasta de fotos.
+- `netlify/functions/kiwify-webhook.mjs`: recebe os avisos da Kiwify e atualiza quem é assinante.
+
+### 1. Supabase
+
+1. Crie uma conta em supabase.com e um projeto novo (região São Paulo).
+2. Em **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**.
+3. Em **Authentication → Sign In / Providers → Email**, deixe o e-mail ligado e o **Email OTP Length** em 6.
+4. Em **Authentication → Emails → Templates**, edite os modelos **Magic Link** e **Confirm signup** para mostrar o código. Exemplo de corpo:
+
+   ```html
+   <h2>Seu código do Grimório Arcano</h2>
+   <p>Digite este código no app:</p>
+   <p style="font-size:28px;letter-spacing:6px"><b>{{ .Token }}</b></p>
+   <p>Ele vale por alguns minutos. Se não foi você, ignore este e-mail.</p>
+   ```
+
+5. **Obrigatório para as alunas receberem o código:** em **Authentication → Emails → SMTP Settings**, configure um serviço de envio próprio (Brevo e Resend têm plano gratuito). O envio padrão do Supabase só entrega para os membros da sua equipe no Supabase e com limite baixo por hora, serve apenas para o seu teste.
+6. Em **Project Settings → API**, copie o **Project URL** e a chave **anon public**. Elas vão no `config.js` (são públicas por natureza). A chave **service_role** é secreta e vai só na Netlify.
+7. Para se liberar, rode no SQL Editor (com o seu e-mail):
+
+   ```sql
+   insert into public.assinantes (email, status, nome) values ('seu-email@exemplo.com', 'ativa', 'Raquel')
+     on conflict (email) do update set status = 'ativa';
+   ```
+
+### 2. Netlify
+
+Em **Site configuration → Environment variables**, crie:
+
+| Variável | Valor |
+| --- | --- |
+| `SUPABASE_URL` | o Project URL do Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | a chave service_role do Supabase |
+| `KIWIFY_TOKEN` | o token mostrado pela Kiwify ao criar o webhook |
+| `KIWIFY_PRODUCT_ID` | opcional: id do produto Grimório, para ignorar vendas de outros produtos |
+| `BREVO_API_KEY` | opcional: chave de API do Brevo (SMTP & API → Chaves de API). Com ela, quem compra recebe o e-mail de boas-vindas com o link do app |
+| `EMAIL_RESPOSTA` | opcional: e-mail que recebe as respostas das alunas ao e-mail de boas-vindas |
+
+Depois de criar as variáveis, faça um novo deploy (Deploys → Trigger deploy).
+
+### 3. Kiwify
+
+1. Em **Apps → Webhooks**, crie um webhook para o produto Grimório Arcano.
+2. URL: `https://SEU-SITE.netlify.app/.netlify/functions/kiwify-webhook`
+3. Eventos: compra aprovada, compra reembolsada, chargeback, assinatura cancelada, assinatura atrasada, assinatura renovada.
+4. Copie o token gerado para a variável `KIWIFY_TOKEN` da Netlify.
+
+Cada aviso recebido fica registrado na tabela `kiwify_eventos` do Supabase, com o resultado. É ali que se confere se a Kiwify está chegando.
+
+### 4. Assinantes que já existem
+
+A Kiwify só avisa vendas novas. Para liberar quem já assina: exporte da Kiwify a lista de assinaturas ativas em CSV, monte uma planilha com as colunas `email` e `status` (valor `ativa`), salve como CSV e importe em **Table Editor → assinantes → Insert → Import data from CSV**.
+
+### 5. Ligar
+
+Para testar sem afetar as alunas, abra o app com `?modo=login` no fim do endereço (por exemplo `https://SEU-SITE.netlify.app/?modo=login`). O modo de teste vale só naquele aparelho e continua ligado até você abrir o app com `?modo=desligado`. Também existe `?modo=assinantes`, para testar o bloqueio de quem não assina.
+
+
+1. No `config.js`, preencha `supabaseUrl`, `supabaseAnonKey` e `linkAssinatura`, e mude `modo` para `'login'`. Teste com o seu e-mail: entrar, editar o perfil, estudar uma carta, abrir em outro aparelho.
+2. Quando tudo estiver certo, mude `modo` para `'assinantes'`.
+
+Status que liberam o acesso: `ativa` e `atrasada` (atraso de pagamento ainda não bloqueia). `cancelada`, `reembolsada` e `chargeback` bloqueiam. Sem internet, o app continua liberado por `diasOffline` dias depois da última conferência.
+
+Ao sair da conta, o progresso continua na nuvem e é apagado do aparelho. Se outra pessoa entrar no mesmo aparelho, os dados não se misturam.
+
+## Comunidade
+
+Mural único com temas (Estudo de carta, Tiragem, Dúvida, Reflexão) para as assinantes, com comentários, curtidas e fotos. A aba **Comunidade** só aparece para quem está logada.
+
+### Ligar
+
+1. No Supabase, em **SQL Editor**, cole e rode `supabase/comunidade.sql` (depois do `schema.sql`). Até rodar, a aba mostra "A comunidade ainda está sendo preparada".
+2. Torne-se administradora, trocando pelo seu e-mail:
+
+   ```sql
+   insert into public.admins (email) values ('seu-email@exemplo.com') on conflict do nothing;
+   ```
+
+3. Saia e entre de novo no app para o poder de administradora valer.
+
+### Moderação
+
+- Administradora vê o menu de três pontos em todo post: **Fixar no topo** (vira "Aviso"), **Apagar post** e **Bloquear esta aluna de postar**. Em comentários de qualquer pessoa aparece **Apagar**.
+- Cada aluna apaga só os próprios posts e comentários.
+- Aluna bloqueada continua lendo, mas não posta nem comenta. Para desbloquear, apague a linha dela em **Table Editor → bloqueadas**.
+- As regras exibidas em "Combinados da roda" ficam em `index.html` (função `comunidadeView`).
+
+### Perfil
+
+A foto no canto superior de cada tela abre o próprio perfil, no estilo Instagram: foto, nome, bio, contadores de posts e curtidas recebidas, botão Editar perfil e os posts da pessoa (lista ou só os com foto, em grade). Tocar no nome ou na foto de quem postou ou comentou abre o perfil dela. O selo "Administradora" depende da função `admin_uids` do banco; se ela não existir, o app segue sem o selo. Para criar, rode no SQL Editor o bloco 10 de `supabase/comunidade.sql`.
+
+Arquivos: `comunidade.js` (leitura e escrita), telas em `index.html`, banco em `supabase/comunidade.sql` (tabelas `posts`, `comentarios`, `curtidas`, `admins`, `bloqueadas`, bucket `comunidade`).
