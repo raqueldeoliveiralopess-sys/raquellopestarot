@@ -1,0 +1,17 @@
+<div class="slide">
+  {{#imagem}}<img class="bg" src="{{imagem}}" alt="">{{/imagem}}{{^imagem}}<div class="bg-fallback"></div>{{/imagem}}
+  {{{doodles}}}
+  <div class="bloco" style="left:64px; top:92px;">
+    {{#serie}}<span class="tape">{{serie}}</span>{{/serie}}
+    {{#linha1}}<div class="linha bold xl">{{linha1}}</div>{{/linha1}}
+    {{#destaque1}}<div class="linha chunky xxl">{{destaque1}}</div>{{/destaque1}}
+    {{#destaque2}}<div class="linha chunky orange xxl">{{destaque2}}</div>{{/destaque2}}
+    <div class="underline"></div>
+  </div>
+  <div class="bloco direita" style="right:64px; bottom:120px;">
+    {{#rodape1}}<div class="linha bold lg">{{rodape1}}</div>{{/rodape1}}
+    {{#rodape_destaque}}<div class="linha chunky xxl">{{rodape_destaque}}</div>{{/rodape_destaque}}
+    {{#rodape2}}<div class="linha bold lg" style="white-space:normal; max-width:520px; line-height:1.02;">{{rodape2}}</div>{{/rodape2}}
+    <div class="underline orange"></div>
+  </div>
+</div>

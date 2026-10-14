@@ -1,0 +1,9 @@
+<div class="slide">
+  {{#imagem}}<img class="bg" src="{{imagem}}" alt="">{{/imagem}}{{^imagem}}<div class="bg-fallback"></div>{{/imagem}}
+  {{{doodles}}}
+  <div class="bloco centro" style="left:0; right:0; top:96px; gap:0;">
+    {{#nome_linha1}}<div class="linha bold xl brush">{{nome_linha1}}</div>{{/nome_linha1}}
+    {{#nome_linha2}}<div class="linha script xxl" data-text="{{nome_linha2}}" style="margin-top:-18px;">{{nome_linha2}}</div>{{/nome_linha2}}
+  </div>
+  {{#mostrar_preco}}<div class="preco-tag"><small>por só</small>{{preco}}</div>{{/mostrar_preco}}
+</div>

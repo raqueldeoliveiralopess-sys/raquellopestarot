@@ -1,0 +1,11 @@
+{
+  "produto": { "nome": "Teste de layout" },
+  "slides": [
+    { "tipo": "capa", "serie": "Da série:", "linha1": "coisas de", "destaque1": "bruxa", "destaque2": "herdeira",
+      "rodape1": "que comprei na", "rodape_destaque": "SHEIN", "rodape2": "e estou 0% arrependida" },
+    { "tipo": "produto", "nome_linha1": "Caneca de Cerâmica", "nome_linha2": "Livro Gato Preto" },
+    { "tipo": "produto", "nome_linha1": "Estátua", "nome_linha2": "Afrodite", "mostrar_preco": true, "preco": "R$ 39,90" },
+    { "tipo": "cta", "cta_linha1": "comente", "cta_destaque": "QUERO", "cta_linha2": "para receber os links",
+      "share_linha1": "compartilhe", "share_destaque": "com as amigas bruxas", "share_linha2": "que vão amar esses", "share_final": "Achadinhos" }
+  ]
+}

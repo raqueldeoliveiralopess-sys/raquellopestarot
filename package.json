@@ -1,0 +1,15 @@
+{
+  "name": "raquellopestarot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Modo automático de criação de carrosséis de oferta (Shopee) da Raquel Lopes, com imagens geradas no Magnific e slides renderizados em HTML.",
+  "type": "module",
+  "scripts": {
+    "render": "node scripts/render.mjs",
+    "novo": "node scripts/novo-produto.mjs",
+    "preview": "node scripts/render.mjs --html-only"
+  },
+  "dependencies": {
+    "playwright": "1.56.1"
+  }
+}
