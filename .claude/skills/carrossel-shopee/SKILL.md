@@ -94,8 +94,11 @@ hosts em vez de tentar outro caminho.
    > film look. Empty space on the left and bottom right for text. No text.
 
    Prompt do final: a mesma pessoa, no mesmo cenário, em outra pose (encostada
-   no carro, comendo um morango, rindo). Peça espaço livre no topo esquerdo e
-   no canto inferior direito.
+   no carro, comendo um morango, rindo). Diga que ela fica no terço direito do
+   quadro e que os dois terços da esquerda mostram só a rua: o bloco "comente
+   QUERO" ocupa o topo esquerdo inteiro e cobre o rosto se ela estiver no
+   centro. Na capa, pedir "espaço livre no topo esquerdo e no canto inferior
+   direito" basta.
 
 3. Espere com `creations_wait` e baixe cada `url` com curl para
    `output/<slug>/img/` (`capa.png`, `produto-1.png`, ..., `cta.png`).

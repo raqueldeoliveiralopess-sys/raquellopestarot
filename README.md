@@ -29,3 +29,12 @@ node scripts/render.mjs <slug> --html-only
 - `produtos/` — um JSON por carrossel
 - `referencias/` — os cinco posts de referência da identidade visual
 - `.claude/skills/carrossel-shopee/` — o fluxo automático que o Claude segue
+- `montador/` — versão no navegador do renderizador (Montador de Achadinhos), gerada por `scripts/build-montador.mjs`
+- `exemplos/achadinhos-caseira/` — carrossel de exemplo completo: fotos geradas, slides finais e legenda
+
+## Caminhos
+
+- **Automático:** mande os produtos ao Claude nesta sessão; a skill `carrossel-shopee` gera as fotos no Magnific, renderiza e entrega. Precisa do ambiente com acesso de rede liberado.
+- **Manual:** baixe a foto no app do Magnific e monte no Montador de Achadinhos (`montador/index.html`, publicado como artifact).
+
+O Magnific One e o brand kit exigem Freepik Premium; o fluxo usa o modo automático de modelos.

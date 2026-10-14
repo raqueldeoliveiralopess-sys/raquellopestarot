@@ -15,11 +15,11 @@ const ZONAS = {
     [40, 1120, 420, 180],  // rodapé esquerda
   ],
   produto: [
-    [30, 40, 260, 300],    // topo esquerda
-    [790, 40, 260, 300],   // topo direita
-    [30, 420, 200, 500],   // faixa esquerda
-    [850, 420, 200, 500],  // faixa direita
-    [60, 1080, 960, 220],  // rodapé
+    [40, 16, 380, 70],     // faixa acima do título, esquerda
+    [660, 16, 380, 70],    // faixa acima do título, direita
+    [30, 360, 200, 600],   // faixa esquerda
+    [850, 360, 200, 600],  // faixa direita
+    [60, 1100, 960, 200],  // rodapé
   ],
   cta: [
     [700, 40, 340, 300],   // topo direita
