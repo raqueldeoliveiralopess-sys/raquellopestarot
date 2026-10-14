@@ -89,6 +89,7 @@ const templatesDir = resolve(ROOT, 'templates');
 const baseCss = fontFaces() + readFileSync(join(templatesDir, 'base.css'), 'utf8');
 const shell = readFileSync(join(templatesDir, '_shell.html'), 'utf8');
 const templatesBase = pathToFileURL(templatesDir + '/').href;
+const ajuste = readFileSync(join(templatesDir, 'ajuste.js'), 'utf8');
 
 const produto = spec.produto ?? {};
 const total = spec.slides.length;
@@ -108,7 +109,7 @@ spec.slides.forEach((slide, i) => {
     total,
   };
   const body = render(tpl, ctx);
-  const html = render(shell, { ...ctx, body, baseCss, templatesBase });
+  const html = render(shell, { ...ctx, body, baseCss, templatesBase, ajuste });
   const name = `${String(i + 1).padStart(2, '0')}-${slide.tipo}`;
   const htmlPath = join(slidesDir, `${name}.html`);
   writeFileSync(htmlPath, html);

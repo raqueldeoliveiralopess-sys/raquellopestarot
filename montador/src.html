@@ -1,0 +1,431 @@
+<title>Montador de Achadinhos</title>
+<style>
+/*__FONTS__*/
+
+/* Layout: editor à esquerda, prévia do slide à direita; empilha no celular. */
+:root {
+  --bg: #FBF4EC;
+  --fg: #2D2A2E;
+  --muted: #7A6C70;
+  --panel: #FFFFFF;
+  --line: #EBDAD4;
+  --accent: #E6417A;
+  --accent-fg: #FFFFFF;
+  --soft: #FBDCE6;
+  --ok: #2E8B57;
+  --font-ui: "Garet", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1E1A1C; --fg: #F5EDEA; --muted: #B8A6AC; --panel: #2A2426; --line: #3D3337;
+    --accent: #F06292; --accent-fg: #1E1A1C; --soft: #4A2A36; --ok: #6FCF97; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1E1A1C; --fg: #F5EDEA; --muted: #B8A6AC; --panel: #2A2426; --line: #3D3337;
+  --accent: #F06292; --accent-fg: #1E1A1C; --soft: #4A2A36; --ok: #6FCF97; color-scheme: dark;
+}
+
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); font-size: 15px; line-height: 1.45; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-block: 20px 40px; padding-inline: 16px; }
+
+header.topo { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; margin-bottom: 20px; }
+header.topo h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.3px; line-height: 1.1; text-wrap: balance; }
+header.topo h1 span { color: var(--accent); }
+header.topo p { color: var(--muted); font-size: 14px; margin-top: 4px; max-width: 60ch; }
+.acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+
+button { font: inherit; font-weight: 800; border: 1.5px solid var(--line); background: var(--panel); color: var(--fg);
+  border-radius: 999px; padding: 10px 16px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button:focus-visible { outline: 3px solid var(--soft); outline-offset: 2px; }
+button.primaria { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+button.pequena { padding: 6px 12px; font-size: 13px; font-weight: 400; }
+button[disabled] { opacity: .5; cursor: default; }
+
+.app { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); } }
+
+.painel { background: var(--panel); border: 1.5px solid var(--line); border-radius: 18px; padding: 18px; min-width: 0; }
+.painel h2 { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 10px; }
+
+.tira { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 12px;
+  background: var(--bg); cursor: pointer; font-weight: 400; }
+.chip.ativo { background: var(--soft); border-color: var(--accent); color: var(--fg); font-weight: 800; }
+.chip .x { border: 0; background: transparent; padding: 0 2px; font-weight: 800; color: var(--muted); line-height: 1; }
+.chip .x:hover { color: var(--accent); }
+
+.campos { display: grid; gap: 12px; }
+.campo { display: grid; gap: 4px; }
+.campo label { font-size: 13px; color: var(--muted); }
+.campo input[type="text"], .campo select { font: inherit; padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 10px;
+  background: var(--bg); color: var(--fg); width: 100%; }
+.campo input[type="text"]:focus-visible, .campo select:focus-visible { outline: 3px solid var(--soft); border-color: var(--accent); }
+.linha2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+
+.solta { border: 2px dashed var(--line); border-radius: 14px; padding: 14px; text-align: center; color: var(--muted); font-size: 14px;
+  cursor: pointer; display: grid; gap: 6px; justify-items: center; }
+.solta.sobre { border-color: var(--accent); background: var(--soft); color: var(--fg); }
+.solta strong { color: var(--fg); font-weight: 800; }
+.solta input { display: none; }
+.solta .mini { width: 72px; height: 90px; object-fit: cover; border-radius: 8px; }
+
+.previa { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
+.palco-wrap { width: 100%; aspect-ratio: 4 / 5; max-width: 100%; position: relative; overflow: hidden; border-radius: 14px;
+  background: #F3DCC6; box-shadow: 0 10px 30px rgba(60, 20, 40, .18); }
+.palco { position: absolute; left: 0; top: 0; width: 1080px; height: 1350px; transform-origin: 0 0; }
+.rodape-previa { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px; color: var(--muted); font-size: 13px; }
+
+#export-stage { position: fixed; left: -20000px; top: 0; width: 1080px; height: 1350px; overflow: hidden; }
+
+.aviso { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--soft); color: var(--fg); font-size: 14px; }
+.aviso.ok { background: color-mix(in srgb, var(--ok) 18%, var(--panel)); }
+
+.modal { position: fixed; inset: 0; background: rgba(20, 10, 15, .7); display: grid; place-items: center; padding: 16px; z-index: 50; }
+.modal .caixa { background: var(--panel); border-radius: 16px; padding: 16px; max-width: 420px; width: 100%; display: grid; gap: 10px; justify-items: center; }
+.modal img { max-width: 100%; max-height: 70vh; border-radius: 10px; }
+.modal p { font-size: 14px; color: var(--muted); text-align: center; }
+
+@media (prefers-reduced-motion: no-preference) { .chip, button { transition: border-color .15s, background .15s; } }
+
+/* ===== CSS dos slides (igual ao templates/base.css) ===== */
+/*__BASECSS__*/
+</style>
+
+<div class="wrap">
+  <header class="topo">
+    <div>
+      <h1>Montador de <span>Achadinhos</span></h1>
+      <p>Solta a foto gerada no Magnific, escreve o nome do produto e baixa o slide pronto em 1080×1350, com as fontes e os rabiscos da marca.</p>
+    </div>
+    <div class="acoes">
+      <button id="btn-json" class="pequena" type="button">Copiar JSON</button>
+      <button id="btn-todos" type="button">Baixar todos</button>
+      <button id="btn-baixar" class="primaria" type="button">Baixar este slide</button>
+    </div>
+  </header>
+
+  <div class="app">
+    <section class="painel editor">
+      <h2>Slides</h2>
+      <div class="tira" id="tira"></div>
+      <h2 id="titulo-campos">Capa</h2>
+      <div class="campos" id="campos"></div>
+      <div class="aviso" id="aviso" hidden></div>
+    </section>
+
+    <section class="previa">
+      <div class="palco-wrap" id="palco-wrap"><div class="palco" id="palco"></div></div>
+      <div class="rodape-previa">
+        <span id="info-slide">Slide 1 de 4</span>
+        <button class="pequena" id="btn-rabiscos" type="button">Trocar rabiscos</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div id="export-stage" aria-hidden="true"></div>
+<div class="modal" id="modal" hidden>
+  <div class="caixa">
+    <img id="modal-img" alt="Slide pronto">
+    <p id="modal-texto">Segure a imagem (ou clique com o botão direito) para salvar.</p>
+    <button type="button" id="modal-fechar">Fechar</button>
+  </div>
+</div>
+
+<!--__SPRITE__-->
+
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script>
+/*__TEMPLATES__*/
+/*__DOODLES__*/
+/*__AJUSTE__*/
+
+// ---------- mini template engine (igual ao scripts/render.mjs) ----------
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function render(tpl, ctx) {
+  tpl = tpl.replace(/{{#(\w+)}}([\s\S]*?){{\/\1}}/g, (_, key, inner) => {
+    const v = ctx[key];
+    if (Array.isArray(v)) return v.map((item) => render(inner, { ...ctx, '.': item, ...(typeof item === 'object' ? item : {}) })).join('');
+    return v ? render(inner, ctx) : '';
+  });
+  tpl = tpl.replace(/{{\^(\w+)}}([\s\S]*?){{\/\1}}/g, (_, key, inner) => {
+    const v = ctx[key];
+    const empty = v === undefined || v === null || v === '' || v === false || (Array.isArray(v) && v.length === 0);
+    return empty ? render(inner, ctx) : '';
+  });
+  tpl = tpl.replace(/{{{(\w+|\.)}}}/g, (_, key) => String(ctx[key] ?? ''));
+  tpl = tpl.replace(/{{(\w+|\.)}}/g, (_, key) => esc(ctx[key]));
+  return tpl;
+}
+
+// ---------- estado ----------
+const PADRAO = {
+  capa: { tipo: 'capa', serie: 'Da série:', linha1: 'coisas de', destaque1: 'bruxa', destaque2: 'caseira',
+    rodape1: 'que achei na', rodape_destaque: 'SHOPEE', rodape2: 'e estou 0% arrependida' },
+  produto: { tipo: 'produto', nome_linha1: 'Caneca de Cerâmica', nome_linha2: 'Livro Gato Preto', tamanho: 'normal', mostrar_preco: false, preco: '' },
+  cta: { tipo: 'cta', cta_linha1: 'comente', cta_destaque: 'QUERO', cta_linha2: 'para receber os links',
+    share_linha1: 'compartilhe', share_destaque: 'com as amigas bruxas', share_linha2: 'que vão amar esses', share_final: 'Achadinhos' },
+};
+const TAMANHOS = { normal: ['xl', 'xxl'], menor: ['lg', 'xl'], minimo: ['md', 'lg'] };
+const CAMPOS = {
+  capa: [['serie', 'Fita'], ['linha1', 'Linha branca'], ['destaque1', 'Destaque rosa'], ['destaque2', 'Destaque laranja'],
+    ['rodape1', 'Rodapé, linha branca'], ['rodape_destaque', 'Rodapé, destaque rosa'], ['rodape2', 'Rodapé, fecho']],
+  produto: [['nome_linha1', 'Linha 1: o tipo do objeto'], ['nome_linha2', 'Linha 2: o que destaca']],
+  cta: [['cta_linha1', 'Chamada'], ['cta_destaque', 'Palavra do comentário'], ['cta_linha2', 'Complemento'],
+    ['share_linha1', 'Pedido'], ['share_destaque', 'Para quem'], ['share_linha2', 'Ponte'], ['share_final', 'Fecho']],
+};
+
+let state = {
+  sel: 0,
+  slides: [
+    { ...PADRAO.capa, seed: 1 },
+    { ...PADRAO.produto, seed: 2 },
+    { ...PADRAO.produto, nome_linha1: 'Estátua', nome_linha2: 'Afrodite', seed: 3 },
+    { ...PADRAO.cta, seed: 4 },
+  ],
+};
+const imagens = new Map(); // índice do slide -> data URL (fica só na memória)
+
+try {
+  const salvo = JSON.parse(localStorage.getItem('montador.v1') || 'null');
+  if (salvo && Array.isArray(salvo.slides) && salvo.slides.length >= 2) state = salvo;
+} catch (e) { /* sem armazenamento: segue com o padrão */ }
+
+function salvar() {
+  try { localStorage.setItem('montador.v1', JSON.stringify(state)); } catch (e) { /* ignora */ }
+}
+
+// ---------- render do slide ----------
+function slideHtml(slide, i) {
+  const [tam1, tam2] = TAMANHOS[slide.tamanho] ?? TAMANHOS.normal;
+  const ctx = { tam1, tam2, ...slide, imagem: imagens.get(i) ?? '', doodles: gerarDoodles(slide.tipo, slide.seed ?? i + 1, 9) };
+  return render(TEMPLATES[slide.tipo], ctx);
+}
+
+const palco = document.getElementById('palco');
+const palcoWrap = document.getElementById('palco-wrap');
+function ajustarEscala() {
+  const s = palcoWrap.clientWidth / 1080;
+  palco.style.transform = `scale(${s})`;
+}
+new ResizeObserver(ajustarEscala).observe(palcoWrap);
+
+function rotulo(i) {
+  const s = state.slides[i];
+  if (s.tipo === 'capa') return 'Capa';
+  if (s.tipo === 'cta') return 'Final';
+  const n = state.slides.slice(0, i).filter((x) => x.tipo === 'produto').length + 1;
+  return `Produto ${n}`;
+}
+
+function desenhar() {
+  const i = state.sel;
+  const slide = state.slides[i];
+  // tira
+  const tira = document.getElementById('tira');
+  tira.innerHTML = '';
+  state.slides.forEach((s, k) => {
+    const chip = document.createElement('span');
+    chip.className = 'chip' + (k === i ? ' ativo' : '');
+    chip.setAttribute('role', 'button');
+    chip.tabIndex = 0;
+    chip.textContent = rotulo(k);
+    chip.addEventListener('click', () => { state.sel = k; salvar(); desenhar(); });
+    chip.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); chip.click(); } });
+    if (s.tipo === 'produto' && state.slides.filter((x) => x.tipo === 'produto').length > 1) {
+      const x = document.createElement('button');
+      x.className = 'x'; x.type = 'button'; x.textContent = '×'; x.title = 'Remover este produto';
+      x.addEventListener('click', (e) => { e.stopPropagation(); removerSlide(k); });
+      chip.appendChild(x);
+    }
+    tira.appendChild(chip);
+  });
+  const add = document.createElement('button');
+  add.type = 'button'; add.className = 'pequena'; add.textContent = '+ produto';
+  add.addEventListener('click', adicionarProduto);
+  tira.appendChild(add);
+
+  // campos
+  document.getElementById('titulo-campos').textContent = rotulo(i);
+  const campos = document.getElementById('campos');
+  campos.innerHTML = '';
+  campos.appendChild(zonaImagem(i));
+  for (const [chave, label] of CAMPOS[slide.tipo]) {
+    const c = document.createElement('div');
+    c.className = 'campo';
+    const id = `f-${chave}`;
+    c.innerHTML = `<label for="${id}">${label}</label><input type="text" id="${id}" autocomplete="off">`;
+    const input = c.querySelector('input');
+    input.value = slide[chave] ?? '';
+    input.addEventListener('input', () => { slide[chave] = input.value; salvar(); desenharPalco(); });
+    campos.appendChild(c);
+  }
+  if (slide.tipo === 'produto') {
+    const c = document.createElement('div');
+    c.className = 'linha2';
+    c.innerHTML = `
+      <div class="campo"><label for="f-tamanho">Tamanho do nome</label>
+        <select id="f-tamanho"><option value="normal">Normal</option><option value="menor">Menor (nome longo)</option><option value="minimo">Mínimo</option></select></div>
+      <div class="campo"><label for="f-preco">Preço (opcional)</label><input type="text" id="f-preco" placeholder="R$ 39,90" autocomplete="off"></div>`;
+    const sel = c.querySelector('#f-tamanho');
+    sel.value = slide.tamanho ?? 'normal';
+    sel.addEventListener('change', () => { slide.tamanho = sel.value; salvar(); desenharPalco(); });
+    const preco = c.querySelector('#f-preco');
+    preco.value = slide.preco ?? '';
+    preco.addEventListener('input', () => { slide.preco = preco.value; slide.mostrar_preco = preco.value.trim() !== ''; salvar(); desenharPalco(); });
+    campos.appendChild(c);
+  }
+  document.getElementById('info-slide').textContent = `Slide ${i + 1} de ${state.slides.length}`;
+  desenharPalco();
+}
+
+function desenharPalco() {
+  palco.innerHTML = slideHtml(state.slides[state.sel], state.sel);
+  ajustarLinhas(palco);
+  ajustarEscala();
+}
+
+function zonaImagem(i) {
+  const z = document.createElement('label');
+  z.className = 'solta';
+  z.setAttribute('for', 'f-imagem');
+  const tem = imagens.has(i);
+  z.innerHTML = `${tem ? `<img class="mini" src="${imagens.get(i)}" alt="">` : ''}
+    <span><strong>${tem ? 'Trocar a foto' : 'Solta a foto aqui'}</strong> ou toca para escolher</span>
+    <span>Baixada do Magnific, de preferência em 4:5</span>
+    <input type="file" id="f-imagem" accept="image/*">`;
+  const input = z.querySelector('input');
+  input.addEventListener('change', () => input.files[0] && carregarImagem(i, input.files[0]));
+  z.addEventListener('dragover', (e) => { e.preventDefault(); z.classList.add('sobre'); });
+  z.addEventListener('dragleave', () => z.classList.remove('sobre'));
+  z.addEventListener('drop', (e) => {
+    e.preventDefault(); z.classList.remove('sobre');
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) carregarImagem(i, f);
+  });
+  return z;
+}
+
+function carregarImagem(i, file) {
+  const fr = new FileReader();
+  fr.onload = () => { imagens.set(i, fr.result); desenhar(); };
+  fr.readAsDataURL(file);
+}
+
+function adicionarProduto() {
+  // entra antes do slide final
+  const fim = state.slides.findIndex((s) => s.tipo === 'cta');
+  const pos = fim === -1 ? state.slides.length : fim;
+  // desloca as imagens guardadas dos slides seguintes
+  for (let k = state.slides.length - 1; k >= pos; k--) if (imagens.has(k)) { imagens.set(k + 1, imagens.get(k)); imagens.delete(k); }
+  state.slides.splice(pos, 0, { ...PADRAO.produto, nome_linha1: 'Nome do', nome_linha2: 'Produto', seed: Date.now() % 1000 });
+  state.sel = pos; salvar(); desenhar();
+}
+
+function removerSlide(k) {
+  state.slides.splice(k, 1);
+  imagens.delete(k);
+  for (let j = k + 1; j <= state.slides.length; j++) if (imagens.has(j)) { imagens.set(j - 1, imagens.get(j)); imagens.delete(j); }
+  state.sel = Math.min(state.sel, state.slides.length - 1);
+  salvar(); desenhar();
+}
+
+document.getElementById('btn-rabiscos').addEventListener('click', () => {
+  const s = state.slides[state.sel];
+  s.seed = ((s.seed ?? 1) + 7) % 10000;
+  salvar(); desenharPalco();
+});
+
+// ---------- exportar ----------
+const aviso = document.getElementById('aviso');
+function avisar(texto, ok) {
+  aviso.textContent = texto; aviso.hidden = false; aviso.classList.toggle('ok', !!ok);
+}
+
+function dataUrlParaBlob(dataUrl) {
+  const [cab, dados] = dataUrl.split(',');
+  const bin = atob(dados);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new Blob([bytes], { type: cab.match(/data:([^;]+)/)[1] });
+}
+
+async function renderizarPng(i) {
+  const stage = document.getElementById('export-stage');
+  stage.innerHTML = slideHtml(state.slides[i], i);
+  await document.fonts.ready;
+  ajustarLinhas(stage);
+  await new Promise((r) => setTimeout(r, 60));
+  return htmlToImage.toPng(stage.firstElementChild, { width: 1080, height: 1350, pixelRatio: 1, cacheBust: false });
+}
+
+let downloadsNs = undefined; // undefined = ainda não sabemos; null = indisponível
+async function obterDownloads() {
+  if (downloadsNs !== undefined) return downloadsNs;
+  try { downloadsNs = (await window.claude?.use?.('downloads')) ?? null; } catch (e) { downloadsNs = null; }
+  return downloadsNs;
+}
+
+function nomeArquivo(i) {
+  const s = state.slides[i];
+  const base = s.tipo === 'produto' ? `${s.nome_linha1} ${s.nome_linha2}` : rotulo(i);
+  const limpo = base.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return `${String(i + 1).padStart(2, '0')}-${limpo || s.tipo}.png`;
+}
+
+async function baixar(i, silencioso) {
+  const png = await renderizarPng(i);
+  const dl = await obterDownloads();
+  if (!dl) {
+    document.getElementById('modal-img').src = png;
+    document.getElementById('modal').hidden = false;
+    return 'modal';
+  }
+  try {
+    await dl.save({ filename: nomeArquivo(i), data: dataUrlParaBlob(png) });
+    if (!silencioso) avisar(`Salvo: ${nomeArquivo(i)}`, true);
+    return 'ok';
+  } catch (e) {
+    if (e && e.code === 'declined') { avisar('Você cancelou o download.'); return 'cancelado'; }
+    if (e && e.code === 'rate_limited') { avisar('Espera um instante e tenta de novo.'); return 'erro'; }
+    document.getElementById('modal-img').src = png;
+    document.getElementById('modal').hidden = false;
+    return 'modal';
+  }
+}
+
+const btnBaixar = document.getElementById('btn-baixar');
+const btnTodos = document.getElementById('btn-todos');
+btnBaixar.addEventListener('click', async () => {
+  btnBaixar.disabled = true; btnBaixar.textContent = 'Gerando…';
+  try { await baixar(state.sel); } catch (e) { avisar('Não consegui gerar o PNG. Tenta de novo, ou troca a foto.'); }
+  btnBaixar.disabled = false; btnBaixar.textContent = 'Baixar este slide';
+});
+btnTodos.addEventListener('click', async () => {
+  btnTodos.disabled = true;
+  let salvos = 0;
+  for (let i = 0; i < state.slides.length; i++) {
+    btnTodos.textContent = `Gerando ${i + 1} de ${state.slides.length}…`;
+    let r;
+    try { r = await baixar(i, true); } catch (e) { r = 'erro'; }
+    if (r === 'ok') salvos++;
+    if (r === 'cancelado' || r === 'modal') break;
+  }
+  if (salvos) avisar(`${salvos} de ${state.slides.length} slides salvos.`, true);
+  btnTodos.disabled = false; btnTodos.textContent = 'Baixar todos';
+});
+
+document.getElementById('modal-fechar').addEventListener('click', () => { document.getElementById('modal').hidden = true; });
+
+document.getElementById('btn-json').addEventListener('click', async () => {
+  const json = JSON.stringify({ slides: state.slides.map((s, i) => ({ ...s, imagem: imagens.has(i) ? `(foto ${i + 1})` : '' })) }, null, 2);
+  try { await navigator.clipboard.writeText(json); avisar('JSON copiado. Cola na conversa com o Claude para ele gerar pelo repositório.', true); }
+  catch (e) { avisar('Não deu para copiar automaticamente. Selecione e copie:\n' + json); }
+});
+
+desenhar();
+</script>
