@@ -13,8 +13,10 @@ import { gerarDoodles } from './doodles.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
-const slug = args.find((a) => !a.startsWith('--'));
+const slug = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--saida');
 const htmlOnly = args.includes('--html-only');
+const saidaIdx = args.indexOf('--saida');
+const saida = saidaIdx !== -1 ? args[saidaIdx + 1] : null; // pasta extra para copiar os PNG e a legenda
 
 if (!slug) {
   console.error('Uso: node scripts/render.mjs <slug> [--html-only]');
@@ -150,3 +152,11 @@ for (const p of pages) {
 }
 await browser.close();
 console.log(`Carrossel pronto: ${total} slides em output/${slug}/slides/`);
+
+if (saida) {
+  const { copyFileSync } = await import('node:fs');
+  mkdirSync(saida, { recursive: true });
+  for (const p of pages) copyFileSync(p.pngPath, join(saida, `${p.name}.png`));
+  if (existsSync(join(outDir, 'legenda.md'))) copyFileSync(join(outDir, 'legenda.md'), join(saida, 'legenda.md'));
+  console.log(`Copiado para ${saida}`);
+}

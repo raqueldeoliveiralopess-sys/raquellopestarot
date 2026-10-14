@@ -46,6 +46,38 @@ mensagem do grupo; se faltarem, deixe o campo em branco e avise no final.
 Crie o arquivo com `node scripts/novo-produto.mjs <slug> "Nome 1" "Nome 2"`.
 O slug é curto, minúsculo, com hífen (ex.: `achadinhos-altar-outubro`).
 
+### 1b. Vindo do Estúdio do Mercado Holístico
+
+Se a Raquel mandar um link `.../estudio/<dia>/carrossel.json` (ou o arquivo),
+o dia já vem sorteado e com tema. Rode:
+
+```bash
+node scripts/importar-estudio.mjs http://127.0.0.1:8000/estudio/<dia>/carrossel.json
+```
+
+Isso cria `produtos/estudio-<dia>.json`, baixa as fotos dos anúncios em
+`output/estudio-<dia>/img/shopee-N.jpg` e as fotos de referência da modelo em
+`modelo-N.jpg`. Regras desse caminho:
+
+- O adjetivo da capa (`destaque2`) sai do `titulo` do dia (o tema). Se o tema
+  não couber em uma palavra, escolha uma que resuma (caseira, herdeira,
+  ocupada, poderosa) e cite o tema na legenda.
+- Produto: use `shopee-N.jpg` como `references: [{type: "image"}]` para o
+  produto sair fiel ao anúncio.
+- Capa e final: se `modelo.referencias` tiver fotos, use a primeira como
+  referência de imagem no lugar de `brand/creator-referencia.jpg`, porque é a
+  pessoa que a Raquel definiu na ficha do Estúdio. Sem fotos, use a do repo.
+- Preço e link vêm prontos: coloque na legenda e na mensagem do grupo.
+- Ao renderizar, copie para a pasta do app com `--saida` (o valor `saida` do
+  JSON, por exemplo `D:\dev\mercado-holistico\estudio\<dia>\carrossel`):
+
+```bash
+node scripts/render.mjs estudio-<dia> --saida "<saida>"
+```
+
+Com 8 produtos são 10 fotos no Magnific (capa, 8 produtos, final), em torno
+de 600 créditos por carrossel no modo automático.
+
 ### 2. Nome em duas linhas
 
 Linha 1 (bold branca) = o tipo do objeto. Linha 2 (script rosa) = o que o

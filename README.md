@@ -31,6 +31,8 @@ node scripts/render.mjs <slug> --html-only
 - `.claude/skills/carrossel-shopee/` — o fluxo automático que o Claude segue
 - `montador/` — versão no navegador do renderizador (Montador de Achadinhos), gerada por `scripts/build-montador.mjs`
 - `exemplos/achadinhos-caseira/` — carrossel de exemplo completo: fotos geradas, slides finais e legenda
+- `integracao/mercado-holistico/` — ponte com o app do Estúdio: rota de exportação e passo a passo
+- `scripts/importar-estudio.mjs` — importa um dia do Estúdio para `produtos/`
 
 ## Caminhos
 
