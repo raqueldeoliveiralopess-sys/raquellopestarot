@@ -1183,11 +1183,32 @@ function formEditar(l){
 async function abrirPorPartes(pdfjs,tamanho,ler){
   const inicial=new Uint8Array(await ler(0,Math.min(tamanho,262144)));
   const t=new pdfjs.PDFDataRangeTransport(tamanho,inicial);
-  t.requestDataRange=(ini,fim)=>{ler(ini,fim).then(b=>t.onDataRange(ini,new Uint8Array(b))).catch(()=>{});};
+  // um trecho que falha não pode sumir: o pdf.js fica esperando por ele e as páginas dali em diante nunca aparecem.
+  // Tenta de novo com espera crescente (até 15 s) enquanto o livro estiver aberto; sem internet, espera a conexão voltar.
+  let fechado=false;t.abort=()=>{fechado=true;};
+  const pedir=async(ini,fim,n)=>{
+    try{const b=await ler(ini,fim);if(!fechado)t.onDataRange(ini,new Uint8Array(b));}
+    catch(e){
+      if(fechado)return;
+      await new Promise(ok=>{const tm=setTimeout(ok,Math.min(1000*2**n,15000));if(!navigator.onLine)addEventListener('online',()=>{clearTimeout(tm);ok();},{once:true});});
+      if(!fechado)pedir(ini,fim,n+1);
+    }
+  };
+  t.requestDataRange=(ini,fim)=>{pedir(ini,fim,0);};
   return pdfjs.getDocument({range:t,length:tamanho,rangeChunkSize:524288,disableAutoFetch:true,disableStream:true}).promise;
 }
 const lerArquivo=f=>(ini,fim)=>f.slice(ini,fim).arrayBuffer();
-const lerUrl=u=>async(ini,fim)=>fetch(u,{headers:{...(await cabecalhoAuth()),Range:`bytes=${ini}-${fim-1}`}}).then(r=>{if(r.status!==206&&r.status!==200)throw new Error('HTTP '+r.status);return r.arrayBuffer();}).then(b=>b.byteLength>fim-ini?b.slice(ini,fim):b);
+// conexão travada (comum no 4G) não pode segurar o trecho para sempre: corta em 30 s e deixa tentar de novo
+const lerUrl=u=>async(ini,fim)=>{
+  const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),30000);
+  try{
+    const r=await fetch(u,{headers:{...(await cabecalhoAuth()),Range:`bytes=${ini}-${fim-1}`},signal:ac.signal});
+    if(r.status!==206&&r.status!==200)throw new Error('HTTP '+r.status);
+    const b=await r.arrayBuffer();
+    if(r.status===206&&b.byteLength<fim-ini)throw new Error('trecho incompleto');
+    return b.byteLength>fim-ini?b.slice(ini,fim):b;
+  }finally{clearTimeout(tm);}
+};
 // 1ª página do PDF como capa (600 px de largura, WebP), usando o mesmo pdf.js do leitor
 async function capaDoPdf(file){
   let doc=null;
