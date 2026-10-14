@@ -1,6 +1,12 @@
 [
+  { "file": "Garet-Heavy.woff2", "family": "Garet", "weight": 800 },
+  { "file": "Garet-Book.woff2", "family": "Garet", "weight": 400 },
+  { "file": "Barryone.otf", "family": "Barryone", "weight": 400 },
+  { "file": "BostonAngel-Regular.ttf", "family": "Boston Angel", "weight": 400 },
+  { "file": "AppleGaramond.ttf", "family": "Apple Garamond", "weight": 400 },
+  { "file": "AppleGaramond-Italic.ttf", "family": "Apple Garamond", "weight": 400, "style": "italic" },
+  { "file": "AppleGaramond-Bold.ttf", "family": "Apple Garamond", "weight": 700 },
   { "file": "Baloo2-ExtraBold.woff2", "family": "Baloo 2", "weight": 800 },
-  { "file": "Poppins-ExtraBold.woff2", "family": "Poppins", "weight": 800 },
   { "file": "Chewy-Regular.woff2", "family": "Chewy", "weight": 400 },
   { "file": "KaushanScript-Regular.woff2", "family": "Kaushan Script", "weight": 400 }
 ]

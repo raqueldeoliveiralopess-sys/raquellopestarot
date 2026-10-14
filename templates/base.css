@@ -6,9 +6,10 @@
   --orange: #F7A41D;      /* destaque secundário */
   --white: #FFFFFF;
   --ink: #2D2A2E;         /* texto escuro sobre rosa claro */
-  --sans: "Baloo 2", "Poppins", system-ui, sans-serif;
-  --chunky: "Chewy", "Baloo 2", sans-serif;
-  --script: "Kaushan Script", cursive;
+  --sans: "Garet", "Baloo 2", system-ui, sans-serif;
+  --chunky: "Barryone", "Chewy", sans-serif;
+  --script: "Kaushan Script", cursive; /* trocar pela script real quando chegar */
+  --serif: "Boston Angel", "Apple Garamond", serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { width: 1080px; height: 1350px; overflow: hidden; background: #F3DCC6; }

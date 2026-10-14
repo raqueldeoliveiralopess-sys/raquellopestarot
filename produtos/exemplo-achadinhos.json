@@ -1,0 +1,51 @@
+{
+  "titulo": "Achadinhos de bruxa caseira",
+  "produtos": [
+    {
+      "nome": "Caneca de Cerâmica Livro Gato Preto",
+      "preco": "",
+      "link": "",
+      "foto_shopee": "",
+      "imagem": "output/exemplo-achadinhos/img/produto-1.png",
+      "nome_linha1": "Caneca de Cerâmica",
+      "nome_linha2": "Livro Gato Preto"
+    },
+    {
+      "nome": "Estátua Afrodite",
+      "preco": "",
+      "link": "",
+      "foto_shopee": "",
+      "imagem": "output/exemplo-achadinhos/img/produto-2.png",
+      "nome_linha1": "Estátua",
+      "nome_linha2": "Afrodite"
+    }
+  ],
+  "slides": [
+    {
+      "tipo": "capa",
+      "imagem": "output/exemplo-achadinhos/img/capa.png",
+      "serie": "Da série:",
+      "linha1": "coisas de",
+      "destaque1": "bruxa",
+      "destaque2": "caseira",
+      "rodape1": "que achei na",
+      "rodape_destaque": "SHOPEE",
+      "rodape2": "e estou 0% arrependida"
+    },
+    { "tipo": "produto", "imagem": "output/exemplo-achadinhos/img/produto-1.png", "nome_linha1": "Caneca de Cerâmica", "nome_linha2": "Livro Gato Preto", "tam1": "lg", "tam2": "xl" },
+    { "tipo": "produto", "imagem": "output/exemplo-achadinhos/img/produto-2.png", "nome_linha1": "Estátua", "nome_linha2": "Afrodite" },
+    {
+      "tipo": "cta",
+      "imagem": "output/exemplo-achadinhos/img/cta.png",
+      "cta_linha1": "comente",
+      "cta_destaque": "QUERO",
+      "cta_linha2": "para receber os links",
+      "share_linha1": "compartilhe",
+      "share_destaque": "com as amigas bruxas",
+      "share_linha2": "que vão amar esses",
+      "share_final": "Achadinhos"
+    }
+  ],
+  "legenda": "achadinho de bruxa caseira, cara. os dois que eu mais usei esse mês.\n\n☕ Caneca Livro Gato Preto: cerâmica em formato de livro, com gato preto e fases da lua. cabe o café da manhã inteiro e fica linda na mesa de estudo do tarot, sabe? [preço]\n\n🐚 Estátua Afrodite: em resina branca, com a concha na base. é peça de altar e de estante, tipo assim, de ficar olhando. não traz amor nem nada, é decoração bonita mesmo, entendeu? [preço]\n\ncomenta QUERO que eu te mando o link. e o grupo do Mercado Holístico tá na bio, lá eu aviso dos achadinhos antes de postar aqui.\n\n#achadinhosdebruxa #mercadoholistico #bruxacaseira",
+  "whatsapp": "meu anjo, achadinho de bruxa caseira chegando 👇\n\n☕ *Caneca Livro Gato Preto* — cerâmica, formato de livro, gato preto e fases da lua. [preço]\n[link afiliado]\n\n🐚 *Estátua Afrodite* — resina branca com concha, pra altar ou estante. [preço]\n[link afiliado]\n\npreço da Shopee muda rápido, então se quiser, garante hoje, né."
+}

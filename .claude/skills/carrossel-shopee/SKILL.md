@@ -22,11 +22,11 @@ DNA V2. Resumo do que está lá:
 - **Capa e final:** a creator gerada por IA, cabelo cacheado longo castanho,
   lenço de renda, óculos pequenos, vestido de renda off-white, bota marrom,
   colar de coração. Golden hour, rua arborizada ou porta de carro. Mesmo rosto
-  em todos os carrosséis: use `referencias/05-capa-bruxa-herdeira.jpg` como
-  referência de imagem.
-- **Texto:** nome do produto em duas linhas no topo: linha 1 em bold
-  arredondada branca sobre pincelada rosa, linha 2 em script rosa com contorno
-  rosa-claro. Rabiscos de estrela, coração, lua e raios em branco, rosa e laranja.
+  em todos os carrosséis: use `brand/creator-referencia.jpg` (recorte sem
+  texto da capa de referência) como referência de imagem.
+- **Texto:** nome do produto em duas linhas no topo: linha 1 em Garet Heavy
+  branca sobre pincelada rosa, linha 2 em script rosa com contorno rosa-claro.
+  Capa usa Barryone nos destaques. As fontes ficam em `fonts/`. Rabiscos de estrela, coração, lua e raios em branco, rosa e laranja.
 - **Capa:** "Da série: coisas de bruxa [adjetivo] que achei na SHOPEE e estou
   0% arrependida". O adjetivo muda a cada carrossel (herdeira, ocupada,
   preguiçosa, poderosa, caseira).
@@ -55,9 +55,16 @@ e `tam2: "xl"` no slide. Nunca deixe uma linha passar de 22 caracteres.
 
 ### 3. Fotos no Magnific
 
-Antes de gastar crédito, rode `simulate_cost` para um `images_generate` em
-modo `auto`, 4:5, count 1, e siga em frente se a conta tiver saldo. Se um
-pedido de geração for negado, pare e pergunte, não insista.
+Use `mode: "auto"` (ou `seedream-5-pro` / `imagen-nano-banana-2-lite` se a
+Raquel pedir um modelo). O Magnific One e o brand kit exigem Freepik Premium,
+que o plano Premium+ do Magnific não inclui: não tente. Antes de gastar
+crédito, rode `simulate_cost` e siga em frente se houver saldo. Se um pedido
+de geração for negado, pare e pergunte, não insista.
+
+Para baixar as imagens geradas e enviar fotos, o ambiente precisa liberar os
+hosts `pikaso.cdnpk.net` (download) e `ak-data.magnific.com` (upload) em
+Network access. Se o curl responder 403 no CONNECT, avise a Raquel com os dois
+hosts em vez de tentar outro caminho.
 
 **Produto** (um por slide):
 1. Se houver foto da Shopee, importe com `creations_upload_image` (URL) ou
@@ -76,7 +83,7 @@ pedido de geração for negado, pare e pergunte, não insista.
    Sem foto de referência, descreva o produto em detalhe no lugar da chave.
 
 **Capa e final** (a creator):
-1. Importe `referencias/05-capa-bruxa-herdeira.jpg` uma vez e use como
+1. Importe `brand/creator-referencia.jpg` uma vez e use como
    `references: [{type: "image", identifier: ...}]`.
 2. Prompt da capa:
 
