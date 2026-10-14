@@ -99,6 +99,7 @@ spec.slides.forEach((slide, i) => {
   if (!existsSync(tplPath)) throw new Error(`Template não existe: templates/${slide.tipo}.html`);
   const tpl = readFileSync(tplPath, 'utf8');
   const ctx = {
+    tam1: 'xl', tam2: 'xxl', // tamanhos padrão do nome do produto; use 'lg'/'xl' em nomes longos
     ...produto,
     ...slide,
     imagem: imageToDataUri(slide.imagem),
