@@ -307,3 +307,100 @@ create policy "cob-aulas: membros leem" on storage.objects for select to authent
 create policy "cob-aulas: admin envia"  on storage.objects for insert to authenticated with check (bucket_id = 'cob-aulas' and public.e_admin());
 create policy "cob-aulas: admin troca"  on storage.objects for update to authenticated using (bucket_id = 'cob-aulas' and public.e_admin());
 create policy "cob-aulas: admin apaga"  on storage.objects for delete to authenticated using (bucket_id = 'cob-aulas' and public.e_admin());
+
+-- 8) Clube do Livro: os livros estudados e as aulas de cada um. A admin cadastra e edita pelo app (aba Aulas);
+--    nada disso precisa de mudança no código a cada aula nova.
+--    Membros veem só as aulas publicadas (ou programadas cuja data já chegou); rascunhos só a admin vê.
+create table if not exists public.cob_clube_livros (
+  id         bigint generated always as identity primary key,
+  titulo     text not null,
+  autores    text,
+  descricao  text,
+  livro_id   bigint references public.cob_livros(id) on delete set null,  -- o PDF do livro na Estante
+  capa       text,                                                         -- imagem própria no bucket cob-aulas (vazia = capa da Estante)
+  ordem      int not null default 0,
+  criado_em  timestamptz not null default now()
+);
+alter table public.cob_clube_livros enable row level security;
+
+create table if not exists public.cob_clube_aulas (
+  id            bigint generated always as identity primary key,
+  livro         bigint not null references public.cob_clube_livros(id) on delete restrict,
+  numero        int not null check (numero > 0),
+  titulo        text not null,
+  descricao     text,
+  youtube       text check (youtube is null or youtube ~ '^[A-Za-z0-9_-]{11}$'),  -- só o ID do vídeo
+  publicar_em   timestamptz,           -- data da aula; nas programadas, quando ela aparece para a turma
+  paginas       text,                  -- ex.: "Até a página 79 do PDF"
+  pagina_ini    int check (pagina_ini is null or pagina_ini > 0),  -- página em que o leitor abre o PDF
+  livro_id      bigint references public.cob_livros(id) on delete set null,  -- outro PDF só para esta aula (vazio = o do livro)
+  atividade     text,                  -- perguntas para o grimório, uma por linha
+  proxima       text,                  -- aviso sobre a próxima aula
+  capa          text,                  -- imagem própria no bucket cob-aulas (vazia = miniatura do YouTube)
+  status        text not null default 'rascunho' check (status in ('rascunho', 'publicada', 'programada')),
+  criado_em     timestamptz not null default now(),
+  atualizado_em timestamptz not null default now(),
+  unique (livro, numero)
+);
+create index if not exists cob_clube_aulas_livro on public.cob_clube_aulas (livro, numero);
+alter table public.cob_clube_aulas enable row level security;
+
+create or replace function public.cob_clube_aulas_antes() returns trigger
+language plpgsql as $$
+begin
+  new.atualizado_em := now();
+  return new;
+end $$;
+drop trigger if exists cob_clube_aulas_antes on public.cob_clube_aulas;
+create trigger cob_clube_aulas_antes before update on public.cob_clube_aulas
+  for each row execute function public.cob_clube_aulas_antes();
+
+drop policy if exists "clube livros: membros leem" on public.cob_clube_livros;
+drop policy if exists "clube livros: admin inclui" on public.cob_clube_livros;
+drop policy if exists "clube livros: admin edita"  on public.cob_clube_livros;
+drop policy if exists "clube livros: admin remove" on public.cob_clube_livros;
+create policy "clube livros: membros leem" on public.cob_clube_livros for select to authenticated using (public.e_membro() or public.e_admin());
+create policy "clube livros: admin inclui" on public.cob_clube_livros for insert to authenticated with check (public.e_admin());
+create policy "clube livros: admin edita"  on public.cob_clube_livros for update to authenticated using (public.e_admin()) with check (public.e_admin());
+create policy "clube livros: admin remove" on public.cob_clube_livros for delete to authenticated using (public.e_admin());
+revoke all on public.cob_clube_livros from anon;
+grant select, insert, update, delete on public.cob_clube_livros to authenticated;
+
+drop policy if exists "clube aulas: membros leem as liberadas" on public.cob_clube_aulas;
+drop policy if exists "clube aulas: admin inclui"              on public.cob_clube_aulas;
+drop policy if exists "clube aulas: admin edita"               on public.cob_clube_aulas;
+drop policy if exists "clube aulas: admin remove"              on public.cob_clube_aulas;
+create policy "clube aulas: membros leem as liberadas" on public.cob_clube_aulas for select to authenticated using (
+  public.e_admin() or (public.e_membro() and (status = 'publicada' or (status = 'programada' and publicar_em <= now()))));
+create policy "clube aulas: admin inclui" on public.cob_clube_aulas for insert to authenticated with check (public.e_admin());
+create policy "clube aulas: admin edita"  on public.cob_clube_aulas for update to authenticated using (public.e_admin()) with check (public.e_admin());
+create policy "clube aulas: admin remove" on public.cob_clube_aulas for delete to authenticated using (public.e_admin());
+revoke all on public.cob_clube_aulas from anon;
+grant select, insert, update, delete on public.cob_clube_aulas to authenticated;
+
+-- primeiro livro e Aula 01 (só entram se as tabelas estiverem vazias; rodar de novo não duplica nem desfaz edições)
+-- o PDF é o "História da Bruxaria" de Russell e Alexander já enviado à Estante; se não for achado, escolha no app em "Editar livro"
+insert into public.cob_clube_livros (id, titulo, autores, livro_id, ordem)
+overriding system value
+select 1, 'História da Bruxaria', 'Jeffrey B. Russell e Brooks Alexander',
+  (select l.id from public.cob_livros l
+    where translate(lower(l.titulo || ' ' || coalesce(l.autor, '')), 'áàâãéêíóôõúç', 'aaaaeeiooouc') like '%historia da bruxaria%'
+      and (lower(l.titulo || ' ' || coalesce(l.autor, '')) like '%russell%' or l.tamanho > 10485760)
+    order by (lower(l.titulo || ' ' || coalesce(l.autor, '')) like '%russell%') desc, l.tamanho desc nulls last
+    limit 1),
+  1
+where not exists (select 1 from public.cob_clube_livros);
+
+insert into public.cob_clube_aulas (id, livro, numero, titulo, descricao, youtube, publicar_em, paginas, atividade, proxima, status)
+overriding system value
+select 1, 1, 1, 'Mentiram sobre as bruxas? | Quem construiu a imagem da bruxa?',
+  E'Nesta primeira aula do Clube do Livro, investigamos como a imagem da bruxa foi construída ao longo dos séculos.\n\nEstudamos as origens da feitiçaria, as práticas mágicas das civilizações antigas, a influência do paganismo e do folclore europeu, as interpretações de Margaret Murray e os primeiros vínculos entre feitiçaria, heresia e demonologia.\n\nA proposta é compreender a diferença entre aquilo que as pessoas praticavam, aquilo em que acreditavam e aquilo de que eram acusadas.',
+  'QXVc1ZMeJYU', '2026-10-31 12:00:00-03', 'Até a página 79 do PDF',
+  E'Como você definia a palavra bruxa antes desta aula?\nQual é a diferença entre feitiçaria e bruxaria histórica?\nPor que determinadas tensões sociais aumentavam as acusações de bruxaria?\nQual é a principal crítica histórica à teoria de Margaret Murray?\nPor que uma acusação histórica não comprova que o acontecimento descrito realmente ocorreu?',
+  'Continuação do Capítulo 3, a partir da página 80 do PDF.',
+  'publicada'
+where not exists (select 1 from public.cob_clube_aulas) and exists (select 1 from public.cob_clube_livros where id = 1);
+
+-- os próximos cadastros continuam a numeração depois do 1
+select setval(pg_get_serial_sequence('public.cob_clube_livros', 'id'), greatest((select max(id) from public.cob_clube_livros), 1));
+select setval(pg_get_serial_sequence('public.cob_clube_aulas', 'id'), greatest((select max(id) from public.cob_clube_aulas), 1));

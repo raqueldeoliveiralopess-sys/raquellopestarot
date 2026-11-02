@@ -200,6 +200,73 @@ main.cheia{padding:0;gap:0}
 .ed .row2{display:flex;gap:6px}.ed .row2 button{flex:1}
 .rm{min-height:40px;border:1px solid var(--line);border-radius:10px;background:transparent;color:#7E2C2C;font-size:13px;font-weight:500;padding:0 12px}
 @media (prefers-color-scheme:dark){.rm{color:#F0B8B8}}
+/* Clube do Livro: ameixa, títulos em amarelo-manteiga (Garet Heavy), destaques rosa, texto creme */
+@font-face{font-family:'Garet';src:url(fonts/Garet-Heavy.woff2) format('woff2');font-weight:800;font-style:normal;font-display:swap}
+.gt{font-family:'Garet','Jost',system-ui,sans-serif;font-weight:800;letter-spacing:-.005em;line-height:1.12;margin:0;overflow-wrap:break-word}
+.cl-hero,.cl-head,.cl-livro{background:#4A2545;background-image:radial-gradient(circle at 88% 0%,rgba(245,184,201,.22),transparent 55%);color:#F5EDCC;border-radius:22px;position:relative;overflow:hidden}
+.cl-hero{padding:22px 20px;display:flex;flex-direction:column;gap:8px}
+.cl-hero .eyebrow,.cl-head .eyebrow,.cl-livro .eyebrow{color:#F5B8C9}
+.cl-hero h2{color:#F2D36B;font-size:30px;padding-right:56px}
+.cl-hero p,.cl-head p{color:#F5EDCC}
+.cl-sub{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;line-height:1.35;font-weight:500}
+.cl-orn{position:absolute;top:14px;right:14px;width:58px;height:58px;color:#D9B66A;opacity:.75;pointer-events:none}
+.cl-hero small{font-size:13px;color:#E3D3C2;line-height:1.5}
+.cl-livro{display:grid;grid-template-columns:86px minmax(0,1fr) 18px;gap:14px;align-items:center;padding:14px;border:none;text-align:left;width:100%}
+.cl-livro .cover{aspect-ratio:3/4;padding:8px;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.cl-livro .cover .ph{font-size:14px}
+.cl-livro .t{display:flex;flex-direction:column;gap:4px;min-width:0}
+.cl-livro .gt{color:#F2D36B;font-size:19px}
+.cl-livro .au{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:16px;color:#F5EDCC}
+.cl-livro .q{font-size:12.5px;color:#E3D3C2}
+.cl-livro .chev{color:#F5B8C9}
+.cl-cont{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;border:1px solid var(--line);border-left:4px solid #D9B66A;border-radius:18px;padding:14px;background:var(--card)}
+.cl-cont .gt{font-size:18px;color:var(--plum)}
+.cl-aulas{display:flex;flex-direction:column;gap:12px}
+.cl-aula{display:grid;grid-template-columns:132px minmax(0,1fr);gap:12px;align-items:start;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--card);text-align:left;width:100%}
+.cl-th{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#2E1A33;display:flex;align-items:center;justify-content:center;color:#F5B8C9}
+.cl-th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cl-th svg{width:30px;height:30px;position:relative;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6));color:#FFFDF9}
+.cl-th b{position:absolute;left:6px;top:6px;background:#4A2545;color:#F2D36B;font-size:10.5px;font-weight:600;letter-spacing:.08em;padding:3px 7px;border-radius:99px}
+.cl-aula .ct{display:flex;flex-direction:column;gap:4px;min-width:0}
+.cl-aula .nm{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.cl-aula .tt{font-size:15.5px;font-weight:600;line-height:1.3;overflow-wrap:break-word}
+.cl-aula .mt{font-size:13px;color:var(--muted)}
+.cl-aula .cta{font-size:13px;font-weight:600;color:var(--plum);display:inline-flex;align-items:center;gap:4px}
+.cl-aula .cta svg{width:15px;height:15px}
+.cl-st{align-self:flex-start;font-size:11px;font-weight:600;letter-spacing:.04em;padding:3px 8px;border-radius:99px;background:var(--sand);color:var(--ink2)}
+.cl-st.rascunho{background:#FCEFC7;color:#7A4B00}.cl-st.programada{background:#E6E0F5;color:#4A2E7A}
+@media (prefers-color-scheme:dark){.cl-st.rascunho{background:#4A3A12;color:#F5DD9B}.cl-st.programada{background:#352A4A;color:#D9CCF5}}
+.cl-head{padding:20px;display:flex;flex-direction:column;gap:10px}
+.cl-head .num{font-size:13px;font-weight:600;letter-spacing:.18em;color:#F5B8C9}
+.cl-head h1{color:#F2D36B;font-size:27px}
+.cl-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:#E3D3C2}
+.cl-meta span{display:inline-flex;align-items:center;gap:6px}
+.cl-meta svg{width:15px;height:15px;color:#D9B66A;flex-shrink:0}
+.yt-abrir{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--line);color:var(--plum);font-size:13.5px;font-weight:600;text-decoration:none;background:var(--card)}
+.yt-abrir svg{width:16px;height:16px}
+.cl-sec .btn svg,main>.btn svg{width:18px;height:18px;flex-shrink:0}
+.yt-erro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;text-align:center;background:#2E1A33;color:#F5EDCC;font-size:14.5px}
+.yt-erro a{color:#2E1A33;background:#F2D36B;border-radius:99px;padding:10px 18px;font-weight:600;text-decoration:none}
+.cl-desc{display:flex;flex-direction:column;gap:10px}
+.cl-desc p{font-family:'Cormorant Garamond',Georgia,serif;font-size:19.5px;line-height:1.45;color:var(--ink2);font-weight:500}
+.cl-sec{display:flex;flex-direction:column;gap:12px}
+.cl-sec>h2{font-size:22px}
+.cl-sec .lv{display:flex;flex-direction:column;gap:2px}
+.cl-sec .lv b{font-size:16px}.cl-sec .lv i{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;color:var(--ink2)}
+.cl-sec ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;font-size:15.5px;line-height:1.5;color:var(--ink2)}
+.cl-sec ol li::marker{color:var(--plum);font-weight:600}
+.cl-prox{border-left:3px solid #D9B66A;background:var(--sand);padding:12px 14px;border-radius:0 12px 12px 0;display:flex;flex-direction:column;gap:4px;font-size:14.5px;color:var(--ink2)}
+.cl-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.cl-nav .row{min-height:58px;padding:10px 12px}
+.cl-nav .row .n{font-size:14px;line-height:1.3;white-space:normal}
+.cl-adm{display:flex;gap:8px;flex-wrap:wrap}
+.cl-adm .btn{flex:1;min-width:140px;min-height:44px}
+.cl-form .field input[type=number],.cl-form .field input[type=time],.cl-form .field input[type=date]{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);padding:10px 12px;font:inherit;font-size:16px;-webkit-appearance:none;appearance:none}
+.cl-form .duas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cl-prev{display:flex;flex-direction:column;gap:8px}
+.cl-prev .ok{font-size:13px;color:#3F6E4A;font-weight:600}.cl-prev .no{font-size:13px;color:#7E2C2C;font-weight:600}
+@media (prefers-color-scheme:dark){.cl-prev .ok{color:#9CCB9F}.cl-prev .no{color:#F0B8B8}}
+@media (max-width:380px){.cl-aula{grid-template-columns:104px minmax(0,1fr)}.cl-livro{grid-template-columns:70px minmax(0,1fr) 16px}}
 @media (min-width:900px){
   #app{max-width:1080px;flex-direction:row}
   nav{order:-1;position:sticky;top:0;height:100dvh;display:flex;flex-direction:column;gap:6px;width:220px;border-top:none;border-right:1px solid var(--line);padding:28px 14px;justify-content:flex-start}
@@ -210,6 +277,8 @@ main.cheia{padding:0;gap:0}
   .h1{font-size:42px}
   .cal button{aspect-ratio:auto;height:68px}
   .shelf{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+  .cl-hero h2{font-size:38px}.cl-head h1{font-size:34px}
+  .cl-aula{grid-template-columns:200px minmax(0,1fr);gap:16px;padding:12px}
 }
 </style>
 </head>
@@ -217,7 +286,7 @@ main.cheia{padding:0;gap:0}
 <div id="app"><main id="main"></main><nav id="nav"></nav></div>
 <script src="lua.js?v=1"></script>
 <script src="biblioteca.js?v=3"></script>
-<script src="aulas.js?v=1"></script>
+<script src="aulas.js?v=2"></script>
 <script src="termos.js?v=2"></script>
 <script src="config.js"></script>
 <script>
@@ -300,10 +369,10 @@ function ir(h,trocar){if(trocar)location.replace('#/'+h);else location.hash='#/'
 window.addEventListener('hashchange',render);
 
 function render(manter){
-  const r=rota(), tab=r[0]==='aula'?'aulas':r[0]==='item'?'biblioteca':r[0]==='ler'?'estante':r[0];
+  const r=rota(), tab=r[0]==='aula'||r[0]==='clube'?'aulas':r[0]==='item'?'biblioteca':r[0]==='ler'?(/^(clube|aula)/.test(leitor.volta||'')?'aulas':'estante'):r[0];
   if(leitor.ativo&&r[0]!=='ler')fecharLeitor();
   $('#nav').innerHTML=TABS.map(([id,nome,svg])=>`<button data-go="${id}" class="${tab===id?'on':''}" aria-label="${nome}" ${tab===id?'aria-current="page"':''}>${svg}<span>${nome}</span></button>`).join('');
-  const telas={hoje:telaHoje,aulas:telaAulas,aula:telaAula,estante:telaEstante,ler:telaLer,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua,termos:telaTermos,membros:telaMembros};
+  const telas={hoje:telaHoje,aulas:telaAulas,aula:telaAula,clube:telaClube,estante:telaEstante,ler:telaLer,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua,termos:telaTermos,membros:telaMembros};
   // portão: sem sessão, só a tela de entrada e os termos; com sessão sem cadastro, só completar o perfil
   const portao=G.off?'':!G.pronto?'carregando':!G.sessao?(r[0]==='termos'?'':'entrar'):(!G.perfil&&!G.admin&&r[0]!=='termos')?'completar':'';
   $('#nav').hidden=!!portao||(!G.sessao&&r[0]==='termos');
@@ -311,15 +380,21 @@ function render(manter){
   $('#main').classList.toggle('portao',!!portao);
   if(portao){if(leitor.ativo)fecharLeitor();$('#main').innerHTML=portao==='carregando'?`<div class="auth">${marcaConta}<p class="c" style="color:var(--muted)">Abrindo…</p></div>`:portao==='entrar'?telaEntrar():telaCompletar();if(!manter)window.scrollTo(0,0);return;}
   $('#main').innerHTML=(telas[r[0]]||telaHoje)(r);
-  if(r[0]==='ler')iniciarLeitor(r[1]);
+  if(r[0]==='ler')iniciarLeitor(r[1],+r[2]||0);
+  ligarPlayers();
   if(!manter)window.scrollTo(0,0);
 }
 
 document.addEventListener('click',e=>{
   const bx=e.target.closest('[data-baixar]');if(bx){registrarLeitura(bx.dataset.baixar,'baixar');return;}
-  const go=e.target.closest('[data-go]');if(go){ir(go.dataset.go,go.hasAttribute('data-troca'));return;}
+  const go=e.target.closest('[data-go]');if(go){
+    // o leitor volta para onde foi aberto (a aula do Clube do Livro ou a Estante)
+    if(/^ler\//.test(go.dataset.go)&&rota()[0]!=='ler')leitor.volta=rota().join('/');
+    ir(go.dataset.go,go.hasAttribute('data-troca'));return;
+  }
   const act=e.target.closest('[data-act]');if(!act)return;
   const a=act.dataset.act, v=act.dataset.v;
+  if(a.startsWith('cl-'))return clubeAcao(a.slice(3),v,act);
   if(a==='voltar')ir(v||'hoje');
   if(a==='feita'){S.feitas[v]=!S.feitas[v];salvar();render();}
   if(a==='hemi'){S.hemisferio=v;salvar();render();}
@@ -332,6 +407,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('input',e=>{
   if(e.target.id==='notas'){S.notas[e.target.dataset.v]=e.target.value;salvar();}
+  if(e.target.dataset&&e.target.dataset.cf&&C.form){C.form[e.target.dataset.cf]=e.target.value;if(e.target.dataset.cf==='link')previaYoutube();}
   if(e.target.id==='busca'){filtrar(e.target.value);}
   if(e.target.classList.contains('lote-tit')){const x=E.lote[+e.target.dataset.i];if(x)x.titulo=e.target.value;}
   if(e.target.id==='lote-autor')E.loteAutor=e.target.value;
@@ -339,6 +415,14 @@ document.addEventListener('input',e=>{
   if(e.target.id==='est-busca'){E.busca=e.target.value;atualizarGrade();}
 });
 document.addEventListener('change',e=>{
+  if(e.target.dataset&&e.target.dataset.cf&&C.form){
+    const k=e.target.dataset.cf;
+    if(e.target.type==='file'){C.form.capaNova=e.target.files[0]||null;if(C.form.capaNova)C.form.removerCapa=false;return;}
+    if(e.target.type==='checkbox'){C.form[k]=e.target.checked;return;}
+    C.form[k]=e.target.value;
+    if(k==='status'){const h=$('#cf-hora');if(h)h.hidden=e.target.value!=='programada';const d=$('#cf-dica-status');if(d)d.textContent=DICA_STATUS[e.target.value]||'';}
+    return;
+  }
   if(e.target.id==='lote-cat'){E.loteCat=e.target.value;return;}
   if(e.target.id!=='lote-pdfs')return;
   const fs=[...e.target.files].filter(f=>/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name));
@@ -701,17 +785,12 @@ function baixarCsv(){
 
 // ---------- tela Hoje ----------
 const corHex=n=>{const c=B.cores.find(x=>x.nome.toLowerCase()===n.toLowerCase().replace('roxo-escuro','roxo'));return c?c.hex:'#CBB8AE';};
-function proximaAula(){
-  for(const m of A.modulos)for(const a of m.aulas)if(!S.feitas[a.id])return {m,a};
-  return null;
-}
 function telaHoje(){
   const agora=new Date(), lua=luaDoDia(agora);
   const saba=L.proximoSaba(agora,S.hemisferio), sb=B.sabas[saba.id];
   const dia=B.dias[agora.getDay()];
   const doy=Math.floor((inicioDia(agora)-new Date(agora.getFullYear(),0,0))/86400000);
   const erva=B.ervas[doy%B.ervas.length];
-  const prox=proximaAula();
   const h=agora.getHours(), saud=h<5?'Boa noite':h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
   const px=lua.proxima;
   return `
@@ -730,12 +809,7 @@ function telaHoje(){
     <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 class="h2">${esc(sb.nome)}</h2><span class="tag">${quando(diasAte(saba.data))} · ${dataLonga(saba.data)}</span></div>
     <p style="font-size:14.5px;color:var(--ink2)">${esc(sb.subtitulo)}. ${esc(sb.texto)}</p>
   </div>
-  ${prox?`<div class="card">
-    <div class="eyebrow">Continue o curso</div>
-    <h2 class="h2">${esc(prox.a.titulo)}</h2>
-    <p style="font-size:14px;color:var(--muted)">${esc(prox.m.titulo)}</p>
-    <button class="btn" data-go="aula/${prox.a.id}">Abrir aula</button>
-  </div>`:`<div class="card"><div class="eyebrow">Curso</div><p>Você concluiu todas as aulas publicadas. As próximas aparecem aqui assim que saírem.</p></div>`}
+  ${cartaoContinuar()}
   <div class="card">
     <div class="eyebrow">Hoje é dia de ${esc(dia.planeta)}</div>
     <p style="font-size:15px">Bom para <b>${esc(dia.temas.join(', '))}</b>. Cores do dia: ${esc(dia.cores.join(' e '))}.</p>
@@ -750,14 +824,33 @@ function telaHoje(){
 }
 
 // ---------- Aulas ----------
-function totais(){let t=0,f=0;for(const m of A.modulos)for(const a of m.aulas){t++;if(S.feitas[a.id])f++;}return {t,f};}
 function telaAulas(){
   if(M.porAula===null&&!M.erro)carregarMidia();
-  const {t,f}=totais();
+  if(C.livros===null&&!C.carregando&&!C.erro)carregarClube();
+  // módulos antigos (aulas fixas do aulas.js): só aparecem se tiverem alguma aula com vídeo
+  const antigos=A.modulos.filter(m=>m.aulas.some(temVideo));
+  C.form=null;
+  const livros=livrosClube(), adm=eAdmin();
   return `
   <div><div class="eyebrow">${esc(A.curso)}</div><h1 class="h1" style="margin-top:6px">Aulas</h1></div>
-  <div class="card"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${f} de ${t} aula${t===1?'':'s'} concluída${t===1?'':'s'}</span><b>${t?Math.round(f/t*100):0}%</b></div><div class="bar"><i style="width:${t?f/t*100:0}%"></i></div></div>
-  ${A.modulos.map(m=>`
+  <section class="cl-hero">
+    ${ornamento()}
+    <div class="eyebrow">📚 Clube do Livro</div>
+    <h2 class="gt">Clube do Livro</h2>
+    <p class="cl-sub">Uma jornada de estudos pela história da bruxaria.</p>
+    <small>Uma obra de referência por vez. As aulas são gravadas e publicadas aos sábados à noite: assista no seu ritmo e volte a elas quando quiser.</small>
+  </section>
+  ${adm&&C.falta?`<p class="msg erro">O cadastro de aulas pelo app ainda não está ativo: falta rodar a seção 8 do SQL (supabase/cob.sql) no Supabase. Até lá, a turma vê a Aula 01 que está guardada no app.</p>`:''}
+  ${cartaoContinuar(true)}
+  <div class="cl-sec">
+    <h2 class="h2">Livros estudados</h2>
+    ${C.livros===null?(C.erro?`<p class="msg erro">${esc(C.erro)} <button class="link" data-act="cl-recarregar">Tentar de novo</button></p>`:`<div class="card"><p style="color:var(--muted)">Carregando as aulas…</p></div>`)
+      :livros.length?`<div class="list">${livros.map(cartaoLivroClube).join('')}</div>`
+      :`<div class="card"><p>O primeiro livro do Clube aparece aqui assim que for cadastrado.</p></div>`}
+    ${adm&&!C.falta&&C.livros!==null?`<button class="btn ghost" data-go="clube/editar-livro/novo">+ Cadastrar outro livro</button>`:''}
+  </div>
+  ${antigos.length?`<h2 class="h2" style="margin-top:6px">Outros conteúdos</h2>`:''}
+  ${antigos.map(m=>`
     <div style="display:flex;flex-direction:column;gap:10px">
       <div><h2 class="h2">${esc(m.titulo)}</h2>${m.descricao?`<p style="font-size:14px;color:var(--muted);margin-top:4px">${esc(m.descricao)}</p>`:''}</div>
       <div class="list">${m.aulas.map((a,i)=>`
@@ -767,12 +860,12 @@ function telaAulas(){
           <span class="chev">${I.chev}</span>
         </button>`).join('')}</div>
     </div>`).join('')}
-  <footer class="note">Novas aulas aparecem aqui conforme forem liberadas.</footer>`;
+  <footer class="note">Novas aulas aparecem aqui conforme forem publicadas. Suas anotações e as aulas marcadas como concluídas ficam guardadas neste aparelho.</footer>`;
 }
 function embed(url){
   if(!url)return '';
-  let m;
-  if((m=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/)))return `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0`;
+  let m;const yt=ytId(url);
+  if(yt)return `https://www.youtube-nocookie.com/embed/${yt}?rel=0&playsinline=1`;
   if((m=url.match(/vimeo\.com\/(?:video\/)?(\d+)/)))return `https://player.vimeo.com/video/${m[1]}`;
   if(/pandavideo/.test(url))return url;
   return '';
@@ -823,7 +916,7 @@ function carregarMidia(){
       M.porAula=por;M.erro='';
     }catch(e){M.porAula={};M.erro=/cob_aula_midia|does not exist|schema cache/i.test(String(e&&e.message))?'falta-sql':'falha';}
     M.carregando=null;
-    if(['aula','aulas','hoje'].includes(rota()[0]))render(true);
+    if(['aula','aulas','hoje'].includes(rota()[0])||(rota()[0]==='clube'&&rota()[1]==='aula'))render(true);
   })();
 }
 function painelAula(a,md){
@@ -837,11 +930,15 @@ function painelAula(a,md){
     <label class="field">Ou colar um link (YouTube não listado, Vimeo ou Panda)<input type="text" id="aula-link" inputmode="url" placeholder="https://…" autocomplete="off"></label>
     <div class="row2" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" style="flex:1" data-act="aula-video" data-v="${a.id}" ${M.ocupado?'disabled':''}>${M.ocupado?'Enviando…':'Salvar vídeo'}</button>${v?`<button class="rm" data-act="aula-remover" data-v="${v.id}" ${M.ocupado?'disabled':''}>Remover vídeo</button>`:''}</div>
     <h3 class="serif" style="font-size:20px;margin-top:8px">Apostilas</h3>
-    ${md.apostilas.length?`<div class="list">${md.apostilas.map(ap=>`<div class="row" style="min-height:56px"><span class="t"><span class="n">${esc(ap.titulo)}</span><span class="s">${ap.tamanho?mb(ap.tamanho):''}</span></span><button class="rm" data-act="aula-remover" data-v="${ap.id}" ${M.ocupado?'disabled':''}>Remover</button></div>`).join('')}</div>`:'<p class="dica">Nenhuma apostila ainda.</p>'}
-    <label class="field">Adicionar apostilas (PDF, Word, PowerPoint ou imagem; pode escolher várias)<input type="file" id="aula-apostilas" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg,.webp,application/pdf" ${M.ocupado?'disabled':''}></label>
-    <button class="btn ghost" data-act="aula-apostilas" data-v="${a.id}" ${M.ocupado?'disabled':''}>${M.ocupado?'Enviando…':'Enviar apostilas'}</button>
-    <p class="msg ${M.erroMsg?'erro':''}" id="aula-msg" role="status" ${M.msg?'':'hidden'}>${esc(M.msg)}</p>
+    ${camposApostilas(a.id,md)}
   </div>`;
+}
+// lista, envio e remoção de apostilas de uma aula (aulas fixas e aulas do Clube do Livro)
+function camposApostilas(aulaId,md){
+  return `${md.apostilas.length?`<div class="list">${md.apostilas.map(ap=>`<div class="row" style="min-height:56px"><span class="t"><span class="n">${esc(ap.titulo)}</span><span class="s">${ap.tamanho?mb(ap.tamanho):''}</span></span><button class="rm" data-act="aula-remover" data-v="${ap.id}" ${M.ocupado?'disabled':''}>Remover</button></div>`).join('')}</div>`:'<p class="dica">Nenhuma apostila extra ainda.</p>'}
+    <label class="field">Adicionar apostilas (PDF, Word, PowerPoint ou imagem; pode escolher várias)<input type="file" id="aula-apostilas" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg,.webp,application/pdf" ${M.ocupado?'disabled':''}></label>
+    <button class="btn ghost" data-act="aula-apostilas" data-v="${esc(aulaId)}" ${M.ocupado?'disabled':''}>${M.ocupado?'Enviando…':'Enviar apostilas'}</button>
+    <p class="msg ${M.erroMsg?'erro':''}" id="aula-msg" role="status" ${M.msg?'':'hidden'}>${esc(M.msg)}</p>`;
 }
 const TIPOS_EXT={mp4:'video/mp4',mov:'video/quicktime',m4v:'video/x-m4v',webm:'video/webm',pdf:'application/pdf',doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',ppt:'application/vnd.ms-powerpoint',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp'};
 const extDe=n=>(String(n).match(/\.([a-z0-9]+)$/i)||[,''])[1].toLowerCase();
@@ -898,6 +995,427 @@ async function aulaAcao(a,v){
   }
 }
 function aulaSeguinte(id){const todas=[];for(const m of A.modulos)for(const a of m.aulas)todas.push({m,a});const i=todas.findIndex(x=>x.a.id===id);return i>=0&&todas[i+1]?todas[i+1]:null;}
+
+// ---------- Clube do Livro (Supabase: tabelas cob_clube_livros e cob_clube_aulas, seção 8 do cob.sql) ----------
+// A admin cadastra livros e aulas pelo próprio app; a turma vê só as aulas publicadas (ou programadas cuja hora chegou).
+// O vídeo fica no YouTube e aparece aqui pelo player oficial de incorporação. O PDF é o da Estante.
+const C={livros:null,aulas:null,erro:'',falta:false,carregando:null,assin:{},ocupado:false,msg:'',erroMsg:false,form:null};
+const TZ='America/Sao_Paulo';
+const eAdmin=()=>!!(G.admin||E.admin);
+// ID do vídeo a partir de qualquer link do YouTube (watch?v=, youtu.be/, shorts/, embed/, live/) ou do próprio ID
+function ytId(u){
+  u=String(u||'').trim();if(!u)return '';
+  if(/^[\w-]{11}$/.test(u))return u;
+  let x;try{x=new URL(/^https?:\/\//i.test(u)?u:'https://'+u);}catch(e){return '';}
+  const h=x.hostname.replace(/^(www|m|music)\./,'');let id='';
+  if(h==='youtu.be')id=x.pathname.split('/')[1]||'';
+  else if(h==='youtube.com'||h==='youtube-nocookie.com'){
+    if(x.pathname==='/watch')id=x.searchParams.get('v')||'';
+    else{const p=x.pathname.split('/').filter(Boolean);if(['embed','shorts','live','v'].includes(p[0]))id=p[1]||'';}
+  }
+  return /^[\w-]{11}$/.test(id)?id:'';
+}
+const liberada=a=>a.status==='publicada'||(a.status==='programada'&&!!a.publicar_em&&new Date(a.publicar_em)<=new Date());
+const n2=n=>String(n).padStart(2,'0');
+const dataCurta=iso=>iso?new Date(iso).toLocaleDateString('pt-BR',{timeZone:TZ,day:'2-digit',month:'2-digit',year:'numeric'}):'';
+const dataLongaIso=iso=>iso?new Date(iso).toLocaleDateString('pt-BR',{timeZone:TZ,day:'numeric',month:'long',year:'numeric'}):'';
+const semAc=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+function carregarClube(){
+  if(C.carregando)return C.carregando;
+  return C.carregando=(async()=>{
+    try{
+      const sb=await carregarSupabase();
+      const [l,a]=await Promise.all([
+        sb.from('cob_clube_livros').select('*').order('ordem',{ascending:true}).order('id',{ascending:true}),
+        sb.from('cob_clube_aulas').select('*').order('numero',{ascending:true})]);
+      if(l.error)throw l.error;if(a.error)throw a.error;
+      C.livros=l.data;C.aulas=a.data;C.falta=false;C.erro='';
+      const capas=[...C.livros,...C.aulas].map(x=>x.capa).filter(Boolean);
+      if(capas.length){const r=await sb.storage.from(BUCKET_AULAS).createSignedUrls(capas,21600);(r.data||[]).forEach(x=>{if(x.signedUrl)C.assin[x.path]=x.signedUrl;});}
+    }catch(e){
+      // sem as tabelas (SQL da seção 8 ainda não rodado): a turma vê a Aula 01 guardada no aulas.js
+      if(e&&(e.code==='PGRST205'||e.code==='42P01'||/cob_clube|schema cache|does not exist/i.test(String(e.message)))){C.falta=true;C.erro='';C.livros=A.clube.livros;C.aulas=A.clube.aulas;}
+      else C.erro=navigator.onLine?'Não consegui carregar as aulas agora.':'Sem internet. As aulas precisam de conexão.';
+    }
+    C.carregando=null;
+    if(E.livros===null&&!E.erro)carregarLivros();
+    const r=rota();if(['aulas','hoje'].includes(r[0])||(r[0]==='clube'&&!/^editar/.test(r[1]||'')))render(true);
+    else if(r[0]==='clube'&&C.form===null)render(true);
+  })();
+}
+const livrosClube=()=>(C.livros||[]).slice().sort((a,b)=>(a.ordem-b.ordem)||(a.id-b.id));
+// a admin vê também rascunhos e programadas (com etiqueta); a turma, só as liberadas
+const aulasDoLivro=(id,todas)=>(C.aulas||[]).filter(a=>String(a.livro)===String(id)&&(todas||liberada(a))).sort((a,b)=>a.numero-b.numero);
+const livroDe=a=>(C.livros||[]).find(l=>String(l.id)===String(a.livro))||null;
+// o PDF na Estante: o da aula, senão o do livro, senão o "História da Bruxaria" de Russell (mesma regra do SQL)
+function pdfDoLivro(lv){
+  if(lv&&lv.livro_id)return lv.livro_id;
+  if(!lv||!E.livros)return null;
+  const alvo=semAc(lv.titulo), au=semAc(lv.autores).split(/\s+/).filter(w=>w.length>4);
+  const cands=E.livros.filter(l=>semAc(l.titulo+' '+(l.autor||'')).includes(alvo));
+  const nome=l=>au.some(w=>semAc(l.titulo+' '+(l.autor||'')).includes(w));
+  const ok=cands.filter(l=>nome(l)||(l.tamanho||0)>10485760).sort((a,b)=>(nome(b)-nome(a))||((b.tamanho||0)-(a.tamanho||0)));
+  return ok[0]?ok[0].id:null;
+}
+const pdfDaAula=a=>a.livro_id||pdfDoLivro(livroDe(a));
+const livroEstante=id=>(E.livros||[]).find(l=>String(l.id)===String(id))||null;
+function capaLivroClube(lv){
+  if(lv.capa&&C.assin[lv.capa])return C.assin[lv.capa];
+  const e=livroEstante(pdfDoLivro(lv));return e&&e.capa?urlCapa(e.capa):'';
+}
+const miniatura=a=>a.capa&&C.assin[a.capa]?C.assin[a.capa]:a.youtube?`https://i.ytimg.com/vi/${a.youtube}/hqdefault.jpg`:'';
+const IC_CAL=ic('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>');
+const ornamento=()=>`<svg class="cl-orn" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M40 10a20 20 0 1 0 14 34A16 16 0 0 1 40 10z"/><path d="M14 12l1.6 3.4L19 17l-3.4 1.6L14 22l-1.6-3.4L9 17l3.4-1.6zM52 50l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/></svg>`;
+const rotuloStatus=a=>a.status==='rascunho'?'Rascunho':a.status==='programada'?(liberada(a)?'Programada · já liberada':`Programada para ${dataCurta(a.publicar_em)}`):'';
+const etiquetaStatus=a=>eAdmin()&&a.status!=='publicada'?`<span class="cl-st ${a.status}">${esc(rotuloStatus(a))}</span>`:'';
+const feita=a=>!!S.feitas['c'+a.id];
+
+function cartaoLivroClube(lv){
+  const n=aulasDoLivro(lv.id).length, capa=capaLivroClube(lv);
+  return `<button class="cl-livro" data-go="clube/${lv.id}">
+    <span class="cover">${capa?`<img src="${esc(capa)}" alt="" loading="lazy">`:`<span class="ph">${esc(lv.titulo)}</span>`}</span>
+    <span class="t"><span class="eyebrow">Livro ${n2(livrosClube().indexOf(lv)+1)}</span><span class="gt">${esc(lv.titulo)}</span>${lv.autores?`<span class="au">${esc(lv.autores)}</span>`:''}<span class="q">${n?`${n} aula${n>1?'s':''} publicada${n>1?'s':''}`:'Primeira aula em breve'}</span></span>
+    <span class="chev">${I.chev}</span>
+  </button>`;
+}
+function cartaoAula(a){
+  const th=miniatura(a);
+  return `<button class="cl-aula" data-go="clube/aula/${a.id}">
+    <span class="cl-th">${th?`<img src="${esc(th)}" alt="" loading="lazy">`:''}<b>AULA ${n2(a.numero)}</b>${I.play}</span>
+    <span class="ct">
+      <span class="nm">${a.publicar_em?dataCurta(a.publicar_em):'Sem data'}</span>
+      <span class="tt">${esc(a.titulo)}</span>
+      ${a.paginas?`<span class="mt">${esc(a.paginas)}</span>`:''}
+      ${etiquetaStatus(a)}
+      <span class="cta">${feita(a)?`${I.check}Concluída · rever`:`Assistir aula ${I.chev}`}</span>
+    </span>
+  </button>`;
+}
+// "Continue seus estudos": a última aula aberta, se ainda não foi concluída; senão a mais recente não concluída
+function aulaParaContinuar(){
+  const vis=(C.aulas||[]).filter(liberada);if(!vis.length)return null;
+  const recente=vis.slice().sort((a,b)=>(new Date(b.publicar_em||0)-new Date(a.publicar_em||0))||(b.numero-a.numero));
+  const ult=vis.find(a=>String(a.id)===String(S.ultimaAula));
+  if(ult&&!feita(ult))return {a:ult,rotulo:'Continue de onde parou'};
+  const nova=recente.find(a=>!feita(a));
+  if(nova)return {a:nova,rotulo:nova.id===recente[0].id?'Aula mais recente':'Aula que falta assistir'};
+  return {a:recente[0],rotulo:'Você está em dia · reveja a aula mais recente'};
+}
+function cartaoContinuar(naAba){
+  if(C.livros===null){if(!C.carregando&&!C.erro)carregarClube();return '';}
+  const x=aulaParaContinuar();if(!x)return naAba?'':`<div class="card"><div class="eyebrow">Clube do Livro</div><p>A próxima aula aparece aqui assim que for publicada.</p></div>`;
+  const lv=livroDe(x.a);
+  return `<div class="cl-cont">
+    <div class="eyebrow">${naAba?'Continue seus estudos':'Continue seus estudos · Clube do Livro'}</div>
+    <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12.5px;color:var(--muted)">${esc(x.rotulo)}${lv?' · '+esc(lv.titulo):''}</span><span class="gt">Aula ${n2(x.a.numero)} · ${esc(x.a.titulo)}</span></div>
+    <button class="btn" data-go="clube/aula/${x.a.id}">${feita(x.a)?'Rever a aula':'Assistir aula'}</button>
+  </div>`;
+}
+
+function telaClube(r){
+  if(C.livros===null&&!C.carregando&&!C.erro)carregarClube();
+  if(r[1]==='editar-aula')return telaEditarAula(r[2],r[3]);
+  if(r[1]==='editar-livro')return telaEditarLivro(r[2]);
+  C.form=null;  // fora do formulário: a próxima edição começa dos dados salvos
+  if(C.livros===null)return `<button class="back" data-go="aulas">${I.back}Aulas</button><div class="card"><p style="color:var(--muted)">${C.erro?esc(C.erro):'Carregando…'}</p>${C.erro?`<button class="link" data-act="cl-recarregar">Tentar de novo</button>`:''}</div>`;
+  if(r[1]==='aula')return telaClubeAula(r[2]);
+  return telaClubeLivro(r[1]);
+}
+function telaClubeLivro(id){
+  const lv=(C.livros||[]).find(l=>String(l.id)===String(id));
+  if(!lv)return `<button class="back" data-go="aulas">${I.back}Aulas</button><div class="card"><p>Este livro não está mais no Clube.</p></div>`;
+  const adm=eAdmin(), aulas=aulasDoLivro(lv.id,adm), pdf=pdfDoLivro(lv), capa=capaLivroClube(lv);
+  const feitas=aulas.filter(a=>liberada(a)&&feita(a)).length, total=aulas.filter(liberada).length;
+  return `
+  <button class="back" data-go="aulas">${I.back}Aulas</button>
+  <section class="cl-hero" style="flex-direction:row;gap:16px;align-items:flex-start">
+    <span class="cover" style="flex:0 0 96px;width:96px;aspect-ratio:3/4;padding:8px;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.3)">${capa?`<img src="${esc(capa)}" alt="">`:`<span class="ph" style="font-size:14px">${esc(lv.titulo)}</span>`}</span>
+    <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+      <div class="eyebrow">📚 Clube do Livro</div>
+      <h1 class="gt" style="color:#F2D36B;font-size:26px">${esc(lv.titulo)}</h1>
+      ${lv.autores?`<p class="cl-sub" style="font-style:italic;font-size:18px">${esc(lv.autores)}</p>`:''}
+      ${total?`<small>${feitas} de ${total} aula${total>1?'s':''} concluída${total>1?'s':''}</small>`:''}
+    </div>
+  </section>
+  ${lv.descricao?`<div class="cl-desc">${paragrafos(lv.descricao)}</div>`:''}
+  ${pdf?`<button class="btn ghost" data-go="ler/${pdf}" style="display:flex;align-items:center;justify-content:center;gap:8px">${I.ler}Ler o livro na Estante</button>`:''}
+  ${adm?`<div class="cl-adm"><button class="btn" data-go="clube/editar-aula/nova/${lv.id}">+ Nova aula</button><button class="btn ghost" data-go="clube/editar-livro/${lv.id}">Editar livro</button></div>${!pdf?`<p class="msg">Nenhum PDF da Estante ligado a este livro. Em "Editar livro", escolha o arquivo para a turma acessar o material.</p>`:''}`:''}
+  <div class="cl-sec">
+    <h2 class="h2">Aulas</h2>
+    ${aulas.length?`<div class="cl-aulas">${aulas.map(cartaoAula).join('')}</div>`:`<div class="card"><p>A primeira aula deste livro aparece aqui assim que for publicada.</p></div>`}
+  </div>
+  <footer class="note">As aulas são publicadas aos sábados à noite. Novas aulas entram nesta lista assim que saem.</footer>`;
+}
+function paragrafos(t){return String(t||'').split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean).map(p=>`<p>${esc(p).replace(/\n/g,'<br>')}</p>`).join('');}
+// perguntas: uma por linha (aceita "1." ou "1)" ou "-" no começo)
+const perguntas=t=>String(t||'').split('\n').map(l=>l.replace(/^\s*(\d+\s*[.)-]|[-•*])\s*/,'').trim()).filter(Boolean);
+function playerYoutube(id,titulo){
+  const q=`rel=0&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(location.origin)}`;
+  return `<div class="video" data-yt="${id}">
+    <iframe data-ytp="${id}" src="https://www.youtube-nocookie.com/embed/${id}?${q}" title="${esc(titulo)}" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <div class="yt-erro" hidden><p>Este vídeo não pode ser exibido dentro do app.</p><a href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">Assistir no YouTube</a></div>
+  </div>`;
+}
+// o player oficial avisa por mensagem quando o vídeo não pode ser incorporado; aí mostramos o botão do YouTube
+function ligarPlayers(){
+  document.querySelectorAll('iframe[data-ytp]').forEach(f=>{
+    if(f.dataset.ligado)return;f.dataset.ligado='1';
+    f.addEventListener('load',()=>{try{f.contentWindow.postMessage(JSON.stringify({event:'listening',id:f.dataset.ytp,channel:'widget'}),'*');}catch(e){}});
+  });
+}
+window.addEventListener('message',e=>{
+  if(!/^https:\/\/www\.youtube(-nocookie)?\.com$/.test(e.origin))return;
+  let d=e.data;try{if(typeof d==='string')d=JSON.parse(d);}catch(_){return;}
+  if(!d||d.event!=='onError')return;
+  document.querySelectorAll('iframe[data-ytp]').forEach(f=>{if(f.contentWindow===e.source){const er=f.parentNode.querySelector('.yt-erro');if(er)er.hidden=false;}});
+});
+function telaClubeAula(id){
+  const a=(C.aulas||[]).find(x=>String(x.id)===String(id)), adm=eAdmin();
+  if(!a||(!liberada(a)&&!adm))return `<button class="back" data-go="aulas">${I.back}Aulas</button><div class="card"><p>Esta aula ainda não foi publicada.</p></div>`;
+  const lv=livroDe(a)||{titulo:'Clube do Livro',autores:''}, chave='c'+a.id;
+  if(String(S.ultimaAula)!==String(a.id)&&liberada(a)){S.ultimaAula=a.id;salvar();}
+  if(M.porAula===null&&!M.erro)carregarMidia();
+  const lista=aulasDoLivro(a.livro,adm), i=lista.findIndex(x=>x.id===a.id), ant=lista[i-1], prox=lista[i+1];
+  const pdf=pdfDaAula(a), md=midiaDe(chave), qs=perguntas(a.atividade);
+  const leitura=a.paginas?`Leitura da Aula ${n2(a.numero)}: ${a.paginas.charAt(0).toLowerCase()+a.paginas.slice(1)}${/[.!?]$/.test(a.paginas)?'':'.'}`:'';
+  const apostilas=md.apostilas.map(ap=>`
+    <a class="row" href="${esc(M.assin[ap.arquivo]?M.assin[ap.arquivo]+'&download='+encodeURIComponent(ap.nome_arquivo||slug(ap.titulo)):'#')}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="ic">${I.file}</span><span class="t"><span class="n">${esc(ap.titulo)}</span><span class="s">${ap.tamanho?mb(ap.tamanho)+' · ':''}Baixar</span></span><span class="chev">${I.down}</span></a>`).join('');
+  const navAula=(x,rot)=>x?`<button class="row" data-go="clube/aula/${x.id}"><span class="t"><span class="s" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase">${rot}</span><span class="n">Aula ${n2(x.numero)} · ${esc(x.titulo)}</span></span></button>`:'<span></span>';
+  return `
+  <button class="back" data-go="clube/${a.livro}">${I.back}${esc(lv.titulo)}</button>
+  <header class="cl-head">
+    ${ornamento()}
+    <div class="eyebrow">📚 Clube do Livro · ${esc(lv.titulo)}</div>
+    <div class="num">AULA ${n2(a.numero)}</div>
+    <h1 class="gt" style="padding-right:40px">${esc(a.titulo)}</h1>
+    <div class="cl-meta">
+      ${a.publicar_em?`<span>${IC_CAL}${esc(dataLongaIso(a.publicar_em))}</span>`:''}
+      ${lv.autores?`<span>${I.livro}${esc(lv.autores)}</span>`:''}
+      ${a.paginas?`<span>${I.ler}${esc(a.paginas)}</span>`:''}
+    </div>
+    ${etiquetaStatus(a)}
+  </header>
+  ${adm?`<div class="cl-adm"><button class="btn ghost" data-go="clube/editar-aula/${a.id}">${'Editar esta aula'}</button></div>`:''}
+  ${a.youtube?playerYoutube(a.youtube,a.titulo)+`<a class="yt-abrir" href="https://www.youtube.com/watch?v=${a.youtube}" target="_blank" rel="noopener">${I.play}Abrir no YouTube</a>`
+    :`<div class="video"><div class="soon">${luaSvg(0.3,true,56)}<b class="serif" style="font-size:22px">Vídeo em breve</b><span style="font-size:13px">O vídeo desta aula aparece aqui assim que for publicado.</span></div></div>`}
+  ${a.descricao?`<div class="cl-desc">${paragrafos(a.descricao)}</div>`:''}
+  <section class="card cl-sec">
+    <h2 class="h2">📖 Material de leitura</h2>
+    <div class="lv"><b>${esc(lv.titulo)}</b>${lv.autores?`<i>${esc(lv.autores)}</i>`:''}</div>
+    ${leitura?`<p style="font-size:15px;color:var(--ink2)">${esc(leitura)}</p>`:''}
+    ${pdf?`<button class="btn" data-go="ler/${pdf}${a.pagina_ini>1?'/'+a.pagina_ini:''}" style="display:flex;align-items:center;justify-content:center;gap:8px">${I.ler}Acessar material de estudo</button>
+      <p class="dica">${a.pagina_ini>1?`Abre o PDF na página ${a.pagina_ini}, onde começa a leitura desta aula.`:'Abre o PDF aqui no app, na página em que você parou.'} O livro também fica na Estante.</p>`
+      :`<p class="dica">O PDF deste livro está na Estante.</p><button class="btn ghost" data-go="estante">Abrir a Estante</button>`}
+    ${apostilas?`<div class="eyebrow" style="margin-top:4px">Materiais extras</div>${apostilas}`:''}
+    ${adm&&!C.falta?`<details class="mb" style="margin-top:4px"><summary><span>Só para a admin · apostilas extras desta aula</span><span class="chev">${I.chev}</span></summary><div style="display:flex;flex-direction:column;gap:10px;padding:0 14px 14px">${M.erro==='falta-sql'?`<p class="msg erro">O envio de apostilas precisa da seção 7 do SQL.</p>`:''}${camposApostilas(chave,md)}</div></details>`:''}
+  </section>
+  ${qs.length?`<section class="card cl-sec">
+    <h2 class="h2">✍️ Para o seu grimório</h2>
+    <p style="font-size:14.5px;color:var(--muted)">Responda no seu grimório, físico ou digital. Se preferir, anote aqui mesmo.</p>
+    <ol>${qs.map(q=>`<li>${esc(q)}</li>`).join('')}</ol>
+    <button class="btn ghost" data-act="cl-copiar" data-v="${a.id}" id="cl-copiar">Copiar as perguntas</button>
+    <label class="eyebrow" for="notas" style="margin-top:6px">Minhas anotações</label>
+    <textarea id="notas" data-v="${chave}" placeholder="Suas respostas e o que mais te marcou nesta aula. Fica salvo neste aparelho.">${esc(S.notas[chave]||'')}</textarea>
+  </section>`:`<div style="display:flex;flex-direction:column;gap:8px"><label class="eyebrow" for="notas">Minhas anotações</label>
+  <textarea id="notas" data-v="${chave}" placeholder="Anote o que mais te marcou nesta aula. Fica salvo neste aparelho.">${esc(S.notas[chave]||'')}</textarea></div>`}
+  ${a.proxima?`<div class="cl-prox"><div class="eyebrow">Próxima aula</div><p>${esc(a.proxima)}</p></div>`:''}
+  <button class="btn ${feita(a)?'ghost':''}" data-act="feita" data-v="${chave}">${feita(a)?'Marcar como não concluída':'Marcar como concluída'}</button>
+  ${ant||prox?`<div class="cl-nav">${navAula(ant,'Aula anterior')}${navAula(prox,'Próxima aula')}</div>`:''}
+  <button class="row" data-go="clube/${a.livro}"><span class="ic">${I.aulas}</span><span class="t"><span class="n">Todas as aulas de ${esc(lv.titulo)}</span></span><span class="chev">${I.chev}</span></button>`;
+}
+
+// ---------- cadastro e edição (só admin; o Supabase recusa escrita de quem não está em public.admins) ----------
+const DICA_STATUS={rascunho:'Só você vê. A turma não vê rascunhos.',publicada:'Aparece para a turma assim que salvar.',programada:'Aparece sozinha para a turma na data e no horário escolhidos.'};
+const hojeSP=()=>new Date().toLocaleDateString('en-CA',{timeZone:TZ});
+const dataSP=iso=>iso?new Date(iso).toLocaleDateString('en-CA',{timeZone:TZ}):'';
+const horaSP=iso=>iso?new Date(iso).toLocaleTimeString('pt-BR',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false}):'';
+function opcoesPdf(sel){
+  if(!E.livros)return `<option value="">${E.erro?'Não consegui carregar a Estante':'Carregando a Estante…'}</option>`;
+  const ls=E.livros.slice().sort((a,b)=>a.titulo.localeCompare(b.titulo,'pt-BR'));
+  return `<option value="">${C.form&&C.form.tipo==='aula'?'O mesmo PDF do livro':'Nenhum'}</option>`+ls.map(l=>`<option value="${l.id}" ${String(sel)===String(l.id)?'selected':''}>${esc(l.titulo)}${l.autor?' · '+esc(l.autor):''}${l.tamanho?' · '+mb(l.tamanho):''}</option>`).join('');
+}
+function atualizarOpcoesPdf(){const s=$('#cf-pdf');if(s&&C.form)s.innerHTML=opcoesPdf(C.form.livro_id);}
+function campo(rot,k,extra){const f=C.form;return `<label class="field">${rot}<input type="text" data-cf="${k}" value="${esc(f[k]==null?'':f[k])}" autocomplete="off" ${extra||''}></label>`;}
+function areaTexto(rot,k,extra){const f=C.form;return `<label class="field">${rot}<textarea data-cf="${k}" ${extra||''}>${esc(f[k]||'')}</textarea></label>`;}
+function previaYoutube(){
+  const el=$('#cf-prev');if(!el||!C.form)return;
+  const link=(C.form.link||'').trim(), id=ytId(link);
+  el.innerHTML=!link?'<p class="dica">Cole o link do vídeo no YouTube (pode ser não listado). A aula pode ser salva sem vídeo e receber o link depois.</p>'
+    :id?`<span class="ok">✓ Vídeo reconhecido: ${id}</span>${playerYoutube(id,'Prévia do vídeo')}`
+    :'<span class="no">Não reconheci este link. Use o link do vídeo no YouTube (youtube.com/watch?v=…, youtu.be/…, /shorts/… ou /embed/…).</span>';
+  ligarPlayers();
+}
+function iniciarForm(tipo,id,livroId){
+  const chave=tipo+':'+id+':'+(livroId||'');
+  if(C.form&&C.form.chave===chave)return C.form;
+  C.msg='';C.erroMsg=false;
+  if(tipo==='aula'){
+    const a=id==='nova'?null:(C.aulas||[]).find(x=>String(x.id)===String(id));
+    if(id!=='nova'&&!a)return null;
+    const livro=a?a.livro:(livroId||(livrosClube()[0]||{}).id||'');
+    const prox=Math.max(0,...aulasDoLivro(livro,true).map(x=>x.numero))+1;
+    C.form=a?{chave,tipo,id:a.id,livro:a.livro,numero:a.numero,titulo:a.titulo,descricao:a.descricao||'',link:a.youtube?'https://youtu.be/'+a.youtube:'',
+      data:dataSP(a.publicar_em),hora:horaSP(a.publicar_em)||'20:00',status:a.status,paginas:a.paginas||'',pagina_ini:a.pagina_ini||'',livro_id:a.livro_id||'',
+      atividade:a.atividade||'',proxima:a.proxima||'',capa:a.capa||null,capaNova:null,removerCapa:false}
+      :{chave,tipo,id:null,livro,numero:prox,titulo:'',descricao:'',link:'',data:hojeSP(),hora:'20:00',status:'rascunho',paginas:'',pagina_ini:'',livro_id:'',atividade:'',proxima:'',capa:null,capaNova:null,removerCapa:false};
+  }else{
+    const l=id==='novo'?null:(C.livros||[]).find(x=>String(x.id)===String(id));
+    if(id!=='novo'&&!l)return null;
+    C.form=l?{chave,tipo,id:l.id,titulo:l.titulo,autores:l.autores||'',descricao:l.descricao||'',livro_id:l.livro_id||'',ordem:l.ordem,capa:l.capa||null,capaNova:null,removerCapa:false}
+      :{chave,tipo,id:null,titulo:'',autores:'',descricao:'',livro_id:'',ordem:Math.max(0,...(C.livros||[]).map(x=>x.ordem||0))+1,capa:null,capaNova:null,removerCapa:false};
+  }
+  return C.form;
+}
+function bloqueioAdmin(volta){
+  if(!eAdmin())return `<button class="back" data-go="${volta}">${I.back}Voltar</button><div class="card"><p>Só a administradora cadastra e edita aulas.</p></div>`;
+  if(C.livros===null)return `<button class="back" data-go="${volta}">${I.back}Voltar</button><div class="card"><p style="color:var(--muted)">${C.erro?esc(C.erro):'Carregando…'}</p></div>`;
+  if(C.falta)return `<button class="back" data-go="${volta}">${I.back}Voltar</button><p class="msg erro">Para cadastrar e editar aulas pelo app, rode a seção 8 do SQL (arquivo supabase/cob.sql) no SQL Editor do Supabase. Depois feche e abra o app.</p>`;
+  return '';
+}
+function campoCapa(rot){
+  const f=C.form, atual=f.capa&&!f.removerCapa?C.assin[f.capa]:'';
+  return `<label class="field">${rot}<input type="file" data-cf="capa" accept="image/png,image/jpeg,image/webp"></label>
+    ${atual?`<div style="display:flex;gap:10px;align-items:center"><img src="${esc(atual)}" alt="Capa atual" style="width:88px;border-radius:8px"><label class="check"><input type="checkbox" data-cf="removerCapa">Remover a capa atual</label></div>`:''}`;
+}
+function telaEditarAula(id,livroId){
+  const bloq=bloqueioAdmin(id==='nova'?'clube/'+(livroId||''):'clube/aula/'+id);if(bloq)return bloq;
+  const f=iniciarForm('aula',id,livroId);if(!f)return `<button class="back" data-go="aulas">${I.back}Aulas</button><div class="card"><p>Aula não encontrada.</p></div>`;
+  const volta=f.id?'clube/aula/'+f.id:'clube/'+f.livro;
+  setTimeout(previaYoutube,0);
+  return `
+  <button class="back" data-go="${volta}">${I.back}${f.id?'Voltar para a aula':'Voltar para o livro'}</button>
+  <div><div class="eyebrow">Só para a admin</div><h1 class="h1" style="margin-top:6px">${f.id?'Editar aula':'Nova aula'}</h1></div>
+  <div class="card cl-form" style="gap:14px">
+    <label class="field">Livro<select data-cf="livro">${livrosClube().map(l=>`<option value="${l.id}" ${String(f.livro)===String(l.id)?'selected':''}>${esc(l.titulo)}</option>`).join('')}</select></label>
+    <div class="duas"><label class="field">Número da aula<input type="number" min="1" step="1" inputmode="numeric" data-cf="numero" value="${esc(f.numero)}"></label>
+      <label class="field">Situação<select data-cf="status">${[['rascunho','Rascunho'],['publicada','Publicada'],['programada','Programada']].map(([v,n])=>`<option value="${v}" ${f.status===v?'selected':''}>${n}</option>`).join('')}</select></label></div>
+    <p class="dica" id="cf-dica-status" style="margin-top:-6px">${esc(DICA_STATUS[f.status]||'')}</p>
+    ${campo('Título','titulo','maxlength="200"')}
+    ${areaTexto('Descrição (deixe uma linha em branco entre os parágrafos)','descricao','maxlength="4000" style="min-height:140px"')}
+    ${campo('Link do vídeo no YouTube','link','inputmode="url" placeholder="https://youtu.be/…"')}
+    <div class="cl-prev" id="cf-prev"></div>
+    <div class="duas"><label class="field">Data de publicação<input type="date" data-cf="data" value="${esc(f.data)}"></label>
+      <label class="field" id="cf-hora" ${f.status==='programada'?'':'hidden'}>Horário de liberação<input type="time" data-cf="hora" value="${esc(f.hora)}"></label></div>
+    ${campo('Páginas estudadas (ex.: Até a página 79 do PDF)','paginas','maxlength="200"')}
+    <label class="field">Abrir o PDF na página (opcional; ex.: 80)<input type="number" min="1" step="1" inputmode="numeric" data-cf="pagina_ini" value="${esc(f.pagina_ini)}"></label>
+    <label class="field">PDF de leitura (da Estante)<select id="cf-pdf" data-cf="livro_id">${opcoesPdf(f.livro_id)}</select></label>
+    ${areaTexto('Atividade para o grimório (uma pergunta por linha)','atividade','maxlength="4000" style="min-height:140px"')}
+    ${campo('Próxima aula (aviso opcional; ex.: Continuação do Capítulo 3, a partir da página 80)','proxima','maxlength="300"')}
+    ${campoCapa('Imagem de capa (opcional; sem ela, uso a miniatura do vídeo)')}
+    <p class="msg ${C.erroMsg?'erro':''}" id="cf-msg" role="status" ${C.msg?'':'hidden'}>${esc(C.msg)}</p>
+    <button class="btn" data-act="cl-salvar-aula" ${C.ocupado?'disabled':''}>${C.ocupado?'Salvando…':'Salvar aula'}</button>
+    ${f.id?`<button class="rm" data-act="cl-apagar-aula" data-v="${f.id}" ${C.ocupado?'disabled':''}>Apagar esta aula</button>`:''}
+  </div>`;
+}
+function telaEditarLivro(id){
+  const bloq=bloqueioAdmin(id==='novo'?'aulas':'clube/'+id);if(bloq)return bloq;
+  const f=iniciarForm('livro',id);if(!f)return `<button class="back" data-go="aulas">${I.back}Aulas</button><div class="card"><p>Livro não encontrado.</p></div>`;
+  return `
+  <button class="back" data-go="${f.id?'clube/'+f.id:'aulas'}">${I.back}Voltar</button>
+  <div><div class="eyebrow">Só para a admin · Clube do Livro</div><h1 class="h1" style="margin-top:6px">${f.id?'Editar livro':'Novo livro'}</h1></div>
+  <div class="card cl-form" style="gap:14px">
+    ${campo('Título do livro','titulo','maxlength="200"')}
+    ${campo('Autoria (ex.: Jeffrey B. Russell e Brooks Alexander)','autores','maxlength="200"')}
+    ${areaTexto('Descrição (opcional)','descricao','maxlength="2000"')}
+    <label class="field">PDF do livro na Estante<select id="cf-pdf" data-cf="livro_id">${opcoesPdf(f.livro_id)}</select></label>
+    <p class="dica" style="margin-top:-6px">O PDF é o mesmo da Estante (não é enviado de novo). Se ele ainda não estiver lá, envie primeiro pela Estante.</p>
+    <label class="field">Ordem na lista de livros<input type="number" min="0" step="1" inputmode="numeric" data-cf="ordem" value="${esc(f.ordem)}"></label>
+    ${campoCapa('Imagem de capa (opcional; sem ela, uso a capa da Estante)')}
+    <p class="msg ${C.erroMsg?'erro':''}" id="cf-msg" role="status" ${C.msg?'':'hidden'}>${esc(C.msg)}</p>
+    <button class="btn" data-act="cl-salvar-livro" ${C.ocupado?'disabled':''}>${C.ocupado?'Salvando…':'Salvar livro'}</button>
+    ${f.id?`<button class="rm" data-act="cl-apagar-livro" data-v="${f.id}" ${C.ocupado?'disabled':''}>Tirar este livro do Clube</button>`:''}
+  </div>`;
+}
+function avisoClube(t,erro){C.msg=t;C.erroMsg=!!erro;const el=$('#cf-msg');if(el){el.textContent=t;el.hidden=!t;el.classList.toggle('erro',!!erro);if(t)el.scrollIntoView({block:'nearest'});}}
+function erroClube(e){
+  const m=String(e&&(e.message||e.error)||e||''), c=e&&e.code;
+  if(c==='23505'||/cob_clube_aulas_livro_numero_key|duplicate key/i.test(m))return `Já existe a Aula ${n2(C.form&&C.form.numero||0)} neste livro. Use outro número ou edite a aula que já existe.`;
+  if(/youtube_check/i.test(m))return 'O link do YouTube não é válido.';
+  if(c==='23503'||/foreign key/i.test(m))return 'Este livro ainda tem aulas. Apague ou mova as aulas para outro livro antes.';
+  return msgErro(e);
+}
+async function trocarCapa(sb,f){
+  // devolve o caminho que vai para o banco e o que deve ser apagado depois de salvar
+  if(f.capaNova){const c=await subirArquivoAula(sb,'clube',f.capaNova,'Enviando a capa');return {capa:c,apagar:f.capa};}
+  if(f.removerCapa)return {capa:null,apagar:f.capa};
+  return {capa:f.capa||null,apagar:null};
+}
+async function clubeAcao(a,v,el){
+  if(a==='recarregar'){C.erro='';C.livros=null;render(true);return;}
+  if(a==='copiar'){
+    const x=(C.aulas||[]).find(y=>String(y.id)===String(v));if(!x)return;
+    const lv=livroDe(x)||{titulo:''}, txt=`${lv.titulo} · Aula ${n2(x.numero)}: ${x.titulo}\n\n`+perguntas(x.atividade).map((q,i)=>`${i+1}. ${q}`).join('\n');
+    try{await navigator.clipboard.writeText(txt);el.textContent='Perguntas copiadas ✓';}
+    catch(e){el.textContent='Não consegui copiar: selecione o texto das perguntas.';}
+    setTimeout(()=>{if(el.isConnected)el.textContent='Copiar as perguntas';},2500);
+    return;
+  }
+  if(!eAdmin()||C.ocupado)return;
+  const f=C.form, sb=await carregarSupabase();
+  if(a==='salvar-aula'&&f){
+    const numero=parseInt(f.numero,10), titulo=(f.titulo||'').trim(), link=(f.link||'').trim(), yt=ytId(link), pag=f.pagina_ini===''?null:parseInt(f.pagina_ini,10);
+    if(!f.livro)return avisoClube('Escolha o livro.',true);
+    if(!(numero>0))return avisoClube('O número da aula precisa ser 1 ou maior.',true);
+    if(!titulo)return avisoClube('Escreva o título da aula.',true);
+    if(link&&!yt)return avisoClube('Não reconheci o link do YouTube. Cole o link do vídeo (youtube.com/watch?v=…, youtu.be/…, /shorts/… ou /embed/…).',true);
+    if(pag!==null&&!(pag>0))return avisoClube('A página para abrir o PDF precisa ser 1 ou maior.',true);
+    if(f.status==='programada'&&(!f.data||!f.hora))return avisoClube('Para programar, escolha a data e o horário de liberação.',true);
+    if(f.status==='publicada'&&!yt&&!confirm('Publicar sem vídeo? A turma verá "Vídeo em breve" até você colar o link.'))return;
+    // horário de Brasília (sem horário de verão desde 2019); aulas publicadas guardam o meio-dia da data
+    const quando=f.data?new Date(`${f.data}T${f.status==='programada'?f.hora:'12:00'}:00-03:00`).toISOString():(f.status==='publicada'?new Date().toISOString():null);
+    C.ocupado=true;render(true);avisoClube('Salvando…');
+    try{
+      const cp=await trocarCapa(sb,f);
+      const linha={livro:+f.livro,numero,titulo,descricao:(f.descricao||'').trim()||null,youtube:yt||null,publicar_em:quando,paginas:(f.paginas||'').trim()||null,
+        pagina_ini:pag,livro_id:f.livro_id?+f.livro_id:null,atividade:(f.atividade||'').trim()||null,proxima:(f.proxima||'').trim()||null,capa:cp.capa,status:f.status};
+      const q=f.id?sb.from('cob_clube_aulas').update(linha).eq('id',f.id):sb.from('cob_clube_aulas').insert(linha);
+      const {data,error}=await q.select().single();
+      if(error){if(f.capaNova&&cp.capa)await sb.storage.from(BUCKET_AULAS).remove([cp.capa]).catch(()=>{});throw error;}
+      if(cp.apagar)await sb.storage.from(BUCKET_AULAS).remove([cp.apagar]).catch(()=>{});
+      C.ocupado=false;C.form=null;C.livros=null;C.aulas=null;C.msg='';
+      ir('clube/aula/'+data.id);await carregarClube();
+    }catch(e){C.ocupado=false;render(true);avisoClube('Não deu certo: '+erroClube(e),true);}
+    return;
+  }
+  if(a==='apagar-aula'&&f){
+    if(!confirm(`Apagar a Aula ${n2(f.numero)} (“${f.titulo}”)? A turma deixa de ver. O vídeo continua no YouTube.`))return;
+    C.ocupado=true;render(true);
+    try{
+      const extras=midiaDe('c'+f.id).apostilas;
+      const {error}=await sb.from('cob_clube_aulas').delete().eq('id',f.id);if(error)throw error;
+      if(extras.length){await sb.from('cob_aula_midia').delete().eq('aula_id','c'+f.id);await sb.storage.from(BUCKET_AULAS).remove(extras.map(x=>x.arquivo).filter(Boolean)).catch(()=>{});M.porAula=null;}
+      if(f.capa)await sb.storage.from(BUCKET_AULAS).remove([f.capa]).catch(()=>{});
+      const livro=f.livro;C.ocupado=false;C.form=null;C.livros=null;C.aulas=null;ir('clube/'+livro);await carregarClube();
+    }catch(e){C.ocupado=false;render(true);avisoClube('Não consegui apagar: '+erroClube(e),true);}
+    return;
+  }
+  if(a==='salvar-livro'&&f){
+    const titulo=(f.titulo||'').trim(), ordem=parseInt(f.ordem,10);
+    if(!titulo)return avisoClube('Escreva o título do livro.',true);
+    C.ocupado=true;render(true);avisoClube('Salvando…');
+    try{
+      const cp=await trocarCapa(sb,f);
+      const linha={titulo,autores:(f.autores||'').trim()||null,descricao:(f.descricao||'').trim()||null,livro_id:f.livro_id?+f.livro_id:null,ordem:ordem>=0?ordem:0,capa:cp.capa};
+      const q=f.id?sb.from('cob_clube_livros').update(linha).eq('id',f.id):sb.from('cob_clube_livros').insert(linha);
+      const {data,error}=await q.select().single();
+      if(error){if(f.capaNova&&cp.capa)await sb.storage.from(BUCKET_AULAS).remove([cp.capa]).catch(()=>{});throw error;}
+      if(cp.apagar)await sb.storage.from(BUCKET_AULAS).remove([cp.apagar]).catch(()=>{});
+      C.ocupado=false;C.form=null;C.livros=null;C.aulas=null;C.msg='';
+      ir('clube/'+data.id);await carregarClube();
+    }catch(e){C.ocupado=false;render(true);avisoClube('Não deu certo: '+erroClube(e),true);}
+    return;
+  }
+  if(a==='apagar-livro'&&f){
+    if(aulasDoLivro(f.id,true).length)return avisoClube('Este livro ainda tem aulas. Apague ou mova as aulas para outro livro antes.',true);
+    if(!confirm(`Tirar “${f.titulo}” do Clube do Livro? O PDF continua na Estante.`))return;
+    C.ocupado=true;render(true);
+    try{
+      const {error}=await sb.from('cob_clube_livros').delete().eq('id',f.id);if(error)throw error;
+      if(f.capa)await sb.storage.from(BUCKET_AULAS).remove([f.capa]).catch(()=>{});
+      C.ocupado=false;C.form=null;C.livros=null;C.aulas=null;ir('aulas');await carregarClube();
+    }catch(e){C.ocupado=false;render(true);avisoClube('Não consegui tirar: '+erroClube(e),true);}
+  }
+}
 
 // ---------- Biblioteca ----------
 const SECOES=[['ervas','Ervas',I.erva],['cristais','Cristais',I.cristal],['lua','Fases da Lua',I.lua],['sabas','Roda do Ano',I.roda],['ferramentas','Altar',I.altar],['glossario','Glossário',I.gloss],['dias','Dias da semana',I.sol],['elementos','Elementos',I.elem],['cores','Cores',I.cor]];
@@ -1049,7 +1567,9 @@ async function carregarLivros(){
     const {data:ses}=await sb.auth.getSession();
     if(ses&&ses.session){E.sessao=ses.session;const r=await sb.rpc('e_admin');E.admin=!!r.data;}
   }catch(e){E.erro=navigator.onLine?'Não consegui carregar a estante agora. Tente de novo em instantes.':'Sem internet. A estante precisa de conexão para listar os livros.';}
-  if(rota()[0]==='estante')render(true);
+  // o leitor aberto direto pelo endereço (ou por uma aula) também espera a lista; o Clube usa capas e PDFs da Estante
+  const rt=rota()[0];if(rt==='estante'||rt==='ler'||rt==='aulas'||(rt==='clube'&&!/^editar/.test(rota()[1]||'')))render(true);
+  else if(rt==='clube')atualizarOpcoesPdf();  // formulário aberto: só a lista de PDFs muda, sem apagar o que está sendo digitado
 }
 // os arquivos da Estante são privados (só membros): capas e downloads usam links assinados de 6 h,
 // pedidos todos de uma vez; o leitor lê o PDF com a sessão de quem está logado
@@ -1393,7 +1913,7 @@ function telaLer(r){
   if(!l){if(E.livros===null&&!E.erro)carregarLivros();return `<div class="leitor"><div class="lbar"><button data-act="voltar" data-v="estante" aria-label="Voltar">${I.back}</button><span class="lt">Estante</span></div><p class="lmsg">${E.erro?esc(E.erro):'Abrindo a estante…'}</p></div>`;}
   return `<div class="leitor">
     <div class="lbar">
-      <button data-act="voltar" data-v="estante" aria-label="Voltar para a estante">${I.back}</button>
+      <button data-act="voltar" data-v="${esc(leitor.volta||'estante')}" aria-label="${/^clube/.test(leitor.volta||'')?'Voltar para a aula':'Voltar para a estante'}">${I.back}</button>
       <span class="lt" title="${esc(l.titulo)}">${esc(l.titulo)}</span>
       <span class="lpag" id="lpag">…</span>
       <button data-act="zoom" data-v="-" aria-label="Diminuir">${I.menos}</button>
@@ -1403,7 +1923,8 @@ function telaLer(r){
     <div class="lpaginas" id="lpaginas"><p class="lmsg">Carregando o livro…</p></div>
   </div>`;
 }
-async function iniciarLeitor(id){
+// pagina: abrir nesta página (o "Acessar material" de uma aula manda a página onde começa a leitura)
+async function iniciarLeitor(id,pagina){
   const l=(E.livros||[]).find(x=>String(x.id)===String(id));if(!l)return;
   const ticket=++leitor.ticket;leitor.ativo=true;leitor.id=id;leitor.zoom=(S.leitura[id]&&S.leitura[id].zoom)||1;
   const cont=$('#lpaginas');
@@ -1417,7 +1938,7 @@ async function iniciarLeitor(id){
     leitor.doc=doc;
     await montarPaginas(ticket);
     registrarLeitura(id,'ler');
-    const salva=(S.leitura[id]&&S.leitura[id].pagina)||1;
+    const salva=Math.min(pagina||(S.leitura[id]&&S.leitura[id].pagina)||1,doc.numPages);
     if(salva>1){const el=leitor.paginas[salva-1];if(el)el.scrollIntoView({block:'start'});}
   }catch(e){
     console.error('leitor:',e);
