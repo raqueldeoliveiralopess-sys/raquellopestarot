@@ -234,7 +234,7 @@ main.cheia{padding:0;gap:0}
 .cl-aula .cta{font-size:13px;font-weight:600;color:var(--plum);display:inline-flex;align-items:center;gap:4px}
 .cl-aula .cta svg{width:15px;height:15px}
 .cl-st{align-self:flex-start;font-size:11px;font-weight:600;letter-spacing:.04em;padding:3px 8px;border-radius:99px;background:var(--sand);color:var(--ink2)}
-.cl-st.rascunho{background:#FCEFC7;color:#7A4B00}.cl-st.programada{background:#E6E0F5;color:#4A2E7A}
+.cl-st.rascunho{background:#FCEFC7;color:#7A4B00}.cl-st.duv{background:#F5B8C9;color:#4A2545}.cl-st.programada{background:#E6E0F5;color:#4A2E7A}
 @media (prefers-color-scheme:dark){.cl-st.rascunho{background:#4A3A12;color:#F5DD9B}.cl-st.programada{background:#352A4A;color:#D9CCF5}}
 .cl-head{padding:20px;display:flex;flex-direction:column;gap:10px}
 .cl-head .num{font-size:13px;font-weight:600;letter-spacing:.18em;color:#F5B8C9}
@@ -266,6 +266,34 @@ main.cheia{padding:0;gap:0}
 .cl-prev{display:flex;flex-direction:column;gap:8px}
 .cl-prev .ok{font-size:13px;color:#3F6E4A;font-weight:600}.cl-prev .no{font-size:13px;color:#7E2C2C;font-weight:600}
 @media (prefers-color-scheme:dark){.cl-prev .ok{color:#9CCB9F}.cl-prev .no{color:#F0B8B8}}
+/* dúvidas e comentários */
+.aula-resto{display:flex;flex-direction:column;gap:18px;min-width:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.cm-sec h2 .cm-n{font-family:'Jost',system-ui,sans-serif;font-size:13px;font-weight:600;background:var(--sand);color:var(--ink2);border-radius:99px;padding:2px 9px;vertical-align:middle}
+.cm-novo{display:flex;flex-direction:column;gap:8px}
+.cm-novo textarea{min-height:92px}
+.cm-novo.cmr{padding-left:14px;border-left:2px solid var(--line)}
+.cm-novo.cmr textarea{min-height:72px}
+.cm-linha{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.cm-linha .btn{width:auto;min-height:44px;padding:0 20px;margin-left:auto}
+.cm-linha .check{font-size:13.5px}
+.cm-aviso{font-size:13.5px;font-weight:600;color:#7A2D4F;background:#FBE3EB;border-radius:10px;padding:8px 12px}
+@media (prefers-color-scheme:dark){.cm-aviso{background:#4A2238;color:#F5B8C9}}
+.cm-lista{display:flex;flex-direction:column;gap:14px}
+.cm-conv{display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--line)}
+.cm{display:flex;flex-direction:column;gap:4px;min-width:0}
+.cm.cmr{margin-left:14px;padding-left:12px;border-left:2px solid var(--line)}
+.cm.adm{background:linear-gradient(90deg,rgba(242,211,107,.16),transparent);border-left:3px solid #D9B66A;padding:8px 0 8px 12px;border-radius:0 10px 10px 0}
+.cm.cmr.adm{margin-left:14px}
+.cm-h{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;font-size:14px}
+.cm-h time{font-size:12px;color:var(--muted)}
+.cm-tag{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:99px}
+.cm-tag.adm{background:#4A2545;color:#F2D36B}.cm-tag.duv{background:#F5B8C9;color:#4A2545}.cm-tag.ok{background:#DDEBDD;color:#2F5A39}
+@media (prefers-color-scheme:dark){.cm-tag.ok{background:#2A3E2D;color:#9CCB9F}}
+.cm p{font-size:15px;line-height:1.5;color:var(--ink2);overflow-wrap:anywhere}
+.cm-a{display:flex;gap:14px}
+.cm-a button{border:none;background:none;padding:6px 0;min-height:36px;font-size:13px;font-weight:600;color:var(--plum)}
+.cm-a button.x{color:var(--muted);font-weight:500}
 @media (max-width:380px){.cl-aula{grid-template-columns:104px minmax(0,1fr)}.cl-livro{grid-template-columns:70px minmax(0,1fr) 16px}}
 @media (min-width:900px){
   #app{max-width:1080px;flex-direction:row}
@@ -395,8 +423,9 @@ document.addEventListener('click',e=>{
   const act=e.target.closest('[data-act]');if(!act)return;
   const a=act.dataset.act, v=act.dataset.v;
   if(a.startsWith('cl-'))return clubeAcao(a.slice(3),v,act);
+  if(a.startsWith('cm-'))return comentarioAcao(a.slice(3),v,act);
   if(a==='voltar')ir(v||'hoje');
-  if(a==='feita'){S.feitas[v]=!S.feitas[v];salvar();render();}
+  if(a==='feita'){S.feitas[v]=!S.feitas[v];salvar();if(/^c\d/.test(v))renderSuave();else render();}
   if(a==='hemi'){S.hemisferio=v;salvar();render();}
   if(a==='mes'){ir('lua/'+v,true);}
   if(a==='dia'){const r=rota();ir(`lua/${r[1]||''}/${v}`,true);}
@@ -407,6 +436,8 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('input',e=>{
   if(e.target.id==='notas'){S.notas[e.target.dataset.v]=e.target.value;salvar();}
+  if(e.target.id==='cm-texto'){K.texto=e.target.value;contarCm(e.target);}
+  if(e.target.id==='cm-resp'){K.respTexto=e.target.value;contarCm(e.target);}
   if(e.target.dataset&&e.target.dataset.cf&&C.form){C.form[e.target.dataset.cf]=e.target.value;if(e.target.dataset.cf==='link')previaYoutube();}
   if(e.target.id==='busca'){filtrar(e.target.value);}
   if(e.target.classList.contains('lote-tit')){const x=E.lote[+e.target.dataset.i];if(x)x.titulo=e.target.value;}
@@ -415,6 +446,7 @@ document.addEventListener('input',e=>{
   if(e.target.id==='est-busca'){E.busca=e.target.value;atualizarGrade();}
 });
 document.addEventListener('change',e=>{
+  if(e.target.id==='cm-duvida'){K.duvida=e.target.checked;return;}
   if(e.target.dataset&&e.target.dataset.cf&&C.form){
     const k=e.target.dataset.cf;
     if(e.target.type==='file'){C.form.capaNova=e.target.files[0]||null;if(C.form.capaNova)C.form.removerCapa=false;return;}
@@ -831,6 +863,8 @@ function telaAulas(){
   const antigos=A.modulos.filter(m=>m.aulas.some(temVideo));
   C.form=null;
   const livros=livrosClube(), adm=eAdmin();
+  if(adm&&!C.falta&&C.aulas)carregarResumoDuvidas();
+  const abertas=adm&&K.resumo?(C.aulas||[]).filter(a=>K.resumo[a.id]).sort((a,b)=>b.numero-a.numero):[];
   return `
   <div><div class="eyebrow">${esc(A.curso)}</div><h1 class="h1" style="margin-top:6px">Aulas</h1></div>
   <section class="cl-hero">
@@ -841,6 +875,7 @@ function telaAulas(){
     <small>Uma obra de referência por vez. As aulas são gravadas e publicadas aos sábados à noite: assista no seu ritmo e volte a elas quando quiser.</small>
   </section>
   ${adm&&C.falta?`<p class="msg erro">O cadastro de aulas pelo app ainda não está ativo: falta rodar a seção 8 do SQL (supabase/cob.sql) no Supabase. Até lá, a turma vê a Aula 01 que está guardada no app.</p>`:''}
+  ${abertas.length?`<div class="card cl-sec"><div class="eyebrow">Só para a admin · dúvidas sem resposta</div>${abertas.map(a=>`<button class="row" data-go="clube/aula/${a.id}"><span class="ic">💬</span><span class="t"><span class="n">Aula ${n2(a.numero)} · ${esc(a.titulo)}</span><span class="s">${K.resumo[a.id]} dúvida${K.resumo[a.id]>1?'s':''} esperando você</span></span><span class="chev">${I.chev}</span></button>`).join('')}</div>`:''}
   ${cartaoContinuar(true)}
   <div class="cl-sec">
     <h2 class="h2">Livros estudados</h2>
@@ -916,7 +951,7 @@ function carregarMidia(){
       M.porAula=por;M.erro='';
     }catch(e){M.porAula={};M.erro=/cob_aula_midia|does not exist|schema cache/i.test(String(e&&e.message))?'falta-sql':'falha';}
     M.carregando=null;
-    if(['aula','aulas','hoje'].includes(rota()[0])||(rota()[0]==='clube'&&rota()[1]==='aula'))render(true);
+    if(['aula','aulas','hoje'].includes(rota()[0])||(rota()[0]==='clube'&&rota()[1]==='aula'))renderSuave();
   })();
 }
 function painelAula(a,md){
@@ -1039,7 +1074,7 @@ function carregarClube(){
     }
     C.carregando=null;
     if(E.livros===null&&!E.erro)carregarLivros();
-    const r=rota();if(['aulas','hoje'].includes(r[0])||(r[0]==='clube'&&!/^editar/.test(r[1]||'')))render(true);
+    const r=rota();if(['aulas','hoje'].includes(r[0])||(r[0]==='clube'&&!/^editar/.test(r[1]||'')))renderSuave();
     else if(r[0]==='clube'&&C.form===null)render(true);
   })();
 }
@@ -1087,6 +1122,7 @@ function cartaoAula(a){
       <span class="tt">${esc(a.titulo)}</span>
       ${a.paginas?`<span class="mt">${esc(a.paginas)}</span>`:''}
       ${etiquetaStatus(a)}
+      ${duvidasAbertas(a.id)?`<span class="cl-st duv">💬 ${duvidasAbertas(a.id)} dúvida${duvidasAbertas(a.id)>1?'s':''} sem resposta</span>`:''}
       <span class="cta">${feita(a)?`${I.check}Concluída · rever`:`Assistir aula ${I.chev}`}</span>
     </span>
   </button>`;
@@ -1125,6 +1161,7 @@ function telaClubeLivro(id){
   const lv=(C.livros||[]).find(l=>String(l.id)===String(id));
   if(!lv)return `<button class="back" data-go="aulas">${I.back}Aulas</button><div class="card"><p>Este livro não está mais no Clube.</p></div>`;
   const adm=eAdmin(), aulas=aulasDoLivro(lv.id,adm), pdf=pdfDoLivro(lv), capa=capaLivroClube(lv);
+  if(adm&&!C.falta)carregarResumoDuvidas();
   const feitas=aulas.filter(a=>liberada(a)&&feita(a)).length, total=aulas.filter(liberada).length;
   return `
   <button class="back" data-go="aulas">${I.back}Aulas</button>
@@ -1198,6 +1235,8 @@ function telaClubeAula(id){
   ${adm?`<div class="cl-adm"><button class="btn ghost" data-go="clube/editar-aula/${a.id}">${'Editar esta aula'}</button></div>`:''}
   ${a.youtube?playerYoutube(a.youtube,a.titulo)+`<a class="yt-abrir" href="https://www.youtube.com/watch?v=${a.youtube}" target="_blank" rel="noopener">${I.play}Abrir no YouTube</a>`
     :`<div class="video"><div class="soon">${luaSvg(0.3,true,56)}<b class="serif" style="font-size:22px">Vídeo em breve</b><span style="font-size:13px">O vídeo desta aula aparece aqui assim que for publicado.</span></div></div>`}
+  <div id="aula-resto" class="aula-resto" data-aula="${a.id}">
+  ${secaoComentarios(a)}
   ${a.descricao?`<div class="cl-desc">${paragrafos(a.descricao)}</div>`:''}
   <section class="card cl-sec">
     <h2 class="h2">📖 Material de leitura</h2>
@@ -1221,8 +1260,150 @@ function telaClubeAula(id){
   ${a.proxima?`<div class="cl-prox"><div class="eyebrow">Próxima aula</div><p>${esc(a.proxima)}</p></div>`:''}
   <button class="btn ${feita(a)?'ghost':''}" data-act="feita" data-v="${chave}">${feita(a)?'Marcar como não concluída':'Marcar como concluída'}</button>
   ${ant||prox?`<div class="cl-nav">${navAula(ant,'Aula anterior')}${navAula(prox,'Próxima aula')}</div>`:''}
-  <button class="row" data-go="clube/${a.livro}"><span class="ic">${I.aulas}</span><span class="t"><span class="n">Todas as aulas de ${esc(lv.titulo)}</span></span><span class="chev">${I.chev}</span></button>`;
+  <button class="row" data-go="clube/${a.livro}"><span class="ic">${I.aulas}</span><span class="t"><span class="n">Todas as aulas de ${esc(lv.titulo)}</span></span><span class="chev">${I.chev}</span></button>
+  </div>`;
 }
+// na página da aula, atualiza só o que fica abaixo do vídeo: o player não recarrega (não volta ao início)
+function renderSuave(){
+  const r=rota(), el=$('#aula-resto');
+  if(r[0]==='clube'&&r[1]==='aula'&&el&&String(el.dataset.aula)===String(r[2])){
+    const t=document.createElement('div');t.innerHTML=telaClubeAula(r[2]);
+    const novo=t.querySelector('#aula-resto');if(novo){el.replaceWith(novo);return;}
+  }
+  render(true);
+}
+
+// ---------- Dúvidas e comentários embaixo do vídeo (tabela cob_clube_comentarios, seção 9 do cob.sql) ----------
+// O nome que aparece é montado pelo banco (primeiro nome + inicial). Quem escreveu apaga o próprio; a admin apaga qualquer um.
+const K={porAula:{},carregando:{},erro:{},falta:false,aula:null,texto:'',duvida:false,resp:null,respTexto:'',todos:{},ocupado:false,msg:'',erroMsg:false,resumo:null,carregandoResumo:null};
+const LIMITE_CM=2000, MOSTRA_CM=3;
+const meuId=()=>G.sessao&&G.sessao.user?G.sessao.user.id:null;
+function carregarComentarios(aulaId){
+  if(K.carregando[aulaId])return K.carregando[aulaId];
+  return K.carregando[aulaId]=(async()=>{
+    try{
+      const sb=await carregarSupabase();
+      const {data,error}=await sb.from('cob_clube_comentarios').select('*').eq('aula',aulaId).order('criado_em',{ascending:true});
+      if(error)throw error;
+      K.porAula[aulaId]=data;K.erro[aulaId]='';K.falta=false;
+    }catch(e){
+      if(e&&(e.code==='PGRST205'||e.code==='42P01'||/cob_clube_comentarios|schema cache/i.test(String(e.message)))){K.falta=true;K.porAula[aulaId]=[];}
+      else K.erro[aulaId]=navigator.onLine?'Não consegui carregar os comentários.':'Sem internet: os comentários aparecem quando a conexão voltar.';
+    }
+    delete K.carregando[aulaId];atualizarComentarios(aulaId);
+  })();
+}
+function atualizarComentarios(aulaId){
+  const el=$('#comentarios');if(!el||String(el.dataset.aula)!==String(aulaId))return;
+  el.hidden=K.falta&&!eAdmin();
+  el.innerHTML=conteudoComentarios(aulaId);
+}
+function quandoFoi(iso){
+  const m=Math.floor((Date.now()-new Date(iso))/60000);
+  return m<1?'agora':m<60?`há ${m} min`:m<1440?`há ${Math.floor(m/60)} h`:m<10080?`há ${Math.floor(m/1440)} dia${m<2880?'':'s'}`:dataCurta(iso);
+}
+// conversas: comentário principal + respostas; dúvida "respondida" quando a Raquel respondeu
+function conversas(lista){
+  const tops=lista.filter(c=>!c.resposta_de).sort((a,b)=>new Date(b.criado_em)-new Date(a.criado_em));
+  return tops.map(t=>{const resp=lista.filter(c=>String(c.resposta_de)===String(t.id));return {t,resp,respondida:resp.some(c=>c.da_admin)};});
+}
+function cartaoComentario(c,conv,resposta){
+  const meu=String(c.user_id)===String(meuId()), apaga=meu||eAdmin();
+  return `<div class="cm ${resposta?'cmr':''} ${c.da_admin?'adm':''}">
+    <div class="cm-h"><b>${esc(c.nome)}</b>${c.da_admin?'<span class="cm-tag adm">Professora</span>':''}${!resposta&&c.duvida?`<span class="cm-tag ${conv.respondida?'ok':'duv'}">${conv.respondida?'Dúvida respondida':'Dúvida'}</span>`:''}<time datetime="${esc(c.criado_em)}">${quandoFoi(c.criado_em)}</time></div>
+    <p>${esc(c.texto).replace(/\n/g,'<br>')}</p>
+    <div class="cm-a">${!resposta?`<button data-act="cm-responder" data-v="${c.id}">Responder</button>`:''}${apaga?`<button data-act="cm-apagar" data-v="${c.id}" class="x">Apagar</button>`:''}</div>
+  </div>`;
+}
+function conteudoComentarios(aulaId){
+  const lista=K.porAula[aulaId], adm=eAdmin();
+  const titulo=n=>`<h2 class="h2">💬 Dúvidas e comentários${n?` <span class="cm-n">${n}</span>`:''}</h2>`;
+  if(K.falta)return titulo(0)+(adm?`<p class="msg erro">Para ligar as dúvidas e comentários, rode a seção 9 do SQL (supabase/cob.sql) no Supabase.</p>`:'');
+  if(lista===undefined)return titulo(0)+(K.erro[aulaId]?`<p class="msg erro">${esc(K.erro[aulaId])} <button class="link" data-act="cm-recarregar">Tentar de novo</button></p>`:`<p class="dica">Carregando os comentários…</p>`);
+  const cs=conversas(lista), abertas=cs.filter(x=>x.t.duvida&&!x.respondida).length;
+  const mostrar=K.todos[aulaId]?cs:cs.slice(0,MOSTRA_CM);
+  return `${titulo(lista.length)}
+    ${adm&&abertas?`<p class="cm-aviso">${abertas} dúvida${abertas>1?'s':''} sem resposta sua nesta aula.</p>`:''}
+    <div class="cm-novo">
+      <label class="sr" for="cm-texto">Escreva um comentário</label>
+      <textarea id="cm-texto" maxlength="${LIMITE_CM}" placeholder="Deixe sua dúvida ou o que você achou da aula…" ${K.ocupado?'disabled':''}>${esc(K.texto)}</textarea>
+      <div class="cm-linha">
+        <label class="check"><input type="checkbox" id="cm-duvida" ${K.duvida?'checked':''}>É uma dúvida para a Raquel</label>
+        <button class="btn" data-act="cm-enviar" ${K.ocupado?'disabled':''}>${K.ocupado&&!K.resp?'Publicando…':'Publicar'}</button>
+      </div>
+      <p class="dica">Aparece para toda a turma, com seu primeiro nome. Gentileza sempre: valem as <button class="lk" data-go="termos">regras da comunidade</button>.</p>
+      <p class="msg ${K.erroMsg?'erro':''}" id="cm-msg" role="status" ${K.msg?'':'hidden'}>${esc(K.msg)}</p>
+    </div>
+    ${cs.length?`<div class="cm-lista">${mostrar.map(x=>`<div class="cm-conv">
+      ${cartaoComentario(x.t,x,false)}
+      ${x.resp.map(r=>cartaoComentario(r,x,true)).join('')}
+      ${String(K.resp)===String(x.t.id)?`<div class="cm-novo cmr"><label class="sr" for="cm-resp">Sua resposta</label><textarea id="cm-resp" maxlength="${LIMITE_CM}" placeholder="Responder a ${esc(x.t.nome)}…" ${K.ocupado?'disabled':''}>${esc(K.respTexto)}</textarea>
+        <div class="cm-linha"><button class="link" data-act="cm-cancelar">Cancelar</button><button class="btn" data-act="cm-enviar-resp" ${K.ocupado?'disabled':''}>${K.ocupado?'Enviando…':'Responder'}</button></div></div>`:''}
+    </div>`).join('')}</div>
+    ${cs.length>mostrar.length?`<button class="btn ghost" data-act="cm-todos">Ver todas as ${cs.length} conversas</button>`:''}`
+    :`<p class="dica">Ainda não há comentários. Que tal começar?</p>`}`;
+}
+function secaoComentarios(a){
+  if(!liberada(a)&&!eAdmin())return '';
+  if(String(K.aula)!==String(a.id)){K.aula=a.id;K.texto='';K.duvida=false;K.resp=null;K.respTexto='';K.msg='';}
+  if(!K.carregando[a.id])carregarComentarios(a.id);  // sempre busca de novo ao abrir: aparecem os comentários novos
+  return `<section class="card cl-sec cm-sec" id="comentarios" data-aula="${a.id}" ${K.falta&&!eAdmin()?'hidden':''}>${conteudoComentarios(a.id)}</section>`;
+}
+function contarCm(t){if(t.value.length>=LIMITE_CM-100)avisoCm(`${t.value.length} de ${LIMITE_CM} caracteres.`);else if(K.msg&&/caracteres/.test(K.msg))avisoCm('');}
+function avisoCm(t,erro){K.msg=t;K.erroMsg=!!erro;const el=$('#cm-msg');if(el){el.textContent=t;el.hidden=!t;el.classList.toggle('erro',!!erro);}}
+function erroCm(e){
+  const m=String(e&&(e.message||e.error)||e||'');
+  if(/muitos_comentarios/.test(m))return 'Você comentou várias vezes em poucos minutos. Espere um pouco e tente de novo.';
+  if(/row-level|permission|42501/i.test(m)||(e&&e.code==='42501'))return 'Não foi possível comentar nesta aula.';
+  if(/texto_check/.test(m))return 'Escreva o seu comentário (até 2.000 caracteres).';
+  if(/Failed to fetch|NetworkError|network/i.test(m))return 'Sem conexão. Seu texto continua aqui; tente de novo.';
+  return 'Não deu certo: '+m;
+}
+async function comentarioAcao(a,v){
+  const el=$('#comentarios'), aulaId=el?+el.dataset.aula:null;if(!aulaId)return;
+  if(a==='responder'){K.resp=+v;K.respTexto='';atualizarComentarios(aulaId);const t=$('#cm-resp');if(t)t.focus();return;}
+  if(a==='cancelar'){K.resp=null;K.respTexto='';atualizarComentarios(aulaId);return;}
+  if(a==='todos'){K.todos[aulaId]=true;atualizarComentarios(aulaId);return;}
+  if(a==='recarregar'){K.erro[aulaId]='';atualizarComentarios(aulaId);carregarComentarios(aulaId);return;}
+  if(K.ocupado)return;
+  const sb=await carregarSupabase();
+  if(a==='enviar'||a==='enviar-resp'){
+    const resp=a==='enviar-resp', texto=(resp?K.respTexto:K.texto).trim();
+    if(!texto)return avisoCm('Escreva o seu comentário.',true);
+    if(texto.length>LIMITE_CM)return avisoCm(`O comentário passa de ${LIMITE_CM} caracteres.`,true);
+    K.ocupado=true;K.msg='';atualizarComentarios(aulaId);
+    try{
+      const linha={aula:aulaId,texto};if(resp)linha.resposta_de=K.resp;else if(K.duvida)linha.duvida=true;
+      const {error}=await sb.from('cob_clube_comentarios').insert(linha);if(error)throw error;
+      if(resp){K.resp=null;K.respTexto='';}else{K.texto='';K.duvida=false;}
+      K.ocupado=false;K.resumo=null;await carregarComentarios(aulaId);
+    }catch(e){K.ocupado=false;atualizarComentarios(aulaId);avisoCm(erroCm(e),true);}
+    return;
+  }
+  if(a==='apagar'){
+    const c=(K.porAula[aulaId]||[]).find(x=>String(x.id)===String(v));if(!c)return;
+    const n=c.resposta_de?0:(K.porAula[aulaId]||[]).filter(x=>String(x.resposta_de)===String(c.id)).length;
+    if(!confirm(String(c.user_id)===String(meuId())?`Apagar o seu comentário${n?` e as ${n} resposta${n>1?'s':''} dele`:''}?`:`Apagar o comentário de ${c.nome}${n?` e as ${n} resposta${n>1?'s':''}`:''}?`))return;
+    K.ocupado=true;atualizarComentarios(aulaId);
+    try{const {error}=await sb.from('cob_clube_comentarios').delete().eq('id',c.id);if(error)throw error;K.ocupado=false;K.resumo=null;await carregarComentarios(aulaId);}
+    catch(e){K.ocupado=false;atualizarComentarios(aulaId);avisoCm('Não consegui apagar: '+erroCm(e),true);}
+  }
+}
+// para a admin: quantas dúvidas estão sem resposta dela em cada aula (aparece nos cards e na aba Aulas)
+function carregarResumoDuvidas(){
+  if(!eAdmin()||K.carregandoResumo||K.resumo!==null)return;
+  K.carregandoResumo=(async()=>{
+    try{
+      const sb=await carregarSupabase();
+      const {data,error}=await sb.from('cob_clube_comentarios').select('id,aula,duvida,resposta_de,da_admin');if(error)throw error;
+      const r={};for(const t of data.filter(c=>!c.resposta_de&&c.duvida))if(!data.some(c=>String(c.resposta_de)===String(t.id)&&c.da_admin))r[t.aula]=(r[t.aula]||0)+1;
+      K.resumo=r;
+    }catch(e){K.resumo={};}
+    K.carregandoResumo=null;
+    const rt=rota();if(rt[0]==='aulas'||(rt[0]==='clube'&&/^\d+$/.test(rt[1]||'')))render(true);
+  })();
+}
+const duvidasAbertas=id=>eAdmin()&&K.resumo?(K.resumo[id]||0):0;
 
 // ---------- cadastro e edição (só admin; o Supabase recusa escrita de quem não está em public.admins) ----------
 const DICA_STATUS={rascunho:'Só você vê. A turma não vê rascunhos.',publicada:'Aparece para a turma assim que salvar.',programada:'Aparece sozinha para a turma na data e no horário escolhidos.'};
@@ -1568,7 +1749,7 @@ async function carregarLivros(){
     if(ses&&ses.session){E.sessao=ses.session;const r=await sb.rpc('e_admin');E.admin=!!r.data;}
   }catch(e){E.erro=navigator.onLine?'Não consegui carregar a estante agora. Tente de novo em instantes.':'Sem internet. A estante precisa de conexão para listar os livros.';}
   // o leitor aberto direto pelo endereço (ou por uma aula) também espera a lista; o Clube usa capas e PDFs da Estante
-  const rt=rota()[0];if(rt==='estante'||rt==='ler'||rt==='aulas'||(rt==='clube'&&!/^editar/.test(rota()[1]||'')))render(true);
+  const rt=rota()[0];if(rt==='estante'||rt==='ler'||rt==='aulas'||(rt==='clube'&&!/^editar/.test(rota()[1]||'')))renderSuave();
   else if(rt==='clube')atualizarOpcoesPdf();  // formulário aberto: só a lista de PDFs muda, sem apagar o que está sendo digitado
 }
 // os arquivos da Estante são privados (só membros): capas e downloads usam links assinados de 6 h,

@@ -404,3 +404,65 @@ where not exists (select 1 from public.cob_clube_aulas) and exists (select 1 fro
 -- os próximos cadastros continuam a numeração depois do 1
 select setval(pg_get_serial_sequence('public.cob_clube_livros', 'id'), greatest((select max(id) from public.cob_clube_livros), 1));
 select setval(pg_get_serial_sequence('public.cob_clube_aulas', 'id'), greatest((select max(id) from public.cob_clube_aulas), 1));
+
+-- 9) Dúvidas e comentários embaixo do vídeo de cada aula do Clube do Livro.
+--    Só membros (e a admin) leem e escrevem, e só em aulas que já estão liberadas para a turma.
+--    O nome exibido é montado pelo banco (primeiro nome + inicial do sobrenome); ninguém escolhe o nome que aparece.
+--    Cada pessoa apaga os próprios comentários; a admin apaga qualquer um. Não há edição: para corrigir, apague e escreva de novo.
+create table if not exists public.cob_clube_comentarios (
+  id           bigint generated always as identity primary key,
+  aula         bigint not null references public.cob_clube_aulas(id) on delete cascade,
+  resposta_de  bigint references public.cob_clube_comentarios(id) on delete cascade,  -- resposta a um comentário (um nível)
+  user_id      uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  nome         text not null default '',
+  da_admin     boolean not null default false,  -- comentário da Raquel (destaque no app)
+  duvida       boolean not null default false,  -- marcado como dúvida para a Raquel
+  texto        text not null check (char_length(btrim(texto)) between 1 and 2000),
+  criado_em    timestamptz not null default now()
+);
+create index if not exists cob_clube_comentarios_aula on public.cob_clube_comentarios (aula, criado_em);
+alter table public.cob_clube_comentarios enable row level security;
+
+create or replace function public.cob_clube_comentarios_antes() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare n text; a bigint; r bigint;
+begin
+  if auth.uid() is null then raise exception 'sem_sessao'; end if;
+  new.user_id   := auth.uid();
+  new.da_admin  := public.e_admin();
+  new.texto     := btrim(new.texto);
+  new.criado_em := now();
+  select btrim(regexp_replace(m.nome, '\s+', ' ', 'g')) into n from public.cob_membros m where m.user_id = auth.uid();
+  new.nome := case
+    when n is null or n = '' then case when new.da_admin then 'Raquel' else 'Membro' end
+    when position(' ' in n) = 0 then n
+    else split_part(n, ' ', 1) || ' ' || left(regexp_replace(n, '^.* ', ''), 1) || '.'
+  end;
+  if new.resposta_de is not null then
+    select c.aula, c.resposta_de into a, r from public.cob_clube_comentarios c where c.id = new.resposta_de;
+    if a is distinct from new.aula then raise exception 'resposta_invalida'; end if;
+    if r is not null then new.resposta_de := r; end if;   -- resposta de resposta vai para a mesma conversa
+    new.duvida := false;
+  end if;
+  if not new.da_admin and (select count(*) from public.cob_clube_comentarios c
+      where c.user_id = auth.uid() and c.criado_em > now() - interval '10 minutes') >= 8 then
+    raise exception 'muitos_comentarios';
+  end if;
+  return new;
+end $$;
+drop trigger if exists cob_clube_comentarios_antes on public.cob_clube_comentarios;
+create trigger cob_clube_comentarios_antes before insert on public.cob_clube_comentarios
+  for each row execute function public.cob_clube_comentarios_antes();
+
+drop policy if exists "comentarios: membros leem"        on public.cob_clube_comentarios;
+drop policy if exists "comentarios: membros escrevem"    on public.cob_clube_comentarios;
+drop policy if exists "comentarios: autor ou admin apaga" on public.cob_clube_comentarios;
+-- a subconsulta em cob_clube_aulas respeita as regras daquela tabela: aula não liberada = sem comentários
+create policy "comentarios: membros leem" on public.cob_clube_comentarios for select to authenticated using (
+  (public.e_membro() or public.e_admin()) and exists (select 1 from public.cob_clube_aulas a where a.id = aula));
+create policy "comentarios: membros escrevem" on public.cob_clube_comentarios for insert to authenticated with check (
+  user_id = auth.uid() and (public.e_membro() or public.e_admin()) and exists (select 1 from public.cob_clube_aulas a where a.id = aula));
+create policy "comentarios: autor ou admin apaga" on public.cob_clube_comentarios for delete to authenticated using (
+  user_id = auth.uid() or public.e_admin());
+revoke all on public.cob_clube_comentarios from anon;
+grant select, insert, delete on public.cob_clube_comentarios to authenticated;
