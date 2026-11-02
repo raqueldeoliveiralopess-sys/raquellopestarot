@@ -287,9 +287,9 @@ create policy "aula midia: admin remove" on public.cob_aula_midia for delete to 
 revoke all on public.cob_aula_midia from anon;
 grant select, insert, update, delete on public.cob_aula_midia to authenticated;
 
--- bucket privado das aulas: até 2 GB por arquivo (o limite geral em Storage → Settings precisa ser igual ou maior)
+-- bucket privado das aulas (apostilas, capas e, se preciso, vídeo): até 500 MB por arquivo, o mesmo limite geral do projeto
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('cob-aulas', 'cob-aulas', false, 2147483648, array[
+values ('cob-aulas', 'cob-aulas', false, 524288000, array[
   'video/mp4', 'video/quicktime', 'video/webm', 'video/x-m4v',
   'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',

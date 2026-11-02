@@ -899,7 +899,7 @@ function telaAula(r){
 
 // ---------- Vídeo e apostilas das aulas (Supabase: tabela cob_aula_midia, bucket privado cob-aulas) ----------
 // A admin envia pelo próprio app, dentro de cada aula. Vídeos grandes sobem em partes (retomável).
-const BUCKET_AULAS='cob-aulas', LIMITE_AULA_MB=(window.COB_CONFIG||{}).limiteAulaMB||2048;
+const BUCKET_AULAS='cob-aulas', LIMITE_AULA_MB=(window.COB_CONFIG||{}).limiteAulaMB||500;
 const M={porAula:null,erro:'',assin:{},carregando:null,ocupado:false,msg:'',erroMsg:false};
 const midiaDe=id=>{const l=(M.porAula&&M.porAula[id])||[];return {video:l.find(x=>x.tipo==='video')||null,apostilas:l.filter(x=>x.tipo==='apostila')};};
 const temVideo=a=>!!(a.video||midiaDe(a.id).video);
