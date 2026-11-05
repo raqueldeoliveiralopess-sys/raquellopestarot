@@ -1,4 +1,5 @@
-// Grimório Arcano — login por código, assinatura, sincronização do progresso e perfil.
+// Grimório Arcano — login por código, acesso (cadastro no COB ou assinatura), sincronização do progresso e perfil.
+// O login é o mesmo do COB (/cob/): a sessão fica guardada com a mesma chave, então quem entra num já está no outro.
 // Fica inativo quando GA_CONFIG.modo é 'desligado' (salvo o modo de teste ligado por link neste aparelho).
 (function(){
   const CFG = window.GA_CONFIG || {};
@@ -16,16 +17,16 @@
   let teste = null; try { teste = localStorage.getItem('ga-modo-teste'); } catch(e) {}
   // Com 'assinantes' ligado para todas, o link de teste não pode afrouxar a conferência de assinatura.
   const modo = CFG.modo === 'assinantes' ? 'assinantes' : VALIDOS.includes(teste) ? teste : VALIDOS.includes(CFG.modo) ? CFG.modo : 'desligado';
-  const ATIVOS = ['ativa', 'atrasada'];
   const CACHE_KEY = 'ga-acesso';
   const LIB = 'vendor/supabase-2.117.2.js';
+  const SESSAO = 'cob-sessao';  // a mesma chave do app do COB (mesmo endereço, mesmo login)
 
   const A = {
     modo,
     enabled: modo !== 'desligado' && !!CFG.supabaseUrl && !!CFG.supabaseAnonKey,
     estado: 'carregando',       // carregando | email | codigo | sem-acesso | ok | erro
     email: '', user: null, perfil: null, admin: false, erro: '', ocupado: false, sync: 'ok', // sync: ok | enviando | pendente
-    linkAssinatura: CFG.linkAssinatura || '',
+    linkCadastro: CFG.linkCadastro || '/cob/',
     onChange: () => {}, getData: () => ({}), applyData: () => {}, limparLocal: () => {},
   };
   let sb = null, pushTimer = null;
@@ -40,12 +41,14 @@
     return new Promise((ok, falha) => { const s = document.createElement('script'); s.src = LIB; s.onload = ok; s.onerror = () => falha(new Error('Failed to fetch biblioteca')); document.head.appendChild(s); });
   }
 
-  // ---------- assinatura ----------
+  // ---------- acesso ----------
+  // Grátis para quem tem cadastro completo no COB; quem já assina pela Kiwify continua entrando.
+  // A regra fica no banco (função e_assinante, supabase/grimorio-gratis.sql), a mesma que protege a comunidade.
   async function conferirAcesso(user){
     if (A.modo === 'login') return true;
-    const { data, error } = await sb.from('assinantes').select('status').eq('email', (user.email || '').toLowerCase()).maybeSingle();
+    const { data, error } = await sb.rpc('e_assinante');
     if (error) throw error;
-    return !!data && ATIVOS.includes(data.status);
+    return data === true;
   }
 
   async function entrar(user){
@@ -57,8 +60,8 @@
     } catch(e) {
       const c = lerCache(), limite = (CFG.diasOffline || 7) * 864e5;
       if (offline(e) && c && c.uid === user.id && c.ok && Date.now() - c.em < limite) liberado = true;
-      else if (offline(e)) return muda({ estado: 'erro', erro: 'Sem internet. Conecte-se uma vez para confirmar sua assinatura.' });
-      else return muda({ estado: 'erro', erro: 'Não foi possível conferir sua assinatura agora. Tente de novo em instantes.' });
+      else if (offline(e)) return muda({ estado: 'erro', erro: 'Sem internet. Conecte-se uma vez para confirmar seu acesso.' });
+      else return muda({ estado: 'erro', erro: 'Não foi possível conferir seu acesso agora. Tente de novo em instantes.' });
     }
     if (!liberado) return muda({ estado: 'sem-acesso' });
     muda({ estado: 'ok' });
@@ -201,7 +204,9 @@
     if (!A.enabled) return;
     try {
       await carregarLib();
-      sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true, storageKey: 'ga-sessao' } });
+      // quem já estava logado só no Grimório (chave antiga) continua logado e passa a estar no COB também
+      try { const antiga = localStorage.getItem('ga-sessao'); if (antiga && !localStorage.getItem(SESSAO)) localStorage.setItem(SESSAO, antiga); localStorage.removeItem('ga-sessao'); } catch(e) {}
+      sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true, storageKey: SESSAO } });
       const { data } = await sb.auth.getSession();
       const user = data && data.session && data.session.user;
       if (user) await entrar(user); else muda({ estado: 'email' });

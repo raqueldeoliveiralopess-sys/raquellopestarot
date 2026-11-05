@@ -112,6 +112,8 @@ No Início, a lista de módulos virou a **Jornada**: sete capítulos em trilha (
 
 ## Login, perfil e acesso só para assinantes
 
+**Desde novembro de 2026 o Grimório é gratuito para quem tem cadastro no COB.** O acesso é conferido pela função `e_assinante()` do banco (`supabase/grimorio-gratis.sql`): cadastro completo no COB (`cob_membros`) **ou** assinatura ativa na Kiwify. A mesma função protege a comunidade e define quem recebe o lembrete diário. O login é um só para os dois apps (mesmo endereço, sessão guardada na chave `cob-sessao`): quem entra no COB abre o Grimório já logada(o), e vice-versa. Quem entra sem cadastro vê "Falta o seu cadastro" com o botão para `/cob/`. O COB tem um atalho para o Grimório no Hoje e na Biblioteca. O texto abaixo descreve a montagem original, com assinatura.
+
 O app tem login por código enviado ao e-mail, perfil com foto e progresso salvo na nuvem. O acesso pode ser liberado só para quem tem assinatura ativa na Kiwify.
 
 **Situação atual:** ligado em `modo: 'assinantes'` (`config.js`), com Supabase em São Paulo, e-mail pelo Brevo (`nao-responda@raquellopestarot.com.br`) e webhook da Kiwify ativo. Para voltar ao app sem login, mude `modo` para `'desligado'`. Com `'assinantes'` ligado, os links de teste `?modo=` não afrouxam a conferência de assinatura.

@@ -16,9 +16,18 @@ create table if not exists public.bloqueadas (
 alter table public.bloqueadas enable row level security;
 
 -- 3) Funções de apoio (rodam com permissão do banco, só leem o necessário)
+-- membro do COB: tem acesso ao Grimório de graça (ver supabase/grimorio-gratis.sql)
+create or replace function public.e_membro() returns boolean
+language plpgsql stable security definer set search_path = public as $$
+begin
+  return exists (select 1 from public.cob_membros where user_id = auth.uid());
+exception when undefined_table then return false;
+end $$;
+
+-- acesso ao Grimório: cadastro no COB ou assinatura ativa
 create or replace function public.e_assinante() returns boolean
 language sql stable security definer set search_path = public as $$
-  select exists (
+  select public.e_membro() or exists (
     select 1 from public.assinantes
     where lower(email) = lower(coalesce(auth.jwt() ->> 'email', ''))
       and status in ('ativa', 'atrasada')
@@ -39,9 +48,11 @@ language sql stable security definer set search_path = public as $$
 $$;
 
 -- O Supabase dá permissão padrão ao papel anônimo; "from public" não cobre isso, então revogamos de anon também.
+revoke all on function public.e_membro() from public, anon;
 revoke all on function public.e_assinante() from public, anon;
 revoke all on function public.e_admin() from public, anon;
 revoke all on function public.e_bloqueada() from public, anon;
+grant execute on function public.e_membro() to authenticated;
 grant execute on function public.e_assinante() to authenticated;
 grant execute on function public.e_admin() to authenticated;
 grant execute on function public.e_bloqueada() to authenticated;
@@ -75,7 +86,7 @@ create policy "perfis: assinantes se veem" on public.perfis for select to authen
 create table if not exists public.posts (
   id        bigint generated always as identity primary key,
   autor     uuid not null default auth.uid() references public.perfis(id) on delete cascade,
-  tema      text not null check (tema in ('estudo', 'tiragem', 'duvida', 'reflexao', 'achadinho')) -- 'achadinho' fica aceito só por compatibilidade; o app não oferece mais,
+  tema      text not null check (tema in ('estudo', 'tiragem', 'duvida', 'reflexao', 'achadinho')), -- 'achadinho' fica aceito só por compatibilidade; o app não oferece mais
   texto     text not null check (char_length(texto) between 1 and 2000),
   foto_url  text,
   fixado    boolean not null default false,

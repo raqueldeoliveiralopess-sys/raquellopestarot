@@ -266,6 +266,12 @@ main.cheia{padding:0;gap:0}
 .cl-prev{display:flex;flex-direction:column;gap:8px}
 .cl-prev .ok{font-size:13px;color:#3F6E4A;font-weight:600}.cl-prev .no{font-size:13px;color:#7E2C2C;font-weight:600}
 @media (prefers-color-scheme:dark){.cl-prev .ok{color:#9CCB9F}.cl-prev .no{color:#F0B8B8}}
+/* atalho para o Grimório Arcano */
+.cl-gri{display:grid;grid-template-columns:56px minmax(0,1fr) 18px;gap:14px;align-items:center;padding:14px;border-radius:18px;text-decoration:none;color:#F5EDCC;background:#2E1A33;background-image:radial-gradient(circle at 90% 0%,rgba(242,211,107,.18),transparent 60%)}
+.cl-gri img{width:56px;height:56px;border-radius:14px;display:block}
+.cl-gri .t{display:flex;flex-direction:column;gap:3px;min-width:0}
+.cl-gri .eyebrow{color:#F5B8C9}.cl-gri .gt{color:#F2D36B;font-size:19px}.cl-gri .s{font-size:13.5px;line-height:1.45;color:#E3D3C2}
+.cl-gri .chev{color:#F5B8C9}
 /* dúvidas e comentários */
 .aula-resto{display:flex;flex-direction:column;gap:18px;min-width:0}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -842,6 +848,7 @@ function telaHoje(){
     <p style="font-size:14.5px;color:var(--ink2)">${esc(sb.subtitulo)}. ${esc(sb.texto)}</p>
   </div>
   ${cartaoContinuar()}
+  ${cartaoGrimorio()}
   <div class="card">
     <div class="eyebrow">Hoje é dia de ${esc(dia.planeta)}</div>
     <p style="font-size:15px">Bom para <b>${esc(dia.temas.join(', '))}</b>. Cores do dia: ${esc(dia.cores.join(' e '))}.</p>
@@ -853,6 +860,16 @@ function telaHoje(){
     <span class="chev">${I.chev}</span>
   </button>
   ${rodapeConta()}`;
+}
+
+// ---------- Grimório Arcano (app de estudo de tarô, no mesmo endereço; o login é o mesmo) ----------
+const LINK_GRIMORIO='../';
+function cartaoGrimorio(){
+  return `<a class="cl-gri" href="${LINK_GRIMORIO}">
+    <img src="../icon-192.png" alt="" width="56" height="56">
+    <span class="t"><span class="eyebrow">Grátis no COB</span><span class="gt">Grimório Arcano</span><span class="s">Seu app de estudo de tarô: as 78 cartas, tiragens, diário, quiz e a comunidade. Você entra com o mesmo login.</span></span>
+    <span class="chev">${I.chev}</span>
+  </a>`;
 }
 
 // ---------- Aulas ----------
@@ -1617,6 +1634,7 @@ function telaBiblioteca(r){
   <div><div class="eyebrow">Consulta rápida</div><h1 class="h1" style="margin-top:6px">Biblioteca</h1></div>
   <div class="pills">${SECOES.map(([id,nome])=>`<button class="pill ${id===sec?'on':''}" data-go="biblioteca/${id}" data-troca>${nome}</button>`).join('')}</div>
   <input id="busca" class="search" type="search" placeholder="Buscar em toda a biblioteca (ex.: proteção)" autocomplete="off" aria-label="Buscar na biblioteca">
+  ${sec==='ervas'?cartaoGrimorio():''}
   ${sec==='elementos'?`<p class="warn">${esc(B.notaElementos)}</p>`:''}
   <div id="itens">${sec==='glossario'?`<div class="gl">${B.glossario.map(v=>`<details><summary>${esc(v.termo)}${I.chev}</summary><p>${esc(v.def)}</p></details>`).join('')}</div>`:`<div class="list">${itensDe(sec).map(it=>linhaItem(sec,it,icone)).join('')}</div>`}</div>
   <div id="achados" style="display:none"></div>

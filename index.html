@@ -283,7 +283,7 @@ img.rev{transform:rotate(180deg)}
 <script src="tiragens.js?v=33"></script>
 <script src="diario.js?v=33"></script>
 <script src="config.js"></script>
-<script src="auth.js?v=33"></script>
+<script src="auth.js?v=36"></script>
 <script src="comunidade.js?v=33"></script>
 <script>
 (function(){
@@ -1034,14 +1034,15 @@ function gateView(){
   const head=`<div class="stack" style="gap:6px;text-align:center;align-items:center"><img src="icon-192.png" alt="" style="width:72px;height:72px;border-radius:18px"><div class="eyebrow">Grimório Arcano</div></div>`;
   let body='';
   if(A.estado==='carregando') body=`<p style="text-align:center;color:var(--ink2)">Abrindo seu grimório…</p>`;
-  else if(A.estado==='email') body=`<div class="stack" style="gap:6px;text-align:center"><h1 style="font-size:34px;line-height:1.05">Entre no seu grimório</h1><p style="color:var(--ink2)">Use o e-mail da sua assinatura. Vamos mandar um código para você digitar aqui, sem senha.</p></div>
-    <form class="stack" data-form="email" style="gap:12px"><div class="field"><label for="ga-email">E-mail</label><input id="ga-email" type="email" inputmode="email" autocomplete="email" required value="${esc(A.email)}" placeholder="voce@email.com"></div>${err}<button class="btn" ${A.ocupado?'disabled style="opacity:.6"':''}>${A.ocupado?'Enviando…':'Receber código'}</button></form>`;
+  else if(A.estado==='email') body=`<div class="stack" style="gap:6px;text-align:center"><h1 style="font-size:34px;line-height:1.05">Entre no seu grimório</h1><p style="color:var(--ink2)">Grátis para quem tem cadastro no COB · Curso Online de Bruxaria. Use o mesmo e-mail: vamos mandar um código para você digitar aqui, sem senha.</p></div>
+    <form class="stack" data-form="email" style="gap:12px"><div class="field"><label for="ga-email">E-mail</label><input id="ga-email" type="email" inputmode="email" autocomplete="email" required value="${esc(A.email)}" placeholder="voce@email.com"></div>${err}<button class="btn" ${A.ocupado?'disabled style="opacity:.6"':''}>${A.ocupado?'Enviando…':'Receber código'}</button></form>
+    <p style="text-align:center;font-size:14px;color:var(--ink2)">Ainda não tem cadastro? <a href="${esc(A.linkCadastro)}" style="color:var(--wood);font-weight:600">Cadastre-se grátis no COB</a></p>`;
   else if(A.estado==='codigo') body=`<div class="stack" style="gap:6px;text-align:center"><h1 style="font-size:32px;line-height:1.05">Confira seu e-mail</h1><p style="color:var(--ink2)">Mandamos um código para <b>${esc(A.email)}</b>. Pode levar um minuto; olhe também o spam.</p></div>
     <form class="stack" data-form="codigo" style="gap:12px"><div class="field"><label for="ga-code">Código</label><input id="ga-code" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="10" required placeholder="••••••"></div>${err}<button class="btn" ${A.ocupado?'disabled style="opacity:.6"':''}>${A.ocupado?'Conferindo…':'Entrar'}</button></form>
     <div style="display:flex;justify-content:space-between"><button class="link" data-act="ga-reenviar">Mandar outro código</button><button class="link" data-act="ga-trocar">Trocar e-mail</button></div>`;
-  else if(A.estado==='sem-acesso') body=`<div class="dark stack" style="gap:10px;text-align:center"><div class="eyebrow" style="color:var(--pink)">Assinatura não encontrada</div><p>O e-mail <b>${esc(A.email)}</b> não tem uma assinatura ativa do Grimório Arcano.</p><p style="font-size:14px;opacity:.85">Se você assinou com outro e-mail, saia e entre com ele. Se acabou de assinar, espere alguns minutos e confira de novo.</p></div>
-    ${A.linkAssinatura?`<a class="btn" href="${esc(A.linkAssinatura)}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Assinar o Grimório</a>`:''}
-    <button class="btn ghost" data-act="ga-denovo">Já assinei, conferir de novo</button><button class="link" data-act="ga-sair" style="align-self:center">Entrar com outro e-mail</button>`;
+  else if(A.estado==='sem-acesso') body=`<div class="dark stack" style="gap:10px;text-align:center"><div class="eyebrow" style="color:var(--pink)">Falta o seu cadastro</div><p>O Grimório Arcano agora é <b>gratuito</b> para quem tem cadastro no COB · Curso Online de Bruxaria.</p><p style="font-size:14px;opacity:.85">O e-mail <b>${esc(A.email)}</b> ainda não tem o cadastro completo. Leva um minuto: você já entra logada(o) com este e-mail.</p></div>
+    <a class="btn" href="${esc(A.linkCadastro)}" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Fazer meu cadastro grátis</a>
+    <button class="btn ghost" data-act="ga-denovo">Já me cadastrei, conferir de novo</button><button class="link" data-act="ga-sair" style="align-self:center">Entrar com outro e-mail</button>`;
   else body=`${err||'<div class="err">Algo deu errado.</div>'}<button class="btn" data-act="ga-denovo">Tentar de novo</button>${A.user?`<button class="link" data-act="ga-sair" style="align-self:center">Sair</button>`:''}`;
   return `<div class="gate">${head}${body}</div>`;
 }
@@ -1112,7 +1113,7 @@ function comunidadeView(){
   else if(!c.posts.length) lista=`<div class="box" style="text-align:center;gap:6px"><b class="serif" style="font-size:22px">A roda está esperando você</b><p style="font-size:14px;color:var(--ink2)">${c.tema==='todos'?'Ninguém postou ainda. Que tal abrir a conversa?':'Nenhum post neste tema ainda.'}</p></div>`;
   else lista=c.posts.map(postHtml).join('')+(c.fim?'':`<button class="btn ghost" data-act="cmais" ${c.carregando?'disabled style="opacity:.6"':''}>${c.carregando?'Carregando…':'Carregar mais'}</button>`)+(c.erro?`<div class="err">${esc(c.erro)}</div>`:'');
   return `${tituloComAvatar('Comunidade',`<button class="link" data-act="catual" ${c.carregando?'disabled':''}>${c.carregando?'Atualizando…':'Atualizar'}</button>`)}
-  <p style="color:var(--ink2);font-size:14px;margin-top:-8px">A roda das assinantes do Grimório. Compartilhe estudos, tiragens, dúvidas e reflexões.</p>
+  <p style="color:var(--ink2);font-size:14px;margin-top:-8px">A roda de quem estuda no Grimório. Compartilhe estudos, tiragens, dúvidas e reflexões.</p>
   ${comb}
   <button class="btn" data-act="cnovo" ${c.preparando?'disabled style="opacity:.6"':''}>Escrever post</button>
   <div class="pills">${pills}</div>
@@ -1150,7 +1151,7 @@ async function pubCarregar(uid, reset){
 }
 function perfilPubView(){
   if(!logada()) return home();
-  const A=window.GA_AUTH, P=S.pub, me=A.uid(), minha=P.uid===me, p=P.perfil||{}, nome=(p.nome||'').trim()||(minha?(A.email||'Você'):'Assinante');
+  const A=window.GA_AUTH, P=S.pub, me=A.uid(), minha=P.uid===me, p=P.perfil||{}, nome=(p.nome||'').trim()||(minha?(A.email||'Você'):'Bruxa(o)');
   const topo=`<div style="display:flex;justify-content:space-between;align-items:center;margin:-8px -8px 0"><button data-act="go" data-screen="${S.pubVolta||'home'}" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;border:none;background:transparent;color:var(--wood);font-size:15px">${ICONS.left}Voltar</button>${minha?`<button class="link" data-act="go" data-screen="editarPerfil">Editar perfil</button>`:''}</div>`;
   const cab=`<div style="display:flex;gap:16px;align-items:center">${avatarDe(p,'lg')}<div class="stack" style="gap:6px;min-width:0;flex:1"><div class="serif" style="font-size:26px;line-height:1.05;overflow-wrap:anywhere">${esc(nome)}</div>${A.ehAdminUid(P.uid)?'<span class="selo" style="align-self:flex-start">Administradora · Grimório Arcano</span>':''}<div style="display:flex;gap:18px"><div><b style="font-size:18px">${P.contagens?P.contagens.posts:'–'}</b><div style="font-size:12px;color:var(--muted)">posts</div></div><div><b style="font-size:18px">${P.contagens?P.contagens.curtidas:'–'}</b><div style="font-size:12px;color:var(--muted)">curtidas</div></div></div></div></div>
   ${p.bio?`<p style="font-size:14px;line-height:1.5;white-space:pre-wrap">${esc(p.bio)}</p>`:minha?`<p style="font-size:14px;color:var(--muted)">Você ainda não escreveu sua bio. <button class="link" data-act="go" data-screen="editarPerfil" style="min-height:auto;padding:0">Escrever agora</button></p>`:''}
