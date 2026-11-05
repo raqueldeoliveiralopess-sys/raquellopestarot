@@ -1,0 +1,9 @@
+{
+  "name": "grimorio-arcano",
+  "private": true,
+  "description": "Grimório Arcano: app estático de estudo de tarot. As dependências aqui são só das funções da Netlify.",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0"
+  }
+}
