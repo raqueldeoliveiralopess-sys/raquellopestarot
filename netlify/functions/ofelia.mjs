@@ -9,14 +9,14 @@
 // Variáveis de ambiente (Site configuration > Environment variables):
 //   ANTHROPIC_API_KEY          chave da API da Anthropic (console.anthropic.com). Secreta; só aqui.
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY   as mesmas das outras funções
-//   OFELIA_LIMITE_DIA         (opcional) mensagens por aluna por dia; padrão 30
+//   OFELIA_LIMITE_DIA         (opcional) perguntas por pessoa por dia; padrão 5
 //   OFELIA_MODELO             (opcional) padrão claude-opus-5-5
 // Banco: supabase/ofelia.sql (tabela ofelia_uso e função ofelia_registrar).
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'node:fs';
 
 const MODELO = () => process.env.OFELIA_MODELO || 'claude-opus-5-5';
-const LIMITE = () => Math.max(1, parseInt(process.env.OFELIA_LIMITE_DIA, 10) || 30);
+const LIMITE = () => Math.max(1, parseInt(process.env.OFELIA_LIMITE_DIA, 10) || 5);
 const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
 
 export const DESCULPA = 'Essa eu não consigo responder por aqui. Vamos voltar para a tiragem: me diga em que posição a carta caiu e o que ela mexeu em você.';

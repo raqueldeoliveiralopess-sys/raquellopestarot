@@ -84,7 +84,7 @@ A conversa fica salva com a prática (`chat` em cada item de `readings`) ou com 
 
 Para ligar:
 1. Crie uma conta em console.anthropic.com, gere uma chave de API e defina um limite de gasto mensal lá.
-2. Na Netlify, em Site configuration → Environment variables, crie `ANTHROPIC_API_KEY` com essa chave. Nunca a cole no app nem em conversas. Opcionais: `OFELIA_LIMITE_DIA` (mensagens por aluna por dia; padrão 30) e `OFELIA_MODELO`.
+2. Na Netlify, em Site configuration → Environment variables, crie `ANTHROPIC_API_KEY` com essa chave. Nunca a cole no app nem em conversas. Opcionais: `OFELIA_LIMITE_DIA` (perguntas por pessoa por dia; padrão 5) e `OFELIA_MODELO`.
 3. Rode `supabase/ofelia.sql` no SQL Editor: cria `ofelia_uso` (mensagens e tokens por aluna e por dia, só a chave de serviço escreve) e `ofelia_registrar`. O arquivo termina com a consulta que mostra o gasto por dia.
 4. O `package.json` da raiz declara `@anthropic-ai/sdk`; a Netlify instala na build. O site continua estático, sem comando de build.
 

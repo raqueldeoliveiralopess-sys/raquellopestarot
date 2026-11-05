@@ -992,9 +992,14 @@ function mentoraHtml(){
   const bolhas=ctx.chat.map((t,i)=>`<div class="mb q">${esc(t.q)}</div><div class="mrow"><span class="mav">${CORUJA}</span><div class="mb a${env&&i===n-1&&!t.a?' esc':''}"${i===n-1?' id="mresp"':''}>${esc(t.a)}</div></div>`).join('');
   const sug=n?'':`<div class="pills wrap">${ctx.sugestoes.map(s=>`<button class="pill" data-act="msug" data-q="${esc(s)}">${esc(s)}</button>`).join('')}</div>`;
   const erro=S.mentora.erro&&S.mentora.chave===ctx.chave?`<div class="err">${esc(S.mentora.erro)}</div>`:'';
-  const rodape=n?n+' troca'+(n===1?'':'s')+(ctx.chave[0]==='p'?' nesta prática':' nesta carta')+', salvas com o resto do estudo.':'Até 30 perguntas por dia. Só você vê esta conversa.';
+  const rm=S.mentoraRestam&&S.mentoraRestam.dia===hojeOfelia()?S.mentoraRestam.n:null;
+  const resta=rm===null?'':rm===0?' Você já usou as perguntas de hoje; amanhã tem mais.':' '+(rm===1?'Resta 1 pergunta hoje.':'Restam '+rm+' perguntas hoje.');
+  const rodape=(n?n+' troca'+(n===1?'':'s')+(ctx.chave[0]==='p'?' nesta prática':' nesta carta')+', salvas com o resto do estudo.':'Até '+LIMITE_OFELIA+' perguntas por dia. Só você vê esta conversa.')+resta;
   return `<div class="notes mentora">${head}${bolhas?`<div class="mchat" id="mchat">${bolhas}</div>`:''}${sug}<label for="mq" style="font-size:13px;font-weight:600;color:var(--wood)">Minha dúvida</label><textarea id="mq" data-mq maxlength="500" placeholder="${esc(ctx.placeholder)}"${env?' disabled':''}>${esc(S.mentoraDraft||'')}</textarea><button class="btn" data-act="mperg"${env?' disabled style="opacity:.6"':''}>${env?'Ofélia está escrevendo…':'Perguntar à Ofélia'}</button><div style="font-size:12px;color:var(--muted)">${esc(rodape)}</div>${erro}</div>`;
 }
+// limite diário da Ofélia (o servidor confere; aqui é só para avisar quantas restam)
+const LIMITE_OFELIA=5;
+const hojeOfelia=()=>new Date().toLocaleDateString('en-CA',{timeZone:'America/Sao_Paulo'});
 function rolarChat(){ const el=document.getElementById('mchat'); if(el) el.scrollTop=el.scrollHeight; }
 async function perguntarMentora(pergunta){
   pergunta=(pergunta||'').trim().slice(0,500); const ctx=mentoraCtx();
@@ -1009,10 +1014,12 @@ async function perguntarMentora(pergunta){
     if(!res.ok){
       let msg='A Ofélia não respondeu agora. Tente em instantes.', info={};
       try{ info=await res.json(); }catch(e){}
-      if(res.status===401) msg='Entre de novo para falar com a Ofélia.'; else if(res.status===429) msg='Você já usou as perguntas de hoje. Amanhã a Ofélia volta.'; else if(info&&info.erro) msg=info.erro; else if(res.status===503) msg='A Ofélia ainda não foi ligada neste app.';
+      if(res.status===429) S.mentoraRestam={n:0,dia:hojeOfelia()};
+      if(res.status===401) msg='Entre de novo para falar com a Ofélia.'; else if(res.status===429) msg='Você já usou as '+((info&&info.limite)||LIMITE_OFELIA)+' perguntas de hoje. Amanhã a Ofélia volta.'; else if(info&&info.erro) msg=info.erro; else if(res.status===503) msg='A Ofélia ainda não foi ligada neste app.';
       if(info&&info.codigo) msg+=' (código: '+info.codigo+')';
       falhou(msg); return;
     }
+    const rh=parseInt(res.headers.get('x-ofelia-restantes'),10); if(rh>=0) S.mentoraRestam={n:rh,dia:hojeOfelia()};
     const reader=res.body.getReader(), dec=new TextDecoder();
     while(true){ const {value,done}=await reader.read(); if(done) break; troca.a+=dec.decode(value,{stream:true}); const el=document.getElementById('mresp'); if(el){ el.classList.remove('esc'); el.textContent=troca.a; rolarChat(); } }
     troca.a=troca.a.trim();
