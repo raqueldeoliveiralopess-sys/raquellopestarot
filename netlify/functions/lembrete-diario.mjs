@@ -4,7 +4,7 @@
 //
 // Variáveis de ambiente (Site configuration > Environment variables):
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, BREVO_API_KEY   obrigatórias (as mesmas do webhook da Kiwify)
-//   APP_URL            (opcional) padrão https://ogrimorioarcano.netlify.app
+//   APP_URL            (opcional) padrão https://covenstrixcob.netlify.app
 //   EMAIL_REMETENTE    (opcional) padrão nao-responda@raquellopestarot.com.br
 //   EMAIL_RESPOSTA     (opcional) e-mail para a aluna responder
 //   LEMBRETE_SECRET    (opcional) segredo do link de descadastro; sem ele, usa a chave de serviço
@@ -14,7 +14,7 @@ import fs from 'node:fs';
 
 export const config = { schedule: '0 11 * * *' };
 
-const APP = () => (process.env.APP_URL || 'https://ogrimorioarcano.netlify.app').replace(/\/$/, '');
+const APP = () => (process.env.APP_URL || 'https://covenstrixcob.netlify.app').replace(/\/$/, '');
 const escHtml = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // Carrega cards.js e diario.js do próprio app (netlify.toml inclui os dois arquivos no pacote da função)

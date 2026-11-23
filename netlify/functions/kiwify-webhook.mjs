@@ -6,7 +6,7 @@
 //   KIWIFY_TOKEN               token mostrado pela Kiwify ao criar o webhook
 //   KIWIFY_PRODUCT_ID          (opcional) id do produto Grimório; avisos de outros produtos são ignorados
 //   BREVO_API_KEY              (opcional) chave de API do Brevo; com ela, a assinante nova recebe o e-mail de boas-vindas
-//   APP_URL                    (opcional) endereço do app; padrão https://ogrimorioarcano.netlify.app
+//   APP_URL                    (opcional) endereço do app; padrão https://covenstrixcob.netlify.app
 //   EMAIL_REMETENTE            (opcional) padrão nao-responda@raquellopestarot.com.br
 //   EMAIL_RESPOSTA             (opcional) e-mail que recebe as respostas das alunas
 //
@@ -104,7 +104,7 @@ export function emailBoasVindas(nome, email, appUrl) {
 async function enviarBoasVindas(c) {
   const key = process.env.BREVO_API_KEY;
   if (!key) return 'sem BREVO_API_KEY';
-  const appUrl = process.env.APP_URL || 'https://ogrimorioarcano.netlify.app';
+  const appUrl = process.env.APP_URL || 'https://covenstrixcob.netlify.app';
   const m = emailBoasVindas(c.nome, c.email, appUrl);
   const payload = {
     sender: { name: 'Grimório Arcano', email: process.env.EMAIL_REMETENTE || 'nao-responda@raquellopestarot.com.br' },

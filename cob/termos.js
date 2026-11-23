@@ -10,7 +10,7 @@ const DADOS={
   encarregada:'Raquel de Oliveira Lopes (raquellopesgalante@gmail.com)',           // nome e e-mail da encarregada de dados (pode ser a própria Raquel)
   comarca:'Campinas (SP)',               // foro eleito
   prazoTermo:'cinco anos',  // guarda do termo do responsável depois da saída
-  site:'https://ogrimorioarcano.netlify.app/cob/',
+  site:'https://covenstrixcob.netlify.app/cob/',
   provedores:'Supabase (cadastro, login e banco de dados) e Netlify (hospedagem do site)'
 };
 const v=(k,rot)=>DADOS[k]?`<b>${DADOS[k]}</b>`:`<b class="lacuna">[${rot}]</b>`;
