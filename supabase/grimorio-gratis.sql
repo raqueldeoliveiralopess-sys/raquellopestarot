@@ -9,7 +9,9 @@
 create or replace function public.e_membro() returns boolean
 language plpgsql stable security definer set search_path = public as $$
 begin
-  return exists (select 1 from public.cob_membros where user_id = auth.uid());
+  -- membro com acesso liberado (coluna acesso, seção 10 do cob.sql; sem a coluna, vale o cadastro)
+  return exists (select 1 from public.cob_membros m
+                 where m.user_id = auth.uid() and coalesce((to_jsonb(m) ->> 'acesso')::boolean, true));
 exception when undefined_table then return false;
 end $$;
 revoke all on function public.e_membro() from public, anon;
@@ -38,7 +40,7 @@ begin
     join auth.users u on u.id = p.id
     left join public.progresso g on g.user_id = p.id
     where p.lembrete = true
-      and (exists (select 1 from public.cob_membros m where m.user_id = p.id)
+      and (exists (select 1 from public.cob_membros m where m.user_id = p.id and coalesce((to_jsonb(m) ->> 'acesso')::boolean, true))
            or exists (select 1 from public.assinantes a where lower(a.email) = lower(u.email) and a.status in ('ativa', 'atrasada')));
 exception when undefined_table then
   return query

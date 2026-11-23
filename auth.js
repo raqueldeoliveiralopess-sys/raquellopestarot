@@ -1,4 +1,4 @@
-// Grimório Arcano — login por código, acesso (cadastro no COB ou assinatura), sincronização do progresso e perfil.
+// Grimório Arcano — login por código, acesso (membro do Coven liberado no COB ou assinatura), sincronização do progresso e perfil.
 // O login é o mesmo do COB (/cob/): a sessão fica guardada com a mesma chave, então quem entra num já está no outro.
 // Fica inativo quando GA_CONFIG.modo é 'desligado' (salvo o modo de teste ligado por link neste aparelho).
 (function(){
@@ -26,7 +26,6 @@
     enabled: modo !== 'desligado' && !!CFG.supabaseUrl && !!CFG.supabaseAnonKey,
     estado: 'carregando',       // carregando | email | codigo | sem-acesso | ok | erro
     email: '', user: null, perfil: null, admin: false, erro: '', ocupado: false, sync: 'ok', // sync: ok | enviando | pendente
-    linkCadastro: CFG.linkCadastro || '/cob/',
     onChange: () => {}, getData: () => ({}), applyData: () => {}, limparLocal: () => {},
   };
   let sb = null, pushTimer = null;
@@ -42,7 +41,7 @@
   }
 
   // ---------- acesso ----------
-  // Grátis para quem tem cadastro completo no COB; quem já assina pela Kiwify continua entrando.
+  // Entra quem tem cadastro no COB com o acesso liberado pela admin (mensalidade do Coven) ou assinatura ativa na Kiwify.
   // A regra fica no banco (função e_assinante, supabase/grimorio-gratis.sql), a mesma que protege a comunidade.
   async function conferirAcesso(user){
     if (A.modo === 'login') return true;

@@ -20,7 +20,9 @@ alter table public.bloqueadas enable row level security;
 create or replace function public.e_membro() returns boolean
 language plpgsql stable security definer set search_path = public as $$
 begin
-  return exists (select 1 from public.cob_membros where user_id = auth.uid());
+  -- membro com acesso liberado (coluna acesso, seção 10 do cob.sql; sem a coluna, vale o cadastro)
+  return exists (select 1 from public.cob_membros m
+                 where m.user_id = auth.uid() and coalesce((to_jsonb(m) ->> 'acesso')::boolean, true));
 exception when undefined_table then return false;
 end $$;
 

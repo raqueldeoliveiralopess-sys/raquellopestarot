@@ -266,6 +266,11 @@ main.cheia{padding:0;gap:0}
 .cl-prev{display:flex;flex-direction:column;gap:8px}
 .cl-prev .ok{font-size:13px;color:#3F6E4A;font-weight:600}.cl-prev .no{font-size:13px;color:#7E2C2C;font-weight:600}
 @media (prefers-color-scheme:dark){.cl-prev .ok{color:#9CCB9F}.cl-prev .no{color:#F0B8B8}}
+/* acesso por mensalidade (painel de membros) */
+.tag.ac-on{background:#DDEBDD;color:#2F5A39}.tag.ac-off{background:#FBEDED;color:#7E2C2C}
+@media (prefers-color-scheme:dark){.tag.ac-on{background:#2A3E2D;color:#9CCB9F}.tag.ac-off{background:#3A2225;color:#F0B8B8}}
+.ac-linha{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:0 14px 12px;font-size:13.5px;color:var(--ink2)}
+.ac-linha .btn{width:auto;min-height:40px;padding:0 16px;font-size:14px}
 /* atalho para o Grimório Arcano */
 .cl-gri{display:grid;grid-template-columns:56px minmax(0,1fr) 18px;gap:14px;align-items:center;padding:14px;border-radius:18px;text-decoration:none;color:#F5EDCC;background:#2E1A33;background-image:radial-gradient(circle at 90% 0%,rgba(242,211,107,.18),transparent 60%)}
 .cl-gri img{width:56px;height:56px;border-radius:14px;display:block}
@@ -408,11 +413,11 @@ function render(manter){
   $('#nav').innerHTML=TABS.map(([id,nome,svg])=>`<button data-go="${id}" class="${tab===id?'on':''}" aria-label="${nome}" ${tab===id?'aria-current="page"':''}>${svg}<span>${nome}</span></button>`).join('');
   const telas={hoje:telaHoje,aulas:telaAulas,aula:telaAula,clube:telaClube,estante:telaEstante,ler:telaLer,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua,termos:telaTermos,membros:telaMembros};
   // portão: sem sessão, só a tela de entrada e os termos; com sessão sem cadastro, só completar o perfil
-  const portao=G.off?'':!G.pronto?'carregando':!G.sessao?(r[0]==='termos'?'':'entrar'):(!G.perfil&&!G.admin&&r[0]!=='termos')?'completar':'';
+  const portao=G.off?'':!G.pronto?'carregando':!G.sessao?(r[0]==='termos'?'':'entrar'):(!G.perfil&&!G.admin&&r[0]!=='termos')?'completar':(G.perfil&&G.perfil.acesso===false&&!G.admin&&r[0]!=='termos')?'pausado':'';
   $('#nav').hidden=!!portao||(!G.sessao&&r[0]==='termos');
   $('#main').classList.toggle('cheia',r[0]==='ler'&&!portao);
   $('#main').classList.toggle('portao',!!portao);
-  if(portao){if(leitor.ativo)fecharLeitor();$('#main').innerHTML=portao==='carregando'?`<div class="auth">${marcaConta}<p class="c" style="color:var(--muted)">Abrindo…</p></div>`:portao==='entrar'?telaEntrar():telaCompletar();if(!manter)window.scrollTo(0,0);return;}
+  if(portao){if(leitor.ativo)fecharLeitor();$('#main').innerHTML=portao==='carregando'?`<div class="auth">${marcaConta}<p class="c" style="color:var(--muted)">Abrindo…</p></div>`:portao==='entrar'?telaEntrar():portao==='pausado'?telaPausado():telaCompletar();if(!manter)window.scrollTo(0,0);return;}
   $('#main').innerHTML=(telas[r[0]]||telaHoje)(r);
   if(r[0]==='ler')iniciarLeitor(r[1],+r[2]||0);
   ligarPlayers();
@@ -579,6 +584,16 @@ async function iniciarConta(){
 }
 async function contaAcao(a,v){
   if(a==='aba'){G.aba=v;G.etapa='form';G.msg='';render(true);return;}
+  if(a==='mfiltro'){G.mfiltro=v;const l=$('#m-lista');if(l)l.innerHTML=listaMembros();document.querySelectorAll('[data-act="conta-mfiltro"]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));return;}
+  if(a==='acesso'){
+    const m=(G.membros||[]).find(x=>x.user_id===v);if(!m||G.mudandoAcesso)return;
+    const liberar=m.acesso===false;
+    if(!confirm(liberar?`Liberar o acesso de ${m.nome}? Ela(e) volta a entrar no COB e no Grimório.`:`Pausar o acesso de ${m.nome}? Ela(e) deixa de entrar no COB e no Grimório. Os dados ficam guardados.`))return;
+    G.mudandoAcesso=v;const l=$('#m-lista');if(l)l.innerHTML=listaMembros();
+    try{const sb=await carregarSupabase();const {data,error}=await sb.from('cob_membros').update({acesso:liberar}).eq('user_id',v).select('acesso,acesso_em').single();if(error)throw error;Object.assign(m,data);}
+    catch(e){alert('Não consegui mudar o acesso: '+erroConta(e));}
+    G.mudandoAcesso=null;render(true);return;
+  }
   if(a==='voltar'){G.etapa='form';G.msg='';render(true);return;}
   if(a==='cadastrar'||a==='completar'){
     const r=validarCadastro(G.form,a==='cadastrar');if(r.erro){G.campo=r.campo||'';aviso2(r.erro,true);return marcarCampo();}
@@ -699,6 +714,19 @@ function telaEntrar(){
     <button class="link c" data-go="termos">Regras, termos e privacidade</button>
   </div>`;
 }
+// cadastro com o acesso pausado pela admin (mensalidade do Coven): não abre nada; os dados continuam guardados
+function telaPausado(){
+  const em=((window.COB_TERMOS||{}).DADOS||{}).email||'';
+  return `<div class="auth">${marcaConta}
+    <div class="card" style="gap:12px;text-align:center">
+      <div class="eyebrow" style="color:#9B3B3B">Acesso pausado</div>
+      <h1 class="serif" style="font-size:28px">Olá, ${esc((G.perfil.nome||'').split(' ')[0])}.</h1>
+      <p style="color:var(--ink2);font-size:15px">O COB e o Grimório Arcano agora são exclusivos para quem participa do Coven com a mensalidade em dia. Por isso o seu acesso está pausado.</p>
+      <p style="color:var(--ink2);font-size:15px">Quer voltar? Fale com a Raquel${em?` pelo e-mail <a href="mailto:${esc(em)}">${esc(em)}</a>`:''}. Assim que a mensalidade for confirmada, o acesso é liberado nesta mesma conta, com tudo o que você já tinha.</p>
+    </div>
+    <button class="link" style="align-self:center" data-act="conta-sair">Sair desta conta</button>
+  </div>`;
+}
 function telaCompletar(){
   return `<div class="auth">${marcaConta}
     <h1 class="h1 c">Complete seu perfil</h1>
@@ -786,11 +814,13 @@ async function carregarMembros(){
 const dataHora=s=>s?new Date(s).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
 function membrosFiltrados(){
   const q=semAcento(G.mbusca).trim(), qd=so(q), l=Array.isArray(G.membros)?G.membros:[];
-  return q?l.filter(m=>semAcento(m.nome+' '+m.email).includes(q)||(qd.length>=3&&(m.cpf.includes(qd)||m.whatsapp.includes(qd)))):l;
+  const f=G.mfiltro==='liberados'?l.filter(m=>m.acesso!==false):G.mfiltro==='pausados'?l.filter(m=>m.acesso===false):l;
+  return q?f.filter(m=>semAcento(m.nome+' '+m.email).includes(q)||(qd.length>=3&&(m.cpf.includes(qd)||m.whatsapp.includes(qd)))):f;
 }
 function listaMembros(){
   const l=membrosFiltrados();
-  return `<p class="econta">${l.length} de ${(G.membros||[]).length} membro(s)</p>`+l.map(m=>{const i=idadeDe(m.nascimento);return `<details class="mb"><summary><span><b>${esc(m.nome)}</b><small>${esc(m.email)} · cadastro ${dataHora(m.criado_em)}</small></span>${i<18?'<span class="tag">16–17</span>':''}</summary>
+  return `<p class="econta">${l.length} de ${(G.membros||[]).length} membro(s)</p>`+l.map(m=>{const i=idadeDe(m.nascimento);return `<details class="mb"><summary><span><b>${esc(m.nome)}</b><small>${esc(m.email)} · cadastro ${dataHora(m.criado_em)}</small></span><span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">${m.acesso===false?'<span class="tag ac-off">Pausado</span>':'<span class="tag ac-on">Liberado</span>'}${i<18?'<span class="tag">16–17</span>':''}</span></summary>
+    <div class="ac-linha"><span>${m.acesso===false?'Acesso pausado':'Acesso liberado'}${m.acesso_em?` desde ${dataHora(m.acesso_em)}`:''}</span><button class="btn ${m.acesso===false?'':'ghost'}" data-act="conta-acesso" data-v="${esc(m.user_id)}" ${G.mudandoAcesso===m.user_id?'disabled':''}>${G.mudandoAcesso===m.user_id?'Salvando…':m.acesso===false?'Liberar acesso':'Pausar acesso'}</button></div>
     <dl class="kv"><dt>CPF</dt><dd>${esc(fmtCpf(m.cpf))}</dd><dt>WhatsApp</dt><dd><a href="https://wa.me/55${esc(so(m.whatsapp).replace(/^55(?=\d{10,11}$)/,''))}" target="_blank" rel="noopener">${esc(fmtTel(m.whatsapp))}</a></dd>
     <dt>Nascimento</dt><dd>${esc(m.nascimento.split('-').reverse().join('/'))} (${i} anos)</dd><dt>Último acesso</dt><dd>${dataHora(m.ultimo_acesso)}</dd>
     <dt>Aceite</dt><dd>${dataHora(m.aceite_em)} · versão ${esc(m.aceite_versao||'—')}${m.aceite_ip?` · IP ${esc(m.aceite_ip)}`:''}</dd>
@@ -801,10 +831,11 @@ function telaMembros(){
   if(G.leituras===undefined||G.leituras===null&&!G.carregandoLeituras){G.carregandoLeituras=true;G.leituras=null;carregarLeituras().finally(()=>{G.carregandoLeituras=false;});}
   if(G.membros===null){carregarMembros();return `<div><h1 class="h1">Membros</h1></div><div class="card"><p style="color:var(--muted)">Carregando…</p></div>`;}
   if(G.membros.erro)return `<div><h1 class="h1">Membros</h1></div><p class="msg erro">${esc(G.membros.erro)}</p>`;
-  const sem=G.membros.filter(m=>Date.now()-new Date(m.criado_em)<7*864e5).length, ativos=G.membros.filter(m=>m.ultimo_acesso&&Date.now()-new Date(m.ultimo_acesso)<7*864e5).length;
+  const lib=G.membros.filter(m=>m.acesso!==false).length, pau=G.membros.length-lib, ativos=G.membros.filter(m=>m.acesso!==false&&m.ultimo_acesso&&Date.now()-new Date(m.ultimo_acesso)<7*864e5).length;
   return `<button class="back" data-act="voltar" data-v="hoje">${I.back} Voltar</button>
   <div><div class="eyebrow">Só para a admin</div><h1 class="h1" style="margin-top:6px">Membros</h1></div>
-  <div class="stats"><div><b>${G.membros.length}</b><span>cadastros</span></div><div><b>${sem}</b><span>novos em 7 dias</span></div><div><b>${ativos}</b><span>entraram em 7 dias</span></div></div>
+  <div class="stats"><div><b>${lib}</b><span>liberados</span></div><div><b>${pau}</b><span>pausados</span></div><div><b>${ativos}</b><span>entraram em 7 dias</span></div></div>
+  <div class="pills" role="tablist" aria-label="Situação">${[['todos','Todos'],['liberados','Liberados'],['pausados','Pausados']].map(([v,n])=>`<button class="pill ${(G.mfiltro||'todos')===v?'on':''}" data-act="conta-mfiltro" data-v="${v}">${n}</button>`).join('')}</div>
   <div class="adm-tabs" role="tablist"><button class="pill ${G.maba!=='livros'?'on':''}" data-act="conta-maba" data-v="membros">Membros</button><button class="pill ${G.maba==='livros'?'on':''}" data-act="conta-maba" data-v="livros">Leituras e downloads</button></div>
   ${G.maba==='livros'?`${painelLivros()}${Array.isArray(G.leituras)&&G.leituras.length?`<button class="btn ghost" data-act="conta-csvl">Baixar planilha de leituras (CSV)</button>`:''}`
   :`<input class="search" id="m-busca" type="search" placeholder="Buscar por nome, e-mail, CPF ou WhatsApp" value="${esc(G.mbusca)}" autocomplete="off">
@@ -814,9 +845,9 @@ function telaMembros(){
 }
 document.addEventListener('input',e=>{if(e.target.id==='m-busca'){G.mbusca=e.target.value;const l=$('#m-lista');if(l)l.innerHTML=listaMembros();}});
 function baixarCsv(){
-  const cols=[['nome','Nome'],['cpf','CPF'],['email','E-mail'],['whatsapp','WhatsApp'],['nascimento','Nascimento'],['criado_em','Cadastro'],['ultimo_acesso','Último acesso'],['aceite_versao','Versão dos termos'],['aceite_em','Aceite em'],['aceite_ip','IP do aceite'],['resp_nome','Responsável'],['resp_cpf','CPF do responsável'],['resp_telefone','Telefone do responsável'],['resp_email','E-mail do responsável'],['resp_parentesco','Parentesco'],['resp_imagem','Imagem autorizada']];
+  const cols=[['acesso','Acesso liberado'],['nome','Nome'],['cpf','CPF'],['email','E-mail'],['whatsapp','WhatsApp'],['nascimento','Nascimento'],['criado_em','Cadastro'],['ultimo_acesso','Último acesso'],['aceite_versao','Versão dos termos'],['aceite_em','Aceite em'],['aceite_ip','IP do aceite'],['resp_nome','Responsável'],['resp_cpf','CPF do responsável'],['resp_telefone','Telefone do responsável'],['resp_email','E-mail do responsável'],['resp_parentesco','Parentesco'],['resp_imagem','Imagem autorizada']];
   const q=x=>{let s=x==null?'':String(x);if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};
-  const linhas=[cols.map(c=>q(c[1])).join(';')].concat(membrosFiltrados().map(m=>cols.map(c=>q(m[c[0]])).join(';')));
+  const linhas=[cols.map(c=>q(c[1])).join(';')].concat(membrosFiltrados().map(m=>cols.map(c=>q(typeof m[c[0]]==='boolean'?(m[c[0]]?'sim':'não'):m[c[0]])).join(';')));
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+linhas.join('\r\n')],{type:'text/csv;charset=utf-8'}));
   a.download=`membros-cob-${new Date().toISOString().slice(0,10)}.csv`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
 }
@@ -867,7 +898,7 @@ const LINK_GRIMORIO='../';
 function cartaoGrimorio(){
   return `<a class="cl-gri" href="${LINK_GRIMORIO}">
     <img src="../icon-192.png" alt="" width="56" height="56">
-    <span class="t"><span class="eyebrow">Grátis no COB</span><span class="gt">Grimório Arcano</span><span class="s">Seu app de estudo de tarô: as 78 cartas, tiragens, diário, quiz e a comunidade. Você entra com o mesmo login.</span></span>
+    <span class="t"><span class="eyebrow">Para quem está no Coven</span><span class="gt">Grimório Arcano</span><span class="s">Seu app de estudo de tarô: as 78 cartas, tiragens, diário, quiz e a comunidade. Você entra com o mesmo login.</span></span>
     <span class="chev">${I.chev}</span>
   </a>`;
 }
