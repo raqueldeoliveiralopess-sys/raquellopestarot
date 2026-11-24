@@ -271,6 +271,18 @@ main.cheia{padding:0;gap:0}
 @media (prefers-color-scheme:dark){.tag.ac-on{background:#2A3E2D;color:#9CCB9F}.tag.ac-off{background:#3A2225;color:#F0B8B8}}
 .ac-linha{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:0 14px 12px;font-size:13.5px;color:var(--ink2)}
 .ac-linha .btn{width:auto;min-height:40px;padding:0 16px;font-size:14px}
+/* benefícios */
+.bn-fid .selos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:6px}
+.selo{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-radius:14px;border:1px dashed rgba(245,237,204,.35);color:#E3D3C2;text-align:center}
+.selo b{font-size:20px;line-height:1;color:#8D7690}.selo span{font-size:12.5px;font-weight:600}.selo small{font-size:10.5px;opacity:.8;line-height:1.2}
+.selo.ok{border:1px solid #D9B66A;background:rgba(242,211,107,.12);color:#F5EDCC}.selo.ok b{color:#F2D36B}
+.bn-item{display:flex;flex-direction:column;gap:4px}
+.bn-adm{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-left:6px}
+.bn-tranc{opacity:.75;border-style:dashed}
+.bn-cod{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bn-cod span{font-family:'Garet','Jost',system-ui,sans-serif;font-weight:800;font-size:22px;letter-spacing:.08em;color:var(--plum);background:var(--sand);padding:8px 14px;border-radius:12px}
+.bn-cod .btn{width:auto;min-height:44px;padding:0 18px}
+.bn-atalho .ic{font-size:18px;color:#D9B66A;background:#4A2545}
 /* atalho para o Grimório Arcano */
 .cl-gri{display:grid;grid-template-columns:56px minmax(0,1fr) 18px;gap:14px;align-items:center;padding:14px;border-radius:18px;text-decoration:none;color:#F5EDCC;background:#2E1A33;background-image:radial-gradient(circle at 90% 0%,rgba(242,211,107,.18),transparent 60%)}
 .cl-gri img{width:56px;height:56px;border-radius:14px;display:block}
@@ -408,10 +420,10 @@ function ir(h,trocar){if(trocar)location.replace('#/'+h);else location.hash='#/'
 window.addEventListener('hashchange',render);
 
 function render(manter){
-  const r=rota(), tab=r[0]==='aula'||r[0]==='clube'?'aulas':r[0]==='item'?'biblioteca':r[0]==='ler'?(/^(clube|aula)/.test(leitor.volta||'')?'aulas':'estante'):r[0];
+  const r=rota(), tab=r[0]==='beneficios'?'hoje':r[0]==='aula'||r[0]==='clube'?'aulas':r[0]==='item'?'biblioteca':r[0]==='ler'?(/^(clube|aula)/.test(leitor.volta||'')?'aulas':'estante'):r[0];
   if(leitor.ativo&&r[0]!=='ler')fecharLeitor();
   $('#nav').innerHTML=TABS.map(([id,nome,svg])=>`<button data-go="${id}" class="${tab===id?'on':''}" aria-label="${nome}" ${tab===id?'aria-current="page"':''}>${svg}<span>${nome}</span></button>`).join('');
-  const telas={hoje:telaHoje,aulas:telaAulas,aula:telaAula,clube:telaClube,estante:telaEstante,ler:telaLer,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua,termos:telaTermos,membros:telaMembros};
+  const telas={beneficios:telaBeneficios,hoje:telaHoje,aulas:telaAulas,aula:telaAula,clube:telaClube,estante:telaEstante,ler:telaLer,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua,termos:telaTermos,membros:telaMembros};
   // portão: sem sessão, só a tela de entrada e os termos; com sessão sem cadastro, só completar o perfil
   const portao=G.off?'':!G.pronto?'carregando':!G.sessao?(r[0]==='termos'?'':'entrar'):(!G.perfil&&!G.admin&&r[0]!=='termos')?'completar':(G.perfil&&G.perfil.acesso===false&&!G.admin&&r[0]!=='termos')?'pausado':'';
   $('#nav').hidden=!!portao||(!G.sessao&&r[0]==='termos');
@@ -435,6 +447,7 @@ document.addEventListener('click',e=>{
   const a=act.dataset.act, v=act.dataset.v;
   if(a.startsWith('cl-'))return clubeAcao(a.slice(3),v,act);
   if(a.startsWith('cm-'))return comentarioAcao(a.slice(3),v,act);
+  if(a.startsWith('bn-'))return beneficioAcao(a.slice(3),v,act);
   if(a==='voltar')ir(v||'hoje');
   if(a==='feita'){S.feitas[v]=!S.feitas[v];salvar();if(/^c\d/.test(v))renderSuave();else render();}
   if(a==='hemi'){S.hemisferio=v;salvar();render();}
@@ -448,6 +461,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('input',e=>{
   if(e.target.id==='notas'){S.notas[e.target.dataset.v]=e.target.value;salvar();}
   if(e.target.id==='cm-texto'){K.texto=e.target.value;contarCm(e.target);}
+  if(e.target.dataset&&e.target.dataset.bf&&BN.form&&e.target.type!=='file'&&e.target.type!=='checkbox')BN.form[e.target.dataset.bf]=e.target.value;
   if(e.target.id==='cm-resp'){K.respTexto=e.target.value;contarCm(e.target);}
   if(e.target.dataset&&e.target.dataset.cf&&C.form){C.form[e.target.dataset.cf]=e.target.value;if(e.target.dataset.cf==='link')previaYoutube();}
   if(e.target.id==='busca'){filtrar(e.target.value);}
@@ -458,6 +472,7 @@ document.addEventListener('input',e=>{
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='cm-duvida'){K.duvida=e.target.checked;return;}
+  if(e.target.dataset&&e.target.dataset.bf&&BN.form){const k=e.target.dataset.bf;BN.form[k]=e.target.type==='file'?(e.target.files[0]||null):e.target.type==='checkbox'?e.target.checked:e.target.value;if(k==='tipo')mostrarCamposBn();return;}
   if(e.target.dataset&&e.target.dataset.cf&&C.form){
     const k=e.target.dataset.cf;
     if(e.target.type==='file'){C.form.capaNova=e.target.files[0]||null;if(C.form.capaNova)C.form.removerCapa=false;return;}
@@ -526,12 +541,16 @@ function validarCadastro(f,comEmail){
     if(!f.rdecl)return {erro:'O responsável precisa marcar a declaração.',campo:'rdecl'};
     Object.assign(d,{resp_nome:f.rnome.trim(),resp_cpf:so(f.rcpf),resp_telefone:so(f.rtel),resp_email:f.remail.trim().toLowerCase(),resp_parentesco:f.rpar,resp_imagem:f.rimg==='sim',resp_declara:true});
   }
+  const ind=(f.ind||'').trim().toUpperCase();
+  if(ind){if(!/^[A-Z]{1,8}-[A-Z0-9]{4}$/.test(ind))return {erro:'O código de indicação tem o formato NOME-XXXX (ex.: ANA-H3SA). Confira ou deixe em branco.',campo:'ind'};d.indicado_por_codigo=ind;}
   if(!d.aceite)return {erro:'Para continuar, marque que leu e concorda com os termos.',campo:'aceite'};
   return {dados:d};
 }
 async function gravarCadastro(dados){
   const sb=await carregarSupabase();
-  const {data,error}=await sb.from('cob_membros').insert(dados).select().single();
+  let {data,error}=await sb.from('cob_membros').insert(dados).select().single();
+  // antes do SQL dos benefícios a coluna do código de indicação ainda não existe: grava sem ela
+  if(error&&dados.indicado_por_codigo&&/indicado_por_codigo/.test(String(error.message))){const {indicado_por_codigo,...resto}=dados;({data,error}=await sb.from('cob_membros').insert(resto).select().single());}
   if(error)throw error;
   try{localStorage.removeItem(PEND);}catch(e){}
   G.perfil=data;
@@ -594,11 +613,28 @@ async function contaAcao(a,v){
     catch(e){alert('Não consegui mudar o acesso: '+erroConta(e));}
     G.mudandoAcesso=null;render(true);return;
   }
+  if(a==='desde'){
+    const m=(G.membros||[]).find(x=>x.user_id===v), inp=document.querySelector(`[data-desde="${CSS.escape(v)}"]`);if(!m||!inp)return;
+    const d=inp.value||null;if(d&&d>new Date().toLocaleDateString('en-CA',{timeZone:TZ}))return alert('A data não pode ser no futuro.');
+    try{const sb=await carregarSupabase();const {error}=await sb.from('cob_membros').update({assinante_desde:d}).eq('user_id',v);if(error)throw error;m.assinante_desde=d;alert('Data salva.');}
+    catch(e){alert('Não consegui salvar a data: '+erroConta(e));}
+    return;
+  }
+  if(a==='presente'){
+    const x=(G.indicacoes||[]).find(y=>String(y.id)===String(v));if(!x)return;
+    try{const sb=await carregarSupabase();const {error}=await sb.from('cob_indicacoes').update({presente_entregue:!x.presente_entregue}).eq('id',x.id);if(error)throw error;x.presente_entregue=!x.presente_entregue;const l=$('#m-lista');if(l)l.innerHTML=listaMembros();}
+    catch(e){alert('Não consegui salvar: '+erroConta(e));}
+    return;
+  }
   if(a==='voltar'){G.etapa='form';G.msg='';render(true);return;}
   if(a==='cadastrar'||a==='completar'){
     const r=validarCadastro(G.form,a==='cadastrar');if(r.erro){G.campo=r.campo||'';aviso2(r.erro,true);return marcarCampo();}
     G.campo='';
     G.ocupado=true;aviso2('');
+    if(a==='completar'&&r.dados.indicado_por_codigo){
+      try{const sb=await carregarSupabase();const {data,error}=await sb.rpc('cob_codigo_existe',{codigo:r.dados.indicado_por_codigo});
+        if(!error&&data===false){G.ocupado=false;G.campo='ind';aviso2('Não encontrei esse código de indicação. Confira com quem te indicou ou deixe em branco.',true);return marcarCampo();}}catch(e){}
+    }
     if(a==='completar'){try{await gravarCadastro(r.dados);G.ocupado=false;G.msg='';registrarAcesso();render();}catch(e){G.ocupado=false;aviso2(erroConta(e),true);}return;}
     const email=G.form.email.trim().toLowerCase();
     try{localStorage.setItem(PEND,JSON.stringify({...r.dados,email,form:{...G.form,aceite:false,rdecl:false}}));}catch(e){}
@@ -659,7 +695,7 @@ const fv=k=>esc(G.form[k]||'');
 function camposCadastro(comEmail){
   const i=idadeDe(G.form.nasc), menor=i!==null&&i>=16&&i<18;
   return `
-    <p class="dica">Todos os campos são obrigatórios.</p>
+    <p class="dica">Os campos com * são obrigatórios.</p>
     <label class="field"><span>Nome completo<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="text" data-f="nome" autocomplete="name" maxlength="120" value="${fv('nome')}"></label>
     <label class="field"><span>CPF<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="text" data-f="cpf" data-mask="cpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" value="${fv('cpf')}"></label>
     ${comEmail?`<label class="field"><span>E-mail<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="email" data-f="email" autocomplete="email" inputmode="email" placeholder="voce@email.com" value="${fv('email')}"></label>`
@@ -681,6 +717,7 @@ function camposCadastro(comEmail){
       </fieldset>
       <label class="check"><input required aria-required="true" type="checkbox" data-f="rdecl" ${G.form.rdecl?'checked':''}><span>Sou o(a) responsável legal, li e aceito o <button type="button" class="lk" data-go="termos/responsavel">Termo de ciência e autorização</button>, e declaro que as informações acima são verdadeiras.<i class="ob" aria-hidden="true"> *</i></span></label>
     </div>
+    <label class="field"><span>Código de quem te indicou (opcional)</span><input type="text" data-f="ind" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ex.: ANA-H3SA" value="${esc(G.form.ind||'')}"></label>
     <label class="check"><input required aria-required="true" type="checkbox" data-f="aceite" ${G.form.aceite?'checked':''}><span>Li e concordo com as <button type="button" class="lk" data-go="termos/regras">Regras da comunidade</button>, os <button type="button" class="lk" data-go="termos/uso">Termos de uso</button> e a <button type="button" class="lk" data-go="termos/privacidade">Política de privacidade</button>.<i class="ob" aria-hidden="true"> *</i></span></label>`;
 }
 const marcaConta=`<div class="marca"><img src="icon-192.png" alt="" width="72" height="72"><div class="eyebrow">Curso Online de Bruxaria</div></div>`;
@@ -807,7 +844,8 @@ function baixarCsvLeituras(){
 
 // ---------- Membros (só admin) ----------
 async function carregarMembros(){
-  try{const sb=await carregarSupabase();const {data,error}=await sb.from('cob_membros').select('*').order('criado_em',{ascending:false});if(error)throw error;G.membros=data;}
+  try{const sb=await carregarSupabase();const {data,error}=await sb.from('cob_membros').select('*').order('criado_em',{ascending:false});if(error)throw error;G.membros=data;
+    const ind=await sb.from('cob_indicacoes').select('*').order('criado_em',{ascending:false});G.indicacoes=ind.error?[]:ind.data;}
   catch(e){G.membros={erro:erroConta(e)};}
   if(rota()[0]==='membros')render(true);
 }
@@ -817,10 +855,19 @@ function membrosFiltrados(){
   const f=G.mfiltro==='liberados'?l.filter(m=>m.acesso!==false):G.mfiltro==='pausados'?l.filter(m=>m.acesso===false):l;
   return q?f.filter(m=>semAcento(m.nome+' '+m.email).includes(q)||(qd.length>=3&&(m.cpf.includes(qd)||m.whatsapp.includes(qd)))):f;
 }
+// quem a pessoa indicou, com o presente (mês grátis) a entregar
+function indicacoesDe(uid){
+  const l=(G.indicacoes||[]).filter(x=>x.indicador===uid);if(!l.length)return '';
+  const nome=id=>((G.membros||[]).find(m=>m.user_id===id)||{}).nome||'—';
+  return `<div class="ac-linha" style="flex-direction:column;align-items:stretch;gap:6px"><b>Indicou ${l.length} pessoa${l.length>1?'s':''}</b>${l.map(x=>`<span style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center">${esc(nome(x.indicado))} · ${dataHora(x.criado_em)}<button class="link" data-act="conta-presente" data-v="${x.id}">${x.presente_entregue?'✓ Mês grátis entregue':'Marcar mês grátis entregue'}</button></span>`).join('')}</div>`;
+}
 function listaMembros(){
   const l=membrosFiltrados();
   return `<p class="econta">${l.length} de ${(G.membros||[]).length} membro(s)</p>`+l.map(m=>{const i=idadeDe(m.nascimento);return `<details class="mb"><summary><span><b>${esc(m.nome)}</b><small>${esc(m.email)} · cadastro ${dataHora(m.criado_em)}</small></span><span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">${m.acesso===false?'<span class="tag ac-off">Pausado</span>':'<span class="tag ac-on">Liberado</span>'}${i<18?'<span class="tag">16–17</span>':''}</span></summary>
     <div class="ac-linha"><span>${m.acesso===false?'Acesso pausado':'Acesso liberado'}${m.acesso_em?` desde ${dataHora(m.acesso_em)}`:''}</span><button class="btn ${m.acesso===false?'':'ghost'}" data-act="conta-acesso" data-v="${esc(m.user_id)}" ${G.mudandoAcesso===m.user_id?'disabled':''}>${G.mudandoAcesso===m.user_id?'Salvando…':m.acesso===false?'Liberar acesso':'Pausar acesso'}</button></div>
+    ${'assinante_desde' in m?`<div class="ac-linha"><label style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">No Coven desde <input type="date" data-desde="${esc(m.user_id)}" value="${esc(m.assinante_desde||'')}" style="min-height:40px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);padding:4px 8px;font:inherit"></label><button class="link" data-act="conta-desde" data-v="${esc(m.user_id)}">Salvar data</button></div>`:''}
+    ${m.codigo_indicacao?`<div class="ac-linha"><span>Código de indicação: <b>${esc(m.codigo_indicacao)}</b>${m.indicado_por_codigo?` · entrou com o código ${esc(m.indicado_por_codigo)}`:''}</span></div>`:''}
+    ${indicacoesDe(m.user_id)}
     <dl class="kv"><dt>CPF</dt><dd>${esc(fmtCpf(m.cpf))}</dd><dt>WhatsApp</dt><dd><a href="https://wa.me/55${esc(so(m.whatsapp).replace(/^55(?=\d{10,11}$)/,''))}" target="_blank" rel="noopener">${esc(fmtTel(m.whatsapp))}</a></dd>
     <dt>Nascimento</dt><dd>${esc(m.nascimento.split('-').reverse().join('/'))} (${i} anos)</dd><dt>Último acesso</dt><dd>${dataHora(m.ultimo_acesso)}</dd>
     <dt>Aceite</dt><dd>${dataHora(m.aceite_em)} · versão ${esc(m.aceite_versao||'—')}${m.aceite_ip?` · IP ${esc(m.aceite_ip)}`:''}</dd>
@@ -879,6 +926,7 @@ function telaHoje(){
     <p style="font-size:14.5px;color:var(--ink2)">${esc(sb.subtitulo)}. ${esc(sb.texto)}</p>
   </div>
   ${cartaoContinuar()}
+  ${cartaoBeneficios()}
   ${cartaoGrimorio()}
   <div class="card">
     <div class="eyebrow">Hoje é dia de ${esc(dia.planeta)}</div>
@@ -901,6 +949,155 @@ function cartaoGrimorio(){
     <span class="t"><span class="eyebrow">Para quem está no Coven</span><span class="gt">Grimório Arcano</span><span class="s">Seu app de estudo de tarô: as 78 cartas, tiragens, diário, quiz e a comunidade. Você entra com o mesmo login.</span></span>
     <span class="chev">${I.chev}</span>
   </a>`;
+}
+
+// ---------- Benefícios do Coven: conteúdo exclusivo e fidelidade (seção 11 do cob.sql) ----------
+// Materiais em cob_beneficios (arquivos no bucket privado cob-beneficios). Os de fidelidade só abrem com N meses de casa;
+// o tempo conta de assinante_desde (o dia em que a admin liberou a pessoa). Cada membro tem um código de indicação.
+const BUCKET_BN='cob-beneficios';
+const BN={lista:null,aCaminho:[],indicacoes:[],erro:'',falta:false,assin:{},carregando:null,form:null,ocupado:false,msg:'',erroMsg:false};
+const TIPOS_BN=[['boas-vindas','🎁 Kit de boas-vindas','Para começar bem no Coven.'],['mes','🌙 Material do mês','Um material novo a cada mês.'],['imprimir','🖨️ Para imprimir','Planner, fichas e páginas para o seu grimório físico.'],['antecipado','✨ Acesso antecipado','Cursos e materiais antes de todo mundo.'],['fidelidade','🗝️ Presentes de fidelidade','Abrem conforme o seu tempo no Coven.']];
+const SELOS=[[1,'1 mês'],[3,'3 meses'],[6,'6 meses'],[12,'1 ano']];
+function mesesDeCasa(desde){
+  if(!desde)return 0;
+  const [y,m,d]=desde.split('-').map(Number), h=new Date(new Date().toLocaleDateString('en-CA',{timeZone:TZ})+'T12:00:00');
+  let n=(h.getFullYear()-y)*12+(h.getMonth()+1-m);if(h.getDate()<d)n--;return Math.max(0,n);
+}
+const dataBRdia=iso=>iso?new Date(iso+'T12:00:00').toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'}):'';
+function carregarBeneficios(){
+  if(BN.carregando)return BN.carregando;
+  return BN.carregando=(async()=>{
+    try{
+      const sb=await carregarSupabase(), eu=meuId();
+      const [l,c,ind]=await Promise.all([
+        sb.from('cob_beneficios').select('*').order('ordem',{ascending:true}).order('criado_em',{ascending:false}),
+        sb.rpc('cob_beneficios_a_caminho'),
+        sb.from('cob_indicacoes').select('id,indicador,indicado,presente_entregue,criado_em').eq('indicador',eu)]);
+      if(l.error)throw l.error;
+      BN.lista=l.data;BN.aCaminho=c.error?[]:c.data;BN.indicacoes=ind.error?[]:ind.data;BN.falta=false;BN.erro='';
+      const arqs=BN.lista.map(x=>x.arquivo).filter(Boolean);
+      if(arqs.length){const r=await sb.storage.from(BUCKET_BN).createSignedUrls(arqs,21600);(r.data||[]).forEach(x=>{if(x.signedUrl)BN.assin[x.path]=x.signedUrl;});}
+    }catch(e){
+      if(e&&(e.code==='PGRST205'||e.code==='42P01'||/cob_beneficios|schema cache/i.test(String(e.message)))){BN.falta=true;BN.lista=[];}
+      else BN.erro=navigator.onLine?'Não consegui carregar os benefícios agora.':'Sem internet: os benefícios aparecem quando a conexão voltar.';
+    }
+    BN.carregando=null;if(rota()[0]==='beneficios'&&!BN.form)render(true);
+  })();
+}
+function cartaoBeneficios(){
+  const p=G.perfil||{}, n=mesesDeCasa(p.assinante_desde);
+  const prox=SELOS.find(s=>s[0]>n);
+  return `<button class="row bn-atalho" data-go="beneficios"><span class="ic">✦</span><span class="t"><span class="s" style="font-size:12px;letter-spacing:.12em;text-transform:uppercase">Só para quem está no Coven</span><span class="n">Seus benefícios</span><span class="s">${p.assinante_desde?(n?`${n} ${n===1?'mês':'meses'} de Coven`:'Bem-vinda(o) ao Coven')+(prox?` · próximo selo: ${prox[1]}`:''):'Kit de boas-vindas, material do mês e presentes'}</span></span><span class="chev">${I.chev}</span></button>`;
+}
+function linhaBeneficio(x){
+  const url=x.arquivo?(BN.assin[x.arquivo]?BN.assin[x.arquivo]+'&download='+encodeURIComponent(x.nome_arquivo||slug(x.titulo)+'.pdf'):''):(linkOk(x.link)?x.link:'');
+  const adm=eAdmin();
+  return `<div class="bn-item">
+    <${url?`a href="${esc(url)}" target="_blank" rel="noopener"`:'div'} class="row" style="text-decoration:none;color:inherit"><span class="ic">${x.arquivo?I.file:I.chev}</span><span class="t"><span class="n">${esc(x.titulo)}</span>${x.descricao?`<span class="s" style="white-space:normal">${esc(x.descricao)}</span>`:''}<span class="s">${x.tipo==='mes'&&x.mes?esc(nomeMes(x.mes))+' · ':''}${x.tamanho?mb(x.tamanho)+' · ':''}${x.arquivo?'Baixar':'Abrir'}</span></span><span class="chev">${x.arquivo?I.down:I.chev}</span></${url?'a':'div'}>
+    ${adm?`<div class="bn-adm">${!x.publicado?'<span class="cl-st rascunho">Rascunho · só você vê</span>':''}${x.meses_minimos?`<span class="cl-st">abre aos ${x.meses_minimos} meses</span>`:''}<button class="link" data-act="bn-editar" data-v="${x.id}">Editar</button><button class="link" data-act="bn-apagar" data-v="${x.id}">Apagar</button></div>`:''}
+  </div>`;
+}
+const nomeMes=iso=>{const [y,m]=iso.split('-').map(Number);return MESES[m-1].charAt(0).toUpperCase()+MESES[m-1].slice(1)+' de '+y;};
+function telaBeneficios(){
+  if(BN.lista===null&&!BN.carregando&&!BN.erro)carregarBeneficios();
+  const p=G.perfil||{}, adm=eAdmin(), n=mesesDeCasa(p.assinante_desde), lista=BN.lista||[];
+  const selos=SELOS.map(([m,nome])=>{const ok=p.assinante_desde&&n>=m;return `<div class="selo ${ok?'ok':''}"><b>${ok?'✦':'☾'}</b><span>${nome}</span><small>${ok?'conquistado':p.assinante_desde?`faltam ${m-n} ${m-n===1?'mês':'meses'}`:''}</small></div>`;}).join('');
+  const prox=(BN.aCaminho||[])[0];
+  const secoes=TIPOS_BN.map(([tipo,titulo,sub])=>{
+    let itens=lista.filter(x=>x.tipo===tipo);
+    if(tipo==='mes')itens=itens.slice().sort((a,b)=>String(b.mes||'').localeCompare(String(a.mes||'')));
+    const tranc=tipo==='fidelidade'?(BN.aCaminho||[]):[];
+    if(!itens.length&&!tranc.length&&!(tipo==='boas-vindas'||tipo==='mes'))return '';
+    return `<section class="cl-sec"><div><h2 class="h2">${titulo}</h2><p class="dica" style="margin-top:2px">${sub}</p></div>
+      ${itens.length?`<div class="list">${itens.map(linhaBeneficio).join('')}</div>`:(tranc.length?'':`<div class="card"><p class="dica">${tipo==='mes'?'O material deste mês chega em breve.':'Os materiais aparecem aqui em breve.'}</p></div>`)}
+      ${tranc.map(t=>`<div class="row bn-tranc"><span class="ic">🔒</span><span class="t"><span class="n">${esc(t.titulo)}</span>${t.descricao?`<span class="s" style="white-space:normal">${esc(t.descricao)}</span>`:''}<span class="s">Abre aos ${t.meses_minimos} meses de Coven${p.assinante_desde?` · faltam ${Math.max(1,t.meses_minimos-n)} ${t.meses_minimos-n===1?'mês':'meses'}`:''}</span></span></div>`).join('')}
+    </section>`;
+  }).join('');
+  const qtd=(BN.indicacoes||[]).length, entregues=(BN.indicacoes||[]).filter(x=>x.presente_entregue).length;
+  return `
+  <button class="back" data-act="voltar" data-v="hoje">${I.back}Hoje</button>
+  <div><div class="eyebrow">Só para quem está no Coven</div><h1 class="h1" style="margin-top:6px">Benefícios</h1></div>
+  ${adm&&BN.falta?`<p class="msg erro">Para ligar os benefícios, rode o SQL dos benefícios (seção 11 do supabase/cob.sql) no Supabase.</p>`:''}
+  <section class="cl-hero bn-fid">
+    ${ornamento()}
+    <div class="eyebrow">Seu tempo no Coven</div>
+    <h2 class="gt">${p.assinante_desde?(n?`${n} ${n===1?'mês':'meses'} de Coven`:'Seu primeiro mês'):'Bem-vinda(o) ao Coven'}</h2>
+    ${p.assinante_desde?`<p class="cl-sub" style="font-size:17px">Membro desde ${esc(dataBRdia(p.assinante_desde))}</p>`:''}
+    <div class="selos">${selos}</div>
+    ${prox?`<small>Próximo presente: <b>${esc(prox.titulo)}</b>, aos ${prox.meses_minimos} meses.</small>`:''}
+  </section>
+  ${adm?painelBeneficios():''}
+  ${BN.lista===null?(BN.erro?`<p class="msg erro">${esc(BN.erro)} <button class="link" data-act="bn-recarregar">Tentar de novo</button></p>`:`<div class="card"><p style="color:var(--muted)">Carregando…</p></div>`):secoes}
+  ${p.codigo_indicacao?`<section class="card cl-sec bn-ind">
+    <h2 class="h2">💌 Indique uma amiga</h2>
+    <p style="font-size:15px;color:var(--ink2)">Quando alguém entrar no Coven com o seu código, você ganha <b>um mês grátis</b>. A Raquel confirma com você assim que a mensalidade da pessoa começar.</p>
+    <div class="bn-cod"><span>${esc(p.codigo_indicacao)}</span><button class="btn ghost" data-act="bn-copiar">Copiar</button></div>
+    <p class="dica">A pessoa digita esse código no cadastro, no campo "Código de quem te indicou".</p>
+    ${qtd?`<p style="font-size:14.5px"><b>${qtd}</b> indicaç${qtd>1?'ões':'ão'} sua${qtd>1?'s':''}${entregues?` · ${entregues} presente${entregues>1?'s':''} já entregue${entregues>1?'s':''}`:''}.</p>`:''}
+  </section>`:''}
+  <footer class="note">Os materiais são só para quem está no Coven: não compartilhe os arquivos fora da comunidade.</footer>`;
+}
+function painelBeneficios(){
+  const f=BN.form;
+  if(!f)return `<button class="btn" data-act="bn-novo">+ Adicionar material</button>`;
+  return `<div class="card cl-form" id="bn-form" style="gap:12px">
+    <div class="eyebrow">Só para a admin · ${f.id?'editar material':'novo material'}</div>
+    <label class="field">Onde aparece<select data-bf="tipo">${TIPOS_BN.map(([v,n])=>`<option value="${v}" ${f.tipo===v?'selected':''}>${n.replace(/^\S+ /,'')}</option>`).join('')}</select></label>
+    <label class="field">Título<input type="text" data-bf="titulo" maxlength="160" value="${esc(f.titulo)}"></label>
+    <label class="field">Descrição curta (opcional)<textarea data-bf="descricao" maxlength="400">${esc(f.descricao)}</textarea></label>
+    <label class="field" id="bn-mes" ${f.tipo==='mes'?'':'hidden'}>Mês do material<input type="month" data-bf="mes" value="${esc(f.mes)}"></label>
+    <label class="field" id="bn-meses" ${f.tipo==='fidelidade'?'':'hidden'}>Abre com quantos meses de Coven<input type="number" min="0" step="1" inputmode="numeric" data-bf="meses_minimos" value="${esc(f.meses_minimos)}"></label>
+    <label class="field">Arquivo (PDF ou imagem)${f.arquivo?` · atual: ${esc(f.nome_arquivo||'arquivo')}`:''}<input type="file" data-bf="novo" accept="application/pdf,image/png,image/jpeg,image/webp,.zip"></label>
+    <label class="field">Ou um link (opcional)<input type="text" data-bf="link" inputmode="url" placeholder="https://…" value="${esc(f.link)}"></label>
+    <label class="check"><input type="checkbox" data-bf="publicado" ${f.publicado?'checked':''}>Publicar agora (sem marcar, fica como rascunho que só você vê)</label>
+    <p class="msg ${BN.erroMsg?'erro':''}" id="bn-msg" role="status" ${BN.msg?'':'hidden'}>${esc(BN.msg)}</p>
+    <div class="cl-adm"><button class="btn" data-act="bn-salvar" ${BN.ocupado?'disabled':''}>${BN.ocupado?'Salvando…':'Salvar'}</button><button class="btn ghost" data-act="bn-cancelar" ${BN.ocupado?'disabled':''}>Cancelar</button></div>
+  </div>`;
+}
+function mostrarCamposBn(){const f=BN.form;if(!f)return;const a=$('#bn-mes'),b=$('#bn-meses');if(a)a.hidden=f.tipo!=='mes';if(b)b.hidden=f.tipo!=='fidelidade';if(f.tipo==='fidelidade'&&!+f.meses_minimos){f.meses_minimos='6';const i=$('[data-bf="meses_minimos"]');if(i)i.value='6';}}
+function avisoBn(t,erro){BN.msg=t;BN.erroMsg=!!erro;const el=$('#bn-msg');if(el){el.textContent=t;el.hidden=!t;el.classList.toggle('erro',!!erro);}}
+async function beneficioAcao(a,v,el){
+  if(a==='recarregar'){BN.erro='';BN.lista=null;render(true);return;}
+  if(a==='copiar'){const c=(G.perfil||{}).codigo_indicacao||'';try{await navigator.clipboard.writeText(c);el.textContent='Copiado ✓';}catch(e){el.textContent=c;}setTimeout(()=>{if(el.isConnected)el.textContent='Copiar';},2500);return;}
+  if(!eAdmin())return;
+  if(a==='novo'){BN.form={id:null,tipo:'mes',titulo:'',descricao:'',mes:new Date().toLocaleDateString('en-CA',{timeZone:TZ}).slice(0,7),meses_minimos:'0',link:'',publicado:false,arquivo:null,nome_arquivo:'',novo:null};BN.msg='';render(true);return;}
+  if(a==='editar'){const x=(BN.lista||[]).find(y=>String(y.id)===String(v));if(!x)return;BN.form={id:x.id,tipo:x.tipo,titulo:x.titulo,descricao:x.descricao||'',mes:x.mes?x.mes.slice(0,7):'',meses_minimos:String(x.meses_minimos||0),link:x.link||'',publicado:x.publicado,arquivo:x.arquivo,nome_arquivo:x.nome_arquivo||'',tamanho:x.tamanho,novo:null};BN.msg='';render(true);const f=$('#bn-form');if(f)f.scrollIntoView({block:'start'});return;}
+  if(a==='cancelar'){BN.form=null;BN.msg='';render(true);return;}
+  const sb=await carregarSupabase();
+  if(a==='salvar'&&BN.form){
+    const f=BN.form, titulo=(f.titulo||'').trim(), link=(f.link||'').trim(), meses=parseInt(f.meses_minimos,10)||0;
+    if(!titulo)return avisoBn('Escreva o título.',true);
+    if(!f.novo&&!f.arquivo&&!link)return avisoBn('Escolha um arquivo ou cole um link.',true);
+    if(link&&!linkOk(link))return avisoBn('O link precisa começar com https://',true);
+    if(f.tipo==='mes'&&!/^\d{4}-\d{2}$/.test(f.mes||''))return avisoBn('Escolha o mês do material.',true);
+    if(f.novo&&f.novo.size>LIMITE_MB*1048576)return avisoBn(`O arquivo passa de ${LIMITE_MB} MB.`,true);
+    BN.ocupado=true;render(true);avisoBn(f.novo?'Enviando o arquivo… (não feche a página)':'Salvando…');
+    let novoCaminho=null;
+    try{
+      const linha={tipo:f.tipo,titulo,descricao:(f.descricao||'').trim()||null,link:link||null,mes:f.tipo==='mes'?f.mes+'-01':null,meses_minimos:f.tipo==='fidelidade'?Math.max(0,meses):0,publicado:!!f.publicado};
+      if(f.novo){
+        const ext=extDe(f.novo.name), tipo=TIPOS_EXT[ext]||(ext==='zip'?'application/zip':f.novo.type);
+        novoCaminho=`${f.tipo}/${Date.now()}-${slug(f.novo.name.replace(/\.[^.]+$/,''))}.${ext}`;
+        if(f.novo.size>BLOCO)await enviarRetomavel(sb,novoCaminho,f.novo,tipo,x=>avisoBn(`Enviando: ${Math.round(x*100)}%`),BUCKET_BN);
+        else{const up=await sb.storage.from(BUCKET_BN).upload(novoCaminho,f.novo,{contentType:tipo,upsert:false});if(up.error)throw up.error;}
+        Object.assign(linha,{arquivo:novoCaminho,nome_arquivo:f.novo.name,tamanho:f.novo.size});
+      }else if(!f.arquivo)Object.assign(linha,{arquivo:null,nome_arquivo:null,tamanho:null});
+      const q=f.id?sb.from('cob_beneficios').update(linha).eq('id',f.id):sb.from('cob_beneficios').insert(linha);
+      const {error}=await q;if(error)throw error;
+      if(f.novo&&f.arquivo)await sb.storage.from(BUCKET_BN).remove([f.arquivo]).catch(()=>{});
+      BN.ocupado=false;BN.form=null;BN.msg='';BN.lista=null;await carregarBeneficios();render(true);
+    }catch(e){
+      if(novoCaminho)await sb.storage.from(BUCKET_BN).remove([novoCaminho]).catch(()=>{});
+      BN.ocupado=false;render(true);avisoBn('Não deu certo: '+msgErro(e),true);
+    }
+    return;
+  }
+  if(a==='apagar'){
+    const x=(BN.lista||[]).find(y=>String(y.id)===String(v));if(!x)return;
+    if(!confirm(`Apagar "${x.titulo}"? Quem está no Coven deixa de ver.`))return;
+    try{const {error}=await sb.from('cob_beneficios').delete().eq('id',x.id);if(error)throw error;if(x.arquivo)await sb.storage.from(BUCKET_BN).remove([x.arquivo]).catch(()=>{});BN.lista=null;await carregarBeneficios();render(true);}
+    catch(e){alert('Não consegui apagar: '+msgErro(e));}
+  }
 }
 
 // ---------- Aulas ----------
