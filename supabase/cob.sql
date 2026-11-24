@@ -286,7 +286,8 @@ values ('cob-aulas', 'cob-aulas', false, 524288000, array[
   'video/mp4', 'video/quicktime', 'video/webm', 'video/x-m4v',
   'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'image/png', 'image/jpeg', 'image/webp'])
+  'image/png', 'image/jpeg', 'image/webp',
+  'audio/mpeg', 'audio/mp4', 'audio/x-m4a', 'audio/aac', 'audio/ogg'])
 on conflict (id) do update
   set public = excluded.public,
       file_size_limit = excluded.file_size_limit,
@@ -703,3 +704,21 @@ create policy "planner: apaga o proprio" on public.cob_planner for delete to aut
   using (user_id = auth.uid() and (public.e_membro() or public.e_admin()));
 revoke all on public.cob_planner from anon;
 grant select, insert, update, delete on public.cob_planner to authenticated;
+
+-- 13) Cursos em áudio (podcast) na aba Aulas.
+--     Um curso usa a mesma estrutura dos livros do Clube: cob_clube_livros com tipo 'curso' e as aulas em cob_clube_aulas.
+--     O áudio de cada aula fica no bucket privado cob-aulas (só membros e a admin ouvem); a admin envia pelo app.
+alter table public.cob_clube_livros add column if not exists tipo text not null default 'livro';
+alter table public.cob_clube_livros drop constraint if exists cob_clube_livros_tipo_check;
+alter table public.cob_clube_livros add constraint cob_clube_livros_tipo_check check (tipo in ('livro', 'curso'));
+alter table public.cob_clube_aulas add column if not exists audio text;            -- caminho do áudio no bucket cob-aulas
+alter table public.cob_clube_aulas add column if not exists audio_nome text;
+alter table public.cob_clube_aulas add column if not exists audio_tamanho bigint;
+alter table public.cob_clube_aulas add column if not exists audio_duracao int;     -- em segundos
+alter table public.cob_clube_aulas drop constraint if exists cob_clube_aulas_audio_duracao_check;
+alter table public.cob_clube_aulas add constraint cob_clube_aulas_audio_duracao_check check (audio_duracao is null or audio_duracao > 0);
+
+-- o bucket das aulas passa a aceitar áudio (mantém tudo o que já aceitava)
+update storage.buckets
+   set allowed_mime_types = (select array_agg(distinct m) from unnest(coalesce(allowed_mime_types, '{}') || array['audio/mpeg', 'audio/mp4', 'audio/x-m4a', 'audio/aac', 'audio/ogg']) m)
+ where id = 'cob-aulas';
