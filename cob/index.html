@@ -467,7 +467,7 @@ main.cheia{padding:0;gap:0}
 <script src="lua.js?v=1"></script>
 <script src="biblioteca.js?v=3"></script>
 <script src="aulas.js?v=2"></script>
-<script src="termos.js?v=2"></script>
+<script src="termos.js?v=3"></script>
 <script src="config.js"></script>
 <script>
 (function(){
@@ -641,8 +641,7 @@ function erroConta(e){
   const m=String(e&&(e.message||e.error_description||e.error)||e||'');
   return /cob_membros_cpf_key|duplicate key/i.test(m)?'Este CPF já tem cadastro. Entre com o e-mail usado nele, ou fale com a moderação.'
     :/cpf_invalido/.test(m)?'O CPF não é válido. Confira os números.'
-    :/idade_minima/.test(m)?'A comunidade é para pessoas com 16 anos ou mais.'
-    :/responsavel_incompleto/.test(m)?'Para 16 e 17 anos, preencha todos os dados do responsável e a declaração.'
+    :/idade_minima|responsavel_incompleto/.test(m)?'O Coven Strix é uma comunidade para maiores de 18 anos.'
     :/nome_incompleto/.test(m)?'Escreva o nome completo (nome e sobrenome).'
     :/whatsapp_invalido/.test(m)?'O WhatsApp precisa ter DDD e número.'
     :/nascimento_invalido/.test(m)?'Confira a data de nascimento.'
@@ -661,18 +660,8 @@ function validarCadastro(f,comEmail){
   if(comEmail&&!emailOk((f.email||'').trim()))return {erro:'Digite um e-mail válido.',campo:'email'};
   if(so(f.whats).length<10)return {erro:'O WhatsApp precisa ter DDD e número.',campo:'whats'};
   if(idade===null||idade>110||idade<0)return {erro:'Preencha a data de nascimento.',campo:'nasc'};
-  if(idade<16)return {erro:'A comunidade é para pessoas com 16 anos ou mais.',campo:'nasc'};
+  if(idade<18)return {erro:'O Coven Strix é uma comunidade para maiores de 18 anos.',campo:'nasc'};
   const d={nome,cpf:so(f.cpf),whatsapp:so(f.whats),nascimento:f.nasc,aceite:!!f.aceite,aceite_versao:T.VERSAO};
-  if(idade<18){
-    if(!/\S+\s+\S+/.test((f.rnome||'').trim()))return {erro:'Escreva o nome completo do responsável.',campo:'rnome'};
-    if(!cpfOk(f.rcpf)||so(f.rcpf)===so(f.cpf))return {erro:'O CPF do responsável não é válido (e precisa ser diferente do seu).',campo:'rcpf'};
-    if(so(f.rtel).length<10)return {erro:'Preencha o telefone do responsável com DDD.',campo:'rtel'};
-    if(!emailOk((f.remail||'').trim()))return {erro:'Preencha o e-mail do responsável.',campo:'remail'};
-    if(!f.rpar)return {erro:'Escolha o parentesco do responsável.',campo:'rpar'};
-    if(f.rimg!=='sim'&&f.rimg!=='nao')return {erro:'O responsável precisa escolher se autoriza ou não câmera e microfone nas aulas.',campo:'rimg'};
-    if(!f.rdecl)return {erro:'O responsável precisa marcar a declaração.',campo:'rdecl'};
-    Object.assign(d,{resp_nome:f.rnome.trim(),resp_cpf:so(f.rcpf),resp_telefone:so(f.rtel),resp_email:f.remail.trim().toLowerCase(),resp_parentesco:f.rpar,resp_imagem:f.rimg==='sim',resp_declara:true});
-  }
   const ind=(f.ind||'').trim().toUpperCase();
   if(ind){if(!/^[A-Z]{1,8}-[A-Z0-9]{4}$/.test(ind))return {erro:'O código de indicação tem o formato NOME-XXXX (ex.: ANA-H3SA). Confira ou deixe em branco.',campo:'ind'};d.indicado_por_codigo=ind;}
   if(!d.aceite)return {erro:'Para continuar, marque que leu e concorda com os termos.',campo:'aceite'};
@@ -809,23 +798,23 @@ document.addEventListener('input',e=>{
     if(e.target.dataset.mask==='tel'){const v=fmtTel(e.target.value);if(v!==e.target.value)e.target.value=v;}
     G.form[k]=e.target.value;
   }
-  if(k==='nasc')mostrarResponsavel();
+  if(k==='nasc')mostrarIdade();
   const box=e.target.closest('.invalido');if(box)box.classList.remove('invalido');
 });
-document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.f;if(k&&(e.target.type==='radio'||e.target.tagName==='SELECT'||e.target.type==='date')){G.form[k]=e.target.value;if(k==='nasc')mostrarResponsavel();}});
+document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.f;if(k&&(e.target.type==='radio'||e.target.tagName==='SELECT'||e.target.type==='date')){G.form[k]=e.target.value;if(k==='nasc')mostrarIdade();}});
 function marcarCampo(){
   const el=G.campo&&document.querySelector(`[data-f="${G.campo}"]`);if(!el)return;
   const alvo=el.closest('.field,.check,.radio')||el;alvo.classList.add('invalido');
   alvo.scrollIntoView({behavior:'instant',block:'center'});if(el.type!=='radio'&&el.type!=='checkbox')el.focus({preventScroll:true});
 }
-function mostrarResponsavel(){
-  const i=idadeDe(G.form.nasc), r=$('#c-resp'), av=$('#c-idade');
-  if(r)r.hidden=!(i!==null&&i>=16&&i<18);
-  if(av){av.hidden=!(i!==null&&i<16&&i>=0);}
+// a comunidade é só para maiores de 18: o aviso aparece assim que a data de nascimento indica menos que isso
+function mostrarIdade(){
+  const i=idadeDe(G.form.nasc), av=$('#c-idade');
+  if(av)av.hidden=!(i!==null&&i<18&&i>=0);
 }
 const fv=k=>esc(G.form[k]||'');
 function camposCadastro(comEmail){
-  const i=idadeDe(G.form.nasc), menor=i!==null&&i>=16&&i<18;
+  const i=idadeDe(G.form.nasc);
   return `
     <p class="dica">Os campos com * são obrigatórios.</p>
     <label class="field"><span>Nome completo<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="text" data-f="nome" autocomplete="name" maxlength="120" value="${fv('nome')}"></label>
@@ -834,23 +823,9 @@ function camposCadastro(comEmail){
       :`<label class="field"><span>E-mail<i class="ob" aria-hidden="true"> *</i></span><input type="email" value="${esc(G.email)}" disabled></label>`}
     <label class="field"><span>WhatsApp<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="tel" data-f="whats" data-mask="tel" autocomplete="tel-national" inputmode="tel" placeholder="(11) 90000-0000" value="${fv('whats')}"></label>
     <label class="field"><span>Data de nascimento<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="date" data-f="nasc" autocomplete="bday" max="${new Date().toISOString().slice(0,10)}" value="${fv('nasc')}"></label>
-    <p class="msg erro" id="c-idade" ${i!==null&&i<16&&i>=0?'':'hidden'}>A comunidade é para pessoas com 16 anos ou mais. Quando você completar 16, vai ser um prazer te receber.</p>
-    <div class="card resp" id="c-resp" ${menor?'':'hidden'}>
-      <div class="eyebrow">Responsável legal</div>
-      <p class="dica">Para 16 e 17 anos, a participação depende da autorização do(a) responsável. Peça para ele(a) preencher esta parte e ler o <button type="button" class="lk" data-go="termos/responsavel">Termo de ciência e autorização</button>.</p>
-      <label class="field"><span>Nome completo do responsável<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="text" data-f="rnome" maxlength="120" value="${fv('rnome')}"></label>
-      <label class="field"><span>CPF do responsável<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="text" data-f="rcpf" data-mask="cpf" inputmode="numeric" placeholder="000.000.000-00" value="${fv('rcpf')}"></label>
-      <label class="field"><span>Telefone do responsável<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="tel" data-f="rtel" data-mask="tel" inputmode="tel" placeholder="(11) 90000-0000" value="${fv('rtel')}"></label>
-      <label class="field"><span>E-mail do responsável<i class="ob" aria-hidden="true"> *</i></span><input required aria-required="true" type="email" data-f="remail" inputmode="email" value="${fv('remail')}"></label>
-      <label class="field"><span>Parentesco<i class="ob" aria-hidden="true"> *</i></span><select required aria-required="true" data-f="rpar">${['','Pai','Mãe','Tutor(a)','Guardião(ã) legal'].map(o=>`<option value="${o}" ${G.form.rpar===o?'selected':''}>${o||'Escolha'}</option>`).join('')}</select></label>
-      <fieldset class="radio"><legend>Câmera e microfone nas aulas gravadas<i class="ob" aria-hidden="true"> *</i></legend>
-        <label><input required aria-required="true" type="radio" name="rimg" data-f="rimg" value="sim" ${G.form.rimg==='sim'?'checked':''}> Autorizo</label>
-        <label><input required aria-required="true" type="radio" name="rimg" data-f="rimg" value="nao" ${G.form.rimg==='nao'?'checked':''}> Não autorizo (participa pelo chat)</label>
-      </fieldset>
-      <label class="check"><input required aria-required="true" type="checkbox" data-f="rdecl" ${G.form.rdecl?'checked':''}><span>Sou o(a) responsável legal, li e aceito o <button type="button" class="lk" data-go="termos/responsavel">Termo de ciência e autorização</button>, e declaro que as informações acima são verdadeiras.<i class="ob" aria-hidden="true"> *</i></span></label>
-    </div>
+    <p class="msg erro" id="c-idade" ${i!==null&&i<18&&i>=0?'':'hidden'}>O Coven Strix é uma comunidade para maiores de 18 anos. Quando você completar 18, vai ser um prazer te receber.</p>
     <label class="field"><span>Código de quem te indicou (opcional)</span><input type="text" data-f="ind" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ex.: ANA-H3SA" value="${esc(G.form.ind||'')}"></label>
-    <label class="check"><input required aria-required="true" type="checkbox" data-f="aceite" ${G.form.aceite?'checked':''}><span>Li e concordo com as <button type="button" class="lk" data-go="termos/regras">Regras da comunidade</button>, os <button type="button" class="lk" data-go="termos/uso">Termos de uso</button> e a <button type="button" class="lk" data-go="termos/privacidade">Política de privacidade</button>.<i class="ob" aria-hidden="true"> *</i></span></label>`;
+    <label class="check"><input required aria-required="true" type="checkbox" data-f="aceite" ${G.form.aceite?'checked':''}><span>Li e concordo com os <button type="button" class="lk" data-go="termos/regras">Preceitos Oficiais e as Regras da comunidade</button>, os <button type="button" class="lk" data-go="termos/uso">Termos de uso</button> e a <button type="button" class="lk" data-go="termos/privacidade">Política de privacidade</button>.<i class="ob" aria-hidden="true"> *</i></span></label>`;
 }
 const marcaConta=`<div class="marca"><img src="icon-192.png" alt="" width="72" height="72"><div class="eyebrow">Curso Online de Bruxaria</div></div>`;
 const msgConta=()=>G.msg?`<p class="msg ${G.erro?'erro':''}" role="alert">${esc(G.msg)}</p>`:'';
@@ -874,13 +849,13 @@ function telaEntrar(){
   const cad=G.aba==='cadastro';
   return `<div class="auth">${marcaConta}
     <h1 class="h1 c">${cad?'Crie seu perfil':'Entre no COB'}</h1>
-    <p class="c">${cad?'O acesso é gratuito. Preencha seus dados uma vez; depois você entra pelo link que chega no e-mail, sem senha.':'Digite o e-mail do seu cadastro. Mandamos um link para você entrar, sem senha.'}</p>
+    <p class="c">${cad?'O app é para quem participa do Coven Strix, com 18 anos ou mais e a assinatura em dia. Preencha seus dados uma vez; depois você entra pelo link que chega no e-mail, sem senha.':'Digite o e-mail do seu cadastro. Mandamos um link para você entrar, sem senha.'}</p>
     <div class="adm-tabs" role="tablist"><button class="pill ${cad?'on':''}" role="tab" aria-selected="${cad}" data-act="conta-aba" data-v="cadastro">Criar conta</button><button class="pill ${!cad?'on':''}" role="tab" aria-selected="${!cad}" data-act="conta-aba" data-v="entrar">Já tenho conta</button></div>
     ${cad?`<form class="auth-form" novalidate onsubmit="return false">${camposCadastro(true)}${msgConta()}
       <button class="btn" data-act="conta-cadastrar" ${G.ocupado?'disabled':''}>${G.ocupado?'Enviando…':'Criar conta e receber o link'}</button></form>`
     :`<form class="auth-form" novalidate onsubmit="return false"><label class="field">E-mail<input type="email" data-f="lemail" autocomplete="email" inputmode="email" placeholder="voce@email.com" value="${fv('lemail')}"></label>${msgConta()}
       <button class="btn" data-act="conta-entrar" ${G.ocupado?'disabled':''}>${G.ocupado?'Enviando…':'Receber link de acesso'}</button></form>`}
-    <button class="link c" data-go="termos">Regras, termos e privacidade</button>
+    <button class="link c" data-go="termos">Preceitos, regras e privacidade</button>
   </div>`;
 }
 // cadastro com o acesso pausado pela admin (mensalidade do Coven): não abre nada; os dados continuam guardados
@@ -910,7 +885,7 @@ function telaTermos(r){
   const docs=T.docs.filter(d=>d.id!=='responsavel'||alvo==='responsavel'||G.admin||(G.perfil&&G.perfil.resp_nome));
   if(alvo)setTimeout(()=>{const el=document.getElementById('doc-'+alvo);if(el)el.scrollIntoView({behavior:'instant',block:'start'});},0);
   return `<button class="back" data-act="voltar" data-v="${G.sessao?'hoje':''}">${I.back} Voltar</button>
-  <div><div class="eyebrow">O Coven da Raquel</div><h1 class="h1" style="margin-top:6px">Regras, termos e privacidade</h1></div>
+  <div><div class="eyebrow">Coven Strix</div><h1 class="h1" style="margin-top:6px">Preceitos, regras e privacidade</h1></div>
   <div class="pills" style="margin:0;padding:0">${docs.map(d=>`<a class="pill" href="#/termos/${d.id}">${esc(d.titulo)}</a>`).join('')}</div>
   ${docs.map(d=>`<section class="card doc" id="doc-${d.id}"><h2 class="h2">${esc(d.titulo)}</h2>${d.html()}</section>`).join('')}`;
 }
@@ -2003,7 +1978,7 @@ function telaBiblioteca(r){
   ${sec==='elementos'?`<p class="warn">${esc(B.notaElementos)}</p>`:''}
   <div id="itens">${sec==='glossario'?`<div class="gl">${B.glossario.map(v=>`<details><summary>${esc(v.termo)}${I.chev}</summary><p>${esc(v.def)}</p></details>`).join('')}</div>`:`<div class="list">${itensDe(sec).map(it=>linhaItem(sec,it,icone)).join('')}</div>`}</div>
   <div id="achados" style="display:none"></div>
-  <footer class="note">${sec==='ervas'?'As correspondências são tradicionais e variam entre tradições e autoras(es). As ervas aqui são para uso ritual: não ingira nenhuma sem orientação, e redobre o cuidado na gravidez, com crianças e com animais.':sec==='cristais'?'Cristais são apoio simbólico e não substituem tratamento de saúde. Compre de fontes que informem a origem da pedra.':'As correspondências são tradicionais e variam entre tradições e autoras(es). Use o que fizer sentido na sua prática.'}</footer>`;
+  <footer class="note">${sec==='ervas'?'As correspondências são tradicionais e variam entre tradições e autoras(es). Antes de usar uma erva em banho, chá ou defumação, leia o cuidado indicado na ficha dela. Grávidas, lactantes, quem toma remédio de uso contínuo ou tem alergia conversa com um profissional de saúde antes; não use em crianças nem em animais.':sec==='cristais'?'Cristais são apoio simbólico e não substituem tratamento de saúde. Compre de fontes que informem a origem da pedra.':'As correspondências são tradicionais e variam entre tradições e autoras(es). Use o que fizer sentido na sua prática.'}</footer>`;
 }
 function linhaItem(sec,it,icone){
   return `<button class="row" data-go="item/${sec}/${it.id}">

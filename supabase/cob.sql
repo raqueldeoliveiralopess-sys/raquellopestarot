@@ -94,7 +94,7 @@ create table if not exists public.cob_membros (
   email            text not null,
   whatsapp         text not null,
   nascimento       date not null,
-  -- responsável (só para 16 e 17 anos)
+  -- responsável (só em cadastros de 16 e 17 anos feitos até 24/11/2026; hoje a comunidade é para maiores de 18)
   resp_nome        text,
   resp_cpf         text,
   resp_telefone    text,
@@ -150,19 +150,10 @@ begin
   if length(new.whatsapp) not between 10 and 13 then raise exception 'whatsapp_invalido'; end if;
   idade := extract(year from age(current_date, new.nascimento));
   if new.nascimento > current_date or idade > 110 then raise exception 'nascimento_invalido'; end if;
-  if idade < 16 then raise exception 'idade_minima'; end if;
-  if idade < 18 then
-    new.resp_cpf := regexp_replace(coalesce(new.resp_cpf, ''), '\D', '', 'g');
-    new.resp_telefone := regexp_replace(coalesce(new.resp_telefone, ''), '\D', '', 'g');
-    if coalesce(btrim(new.resp_nome), '') !~ '\S+\s+\S+' or not public.cpf_valido(new.resp_cpf) or new.resp_cpf = new.cpf
-       or length(new.resp_telefone) < 10 or coalesce(new.resp_email, '') !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$'
-       or coalesce(new.resp_parentesco, '') = '' or new.resp_imagem is null or new.resp_declara is not true then
-      raise exception 'responsavel_incompleto';
-    end if;
-  else
-    new.resp_nome := null; new.resp_cpf := null; new.resp_telefone := null; new.resp_email := null;
-    new.resp_parentesco := null; new.resp_imagem := null; new.resp_declara := null;
-  end if;
+  -- Preceitos Oficiais 2.0 (23/11/2026): a comunidade é exclusiva para maiores de 18 anos
+  if idade < 18 then raise exception 'idade_minima'; end if;
+  new.resp_nome := null; new.resp_cpf := null; new.resp_telefone := null; new.resp_email := null;
+  new.resp_parentesco := null; new.resp_imagem := null; new.resp_declara := null;
   if new.aceite is not true then raise exception 'sem_aceite'; end if;
   new.aceite_em := now();
   new.aceite_ip := nullif(btrim(split_part(coalesce(public.cob_cabecalho('x-forwarded-for'), ''), ',', 1)), '');

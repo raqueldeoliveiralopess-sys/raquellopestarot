@@ -1,8 +1,10 @@
 // COB — Termos aceitos no cadastro (rascunhos validados pelo advogado em 10/10/2026)
+// 24/11/2026: o Documento 1 passou a ser os Preceitos Oficiais do Coven Strix 2.0 (texto da Raquel, na íntegra) + Regras complementares.
+// Os ajustes desta data nos Documentos 1 (regras complementares), 2 e 3 (idade mínima de 18, assinatura, ervas, nome) ainda não passaram pelo advogado.
 // Preencha DADOS com as lacunas que estavam entre [colchetes]. Campo vazio aparece como [a preencher].
 // Ao mudar qualquer texto, suba VERSAO: o cadastro grava qual versão cada membro aceitou.
 (function(){
-const VERSAO='2026-10-12-v2';
+const VERSAO='2026-11-24-v3';
 const DADOS={
   nomeCompleto:'Raquel de Oliveira Lopes',          // nome completo da Raquel
   cpf:'394.706.278-81',                   // CPF da mantenedora
@@ -17,44 +19,76 @@ const v=(k,rot)=>DADOS[k]?`<b>${DADOS[k]}</b>`:`<b class="lacuna">[${rot}]</b>`;
 const nome=()=>DADOS.nomeCompleto?`<b>${DADOS.nomeCompleto}</b>`:`Raquel Lopes <b class="lacuna">[nome completo]</b>`;
 
 const regras=()=>`
-<p><b>Versão 1 · 10/10/2026</b></p>
-<p>O Coven da Raquel é uma comunidade gratuita de estudos sobre bruxaria, história da magia e espiritualidade, organizada por ${nome()}, com aulas semanais ao vivo, uma biblioteca digital e grupos de conversa. Ao entrar em qualquer grupo ou aula, você concorda com estas regras.</p>
-<h3>1. Quem pode participar</h3>
-<p>1.1. Pessoas com <b>16 anos ou mais</b>. Quem tem 16 ou 17 anos só participa com o Termo de Ciência e Autorização assinado pelo responsável legal (Documento 4). 1.2. Quem informar idade falsa, ou se descobrir ter menos de 16 anos, é removido da comunidade, sem exceção. 1.3. A participação é gratuita. Nada na comunidade é vendido, cobrado ou condicionado a pagamento.</p>
-<h3>2. O que a comunidade é, e o que não é</h3>
-<p>2.1. As aulas e os materiais têm finalidade <b>educativa, cultural e religiosa</b>, no exercício da liberdade de crença garantida pela Constituição (art. 5º, VI). 2.2. Nada do que é ensinado substitui atendimento médico, psicológico ou psiquiátrico. A comunidade não diagnostica, não trata e não promete cura, resultado ou proteção. Em sofrimento emocional, procure um profissional de saúde; em crise, o CVV atende pelo 188, 24 horas, de graça. 2.3. <b>Nenhum preparo é ingerido.</b> Ervas, incensos, velas e cristais são estudados como cultura e símbolo. A comunidade não receita, não indica dose e não recomenda chá, tintura, banho ou qualquer uso em pessoa doente, gestante ou criança. 2.4. Umbanda, Candomblé e outras religiões de matriz africana, indígena ou iniciática são tratadas com respeito e estudadas apenas "sobre", com a participação de praticantes; a comunidade não ensina a praticá-las.</p>
-<h3>3. O que não se ensina nem se pratica na comunidade</h3>
-<p>3.1. Qualquer prática envolvendo ingestão de substâncias, jejum, privação de sono, lesão ou risco físico. 3.2. Uso de fogo por menores de 18 anos sem a presença de um adulto responsável. 3.3. Trabalhos, rituais ou "amarrações" dirigidos a terceiros, ou qualquer prática sem o consentimento da pessoa envolvida. 3.4. Contato com entidades, invocações e visitas a cemitérios ou matas como atividade da comunidade. 3.5. Orientação individual em assuntos de saúde, jurídicos ou financeiros.</p>
-<h3>4. Convívio e proteção</h3>
-<p>4.1. Respeito é condição de permanência. São motivo de remoção imediata: assédio, intimidação, bullying e cyberbullying (Lei 14.811/2024), discurso de ódio, racismo, intolerância religiosa (Lei 7.716/1989) e qualquer conteúdo sexual envolvendo menores (ECA, arts. 240 e 241), com comunicação às autoridades. 4.2. <b>Toda interação entre adultos e menores de 18 anos acontece nos grupos e nas aulas, nunca em conversa privada.</b> Moderadores não chamam menores no privado, e menores não devem aceitar chamados privados de adultos da comunidade; se acontecer, avise a moderação. 4.3. As aulas têm ao menos dois adultos moderadores presentes. 4.4. É proibido divulgar dados, prints, áudios ou vídeos de outros membros fora da comunidade. 4.5. Os grupos de feira e de trocas são restritos a maiores de 18 anos. A comunidade não intermedeia, não garante e não responde por negociações entre membros. 4.6. É proibido oferecer serviços pagos, "trabalhos", consultas ou produtos a menores de 18 anos dentro da comunidade.</p>
-<h3>5. Aulas e gravações</h3>
-<p>5.1. As aulas são gravadas e ficam disponíveis apenas na Biblioteca do Coven, para membros. Elas não são publicadas em redes sociais. 5.2. Ligar a câmera e o microfone é opcional. Quem não quiser aparecer participa pelo chat. 5.3. Ao participar de uma aula gravada, o membro (e, para menores, o responsável) autoriza o uso da sua imagem e voz exclusivamente na gravação da aula, dentro da biblioteca, pelo prazo em que o material estiver disponível à comunidade. 5.4. É proibido gravar, copiar ou redistribuir as aulas e os materiais fora da comunidade.</p>
-<h3>6. Materiais e direitos autorais</h3>
-<p>6.1. A biblioteca contém apenas obras em domínio público, materiais com licença aberta e materiais produzidos pela própria comunidade. Não é permitido compartilhar nos grupos cópias de livros, cursos ou qualquer conteúdo protegido por direito autoral.</p>
-<h3>7. Moderação e saída</h3>
-<p>7.1. A moderação pode advertir, silenciar ou remover membros que descumpram estas regras, e pode recusar a entrada de qualquer pessoa. 7.2. Qualquer membro pode sair a qualquer momento. Ao sair, os seus dados são apagados conforme a Política de Privacidade. 7.3. Dúvidas e denúncias: ${v('email','e-mail de contato')} ou mensagem a qualquer moderador.</p>`;
+<p><b>Preceitos Oficiais · Versão 2.0 · 23/11/2026</b><br><b>Regras complementares · Versão 2 · 24/11/2026</b></p>
+<p><b>COVEN STRIX 2.0 · REGIMENTO DE CONVIVÊNCIA</b><br>Conhecimento · Respeito · Disciplina · Compromisso</p>
+<p>O Coven Strix é uma comunidade independente, fundada e dirigida por Raquel Lopes Strix, dedicada ao estudo da bruxaria, das artes ocultas, dos oráculos e das tradições esotéricas, em suas dimensões históricas, filosóficas e espirituais. Não exige vinculação religiosa nem culto obrigatório. A participação pressupõe respeito, discrição, responsabilidade e observância das regras abaixo.</p>
+<p><b>Acesso e assinatura.</b> A comunidade é exclusiva para <b>maiores de 18 anos</b>, com assinatura mensal ativa de R$ 20,00. A entrada na nova comunidade ocorre pelo link disponibilizado na área de membros. A administração poderá adotar procedimentos seguros de verificação de maioridade, com respeito à privacidade.</p>
+<h3>I. Do respeito ao sagrado</h3>
+<p>Toda religião, tradição espiritual, divindade e entidade deve ser tratada com respeito e dignidade. Intolerância religiosa, ridicularização, discriminação ou alegações de superioridade espiritual são incompatíveis com o Coven.</p>
+<p>A liberdade individual de crença permanece assegurada, inclusive a quem siga caminhos que não integram o programa de estudos da comunidade.</p>
+<h3>II. Da Fundadora, do Conselho e da hierarquia</h3>
+<p>A Fundadora dirige o Coven e define suas diretrizes organizacionais e pedagógicas, com apoio do Conselho. A moderação aplica as regras e cuida dos espaços comunitários.</p>
+<p>As funções hierárquicas representam deveres de coordenação e confiança; não autorizam constrangimento, abuso, desrespeito ou pretensão de superioridade espiritual.</p>
+<h3>III. Do compromisso com o conhecimento</h3>
+<p>O estudo deve ser conduzido com seriedade, discernimento e responsabilidade. Valorize fontes históricas, referências verificáveis e pensamento crítico; diferencie fatos documentados, crenças e experiências pessoais.</p>
+<p>Por decisão pedagógica do Coven, Magia do Caos e Thelema não integram as aulas, os grupos ou as práticas. É vedado compartilhar, recomendar, solicitar ou ensinar materiais e instruções dessas vertentes nos espaços da comunidade. Essa delimitação não representa hostilidade às pessoas que as praticam.</p>
+<h3>IV. Do sigilo e da privacidade</h3>
+<p>Preserve a privacidade dos integrantes e das conversas. Não divulgue prints, áudios, imagens, dados pessoais, relatos individuais ou materiais internos sem a devida autorização.</p>
+<p>O compromisso com o sigilo não deve ser utilizado para encobrir ameaças, abusos ou condutas ilegais.</p>
+<h3>V. Da organização dos espaços</h3>
+<p>A comunidade mantém apenas três grupos de participação: Sala do Coven, destinada à convivência e à integração; Covil de Estudos, destinado a dúvidas, debates, referências e solicitações de materiais; e Práticas de Tiragens, destinado a exercícios, interpretações e desenvolvimento oracular.</p>
+<p>O espaço de Avisos é reservado aos comunicados oficiais. O Conselho do Coven permanece restrito à administração, sem funcionar como grupo aberto de participação.</p>
+<p>Pedidos de livros e PDFs devem ocorrer exclusivamente no Covil de Estudos. A disponibilização de materiais depende da administração e do respeito aos direitos autorais. Não publique arquivos por conta própria fora dos canais autorizados.</p>
+<h3>VI. Da proibição de divulgações</h3>
+<p>Não é permitida publicidade ou divulgação comercial em nenhum grupo do Coven. A vedação abrange autopromoção, venda ou oferta de produtos e serviços, consultas, cursos, links de afiliados, cupons comerciais, pedidos de clientes e convites para grupos ou comunidades externas.</p>
+<p>Não haverá Feira Livre, Grupo de Trocas ou qualquer outro espaço de publicidade na nova estrutura. Referências de estudo podem ser partilhadas quando pertinentes ao tema e sem finalidade promocional, conforme as orientações da administração.</p>
+<h3>VII. Da conduta entre integrantes</h3>
+<p>Divergências devem ser conduzidas com civilidade. São proibidos assédio, humilhação, intimidação, ameaças, ataques pessoais, manipulação, spam, exposição indevida e insistência em contatos privados ou propostas que não tenham sido solicitados.</p>
+<p>Ninguém deve ser pressionado a relatar experiências, realizar práticas espirituais ou aderir a crenças contrárias à própria consciência.</p>
+<h3>VIII. Da disciplina e da responsabilidade coletiva</h3>
+<p>Leia os comunicados, respeite os horários, as orientações da moderação e a finalidade de cada ambiente. Assuma apenas os compromissos que puder cumprir e preserve um ambiente favorável ao aprendizado.</p>
+<p>Colaboração, auxílio a iniciantes, compartilhamento responsável de conhecimento e postura ética são atitudes valorizadas, mas não concedem privilégios acima dos preceitos.</p>
+<h3>IX. Da ética nas práticas espirituais</h3>
+<p>Toda orientação ou prática compartilhada deve respeitar autonomia, consentimento, integridade e segurança das pessoas envolvidas.</p>
+<p>É proibido pedir, divulgar, oferecer ou ensinar práticas destinadas a coagir, humilhar, prejudicar ou interferir no livre-arbítrio de terceiros, incluindo amarrações amorosas, rituais de coerção, afastamento de rival ou trabalhos voltados a causar dano a alguém.</p>
+<h3>X. Da permanência e das medidas disciplinares</h3>
+<p>A moderação poderá remover conteúdos em desacordo com as regras. Na primeira infração, aplica-se advertência formal; a reincidência implica remoção da comunidade. Diante de risco grave a pessoas ou à segurança do grupo, a administração poderá adotar medidas protetivas imediatas.</p>
+<p>A permanência depende de maioridade, assinatura ativa e cumprimento dos presentes preceitos. A adesão à comunidade significa ciência das regras e compromisso com sua observância.</p>
+<p><i>O conhecimento exige humildade. A convivência exige respeito. A responsabilidade exige conduta.</i><br><b>Coven Strix · Raquel Lopes Strix</b>, Fundadora e Alta Sacerdotisa.</p>
+<h3>Regras complementares: aulas, materiais e aplicativo</h3>
+<p>Estas regras completam os Preceitos Oficiais e valem para as aulas, os materiais e o aplicativo do Coven Strix, mantidos por ${nome()}. Em caso de dúvida ou de conflito, prevalecem os Preceitos.</p>
+<p><b>1. Finalidade.</b> As aulas e os materiais têm finalidade educativa, cultural e religiosa, no exercício da liberdade de crença garantida pela Constituição (art. 5º, VI). O Coven não promete resultado, cura nem proteção.</p>
+<p><b>2. Saúde.</b> Nada do que é ensinado substitui atendimento médico, psicológico ou psiquiátrico. O Coven não diagnostica, não trata doenças e não dá orientação individual em assuntos de saúde, jurídicos ou financeiros. Em sofrimento emocional, procure um profissional de saúde; em crise, o CVV atende pelo 188, 24 horas, de graça.</p>
+<p><b>3. Ervas.</b> As ervas fazem parte do estudo e da prática do Coven: em banhos, chás, defumações, sachês e no altar. Toda indicação vem acompanhada do modo de preparo e dos cuidados, e não substitui tratamento de saúde. Use ervas de procedência conhecida. Gestantes, lactantes, pessoas em uso de medicação contínua ou com alergias devem conversar com um profissional de saúde antes de usar. Não se indicam preparos para crianças nem para animais.</p>
+<p><b>4. Práticas seguras.</b> Não se ensinam nem se propõem práticas com substâncias tóxicas ou ilícitas, jejum, privação de sono, lesão ou risco físico. Vela acesa nunca fica sozinha, e todo ritual dos materiais tem uma versão sem fogo.</p>
+<p><b>5. Aulas e gravações.</b> As aulas gravadas ficam disponíveis apenas para integrantes, no aplicativo, e não são publicadas em redes sociais. Nos encontros ao vivo, ligar a câmera e o microfone é opcional. Quando um encontro for gravado, quem participa autoriza o uso da sua imagem e da sua voz somente nessa gravação, dentro do aplicativo, enquanto o material estiver disponível à comunidade. É proibido gravar, copiar ou redistribuir aulas e materiais fora do Coven.</p>
+<p><b>6. Materiais e direitos autorais.</b> Os materiais do Coven são para uso pessoal e de estudo. A disponibilização de livros e PDFs depende da administração e do respeito aos direitos autorais, e integrantes não publicam arquivos por conta própria. A administração remove qualquer material a pedido fundamentado do titular dos direitos.</p>
+<p><b>7. Aplicativo e assinatura.</b> O acesso ao aplicativo (Coven e Grimório Arcano) é pessoal e intransferível, e é liberado pela administração depois da confirmação da assinatura. Sem assinatura ativa, o acesso fica pausado e volta quando a assinatura é retomada. Não compartilhe o seu login.</p>
+<p><b>8. Proteção.</b> Condutas que também são crime, como ameaça, assédio, racismo, intolerância religiosa (Lei 7.716/1989) e intimidação sistemática (Lei 14.811/2024), podem ser comunicadas às autoridades.</p>
+<p><b>9. Dados pessoais.</b> O tratamento dos dados dos integrantes segue a Política de Privacidade (Documento 3), conforme a Lei 13.709/2018 (LGPD).</p>
+<p><b>10. Saída e contato.</b> Qualquer integrante pode sair a qualquer momento. Dúvidas, denúncias e pedidos sobre dados: ${v('email','e-mail de contato')} ou mensagem à moderação.</p>`;
 
 const termosUso=()=>`
-<p><b>Versão 1 · 10/10/2026</b></p>
-<p><b>1. O que é.</b> A Biblioteca do Coven (<b>${DADOS.site}</b>) é um aplicativo gratuito, mantido por ${nome()}${DADOS.cpf?`, CPF <b>${DADOS.cpf}</b>`:` <b class="lacuna">[CPF]</b>`}, que reúne textos, apostilas e gravações das aulas da comunidade O Coven da Raquel. O acesso é restrito a membros cadastrados.</p>
-<p><b>2. Cadastro.</b> O cadastro pede nome completo, CPF, e-mail, WhatsApp e data de nascimento. O acesso é feito por link enviado ao e-mail, sem senha. Só podem se cadastrar pessoas com 16 anos ou mais; para 16 e 17 anos, o cadastro depende do Termo de Ciência e Autorização do responsável. Informar dados falsos leva ao cancelamento.</p>
-<p><b>3. Finalidade.</b> O conteúdo tem finalidade educativa, cultural e religiosa. Ele não substitui orientação médica, psicológica, jurídica ou de qualquer outro profissional, e não promete resultado, cura, proteção ou benefício de nenhuma natureza. As práticas descritas são apresentadas como história, cultura e símbolo; nenhuma indica a ingestão de qualquer substância.</p>
+<p><b>Versão 1.1 · 24/11/2026</b></p>
+<p><b>1. O que é.</b> A Biblioteca do Coven (<b>${DADOS.site}</b>) é o aplicativo da comunidade Coven Strix, mantido por ${nome()}${DADOS.cpf?`, CPF <b>${DADOS.cpf}</b>`:` <b class="lacuna">[CPF]</b>`}, que reúne textos, apostilas e gravações das aulas da comunidade. O acesso é restrito a integrantes cadastrados, maiores de 18 anos, com a assinatura do Coven ativa.</p>
+<p><b>2. Cadastro.</b> O cadastro pede nome completo, CPF, e-mail, WhatsApp e data de nascimento. O acesso é feito por link enviado ao e-mail, sem senha. Só podem se cadastrar maiores de 18 anos. Informar dados falsos leva ao cancelamento.</p>
+<p><b>3. Finalidade.</b> O conteúdo tem finalidade educativa, cultural e religiosa. Ele não substitui orientação médica, psicológica, jurídica ou de qualquer outro profissional, e não promete resultado, cura, proteção ou benefício de nenhuma natureza. As indicações de ervas seguem as Regras complementares (Documento 1, item 3) e não substituem tratamento de saúde.</p>
 <p><b>4. O que a biblioteca contém.</b> (a) Obras em domínio público, nos termos da Lei 9.610/1998, com indicação da fonte; (b) obras com licença que permita a distribuição, com a licença indicada; (c) materiais produzidos pela comunidade: apostilas, fichas, resumos e gravações das aulas; (d) fichas de livros em catálogo, com resumo e link para compra, <b>sem</b> o arquivo da obra. A mantenedora remove qualquer material a pedido fundamentado de titular de direitos, pelo e-mail ${v('email','e-mail de contato')}.</p>
 <p><b>5. O que o membro pode e não pode fazer.</b> O membro pode ler, assistir e baixar os materiais para uso pessoal e de estudo. Não pode redistribuir, publicar ou vender os materiais da comunidade, nem as gravações das aulas, nem compartilhar o seu acesso.</p>
 <p><b>6. Conteúdo enviado por membros.</b> Se a biblioteca passar a aceitar envios (resumos, fichas, registros), o membro garante que o conteúdo é de sua autoria ou está em domínio público, e autoriza o uso dentro da comunidade, sem exclusividade e sem remuneração.</p>
-<p><b>7. Disponibilidade.</b> O serviço é gratuito e oferecido como está, sem garantia de disponibilidade contínua. A mantenedora pode alterar, suspender ou encerrar a biblioteca a qualquer tempo, avisando os membros com antecedência razoável.</p>
+<p><b>7. Disponibilidade.</b> O serviço é oferecido como está, sem garantia de disponibilidade contínua. A mantenedora pode alterar, suspender ou encerrar a biblioteca a qualquer tempo, avisando os membros com antecedência razoável.</p>
 <p><b>8. Privacidade.</b> O tratamento de dados segue a Política de Privacidade (Documento 3), que faz parte destes termos.</p>
-<p><b>9. Regras da comunidade.</b> As Regras da comunidade (Documento 1) valem também dentro da biblioteca.</p>
+<p><b>9. Preceitos e regras.</b> Os Preceitos Oficiais e as Regras complementares (Documento 1) valem também dentro da biblioteca.</p>
 <p><b>10. Foro e lei.</b> Aplica-se a lei brasileira. Fica eleito o foro de ${v('comarca','comarca')}, salvo as regras de competência que protegem o consumidor e o menor.</p>
-<p><b>Aceite.</b> Ao marcar "li e concordo" no cadastro, o membro declara ter lido e aceito estes termos, as Regras da comunidade e a Política de Privacidade.</p>`;
+<p><b>Aceite.</b> Ao marcar "li e concordo" no cadastro, o membro declara ter lido e aceito estes termos, os Preceitos Oficiais, as Regras complementares e a Política de Privacidade.</p>`;
 
 const privacidade=()=>`
-<p><b>Versão 1 · 10/10/2026 · Lei 13.709/2018 (LGPD)</b></p>
-<p><b>1. Quem trata os seus dados.</b> ${nome()}${DADOS.cpf?`, CPF <b>${DADOS.cpf}</b>`:` <b class="lacuna">[CPF]</b>`}, ${v('email','e-mail de contato')}, controladora, responsável pela comunidade O Coven da Raquel e pela Biblioteca do Coven. Contato para assuntos de privacidade (encarregada): ${v('encarregada','nome e e-mail')}.</p>
+<p><b>Versão 1.1 · 24/11/2026 · Lei 13.709/2018 (LGPD)</b></p>
+<p><b>1. Quem trata os seus dados.</b> ${nome()}${DADOS.cpf?`, CPF <b>${DADOS.cpf}</b>`:` <b class="lacuna">[CPF]</b>`}, ${v('email','e-mail de contato')}, controladora, responsável pela comunidade Coven Strix e pela Biblioteca do Coven. Contato para assuntos de privacidade (encarregada): ${v('encarregada','nome e e-mail')}.</p>
 <p><b>2. Quais dados são coletados.</b></p>
 <ul>
 <li>No cadastro da biblioteca: nome completo, CPF, e-mail, WhatsApp e data de nascimento.</li>
-<li>Para membros de 16 e 17 anos: nome, CPF e contato do responsável, e o termo aceito por ele.</li>
+<li>Para quem se cadastrou com 16 ou 17 anos até 24/11/2026 (desde então a comunidade é exclusiva para maiores de 18): nome, CPF e contato do responsável, e o termo aceito por ele.</li>
 <li>Nos grupos de WhatsApp: o número de telefone e o nome de perfil que o próprio WhatsApp exibe aos participantes.</li>
 <li>Nas aulas gravadas: imagem e voz de quem optar por ligar câmera ou microfone, e as mensagens do chat.</li>
 <li>Registros técnicos de acesso à biblioteca (data, hora, endereço IP), pelo prazo mínimo que a lei exige (Marco Civil da Internet, art. 15: seis meses). Não são coletados dados de pagamento, documentos, localização nem dados sensíveis, <b>exceto</b> que a participação numa comunidade de estudos sobre espiritualidade pode revelar convicção religiosa, que a lei considera dado sensível: por isso os dados nunca são compartilhados nem usados para outro fim.</li>
@@ -74,6 +108,7 @@ const privacidade=()=>`
 <p><b>8. Mudanças.</b> Esta política pode mudar; a versão vigente fica na biblioteca, com a data, e mudanças relevantes são avisadas no grupo.</p>`;
 
 const responsavel=()=>`
+<p><b>Desde 24/11/2026 o Coven Strix é exclusivo para maiores de 18 anos e não recebe novos cadastros de menores.</b> Este termo fica aqui como registro para quem se cadastrou com 16 ou 17 anos antes dessa data, no texto que foi aceito na época.</p>
 <p><b>Versão 1 · 10/10/2026 · preenchido pelo formulário de cadastro, com data, hora e IP registrados</b></p>
 <p>O responsável legal, identificado no formulário (nome completo, CPF, telefone, e-mail e parentesco), declara, em relação ao adolescente cadastrado:</p>
 <ol>
@@ -88,9 +123,9 @@ const responsavel=()=>`
 <p>Ao marcar a declaração no formulário, o responsável declara que é o(a) responsável legal e que as informações são verdadeiras.</p>`;
 
 window.COB_TERMOS={VERSAO,DADOS,docs:[
-  {id:'regras',titulo:'Regras da comunidade',html:regras},
+  {id:'regras',titulo:'Preceitos Oficiais e Regras da comunidade',html:regras},
   {id:'uso',titulo:'Termos de uso da Biblioteca',html:termosUso},
   {id:'privacidade',titulo:'Política de privacidade',html:privacidade},
-  {id:'responsavel',titulo:'Termo do responsável (16 e 17 anos)',html:responsavel}
+  {id:'responsavel',titulo:'Termo do responsável (cadastros de 16 e 17 anos até 24/11/2026)',html:responsavel}
 ]};
 })();
