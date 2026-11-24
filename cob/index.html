@@ -1054,7 +1054,7 @@ const LINK_GRIMORIO='../';
 function cartaoGrimorio(){
   return `<a class="cl-gri" href="${LINK_GRIMORIO}">
     <img src="../icon-192.png" alt="" width="56" height="56">
-    <span class="t"><span class="eyebrow">Para quem está no Coven</span><span class="gt">Grimório Arcano</span><span class="s">Seu app de estudo de tarô: as 78 cartas, tiragens, diário, quiz e a comunidade. Você entra com o mesmo login.</span></span>
+    <span class="t"><span class="gt">Grimório Arcano</span><span class="s">Seu app de estudo de tarô: as 78 cartas, tiragens, diário, quiz e a comunidade. Você entra com o mesmo login.</span></span>
     <span class="chev">${I.chev}</span>
   </a>`;
 }
@@ -1095,7 +1095,7 @@ function carregarBeneficios(){
 function cartaoBeneficios(){
   const p=G.perfil||{}, n=mesesDeCasa(p.assinante_desde);
   const prox=SELOS.find(s=>s[0]>n);
-  return `<button class="row bn-atalho" data-go="beneficios"><span class="ic">✦</span><span class="t"><span class="s" style="font-size:12px;letter-spacing:.12em;text-transform:uppercase">Só para quem está no Coven</span><span class="n">Seus benefícios</span><span class="s">${p.assinante_desde?(n?`${n} ${n===1?'mês':'meses'} de Coven`:'Bem-vinda(o) ao Coven')+(prox?` · próximo selo: ${prox[1]}`:''):'Kit de boas-vindas, material do mês e presentes'}</span></span><span class="chev">${I.chev}</span></button>`;
+  return `<button class="row bn-atalho" data-go="beneficios"><span class="ic">✦</span><span class="t"><span class="n">Seus benefícios</span><span class="s">${p.assinante_desde?(n?`${n} ${n===1?'mês':'meses'} de Coven`:'Bem-vinda(o) ao Coven')+(prox?` · próximo selo: ${prox[1]}`:''):'Kit de boas-vindas, material do mês e presentes'}</span></span><span class="chev">${I.chev}</span></button>`;
 }
 function linhaBeneficio(x){
   const url=x.arquivo?(BN.assin[x.arquivo]?BN.assin[x.arquivo]+'&download='+encodeURIComponent(x.nome_arquivo||slug(x.titulo)+'.pdf'):''):(linkOk(x.link)?x.link:'');
@@ -1127,7 +1127,7 @@ function telaBeneficios(){
   const qtd=(BN.indicacoes||[]).length, entregues=(BN.indicacoes||[]).filter(x=>x.presente_entregue).length;
   return `
   <button class="back" data-act="voltar" data-v="hoje">${I.back}Hoje</button>
-  <div><div class="eyebrow">Só para quem está no Coven</div><h1 class="h1" style="margin-top:6px">Benefícios</h1></div>
+  <h1 class="h1">Benefícios</h1>
   ${adm&&BN.falta?`<p class="msg erro">Para ligar os benefícios, rode o SQL dos benefícios (seção 11 do supabase/cob.sql) no Supabase.</p>`:''}
   <section class="cl-hero bn-fid">
     ${ornamento()}
@@ -1146,7 +1146,7 @@ function telaBeneficios(){
     <p class="dica">A pessoa digita esse código no cadastro, no campo "Código de quem te indicou".</p>
     ${qtd?`<p style="font-size:14.5px"><b>${qtd}</b> indicaç${qtd>1?'ões':'ão'} sua${qtd>1?'s':''}${entregues?` · ${entregues} presente${entregues>1?'s':''} já entregue${entregues>1?'s':''}`:''}.</p>`:''}
   </section>`:''}
-  <footer class="note">Os materiais são só para quem está no Coven: não compartilhe os arquivos fora da comunidade.</footer>`;
+  <footer class="note">Não compartilhe os arquivos fora da comunidade.</footer>`;
 }
 function painelBeneficios(){
   const f=BN.form;
@@ -2740,7 +2740,7 @@ function plannerAcao(a){
 
 // --- telas ---
 function cartaoPlanner(){
-  return `<button class="row pl-atalho" data-go="planner"><span class="ic">☾</span><span class="t"><span class="s" style="font-size:12px;letter-spacing:.12em;text-transform:uppercase">Só para quem está no Coven</span><span class="n">Planner ${PL_ANO}</span><span class="s">Luas, sabás e as suas intenções, mês a mês</span></span><span class="chev">${I.chev}</span></button>`;
+  return `<button class="row pl-atalho" data-go="planner"><span class="ic">☾</span><span class="t"><span class="n">Planner ${PL_ANO}</span><span class="s">Luas, sabás e as suas intenções, mês a mês</span></span><span class="chev">${I.chev}</span></button>`;
 }
 const plTopo=(volta,nome)=>`<div class="pl-top"><button class="back" data-act="voltar" data-v="${volta}">${I.back}${nome}</button><span id="pl-st" class="pl-st" role="status" aria-live="polite"></span></div>`;
 const plAbas=sel=>`<div class="pills" style="margin:0;padding:0"><button class="pill ${sel==='mes'?'on':''}" data-go="planner" data-troca>Mês a mês</button><button class="pill ${sel==='ano'?'on':''}" data-go="planner/ano" data-troca>O ano inteiro</button><button class="pill" data-go="planner/imprimir">Imprimir</button></div>`;
@@ -2844,7 +2844,7 @@ function plTelaAno(hoje){
   }).join('');
   return `
   ${plTopo('hoje','Hoje')}
-  <section class="cl-hero pl-hero">${ornamento()}<div class="eyebrow">Só para quem está no Coven</div><h2 class="gt">Planner ${PL_ANO}</h2><p class="cl-sub" style="font-size:17px">O ano inteiro: as Luas, os oito sabás e os feriados.</p></section>
+  <section class="cl-hero pl-hero">${ornamento()}<h2 class="gt">Planner ${PL_ANO}</h2><p class="cl-sub" style="font-size:17px">O ano inteiro: as Luas, os oito sabás e os feriados.</p></section>
   ${plAbas('ano')}
   ${plAvisoSql()}
   <section class="card pl-campo"><h2 class="h2">${PL_ANO} em uma página</h2><p class="dica">As suas intenções para o ano: o que você quer estudar, cuidar, experimentar. Dá para voltar e mudar quando quiser.</p>${plCampo('ano-'+PL_ANO,PL_ANO+' em uma página','Em '+PL_ANO+' eu quero…','style="min-height:190px"')}</section>
