@@ -639,32 +639,32 @@ const lerPend=()=>{try{return JSON.parse(localStorage.getItem(PEND)||'null');}ca
 const aviso2=(t,erro)=>{G.msg=t;G.erro=!!erro;render(true);};
 function erroConta(e){
   const m=String(e&&(e.message||e.error_description||e.error)||e||'');
-  return /cob_membros_cpf_key|duplicate key/i.test(m)?'Este CPF já tem cadastro. Entre com o e-mail usado nele, ou fale com a moderação.'
-    :/cpf_invalido/.test(m)?'O CPF não é válido. Confira os números.'
+  return /cob_membros_cpf_key|duplicate key/i.test(m)?'Esse CPF já tem um cadastro por aqui. Entre com o e-mail que você usou nele ou, se precisar, fale com a moderação.'
+    :/cpf_invalido/.test(m)?'Não reconheci esse CPF. Confira os números com calma.'
     :/idade_minima|responsavel_incompleto/.test(m)?'O Coven Strix é uma comunidade para maiores de 18 anos.'
-    :/nome_incompleto/.test(m)?'Escreva o nome completo (nome e sobrenome).'
-    :/whatsapp_invalido/.test(m)?'O WhatsApp precisa ter DDD e número.'
-    :/nascimento_invalido/.test(m)?'Confira a data de nascimento.'
-    :/sem_aceite/.test(m)?'É preciso marcar o aceite dos termos.'
+    :/nome_incompleto/.test(m)?'Escreva o seu nome completo, com nome e sobrenome.'
+    :/whatsapp_invalido/.test(m)?'Coloque o seu WhatsApp com o DDD, por favor.'
+    :/nascimento_invalido/.test(m)?'Dê uma olhada na data de nascimento: algo não bateu.'
+    :/sem_aceite/.test(m)?'Para seguir, marque que você leu e concorda com os preceitos e os termos.'
     :/cob_membros|relation .* does not exist|schema cache/i.test(m)?'O cadastro ainda não foi ativado no Supabase (falta rodar o SQL do COB).'
-    :/rate limit|too many|seconds/i.test(m)?'Muitos pedidos seguidos. Espere um minuto e tente de novo.'
-    :/Signups not allowed|not found|Invalid login/i.test(m)?'Não achei cadastro com esse e-mail. Toque em "Criar conta".'
-    :/expired|invalid.*token|otp/i.test(m)?'Código inválido ou vencido. Peça um novo.'
-    :/Failed to fetch|NetworkError|network/i.test(m)?'Sem conexão. Confira a internet e tente de novo.':m;
+    :/rate limit|too many|seconds/i.test(m)?'Foram muitos pedidos em pouco tempo. Respire, espere um minutinho e tente de novo.'
+    :/Signups not allowed|not found|Invalid login/i.test(m)?'Não encontrei cadastro com esse e-mail. Confira se é o mesmo que você usou ou toque em "Criar conta".'
+    :/expired|invalid.*token|otp/i.test(m)?'Esse código já não vale mais. Peça outro, ele chega em instantes.'
+    :/Failed to fetch|NetworkError|network/i.test(m)?'A conexão caiu. Confira a internet e tente de novo quando puder.':m;
 }
 // valida o formulário; devolve {dados} ou {erro}
 function validarCadastro(f,comEmail){
   const nome=(f.nome||'').trim().replace(/\s+/g,' '), idade=idadeDe(f.nasc);
-  if(!/\S+\s+\S+/.test(nome))return {erro:'Escreva o nome completo (nome e sobrenome).',campo:'nome'};
-  if(!cpfOk(f.cpf))return {erro:'O CPF não é válido. Confira os números.',campo:'cpf'};
+  if(!/\S+\s+\S+/.test(nome))return {erro:'Escreva o seu nome completo, com nome e sobrenome.',campo:'nome'};
+  if(!cpfOk(f.cpf))return {erro:'Não reconheci esse CPF. Confira os números com calma.',campo:'cpf'};
   if(comEmail&&!emailOk((f.email||'').trim()))return {erro:'Digite um e-mail válido.',campo:'email'};
-  if(so(f.whats).length<10)return {erro:'O WhatsApp precisa ter DDD e número.',campo:'whats'};
-  if(idade===null||idade>110||idade<0)return {erro:'Preencha a data de nascimento.',campo:'nasc'};
+  if(so(f.whats).length<10)return {erro:'Coloque o seu WhatsApp com o DDD, por favor.',campo:'whats'};
+  if(idade===null||idade>110||idade<0)return {erro:'Falta só a sua data de nascimento.',campo:'nasc'};
   if(idade<18)return {erro:'O Coven Strix é uma comunidade para maiores de 18 anos.',campo:'nasc'};
   const d={nome,cpf:so(f.cpf),whatsapp:so(f.whats),nascimento:f.nasc,aceite:!!f.aceite,aceite_versao:T.VERSAO};
   const ind=(f.ind||'').trim().toUpperCase();
-  if(ind){if(!/^[A-Z]{1,8}-[A-Z0-9]{4}$/.test(ind))return {erro:'O código de indicação tem o formato NOME-XXXX (ex.: ANA-H3SA). Confira ou deixe em branco.',campo:'ind'};d.indicado_por_codigo=ind;}
-  if(!d.aceite)return {erro:'Para continuar, marque que leu e concorda com os termos.',campo:'aceite'};
+  if(ind){if(!/^[A-Z]{1,8}-[A-Z0-9]{4}$/.test(ind))return {erro:'O código de indicação é assim: NOME-XXXX (por exemplo, ANA-H3SA). Confira com quem te indicou ou deixe em branco.',campo:'ind'};d.indicado_por_codigo=ind;}
+  if(!d.aceite)return {erro:'Para continuar, marque que você leu e concorda com os preceitos e os termos.',campo:'aceite'};
   return {dados:d};
 }
 async function gravarCadastro(dados){
@@ -705,7 +705,7 @@ async function iniciarConta(){
   // volta do link mágico: o token vem depois do # e o pdf.js/rotas não devem vê-lo
   const h=location.hash, doLink=/access_token=|error_description=/.test(h);
   let erroLink='';
-  if(/error_description=/.test(h)){const q=new URLSearchParams(h.slice(1));erroLink=/expired|invalid/i.test(q.get('error_code')+q.get('error_description'))?'O link venceu ou já foi usado. Peça um novo abaixo.':'Não consegui entrar com esse link. Peça um novo abaixo.';}
+  if(/error_description=/.test(h)){const q=new URLSearchParams(h.slice(1));erroLink=/expired|invalid/i.test(q.get('error_code')+q.get('error_description'))?'Esse link já venceu ou foi usado. Peça um novo aqui embaixo.':'Não consegui entrar com esse link. Peça um novo aqui embaixo, é rapidinho.';}
   try{
     const sb=await carregarSupabase();
     // enquanto o SQL do cadastro não foi rodado no Supabase, o app segue aberto como antes (sem portão)
@@ -717,7 +717,7 @@ async function iniciarConta(){
       if(ev==='SIGNED_IN'&&ses&&(!G.sessao||G.sessao.user.id!==ses.user.id)){aoEntrar(ses).then(()=>render());}
       if(ev==='SIGNED_OUT'){G.sessao=null;G.perfil=null;G.admin=E.admin=false;E.sessao=null;render();}
     });
-  }catch(e){G.msg=navigator.onLine?'Não consegui conectar agora. Tente de novo em instantes.':'Sem internet. Conecte-se para entrar.';G.erro=true;}
+  }catch(e){G.msg=navigator.onLine?'Não consegui conectar agora. Tente de novo em instantes.':'Você está sem internet. Assim que conectar, é só entrar.';G.erro=true;}
   if(erroLink){G.aba='entrar';G.etapa='form';G.msg=erroLink;G.erro=true;}
   if(doLink)history.replaceState(null,'',location.pathname+'#/hoje');
   G.pronto=true;render();
@@ -849,7 +849,7 @@ function telaEntrar(){
   const cad=G.aba==='cadastro';
   return `<div class="auth">${marcaConta}
     <h1 class="h1 c">${cad?'Crie seu perfil':'Entre no COB'}</h1>
-    <p class="c">${cad?'O app é para quem participa do Coven Strix, com 18 anos ou mais e a assinatura em dia. Preencha seus dados uma vez; depois você entra pelo link que chega no e-mail, sem senha.':'Digite o e-mail do seu cadastro. Mandamos um link para você entrar, sem senha.'}</p>
+    <p class="c">${cad?'Que bom ter você aqui. O app acompanha quem caminha com o Coven Strix, com 18 anos ou mais e a assinatura em dia. Preencha os seus dados uma única vez; depois você entra pelo link que chega no e-mail, sem senha.':'Que bom te ver de volta. Digite o e-mail do seu cadastro e mandamos um link para você entrar, sem senha.'}</p>
     <div class="adm-tabs" role="tablist"><button class="pill ${cad?'on':''}" role="tab" aria-selected="${cad}" data-act="conta-aba" data-v="cadastro">Criar conta</button><button class="pill ${!cad?'on':''}" role="tab" aria-selected="${!cad}" data-act="conta-aba" data-v="entrar">Já tenho conta</button></div>
     ${cad?`<form class="auth-form" novalidate onsubmit="return false">${camposCadastro(true)}${msgConta()}
       <button class="btn" data-act="conta-cadastrar" ${G.ocupado?'disabled':''}>${G.ocupado?'Enviando…':'Criar conta e receber o link'}</button></form>`
@@ -1146,7 +1146,7 @@ function telaBeneficios(){
     <p class="dica">A pessoa digita esse código no cadastro, no campo "Código de quem te indicou".</p>
     ${qtd?`<p style="font-size:14.5px"><b>${qtd}</b> indicaç${qtd>1?'ões':'ão'} sua${qtd>1?'s':''}${entregues?` · ${entregues} presente${entregues>1?'s':''} já entregue${entregues>1?'s':''}`:''}.</p>`:''}
   </section>`:''}
-  <footer class="note">Não compartilhe os arquivos fora da comunidade.</footer>`;
+  <footer class="note">Guarde estes materiais com você: eles não são para compartilhar fora da comunidade.</footer>`;
 }
 function painelBeneficios(){
   const f=BN.form;
@@ -1426,7 +1426,7 @@ function carregarClube(){
     }catch(e){
       // sem as tabelas (SQL da seção 8 ainda não rodado): a turma vê a Aula 01 guardada no aulas.js
       if(e&&(e.code==='PGRST205'||e.code==='42P01'||/cob_clube|schema cache|does not exist/i.test(String(e.message)))){C.falta=true;C.erro='';C.livros=A.clube.livros;C.aulas=A.clube.aulas;}
-      else C.erro=navigator.onLine?'Não consegui carregar as aulas agora.':'Sem internet. As aulas precisam de conexão.';
+      else C.erro=navigator.onLine?'Não consegui carregar as aulas agora.':'Você está sem internet. As aulas voltam assim que a conexão chegar.';
     }
     C.carregando=null;
     if(E.livros===null&&!E.erro)carregarLivros();
@@ -1688,7 +1688,7 @@ function conteudoComentarios(aulaId){
         <label class="check"><input type="checkbox" id="cm-duvida" ${K.duvida?'checked':''}>É uma dúvida para a Raquel</label>
         <button class="btn" data-act="cm-enviar" ${K.ocupado?'disabled':''}>${K.ocupado&&!K.resp?'Publicando…':'Publicar'}</button>
       </div>
-      <p class="dica">Aparece para toda a turma, com seu primeiro nome. Gentileza sempre: valem as <button class="lk" data-go="termos">regras da comunidade</button>.</p>
+      <p class="dica">O seu comentário aparece para toda a turma, com o seu primeiro nome. Aqui a gente conversa com gentileza, seguindo os <button class="lk" data-go="termos">preceitos do Coven</button>.</p>
       <p class="msg ${K.erroMsg?'erro':''}" id="cm-msg" role="status" ${K.msg?'':'hidden'}>${esc(K.msg)}</p>
     </div>
     ${cs.length?`<div class="cm-lista">${mostrar.map(x=>`<div class="cm-conv">
@@ -1710,7 +1710,7 @@ function contarCm(t){if(t.value.length>=LIMITE_CM-100)avisoCm(`${t.value.length}
 function avisoCm(t,erro){K.msg=t;K.erroMsg=!!erro;const el=$('#cm-msg');if(el){el.textContent=t;el.hidden=!t;el.classList.toggle('erro',!!erro);}}
 function erroCm(e){
   const m=String(e&&(e.message||e.error)||e||'');
-  if(/muitos_comentarios/.test(m))return 'Você comentou várias vezes em poucos minutos. Espere um pouco e tente de novo.';
+  if(/muitos_comentarios/.test(m))return 'Você comentou várias vezes em poucos minutos. Dê um tempinho e volte a escrever.';
   if(/row-level|permission|42501/i.test(m)||(e&&e.code==='42501'))return 'Não foi possível comentar nesta aula.';
   if(/texto_check/.test(m))return 'Escreva o seu comentário (até 2.000 caracteres).';
   if(/Failed to fetch|NetworkError|network/i.test(m))return 'Sem conexão. Seu texto continua aqui; tente de novo.';
@@ -1978,7 +1978,7 @@ function telaBiblioteca(r){
   ${sec==='elementos'?`<p class="warn">${esc(B.notaElementos)}</p>`:''}
   <div id="itens">${sec==='glossario'?`<div class="gl">${B.glossario.map(v=>`<details><summary>${esc(v.termo)}${I.chev}</summary><p>${esc(v.def)}</p></details>`).join('')}</div>`:`<div class="list">${itensDe(sec).map(it=>linhaItem(sec,it,icone)).join('')}</div>`}</div>
   <div id="achados" style="display:none"></div>
-  <footer class="note">${sec==='ervas'?'As correspondências são tradicionais e variam entre tradições e autoras(es). Antes de usar uma erva em banho, chá ou defumação, leia o cuidado indicado na ficha dela. Grávidas, lactantes, quem toma remédio de uso contínuo ou tem alergia conversa com um profissional de saúde antes; não use em crianças nem em animais.':sec==='cristais'?'Cristais são apoio simbólico e não substituem tratamento de saúde. Compre de fontes que informem a origem da pedra.':'As correspondências são tradicionais e variam entre tradições e autoras(es). Use o que fizer sentido na sua prática.'}</footer>`;
+  <footer class="note">${sec==='ervas'?'As correspondências são tradicionais e variam entre tradições e autoras(es). Antes de usar uma erva em banho, chá ou defumação, leia com carinho o cuidado indicado na ficha dela. Se você está grávida, amamentando, toma remédio de uso contínuo ou tem alguma alergia, converse antes com um profissional de saúde. E não use em crianças nem em animais.':sec==='cristais'?'Os cristais são um apoio simbólico: caminham junto com o cuidado de saúde, nunca no lugar dele. Prefira comprar de quem informa a origem da pedra.':'As correspondências são tradicionais e variam entre tradições e autoras(es). Use o que fizer sentido na sua prática.'}</footer>`;
 }
 function linhaItem(sec,it,icone){
   return `<button class="row" data-go="item/${sec}/${it.id}">
@@ -1999,7 +1999,7 @@ function filtrar(q){
     if(hits.length)grupos.push(`<div class="eyebrow" style="margin-top:6px">${nome}</div><div class="list">${hits.map(it=>sec==='glossario'?`<div class="gl"><details open><summary>${esc(it.nome)}${I.chev}</summary><p>${esc(B.glossario[+it.id].def)}</p></details></div>`:linhaItem(sec,it,icone)).join('')}</div>`);
   }
   itens.style.display='none';ach.style.display='flex';ach.style.flexDirection='column';ach.style.gap='10px';
-  ach.innerHTML=grupos.length?grupos.join(''):'<p style="color:var(--muted);font-size:14px">Nada encontrado. Tente outra palavra, como "proteção" ou "amor".</p>';
+  ach.innerHTML=grupos.length?grupos.join(''):'<p style="color:var(--muted);font-size:14px">Não encontrei nada com essa palavra. Tente outra, como "proteção" ou "amor".</p>';
 }
 function telaItem(r){
   const sec=r[1], id=r[2];
@@ -2105,7 +2105,7 @@ async function carregarLivros(){
     await assinar().catch(()=>{});
     const {data:ses}=await sb.auth.getSession();
     if(ses&&ses.session){E.sessao=ses.session;const r=await sb.rpc('e_admin');E.admin=!!r.data;}
-  }catch(e){E.erro=navigator.onLine?'Não consegui carregar a estante agora. Tente de novo em instantes.':'Sem internet. A estante precisa de conexão para listar os livros.';}
+  }catch(e){E.erro=navigator.onLine?'Não consegui carregar a estante agora. Tente de novo em instantes.':'Você está sem internet. A estante volta assim que a conexão chegar.';}
   // o leitor aberto direto pelo endereço (ou por uma aula) também espera a lista; o Clube usa capas e PDFs da Estante
   const rt=rota()[0];if(rt==='estante'||rt==='ler'||rt==='aulas'||(rt==='clube'&&!/^editar/.test(rota()[1]||'')))renderSuave();
   else if(rt==='clube')atualizarOpcoesPdf();  // formulário aberto: só a lista de PDFs muda, sem apagar o que está sendo digitado
@@ -2165,7 +2165,7 @@ function telaEstante(){
       <div class="pills" role="tablist" aria-label="Categorias">${pills.map(([id,nome])=>`<button class="pill ${E.cat===id?'on':''}" role="tab" aria-selected="${E.cat===id}" data-act="est-cat" data-v="${id}">${esc(nome)}${id!=='todas'?` · ${cont[id]}`:''}</button>`).join('')}</div>
     </div>
     <div id="estante-grade" style="display:flex;flex-direction:column;gap:10px">${gradeEstante()}</div>`;
-  }else grade=E.livros?`<div class="card"><p>A estante ainda está vazia. Os livros aparecem aqui assim que forem enviados.</p></div>`
+  }else grade=E.livros?`<div class="card"><p>A estante ainda está sendo arrumada. Logo os livros chegam por aqui.</p></div>`
     :E.erro?`<p class="msg erro">${esc(E.erro)} <button class="link" data-act="est-recarregar">Tentar de novo</button></p>`
     :`<div class="card"><p style="color:var(--muted)">Carregando a estante…</p></div>`;
   const comCat=temColunaCat();
@@ -2362,7 +2362,7 @@ async function estanteAcao(a,v){
       E.sessao=data.session;const r=await sb.rpc('e_admin');E.admin=!!r.data;E.ocupado=false;E.etapa='fechado';
       if(!E.admin){await sb.auth.signOut();E.sessao=null;E.etapa='email';aviso('Esse e-mail não está cadastrado como admin.',true);return;}
       aviso('');
-    }catch(e){E.ocupado=false;aviso('Código inválido ou vencido. Peça um novo.',true);}
+    }catch(e){E.ocupado=false;aviso('Esse código já não vale mais. Peça outro, ele chega em instantes.',true);}
     return;
   }
   if(a==='sair'){const sb=await carregarSupabase();await sb.auth.signOut();E.sessao=null;E.admin=false;E.msg='';render();return;}

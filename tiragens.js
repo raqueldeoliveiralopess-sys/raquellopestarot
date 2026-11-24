@@ -18,7 +18,7 @@ window.TAROT_SPREADS=[
     'Vire as três e leia primeiro a imagem: o que os personagens estão fazendo, para onde olham, o que está no chão.',
     'Leia cada posição com luz e sombra. A mesma carta na Raiz pode ser um recurso ou uma ferida.',
     'Leia a linha inteira como uma frase: "Porque (1), hoje eu (2), e isso aponta para (3)".',
-    'Nomeie o padrão em uma frase sua. Se não couber numa frase, ainda não está claro.',
+    'Nomeie o padrão em uma frase sua. Tente dizer em uma frase. Se ainda não couber, dê mais tempo à leitura.',
     'Registre nas anotações da carta que mais mexeu com você.'
   ],
   relacoes:['Posições 1 e 3: se forem muito parecidas, o padrão está em repetição e a cena atual (2) é só mais uma rodada.','Posições 1 e 2: cartas de naipes opostos (Paus e Copas, Ouros e Espadas) costumam mostrar um conflito entre o que foi aprendido e o que se vive agora.','Arcano Maior na posição 3: o padrão pede uma mudança de atitude, não uma mudança de cenário.'],

@@ -183,7 +183,7 @@
     if (codigo.length < 6) return muda({ erro: 'O código tem pelo menos 6 números.' });
     muda({ ocupado: true, erro: '' });
     const { data, error } = await sb.auth.verifyOtp({ email: A.email, token: codigo, type: 'email' });
-    if (error || !data || !data.user) return muda({ ocupado: false, erro: offline(error) ? 'Sem internet.' : 'Código inválido ou vencido. Confira ou peça outro.' });
+    if (error || !data || !data.user) return muda({ ocupado: false, erro: offline(error) ? 'Sem internet.' : 'Esse código não entrou. Confira os números ou peça outro.' });
     muda({ ocupado: false, estado: 'carregando' });
     await entrar(data.user);
   };

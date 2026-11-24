@@ -280,10 +280,10 @@ img.rev{transform:rotate(180deg)}
 <body>
 <div id="topbar" aria-hidden="true"></div><div id="app"><main id="main"></main><nav id="nav"></nav></div>
 <script src="cards.js?v=33"></script>
-<script src="tiragens.js?v=33"></script>
+<script src="tiragens.js?v=34"></script>
 <script src="diario.js?v=33"></script>
 <script src="config.js"></script>
-<script src="auth.js?v=37"></script>
+<script src="auth.js?v=38"></script>
 <script src="comunidade.js?v=33"></script>
 <script>
 (function(){
@@ -846,10 +846,10 @@ function quiz(){
   } else {
     const total=q.modo==='relampago'?q.answers.length:q.qs.length;
     let msg;
-    if(q.modo==='relampago') msg=q.score>=15?'Reflexo de quem já conhece o baralho. Tente no nível difícil.':q.score>=8?'Bom ritmo. O relâmpago melhora com as fichas frescas na memória.':'Velocidade vem depois da memória: passe pelos flashcards e volte.';
-    else if(q.modo==='luzsombra') msg=q.score>=9?'Você distingue bem os dois lados. É o que dá profundidade na leitura.':q.score>=6?'Bom. As que confundiu são as que valem reler na ficha, luz e sombra lado a lado.':'Releia luz e sombra das cartas que confundiu. A sombra costuma ser a luz em excesso.';
-    else if(q.modo==='erros') msg=q.score===total?'As lacunas estão fechando. Volte amanhã e repita.':'Essas cartas ainda escorregam. Abra a ficha de cada uma antes de repetir.';
-    else msg=q.qs.length<10?(q.score===q.qs.length?'Carta do dia respondida. Amanhã tem outra.':'Abra a ficha da carta do dia e releia com calma. Amanhã tem outra.'):q.score>=9?'Domínio total desse grupo. Passe para o próximo.':q.score>=6?'Bom caminho. Revise as que errou nas fichas.':'Vale voltar às fichas e aos flashcards antes de repetir.';
+    if(q.modo==='relampago') msg=q.score>=15?'Reflexo de quem já conhece o baralho. Tente no nível difícil.':q.score>=8?'Bom ritmo. O relâmpago melhora com as fichas frescas na memória.':'A velocidade vem depois da memória. Passe pelos flashcards com calma e volte quando quiser.';
+    else if(q.modo==='luzsombra') msg=q.score>=9?'Você distingue bem os dois lados. É o que dá profundidade na leitura.':q.score>=6?'Bom caminho. As cartas que você confundiu são as que mais vale reler na ficha, luz e sombra lado a lado.':'Releia com calma a luz e a sombra das cartas que você confundiu. A sombra costuma ser a luz em excesso.';
+    else if(q.modo==='erros') msg=q.score===total?'As lacunas estão se fechando. Volte amanhã e repita, sem pressa.':'Essas cartas ainda pedem mais convivência. Releia a ficha de cada uma e volte quando quiser.';
+    else msg=q.qs.length<10?(q.score===q.qs.length?'Carta do dia respondida. Amanhã tem outra.':'Abra a ficha da carta do dia e releia com calma. Amanhã tem outra.'):q.score>=9?'Você conhece bem este grupo. Quando quiser, siga para o próximo.':q.score>=6?'Bom caminho. Vale rever nas fichas as cartas que escaparam.':'Volte às fichas e aos flashcards com calma antes de repetir. Cada volta assenta um pouco mais.';
     const h=S.quizHistory.find(x=>x.id===q.histId);
     body=`<div class="dark stack" style="text-align:center;padding:24px 20px"><div class="eyebrow" style="color:var(--pink)">${q.modo==='relampago'?'Relâmpago · 60 segundos':'Resultado'}</div><div class="serif big">${q.score}<span>${q.modo==='relampago'?' acerto'+(q.score===1?'':'s')+' em '+total:' / '+total}</span></div><div style="font-size:14px;opacity:.9">${msg}</div></div>
     ${h?`<button class="btn ghost" data-act="qhist" data-id="${h.id}">${S.quizOpen===h.id?'Esconder acertos e erros':'Ver acertos e erros'}</button>${S.quizOpen===h.id?quizDetail(h):''}`:''}
@@ -898,7 +898,7 @@ function peladanSum(sp,pr){
 }
 function spreads(){
   const rows=SPREADS.map(sp=>`<button class="mod" data-act="spread" data-id="${sp.id}"><div class="g serif" style="font-size:22px;color:var(--wood)">${sp.cards}</div><div class="t"><b style="font-size:16px">${esc(sp.name)}</b><div style="font-size:12px;color:var(--muted);line-height:1.35">${esc(sp.tagline)}</div></div><span style="color:var(--caramel)">${ICONS.right}</span></button>`).join('');
-  return `<div class="stack" style="gap:4px">${tituloComAvatar('Tiragens')}<p style="color:var(--ink2)">Aqui tiragem não prevê nada. Ela coloca um padrão seu em posições para você enxergar de onde ele vem, como aparece e o que pede. A pergunta é sempre de quem está na mesa: você, no estudo, ou a consulente, no atendimento. Ninguém lê quem não está lá.</p></div><div class="stack libgrid">${rows}</div>${historicoPraticas()}`;
+  return `<div class="stack" style="gap:4px">${tituloComAvatar('Tiragens')}<p style="color:var(--ink2)">Aqui a tiragem não prevê o futuro. Ela dispõe um padrão seu em posições, para você enxergar de onde ele vem, como aparece e o que pede. A pergunta é sempre de quem está na mesa: você, no estudo, ou a consulente, no atendimento. Quem não está presente fica fora da leitura.</p></div><div class="stack libgrid">${rows}</div>${historicoPraticas()}`;
 }
 function historicoPraticas(){
   const R=S.readings; if(!R.length) return '';
@@ -957,7 +957,7 @@ function practiceView(sp){
     <button class="btn ghost" data-act="card" data-id="${c.id}">Abrir a ficha de ${esc(c.name)}</button></div>`;
   }
   const legend=sp.positions.slice().sort((a,b)=>a.n-b.n).map(x=>{const d=pr.draw[x.n-1],c=CARDS[d.cardId];return `<button class="row${open===x.n?' on':''}" style="min-height:48px;padding:6px 10px;${open===x.n?'border-color:var(--caramel)':''}" data-act="popen" data-id="${x.n}"><b class="serif" style="font-size:20px;color:var(--caramel);width:26px;text-align:center">${x.n}</b><div class="t"><div class="n" style="font-size:14px">${esc(c.name)}${d.rev?' <span style="font-size:11px;color:var(--red);font-weight:500">inv.</span>':''}</div><div class="s">${esc(x.label)}</div></div></button>`;}).join('');
-  const sintese=`<div class="notes" style="gap:6px"><label for="ps" style="font-size:13px;font-weight:600;color:var(--wood)">O padrão em uma frase</label><textarea id="ps" data-ps maxlength="200" style="min-height:80px" placeholder="Porque (1), hoje eu (2), e isso aponta para (3)…">${esc(pr.sintese||'')}</textarea><div class="st"><span>Se não couber numa frase, ainda não está claro.</span><span id="ps-status">${pr.saved&&(pr.sintese||'').trim()?salvoOnde():''}</span></div>
+  const sintese=`<div class="notes" style="gap:6px"><label for="ps" style="font-size:13px;font-weight:600;color:var(--wood)">O padrão em uma frase</label><textarea id="ps" data-ps maxlength="200" style="min-height:80px" placeholder="Porque (1), hoje eu (2), e isso aponta para (3)…">${esc(pr.sintese||'')}</textarea><div class="st"><span>Tente dizer em uma frase. Se ainda não couber, dê mais tempo à leitura.</span><span id="ps-status">${pr.saved&&(pr.sintese||'').trim()?salvoOnde():''}</span></div>
   <label for="pi" style="font-size:13px;font-weight:600;color:var(--wood);margin-top:6px">Minha interpretação</label><textarea id="pi" data-pi maxlength="3000" style="min-height:140px" placeholder="Leia posição por posição, depois a tiragem inteira como uma frase. O que cada carta faz no lugar dela? Que padrão aparece? O que ele pede?">${esc(pr.interpretacao||'')}</textarea><div class="st"><span>${(pr.interpretacao||'').length?(pr.interpretacao||'').length+' caracteres':''}</span><span id="pi-status">${pr.saved&&(pr.interpretacao||'').trim()?salvoOnde():''}</span></div></div>`;
   return `${pergunta}<div class="prgrid"><div class="pr-a">${renderLayout(sp,pr.draw,open)}<div style="font-size:12px;color:var(--muted);text-align:center">Toque numa posição para ler a carta nela.</div>${peladanSum(sp,pr)}${panel}</div><div class="pr-b"><div class="stack" style="gap:6px">${legend}</div>${sintese}${mentoraHtml()}
   <div class="grid2"><button class="btn ghost" data-act="pdraw">Sortear de novo</button><button class="btn" data-act="psave" ${pr.saved?'disabled style="opacity:.6"':''}>${pr.saved?'Prática salva':'Salvar prática'}</button></div>${logada()&&COM?`<button class="btn ghost" data-act="pshare">Compartilhar na roda</button>`:''}</div></div>${list}`;
@@ -993,7 +993,7 @@ function mentoraHtml(){
   const sug=n?'':`<div class="pills wrap">${ctx.sugestoes.map(s=>`<button class="pill" data-act="msug" data-q="${esc(s)}">${esc(s)}</button>`).join('')}</div>`;
   const erro=S.mentora.erro&&S.mentora.chave===ctx.chave?`<div class="err">${esc(S.mentora.erro)}</div>`:'';
   const rm=S.mentoraRestam&&S.mentoraRestam.dia===hojeOfelia()?S.mentoraRestam.n:null;
-  const resta=rm===null?'':rm===0?' Você já usou as perguntas de hoje; amanhã tem mais.':' '+(rm===1?'Resta 1 pergunta hoje.':'Restam '+rm+' perguntas hoje.');
+  const resta=rm===null?'':rm===0?' Você já fez as perguntas de hoje. Amanhã a Ofélia te espera com mais.':' '+(rm===1?'Resta 1 pergunta hoje.':'Restam '+rm+' perguntas hoje.');
   const rodape=(n?n+' troca'+(n===1?'':'s')+(ctx.chave[0]==='p'?' nesta prática':' nesta carta')+', salvas com o resto do estudo.':'Até '+LIMITE_OFELIA+' perguntas por dia. Só você vê esta conversa.')+resta;
   return `<div class="notes mentora">${head}${bolhas?`<div class="mchat" id="mchat">${bolhas}</div>`:''}${sug}<label for="mq" style="font-size:13px;font-weight:600;color:var(--wood)">Minha dúvida</label><textarea id="mq" data-mq maxlength="500" placeholder="${esc(ctx.placeholder)}"${env?' disabled':''}>${esc(S.mentoraDraft||'')}</textarea><button class="btn" data-act="mperg"${env?' disabled style="opacity:.6"':''}>${env?'Ofélia está escrevendo…':'Perguntar à Ofélia'}</button><div style="font-size:12px;color:var(--muted)">${esc(rodape)}</div>${erro}</div>`;
 }
@@ -1048,7 +1048,7 @@ function gateView(){
     <div style="display:flex;justify-content:space-between"><button class="link" data-act="ga-reenviar">Mandar outro código</button><button class="link" data-act="ga-trocar">Trocar e-mail</button></div>`;
   else if(A.estado==='sem-acesso') body=`<div class="dark stack" style="gap:10px;text-align:center"><div class="eyebrow" style="color:var(--pink)">Acesso não liberado</div><p>O e-mail <b>${esc(A.email)}</b> ainda não tem acesso liberado ao Grimório Arcano.</p><p style="font-size:14px;opacity:.85">Fale com a Raquel: assim que a mensalidade do Coven for confirmada, o acesso é liberado neste mesmo e-mail.</p></div>
     <button class="btn ghost" data-act="ga-denovo">Já falei com a Raquel, conferir de novo</button><button class="link" data-act="ga-sair" style="align-self:center">Entrar com outro e-mail</button>`;
-  else body=`${err||'<div class="err">Algo deu errado.</div>'}<button class="btn" data-act="ga-denovo">Tentar de novo</button>${A.user?`<button class="link" data-act="ga-sair" style="align-self:center">Sair</button>`:''}`;
+  else body=`${err||'<div class="err">Algo não saiu como esperado.</div>'}<button class="btn" data-act="ga-denovo">Tentar de novo</button>${A.user?`<button class="link" data-act="ga-sair" style="align-self:center">Sair</button>`:''}`;
   return `<div class="gate">${head}${body}</div>`;
 }
 function editarPerfilView(){
@@ -1111,7 +1111,7 @@ function postHtml(p){
 function comunidadeView(){
   if(!logada()) return home();
   const c=S.com, pills=[{id:'todos',label:'Todos'}].concat(COM.TEMAS).map(t=>`<button class="pill${c.tema===t.id?' on':''}" data-act="ctema" data-id="${t.id}">${t.label}</button>`).join('');
-  const comb=`<div class="box" style="gap:8px;background:var(--sand);border:none"><button data-act="ccomb" style="display:flex;justify-content:space-between;align-items:center;border:none;background:transparent;padding:0;min-height:32px;color:var(--wood);font-weight:600;font-size:14px"><span>Combinados da roda</span><span>${c.combinados?'−':'+'}</span></button>${c.combinados?`<div class="li">Aqui é estudo. Fale da sua experiência com as cartas, das suas tiragens, das suas dúvidas.</div><div class="li">Nada de leitura sobre quem não está na mesa. Pergunta sobre o ex, o chefe ou a amiga volta para quem perguntou.</div><div class="li">Nada de promessa de resultado. Tarot mostra padrão, não garante desfecho.</div><div class="li">Respeito com quem está começando. Ninguém nasceu sabendo.</div><div class="li">A Raquel pode apagar o que fugir desses combinados.</div>`:''}</div>`;
+  const comb=`<div class="box" style="gap:8px;background:var(--sand);border:none"><button data-act="ccomb" style="display:flex;justify-content:space-between;align-items:center;border:none;background:transparent;padding:0;min-height:32px;color:var(--wood);font-weight:600;font-size:14px"><span>Combinados da roda</span><span>${c.combinados?'−':'+'}</span></button>${c.combinados?`<div class="li">Este é um espaço de estudo. Traga a sua experiência com as cartas, as suas tiragens e as suas dúvidas.</div><div class="li">A leitura é sempre de quem está na mesa. Quando a pergunta é sobre outra pessoa, a gente a traz de volta para você.</div><div class="li">Aqui ninguém promete resultado: o tarot mostra padrões, não garante desfechos.</div><div class="li">Acolha quem está começando. Todo mundo já esteve nesse lugar.</div><div class="li">O que fugir desses combinados pode ser retirado pela Raquel, para cuidar do espaço de todo mundo.</div>`:''}</div>`;
   let lista='';
   if(c.erro&&!c.posts.length) lista=`<div class="${c.preparando?'box':'err'}" style="${c.preparando?'text-align:center':''}">${esc(c.erro)}</div>${c.preparando?'':'<button class="btn ghost" data-act="catual">Tentar de novo</button>'}`;
   else if(!c.posts.length&&c.carregando) lista='<p style="text-align:center;color:var(--muted)">Carregando a roda…</p>';
