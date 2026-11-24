@@ -331,6 +331,135 @@ main.cheia{padding:0;gap:0}
   .cl-hero h2{font-size:38px}.cl-head h1{font-size:34px}
   .cl-aula{grid-template-columns:200px minmax(0,1fr);gap:16px;padding:12px}
 }
+/* Planner 2027 (tela) */
+.pl-atalho .ic{font-size:20px;color:#F2D36B;background:#4A2545}
+.pl-top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:4;background:var(--paper);margin:-8px 0 -10px;padding:4px 0}
+.pl-st{font-size:12.5px;font-weight:500;color:var(--muted);text-align:right;line-height:1.3}
+.pl-st.ok{color:#3F6E4A}.pl-st.off{color:#8A5A1E}
+@media (prefers-color-scheme:dark){.pl-st.ok{color:#9CCB9F}.pl-st.off{color:#E5C07B}}
+.pl-hero h2{text-transform:capitalize}
+.pl-cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.pl-cal .wd{font-size:11px;text-align:center;color:var(--muted);font-weight:600;padding:4px 0}
+.pl-cal button{position:relative;min-width:0;min-height:64px;border:1px solid var(--line);border-radius:10px;background:var(--card);display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px 5px;font-size:14px;font-weight:500;overflow:hidden}
+.pl-cal .tp{display:flex;flex-direction:column;align-items:center;gap:3px}
+.pl-cal button.hoje{border-color:var(--plum);box-shadow:inset 0 0 0 1px var(--plum)}
+.pl-cal button.fer .n{color:#B23A62;font-weight:700}
+.pl-cal button.nota::after{content:'';position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:var(--plum)}
+.pl-mk{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;margin-top:auto;max-width:100%;min-width:0}
+.pl-m{width:6px;height:6px;border-radius:50%;flex-shrink:0;font-style:normal}
+.pl-m b{display:none}
+.pl-m.saba{background:#D9B66A}.pl-m.fer{background:#E58AA6}.pl-m.aula{background:var(--plum)}
+.pl-leg{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px;color:var(--muted);align-items:center}
+.pl-leg span{display:inline-flex;align-items:center;gap:6px}
+.pl-leg .f{color:#B23A62}
+.pl-evs{display:flex;flex-direction:column}
+.pl-ev{display:flex;align-items:center;gap:12px;padding:9px 2px;border:none;border-top:1px solid var(--line);background:none;text-align:left;width:100%;min-height:54px}
+.pl-ev:first-child{border-top:none}
+.pl-ev .d{width:42px;flex-shrink:0;text-align:center;font-family:'Garet','Jost',system-ui,sans-serif;font-weight:800;font-size:19px;color:var(--plum);line-height:1}
+.pl-ev .d small{display:block;font-family:'Jost',system-ui,sans-serif;font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.pl-ev .i{width:24px;display:flex;justify-content:center;flex-shrink:0}
+.pl-ev .i .pl-m{width:10px;height:10px}
+.pl-ev .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;font-size:15px;font-weight:600}
+.pl-ev .t small{font-size:12.5px;font-weight:400;color:var(--muted)}
+.pl-campo{display:flex;flex-direction:column;gap:8px}
+.pl-campo textarea{min-height:110px}
+.pl-fase .cab{display:flex;align-items:center;gap:12px}
+.pl-fase .cab b{font-size:16px;display:block}
+.pl-fase .cab small{font-size:12.5px;color:var(--muted)}
+.pl-fase .q{font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;font-weight:600;line-height:1.3;color:var(--ink)}
+.pl-fase textarea{min-height:92px}
+.pl-fases{display:flex;flex-direction:column;gap:12px}
+.pl-ano{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pl-mini{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:10px 8px;display:flex;flex-direction:column;gap:6px;text-align:left;min-width:0}
+.pl-mini>b{font-family:'Garet','Jost',system-ui,sans-serif;font-weight:800;font-size:14px;color:var(--plum);text-transform:capitalize;padding-left:3px}
+.pl-mini .g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;font-size:10.5px;text-align:center}
+.pl-mini .g span{height:18px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.pl-mini .g .wd{color:var(--muted);font-size:9px}
+.pl-mini .g .s{background:#D9B66A;color:#2E1A33;font-weight:700}
+.pl-mini .g .f{color:#B23A62;font-weight:700}
+.pl-mini .g .h{box-shadow:0 0 0 1.5px var(--plum)}
+.pl-mini small{font-size:11px;color:var(--muted);line-height:1.35;padding-left:3px;overflow-wrap:anywhere}
+.pl-dia-nav{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pl-dia-nav button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pl-dia-nav button svg{width:18px;height:18px}
+.pl-dia-nav button:disabled{opacity:.35}
+.pl-dia-nav>div{text-align:center;min-width:0}
+.pl-lista{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:14.5px;color:var(--ink2)}
+@media (prefers-color-scheme:dark){.pl-cal button.fer .n,.pl-mini .g .f,.pl-leg .f{color:#F5B8C9}}
+@media (min-width:640px){
+  .pl-cal{gap:6px}
+  .pl-cal button{min-height:88px;align-items:stretch;padding:7px 7px 6px}
+  .pl-cal .tp{flex-direction:row;justify-content:space-between;align-items:center}
+  .pl-cal button.nota::after{top:auto;bottom:5px}
+  .pl-mk{flex-direction:column;flex-wrap:nowrap;gap:2px;justify-content:flex-start;margin-top:2px;align-items:stretch}
+  .pl-m{width:auto;height:auto;border-radius:6px;padding:1px 5px;min-width:0}
+  .pl-m b{display:block;font-size:10.5px;font-weight:600;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+  .pl-m.saba{background:#F2E3B3;color:#5A4310}.pl-m.fer{background:#FBE3EB;color:#7A2D4F}.pl-m.aula{background:#4A2545;color:#F2D36B}
+  .pl-ev .i .pl-m{width:10px;height:10px;padding:0;border-radius:50%}.pl-ev .i .pl-m.saba{background:#D9B66A}.pl-ev .i .pl-m.fer{background:#E58AA6}
+  .pl-ano{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .pl-mini{padding:12px}.pl-mini .g{font-size:11.5px}.pl-mini .g span{height:22px}
+  .pl-fases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+}
+/* Planner 2027 (impressão em A4: só aparece ao imprimir) */
+#pl-print{display:none;color:#2E1A33;font-family:'Jost',system-ui,sans-serif}
+#pl-print,#pl-print *{-webkit-print-color-adjust:exact;print-color-adjust:exact;box-sizing:border-box}
+.pp{width:210mm;height:297mm;padding:13mm 13mm 10mm;display:flex;flex-direction:column;gap:5mm;overflow:hidden;position:relative;background:#fff;break-after:page;page-break-after:always;break-inside:avoid}
+.pp:last-child{break-after:auto;page-break-after:auto}
+.pp h2{font-family:'Garet','Jost',sans-serif;font-weight:800;font-size:30pt;line-height:1;color:#4A2545;margin:0;letter-spacing:-.01em}
+.pp h2 small{font-size:13pt;color:#B58F3A;margin-left:3mm;letter-spacing:.04em}
+.pp .sub{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:13pt;color:#6B4A66;margin:1.5mm 0 0;line-height:1.2}
+.pp .rod{margin-top:auto;display:flex;justify-content:space-between;font-size:7pt;letter-spacing:.16em;text-transform:uppercase;color:#9A8494;flex-shrink:0}
+.pp .cx{border:.3mm solid #CDB9C6;border-radius:3mm;padding:4mm 5mm 3mm;display:flex;flex-direction:column;gap:1.5mm;min-height:0;overflow:hidden;background:#fff}
+.pp .cx h3{font-family:'Garet','Jost',sans-serif;font-weight:800;font-size:11pt;color:#4A2545;margin:0;line-height:1.15;display:flex;align-items:center;gap:2.5mm}
+.pp .cx h3 small{font-family:'Jost',sans-serif;font-weight:500;font-size:8pt;color:#8A7183;letter-spacing:.02em}
+.pp .cx .q{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:12.5pt;color:#4A2545;margin:0;line-height:1.2}
+.pp .ln{flex:1;display:flex;flex-direction:column;min-height:0}
+.pp .ln i{flex:1;border-bottom:.2mm solid #D9CBBE;display:block}
+.pp .txt{flex:1;min-height:0;overflow:hidden;margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:11.5pt;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere;color:#2E1A33}
+.pp.capa{background:#4A2545;background-image:radial-gradient(circle at 86% 6%,rgba(245,184,201,.30),transparent 46%),radial-gradient(circle at 8% 100%,rgba(46,26,51,.95),transparent 58%);color:#F5EDCC;align-items:center;justify-content:center;text-align:center;gap:0}
+.pp.capa .moldura{position:absolute;inset:9mm;border:.35mm solid rgba(217,182,106,.6);border-radius:5mm}
+.pp.capa .orn{width:46mm;height:46mm;color:#D9B66A}
+.pp.capa .ey{font-size:10pt;letter-spacing:.42em;text-transform:uppercase;color:#F5B8C9;margin-top:9mm;font-weight:500;padding-left:.42em}
+.pp.capa .t1{font-family:'Garet','Jost',sans-serif;font-weight:800;font-size:46pt;line-height:1;color:#F2D36B;margin-top:5mm}
+.pp.capa .t2{font-family:'Garet','Jost',sans-serif;font-weight:800;font-size:104pt;line-height:.95;color:#F2D36B;letter-spacing:-.02em}
+.pp.capa .fs{display:flex;gap:6mm;margin-top:9mm}
+.pp.capa .as{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:19pt;color:#F5EDCC;margin-top:9mm}
+.pp.capa .de{position:absolute;left:0;right:0;bottom:22mm;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:12pt;color:#E3D3C2}
+.pp.capa .de span{display:inline-block;width:70mm;border-bottom:.25mm solid rgba(245,237,204,.6);margin-left:2mm;vertical-align:baseline}
+.pp-ano{display:grid;grid-template-columns:repeat(4,1fr);gap:6mm 6mm;flex-shrink:0}
+.pp-mini b{font-family:'Garet','Jost',sans-serif;font-weight:800;font-size:9.5pt;color:#4A2545;text-transform:capitalize;display:block;margin-bottom:1mm}
+.pp-mini .g{display:grid;grid-template-columns:repeat(7,1fr);font-size:7pt;text-align:center;row-gap:.4mm}
+.pp-mini .g span{height:4.4mm;display:flex;align-items:center;justify-content:center}
+.pp-mini .g .wd{color:#9A8494;font-size:6pt;font-weight:600}
+.pp-mini .g .s{background:#EBD591;border-radius:50%;font-weight:700;width:4.4mm;margin:0 auto}
+.pp-mini .g .f{color:#B23A62;font-weight:700}
+.pp-leg{display:flex;flex-wrap:wrap;gap:1.5mm 5mm;font-size:7.5pt;color:#6B4A66;align-items:center;flex-shrink:0}
+.pp-leg span{display:inline-flex;align-items:center;gap:1.5mm}
+.pp-leg .s{width:3.4mm;height:3.4mm;border-radius:50%;background:#EBD591;display:inline-block}
+.pp-leg .f{color:#B23A62;font-weight:700}
+.pp-sabas{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr);gap:4mm;flex:1;min-height:0}
+.pp-sabas .cx{gap:1mm}
+.pp-sabas .dt{font-family:'Garet','Jost',sans-serif;font-weight:800;font-size:17pt;color:#B58F3A;line-height:1}
+.pp-sabas .dt small{display:block;font-family:'Jost',sans-serif;font-weight:500;font-size:8pt;color:#8A7183;margin-top:1.2mm;letter-spacing:.02em}
+.pp-sabas h3{font-size:14pt!important;margin-top:1mm!important}
+.pp-sabas .tm{font-size:8pt;color:#6B4A66;margin:0;line-height:1.3}
+.pp-sabas .cm{font-size:7pt;letter-spacing:.12em;text-transform:uppercase;color:#9A8494;margin:1.5mm 0 0}
+.pp-cab{display:flex;justify-content:space-between;align-items:flex-end;gap:6mm;flex-shrink:0}
+.pp-luas{display:grid;grid-template-columns:auto auto;gap:1mm 6mm;font-size:8pt;color:#4A2545}
+.pp-luas span{display:inline-flex;align-items:center;gap:1.5mm;white-space:nowrap}
+.pp-grade{flex:1;min-height:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:6mm;grid-auto-rows:minmax(0,1fr);border-top:.3mm solid #4A2545;border-left:.2mm solid #CDB9C6}
+.pp-grade .wd{font-size:7pt;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:#4A2545;display:flex;align-items:center;justify-content:center;border-right:.2mm solid #CDB9C6;border-bottom:.2mm solid #CDB9C6;background:#F7EFE0}
+.pp-grade .c{border-right:.2mm solid #CDB9C6;border-bottom:.2mm solid #CDB9C6;padding:1.5mm 1.8mm 1.2mm;display:flex;flex-direction:column;gap:.6mm;min-width:0;min-height:0;overflow:hidden}
+.pp-grade .c.out{background:#FAF5EA}
+.pp-grade .c .tp{display:flex;justify-content:space-between;align-items:center;flex-shrink:0;height:5mm}
+.pp-grade .c .n{font-family:'Garet','Jost',sans-serif;font-weight:800;font-size:11pt;color:#4A2545;line-height:1}
+.pp-grade .c.fer .n{color:#B23A62}
+.pp-grade .c .lu{display:inline-flex;align-items:center;gap:1mm;font-size:6pt;color:#6B4A66;white-space:nowrap}
+.pp-grade .c .e{font-size:6.3pt;line-height:1.2;font-weight:600;flex-shrink:0;overflow:hidden;overflow-wrap:anywhere;max-height:5.4mm}
+.pp-grade .c .e.saba{color:#7A5B12;background:#F4E7B8;border-radius:1mm;padding:.2mm 1mm;align-self:flex-start;max-width:100%}
+.pp-grade .c .e.fer{color:#B23A62}
+.pp-grade .c .txt{font-size:6.8pt;line-height:1.25;font-family:'Jost',sans-serif;font-weight:400}
+.pp-fases{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:4mm}
 </style>
 </head>
 <body>
@@ -420,10 +549,10 @@ function ir(h,trocar){if(trocar)location.replace('#/'+h);else location.hash='#/'
 window.addEventListener('hashchange',render);
 
 function render(manter){
-  const r=rota(), tab=r[0]==='beneficios'?'hoje':r[0]==='aula'||r[0]==='clube'?'aulas':r[0]==='item'?'biblioteca':r[0]==='ler'?(/^(clube|aula)/.test(leitor.volta||'')?'aulas':'estante'):r[0];
+  const r=rota(), tab=r[0]==='beneficios'||r[0]==='planner'?'hoje':r[0]==='aula'||r[0]==='clube'?'aulas':r[0]==='item'?'biblioteca':r[0]==='ler'?(/^(clube|aula)/.test(leitor.volta||'')?'aulas':'estante'):r[0];
   if(leitor.ativo&&r[0]!=='ler')fecharLeitor();
   $('#nav').innerHTML=TABS.map(([id,nome,svg])=>`<button data-go="${id}" class="${tab===id?'on':''}" aria-label="${nome}" ${tab===id?'aria-current="page"':''}>${svg}<span>${nome}</span></button>`).join('');
-  const telas={beneficios:telaBeneficios,hoje:telaHoje,aulas:telaAulas,aula:telaAula,clube:telaClube,estante:telaEstante,ler:telaLer,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua,termos:telaTermos,membros:telaMembros};
+  const telas={beneficios:telaBeneficios,planner:telaPlanner,hoje:telaHoje,aulas:telaAulas,aula:telaAula,clube:telaClube,estante:telaEstante,ler:telaLer,biblioteca:telaBiblioteca,item:telaItem,lua:telaLua,termos:telaTermos,membros:telaMembros};
   // portão: sem sessão, só a tela de entrada e os termos; com sessão sem cadastro, só completar o perfil
   const portao=G.off?'':!G.pronto?'carregando':!G.sessao?(r[0]==='termos'?'':'entrar'):(!G.perfil&&!G.admin&&r[0]!=='termos')?'completar':(G.perfil&&G.perfil.acesso===false&&!G.admin&&r[0]!=='termos')?'pausado':'';
   $('#nav').hidden=!!portao||(!G.sessao&&r[0]==='termos');
@@ -448,6 +577,7 @@ document.addEventListener('click',e=>{
   if(a.startsWith('cl-'))return clubeAcao(a.slice(3),v,act);
   if(a.startsWith('cm-'))return comentarioAcao(a.slice(3),v,act);
   if(a.startsWith('bn-'))return beneficioAcao(a.slice(3),v,act);
+  if(a.startsWith('pl-'))return plannerAcao(a.slice(3),v,act);
   if(a==='voltar')ir(v||'hoje');
   if(a==='feita'){S.feitas[v]=!S.feitas[v];salvar();if(/^c\d/.test(v))renderSuave();else render();}
   if(a==='hemi'){S.hemisferio=v;salvar();render();}
@@ -460,6 +590,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('input',e=>{
   if(e.target.id==='notas'){S.notas[e.target.dataset.v]=e.target.value;salvar();}
+  if(e.target.dataset&&e.target.dataset.pl){plEditar(e.target.dataset.pl,e.target.value);return;}
   if(e.target.id==='cm-texto'){K.texto=e.target.value;contarCm(e.target);}
   if(e.target.dataset&&e.target.dataset.bf&&BN.form&&e.target.type!=='file'&&e.target.type!=='checkbox')BN.form[e.target.dataset.bf]=e.target.value;
   if(e.target.id==='cm-resp'){K.respTexto=e.target.value;contarCm(e.target);}
@@ -472,6 +603,7 @@ document.addEventListener('input',e=>{
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='cm-duvida'){K.duvida=e.target.checked;return;}
+  if(e.target.id==='pl-notas'){PL.comNotas=e.target.checked;const x=$('#pl-print');if(x)x.innerHTML=plImpressao();return;}
   if(e.target.dataset&&e.target.dataset.bf&&BN.form){const k=e.target.dataset.bf;BN.form[k]=e.target.type==='file'?(e.target.files[0]||null):e.target.type==='checkbox'?e.target.checked:e.target.value;if(k==='tipo')mostrarCamposBn();return;}
   if(e.target.dataset&&e.target.dataset.cf&&C.form){
     const k=e.target.dataset.cf;
@@ -927,6 +1059,7 @@ function telaHoje(){
   </div>
   ${cartaoContinuar()}
   ${cartaoBeneficios()}
+  ${cartaoPlanner()}
   ${cartaoGrimorio()}
   <div class="card">
     <div class="eyebrow">Hoje é dia de ${esc(dia.planeta)}</div>
@@ -1007,9 +1140,12 @@ function telaBeneficios(){
     let itens=lista.filter(x=>x.tipo===tipo);
     if(tipo==='mes')itens=itens.slice().sort((a,b)=>String(b.mes||'').localeCompare(String(a.mes||'')));
     const tranc=tipo==='fidelidade'?(BN.aCaminho||[]):[];
-    if(!itens.length&&!tranc.length&&!(tipo==='boas-vindas'||tipo==='mes'))return '';
+    // o Planner 2027 mora no app e também sai em papel: o atalho fica sempre em "Para imprimir", junto dos materiais enviados pela admin
+    const fixo=tipo==='imprimir'?`<button class="row pl-atalho" data-go="planner"><span class="ic">☾</span><span class="t"><span class="n">Planner ${PL_ANO}</span><span class="s" style="white-space:normal">Use aqui no app ou imprima em A4, em branco ou com as suas anotações.</span><span class="s">Abrir</span></span><span class="chev">${I.chev}</span></button>`:'';
+    if(!itens.length&&!tranc.length&&!fixo&&!(tipo==='boas-vindas'||tipo==='mes'))return '';
     return `<section class="cl-sec"><div><h2 class="h2">${titulo}</h2><p class="dica" style="margin-top:2px">${sub}</p></div>
-      ${itens.length?`<div class="list">${itens.map(linhaBeneficio).join('')}</div>`:(tranc.length?'':`<div class="card"><p class="dica">${tipo==='mes'?'O material deste mês chega em breve.':'Os materiais aparecem aqui em breve.'}</p></div>`)}
+      ${fixo}
+      ${itens.length?`<div class="list">${itens.map(linhaBeneficio).join('')}</div>`:(tranc.length||fixo?'':`<div class="card"><p class="dica">${tipo==='mes'?'O material deste mês chega em breve.':'Os materiais aparecem aqui em breve.'}</p></div>`)}
       ${tranc.map(t=>`<div class="row bn-tranc"><span class="ic">🔒</span><span class="t"><span class="n">${esc(t.titulo)}</span>${t.descricao?`<span class="s" style="white-space:normal">${esc(t.descricao)}</span>`:''}<span class="s">Abre aos ${t.meses_minimos} meses de Coven${p.assinante_desde?` · faltam ${Math.max(1,t.meses_minimos-n)} ${t.meses_minimos-n===1?'mês':'meses'}`:''}</span></span></div>`).join('')}
     </section>`;
   }).join('');
@@ -1321,6 +1457,7 @@ function carregarClube(){
     if(E.livros===null&&!E.erro)carregarLivros();
     const r=rota();if(['aulas','hoje'].includes(r[0])||(r[0]==='clube'&&!/^editar/.test(r[1]||'')))renderSuave();
     else if(r[0]==='clube'&&C.form===null)render(true);
+    else if(r[0]==='planner')plRefrescar();
   })();
 }
 const livrosClube=()=>(C.livros||[]).slice().sort((a,b)=>(a.ordem-b.ordem)||(a.id-b.id));
@@ -2468,6 +2605,349 @@ function telaLua(r){
   <div class="card"><div class="eyebrow">Fases do mês</div>${lista||'<p>—</p>'}</div>
   ${sabas.length?`<div class="card"><div class="eyebrow">Sabás do mês</div>${sabas.map(s=>`<div style="display:flex;justify-content:space-between;gap:10px"><b>${esc(B.sabas[s.id].nome)}</b><span style="color:var(--muted);font-size:14px">${dataLonga(s.data)}${s.astronomico?' · '+hora(s.data):''}</span></div>`).join('')}</div>`:''}
   <footer class="note">Horários no fuso do seu aparelho, calculados com os algoritmos astronômicos de Jean Meeus.</footer>`;
+}
+
+// ---------- Planner 2027 (seção 12 do cob.sql) ----------
+// Calendário do ano no horário de Brasília: fases exatas e sabás vêm do lua.js; feriados nacionais são calculados (os móveis, pela Páscoa).
+// Anotações em cob_planner (uma linha por campo), com cópia em S.planner[usuário] para funcionar sem internet ou antes de o SQL rodar.
+const PL_ANO=2027;
+const PL={dono:null,carregado:false,falta:false,semRede:false,erro:false,carregando:null,tentou:0,t:null,enviando:false,denovo:false,comNotas:false,cal:null};
+const PL_FASES=[['nova','nova','O que eu quero começar?'],['quarto-crescente','crescente','Qual é o meu próximo passo?'],['cheia','cheia','O que floresceu? O que eu celebro?'],['quarto-minguante','minguante','O que eu solto?']];
+const PL_ILUM={nova:0,'quarto-crescente':.5,cheia:1,'quarto-minguante':.5};
+const PL_SEM=['dom','seg','ter','qua','qui','sex','sáb'];
+const PL_CHAVE=/^[a-z0-9-]{1,40}$/;
+const isoSP=d=>d.toLocaleDateString('en-CA',{timeZone:TZ});
+const plHora=d=>horaSP(d).replace(':','h');
+const plIso=(m,d)=>`${PL_ANO}-${n2(m)}${d?'-'+n2(d):''}`;
+const plSemana=iso=>new Date(iso+'T12:00:00Z').getUTCDay();
+const plDiasNoMes=m=>new Date(Date.UTC(PL_ANO,m,0)).getUTCDate();
+const plMeio=iso=>new Date(iso+'T12:00:00-03:00');   // meio-dia em Brasília (sem horário de verão desde 2019)
+const Mai=t=>t.charAt(0).toUpperCase()+t.slice(1);
+// Páscoa (algoritmo gregoriano anônimo, Meeus cap. 8)
+function pascoa(y){
+  const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451);
+  return new Date(Date.UTC(y,Math.floor((h+l-7*m+114)/31)-1,((h+l-7*m+114)%31)+1));
+}
+// feriados nacionais; Carnaval e Corpus Christi são ponto facultativo
+function feriados(ano){
+  const p=pascoa(ano), mv=n=>new Date(p.getTime()+n*864e5).toISOString().slice(0,10), fx=(m,d)=>`${ano}-${n2(m)}-${n2(d)}`;
+  return [[fx(1,1),'Confraternização Universal'],[mv(-48),'Carnaval',1],[mv(-47),'Carnaval',1],[mv(-2),'Sexta-feira Santa'],[fx(4,21),'Tiradentes'],[fx(5,1),'Dia do Trabalho'],[mv(60),'Corpus Christi',1],
+    [fx(9,7),'Independência do Brasil'],[fx(10,12),'Nossa Senhora Aparecida'],[fx(11,2),'Finados'],[fx(11,15),'Proclamação da República'],[fx(11,20),'Consciência Negra'],[fx(12,25),'Natal']];
+}
+function plCal(){
+  const hemi=S.hemisferio==='norte'?'norte':'sul';
+  if(PL.cal&&PL.cal.hemi===hemi)return PL.cal;
+  const dias={}, por=(iso,x)=>{if(iso.startsWith(PL_ANO+'-'))(dias[iso]=dias[iso]||[]).push(x);};
+  const fases=L.fasesEntre(new Date(Date.UTC(PL_ANO-1,10,15)),new Date(Date.UTC(PL_ANO+1,1,15)));
+  fases.forEach(f=>por(isoSP(f.data),{tipo:'lua',fase:f.fase,data:f.data}));
+  // sabás de data fixa vêm como meio-dia do aparelho: vale o dia do calendário; os astronômicos, o instante convertido para Brasília
+  L.sabas(PL_ANO,hemi).forEach(s=>por(s.astronomico?isoSP(s.data):plIso(s.data.getMonth()+1,s.data.getDate()),{tipo:'saba',id:s.id,data:s.data,astro:!!s.astronomico}));
+  feriados(PL_ANO).forEach(([iso,nome,fac])=>por(iso,{tipo:'fer',nome,fac:!!fac}));
+  return PL.cal={hemi,dias,fases};
+}
+// aulas do Clube do Livro que a pessoa já enxerga, pelo dia (em Brasília) em que foram ao ar
+function plAulas(){
+  const m={};
+  (C.aulas||[]).filter(a=>liberada(a)&&a.publicar_em).forEach(a=>{const iso=dataSP(a.publicar_em);if(iso.startsWith(PL_ANO+'-'))(m[iso]=m[iso]||[]).push(a);});
+  return m;
+}
+const plEventos=(iso,aulas)=>(plCal().dias[iso]||[]).concat(((aulas||{})[iso]||[]).map(a=>({tipo:'aula',aula:a})));
+const plNomeEv=e=>e.tipo==='lua'?B.lua[e.fase].nome:e.tipo==='saba'?B.sabas[e.id].nome:e.tipo==='fer'?e.nome:`Aula ${n2(e.aula.numero)} · ${e.aula.titulo}`;
+const plSubEv=e=>e.tipo==='lua'?`às ${plHora(e.data)}, horário de Brasília`:e.tipo==='saba'?B.sabas[e.id].subtitulo+(e.astro?` · às ${plHora(e.data)}`:''):e.tipo==='fer'?(e.fac?'ponto facultativo':'feriado nacional'):'Clube do Livro';
+const plLua=(fase,tam)=>luaSvg(PL_ILUM[fase],CRESCE.has(fase),tam);
+// fase do dia: a exata, se cair nele; senão a intermediária, contada da última fase exata antes do meio-dia de Brasília
+function plFaseDoDia(iso){
+  const ex=(plCal().dias[iso]||[]).find(e=>e.tipo==='lua');if(ex)return {fase:ex.fase,exata:ex};
+  const meio=plMeio(iso);let ant=null;for(const f of plCal().fases)if(f.data<=meio)ant=f;
+  return {fase:ant?{nova:'crescente','quarto-crescente':'crescente-gibosa',cheia:'minguante-gibosa','quarto-minguante':'minguante'}[ant.fase]:'crescente',exata:null};
+}
+
+// --- anotações: cópia local por pessoa + banco ---
+const plId=()=>meuId()||'local';
+function plLocal(){if(!S.planner||typeof S.planner!=='object')S.planner={};const k=plId();return S.planner[k]||(S.planner[k]={});}
+const plTexto=ch=>{const x=plLocal()[ch];return x&&typeof x.t==='string'?x.t:'';};
+const plPendentes=()=>{const l=plLocal();return Object.keys(l).filter(k=>l[k]&&l[k].p&&PL_CHAVE.test(k));};
+const plFalta=e=>!!e&&(e.code==='PGRST205'||e.code==='42P01'||/cob_planner|schema cache/i.test(String(e.message||'')));
+function plEstado(){
+  const el=$('#pl-st');if(!el)return;
+  const conta=!!meuId()&&!G.off, pend=plPendentes().length;
+  let t='',c='';
+  if(!conta){t='Salvo neste aparelho';}
+  else if(PL.enviando||PL.t){t='Salvando…';}
+  else if(PL.falta){t='Salvo neste aparelho';c='off';}
+  else if(PL.semRede||(pend&&!navigator.onLine)){t='Sem conexão, salvo neste aparelho';c='off';}
+  else if(PL.erro){t='Não consegui sincronizar agora; ficou salvo neste aparelho';c='off';}
+  else if(PL.carregando&&!PL.carregado){if(navigator.onLine)t='Abrindo suas anotações…';else{t='Sem conexão, salvo neste aparelho';c='off';}}
+  else if(pend){t='Salvando…';}
+  else{t='Salvo';c='ok';}
+  el.textContent=t;el.className='pl-st'+(c?' '+c:'');
+}
+// redesenha a tela do planner sem atrapalhar quem está digitando: com o cursor num campo, só atualiza os outros campos
+function plRefrescar(){
+  if(rota()[0]!=='planner')return;
+  const a=document.activeElement;
+  if(a&&a.dataset&&a.dataset.pl){
+    const loc=plLocal();
+    document.querySelectorAll('textarea[data-pl]').forEach(t=>{const k=t.dataset.pl;if((t!==a||!(loc[k]&&loc[k].p))&&t.value!==plTexto(k))t.value=plTexto(k);});
+    plEstado();
+  }else render(true);
+}
+function carregarPlanner(){
+  if(PL.carregando)return PL.carregando;
+  const eu=meuId();if(!eu||G.off)return null;
+  PL.tentou=Date.now();
+  return PL.carregando=(async()=>{
+    try{
+      const sb=await carregarSupabase();
+      const {data,error}=await sb.from('cob_planner').select('chave,texto,atualizado_em').eq('user_id',eu);
+      if(error)throw error;
+      if(meuId()===eu){
+        const loc=plLocal();
+        (data||[]).forEach(r=>{
+          const x=loc[r.chave], ms=new Date(r.atualizado_em).getTime()||0;
+          if(x&&x.p&&x.m>=ms)return;   // edição feita aqui, mais nova e ainda não enviada: fica a daqui
+          loc[r.chave]={t:String(r.texto||''),m:ms};
+        });
+        salvar();PL.carregado=true;PL.falta=false;PL.semRede=false;PL.erro=false;
+      }
+    }catch(e){
+      if(plFalta(e))PL.falta=true;else PL.semRede=true;
+    }
+    PL.carregando=null;
+    if(PL.carregado&&plPendentes().length)plEnviar();
+    plRefrescar();
+  })();
+}
+function plEditar(ch,v){
+  if(!PL_CHAVE.test(ch))return;
+  plLocal()[ch]={t:String(v).slice(0,5000),m:Date.now(),p:1};salvar();
+  clearTimeout(PL.t);PL.t=setTimeout(plEnviar,800);
+  plEstado();
+}
+async function plEnviar(){
+  clearTimeout(PL.t);PL.t=null;
+  const eu=meuId();
+  if(!eu||G.off||PL.falta){plEstado();return;}
+  if(PL.enviando){PL.denovo=true;return;}
+  const loc=plLocal(), lote=plPendentes().map(k=>({k,m:loc[k].m,t:loc[k].t}));
+  if(!lote.length){plEstado();return;}
+  PL.enviando=true;plEstado();
+  try{
+    const sb=await carregarSupabase();
+    const {error}=await sb.from('cob_planner').upsert(lote.map(x=>({user_id:eu,chave:x.k,texto:x.t})),{onConflict:'user_id,chave'});
+    if(error)throw error;
+    lote.forEach(x=>{const a=loc[x.k];if(a&&a.m===x.m)delete a.p;});salvar();   // se a pessoa digitou de novo durante o envio, continua pendente
+    PL.semRede=false;PL.erro=false;
+  }catch(e){
+    if(plFalta(e))PL.falta=true;
+    else if(!navigator.onLine||/fetch|network|load failed/i.test(String(e&&e.message||'')))PL.semRede=true;
+    else PL.erro=true;
+  }
+  PL.enviando=false;
+  if(PL.denovo){PL.denovo=false;if(plPendentes().length&&!PL.t)PL.t=setTimeout(plEnviar,800);}
+  plEstado();
+}
+// a cada entrada no planner: troca de conta zera o estado; carrega do banco na primeira vez e tenta de novo (no máximo a cada 30 s) se faltou tabela ou rede
+function plPreparar(){
+  if(PL.dono!==plId()){PL.dono=plId();PL.carregado=false;PL.falta=false;PL.semRede=false;PL.erro=false;PL.tentou=0;}
+  if(meuId()&&!G.off&&!PL.carregando&&(!PL.carregado||PL.falta||PL.semRede)&&Date.now()-PL.tentou>30000)carregarPlanner();
+  if(C.livros===null&&!C.carregando&&!C.erro&&!G.off)carregarClube();
+}
+addEventListener('online',()=>{if(rota()[0]==='planner'||plPendentes().length){PL.semRede=false;if(PL.carregado)plEnviar();else{PL.tentou=0;if(rota()[0]==='planner')plPreparar();}}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&PL.t)plEnviar();});
+function plannerAcao(a){
+  if(a==='imprimir'){
+    if(typeof window.print!=='function'){const m=$('#pl-imp-msg');if(m){m.hidden=false;m.textContent='Este navegador não abre a impressão por aqui. Abra o COB no navegador do celular ou do computador e tente de novo.';}return;}
+    const vai=()=>window.print();
+    if(document.fonts&&document.fonts.ready)Promise.race([document.fonts.ready,new Promise(ok=>setTimeout(ok,1500))]).then(vai,vai);else vai();
+  }
+}
+
+// --- telas ---
+function cartaoPlanner(){
+  return `<button class="row pl-atalho" data-go="planner"><span class="ic">☾</span><span class="t"><span class="s" style="font-size:12px;letter-spacing:.12em;text-transform:uppercase">Só para quem está no Coven</span><span class="n">Planner ${PL_ANO}</span><span class="s">Luas, sabás e as suas intenções, mês a mês</span></span><span class="chev">${I.chev}</span></button>`;
+}
+const plTopo=(volta,nome)=>`<div class="pl-top"><button class="back" data-act="voltar" data-v="${volta}">${I.back}${nome}</button><span id="pl-st" class="pl-st" role="status" aria-live="polite"></span></div>`;
+const plAbas=sel=>`<div class="pills" style="margin:0;padding:0"><button class="pill ${sel==='mes'?'on':''}" data-go="planner" data-troca>Mês a mês</button><button class="pill ${sel==='ano'?'on':''}" data-go="planner/ano" data-troca>O ano inteiro</button><button class="pill" data-go="planner/imprimir">Imprimir</button></div>`;
+const plAvisoSql=()=>eAdmin()&&PL.falta?`<p class="msg erro">Para o planner sincronizar entre os aparelhos, rode o SQL do planner (seção 12 do supabase/cob.sql, ou supabase/planner.sql) no Supabase. Até lá, as anotações ficam só neste aparelho.</p>`:'';
+const plCampo=(ch,rotulo,dica,extra)=>`<textarea data-pl="${ch}" maxlength="5000" aria-label="${esc(rotulo)}" placeholder="${esc(dica)}" ${extra||''}>${esc(plTexto(ch))}</textarea>`;
+const plBotaoImprimir=()=>`<button class="btn ghost" data-go="planner/imprimir">Imprimir ou salvar em PDF</button>`;
+const plRodape=()=>`<footer class="note">Luas e sabás no horário de Brasília${S.hemisferio==='norte'?' (Roda do Ano do hemisfério norte, como você escolheu na aba Lua)':''}, calculados com os algoritmos astronômicos de Jean Meeus. As suas anotações são só suas: ninguém mais lê.</footer>`;
+function telaPlanner(r){
+  plPreparar();
+  const hoje=isoSP(new Date()), v=r[1]||'';
+  let html;
+  if(v==='imprimir')html=plTelaImprimir();
+  else if(v==='ano')html=plTelaAno(hoje);
+  else{
+    const m=new RegExp(`^${PL_ANO}-(\\d\\d)(?:-(\\d\\d))?$`).exec(v);
+    let mes=m?+m[1]:0, dia=m&&m[2]?+m[2]:0;
+    if(mes<1||mes>12){mes=hoje.startsWith(PL_ANO+'-')?+hoje.slice(5,7):1;dia=0;}
+    if(dia&&dia>plDiasNoMes(mes))dia=0;
+    html=dia?plTelaDia(mes,dia,hoje):plTelaMes(mes,hoje);
+  }
+  setTimeout(plEstado,0);
+  return html;
+}
+function plTelaMes(mes,hoje){
+  const aulas=plAulas(), n=plDiasNoMes(mes), loc=plLocal();
+  const cel=[];
+  for(let i=0;i<plSemana(plIso(mes,1));i++)cel.push('<span></span>');
+  const evs=[];
+  for(let d=1;d<=n;d++){
+    const iso=plIso(mes,d), ev=plEventos(iso,aulas), lua=ev.find(e=>e.tipo==='lua'), outros=ev.filter(e=>e.tipo!=='lua');
+    ev.forEach(e=>evs.push([iso,d,e]));
+    const nota=!!(loc[iso]&&loc[iso].t&&loc[iso].t.trim());
+    cel.push(`<button data-go="planner/${iso}" class="${iso===hoje?'hoje ':''}${ev.some(e=>e.tipo==='fer')?'fer ':''}${nota?'nota':''}" aria-label="${d} de ${MESES[mes-1]}${ev.map(e=>', '+esc(plNomeEv(e))).join('')}${nota?', com anotação':''}"><span class="tp"><span class="n">${d}</span>${lua?plLua(lua.fase,17):''}</span>${outros.length?`<span class="pl-mk">${outros.map(e=>`<i class="pl-m ${e.tipo}"><b>${esc(e.tipo==='aula'?'Aula '+n2(e.aula.numero):plNomeEv(e))}</b></i>`).join('')}</span>`:''}</button>`);
+  }
+  const fasesMes=plFasesDoMes(mes);
+  return `
+  ${plTopo('hoje','Hoje')}
+  <section class="cl-hero pl-hero">${ornamento()}<div class="eyebrow">Planner ${PL_ANO}</div><h2 class="gt">${MESES[mes-1]}</h2><p class="cl-sub" style="font-size:17px">Luas, sabás e as suas intenções, mês a mês.</p></section>
+  ${plAbas('mes')}
+  ${plAvisoSql()}
+  ${hoje<PL_ANO+'-01-01'?`<p class="dica" id="pl-antes">${PL_ANO} ainda não começou: o planner abre em janeiro para você já ir se organizando. Quando o ano chegar, o dia de hoje aparece marcado.</p>`:hoje>PL_ANO+'-12-31'?`<p class="dica" id="pl-antes">${PL_ANO} já passou: o planner continua aqui para você reler.</p>`:''}
+  <div class="card">
+    <div class="calhead"><button ${mes>1?`data-go="planner/${plIso(mes-1)}" data-troca`:'disabled style="opacity:.35"'} aria-label="Mês anterior">${I.back}</button><h2 class="h2" style="text-transform:capitalize">${MESES[mes-1]} ${PL_ANO}</h2><button ${mes<12?`data-go="planner/${plIso(mes+1)}" data-troca`:'disabled style="opacity:.35"'} aria-label="Próximo mês">${I.chev}</button></div>
+    <div class="pl-cal">${['D','S','T','Q','Q','S','S'].map(x=>`<span class="wd">${x}</span>`).join('')}${cel.join('')}</div>
+    <div class="pl-leg"><span><i class="pl-m saba"></i> Sabá</span><span><i class="pl-m fer"></i> Feriado</span><span><i class="pl-m aula"></i> Aula do Clube</span><span>Toque num dia para anotar</span></div>
+  </div>
+  <div class="card"><div class="eyebrow">Neste mês</div><div class="pl-evs">${evs.map(([iso,d,e])=>`<button class="pl-ev" data-go="planner/${iso}"><span class="d">${n2(d)}<small>${PL_SEM[plSemana(iso)]}</small></span><span class="i">${e.tipo==='lua'?plLua(e.fase,22):`<i class="pl-m ${e.tipo}"></i>`}</span><span class="t">${esc(plNomeEv(e))}<small>${esc(plSubEv(e))}</small></span></button>`).join('')}</div></div>
+  <section class="card pl-campo"><h2 class="h2">Intenções de ${MESES[mes-1]}</h2><p class="dica">O que você quer cuidar neste mês? Escreva do seu jeito, sem cobrança.</p>${plCampo(plIso(mes),'Intenções de '+MESES[mes-1],'Neste mês eu quero…')}</section>
+  <section class="cl-sec"><div><h2 class="h2">As Luas de ${MESES[mes-1]}</h2><p class="dica" style="margin-top:2px">Uma pergunta para cada fase. Responda quando a Lua chegar lá.</p></div>
+    <div class="pl-fases">${fasesMes.map(f=>`<div class="card pl-fase"><div class="cab">${plLua(f.fase,34)}<div><b>${esc(B.lua[f.fase].nome)}</b><small>${f.datas.length?f.datas.map(x=>`${+isoSP(x).slice(8)} de ${MESES[mes-1]}, ${plHora(x)}`).join(' e '):'não acontece neste mês'}</small></div></div><p class="q">${f.pergunta}</p>${plCampo(plIso(mes)+'-'+f.chave,B.lua[f.fase].nome+': '+f.pergunta,'Escreva aqui…')}</div>`).join('')}</div>
+  </section>
+  ${plBotaoImprimir()}
+  ${plRodape()}`;
+}
+// as quatro fases na ordem em que acontecem no mês (se alguma não cair no mês, vai para o fim)
+function plFasesDoMes(mes){
+  const pre=plIso(mes);
+  return PL_FASES.map(([fase,chave,pergunta],i)=>({fase,chave,pergunta,i,datas:plCal().fases.filter(f=>f.fase===fase&&isoSP(f.data).startsWith(pre)).map(f=>f.data)}))
+    .sort((a,b)=>((a.datas[0]?a.datas[0].getTime():Infinity)-(b.datas[0]?b.datas[0].getTime():Infinity))||(a.i-b.i));
+}
+function plTelaDia(mes,dia,hoje){
+  const iso=plIso(mes,dia), ev=plEventos(iso,plAulas()), fd=plFaseDoDia(iso), lua=luaDoDia(plMeio(iso)), sem=B.dias[plSemana(iso)];
+  const ant=dia>1?plIso(mes,dia-1):mes>1?plIso(mes-1,plDiasNoMes(mes-1)):'', prox=dia<plDiasNoMes(mes)?plIso(mes,dia+1):mes<12?plIso(mes+1,1):'';
+  const linhas=ev.filter(e=>e.tipo!=='lua').map(e=>{
+    const dentro=`<span class="ic">${e.tipo==='saba'?I.roda:e.tipo==='aula'?I.aulas:I.sol}</span><span class="t"><span class="n">${esc(plNomeEv(e))}</span><span class="s">${esc(plSubEv(e))}</span></span>`;
+    return e.tipo==='fer'?`<div class="row">${dentro}</div>`:`<button class="row" data-go="${e.tipo==='saba'?'item/sabas/'+e.id:'clube/aula/'+e.aula.id}">${dentro}<span class="chev">${I.chev}</span></button>`;
+  }).join('');
+  return `
+  ${plTopo('planner/'+plIso(mes),Mai(MESES[mes-1]))}
+  <div class="pl-dia-nav"><button ${ant?`data-go="planner/${ant}" data-troca`:'disabled'} aria-label="Dia anterior">${I.back}</button>
+    <div><div class="eyebrow">Planner ${PL_ANO} · ${esc(sem.nome)}${iso===hoje?' · hoje':''}</div><h1 class="h1" style="margin-top:6px">${dia} de ${MESES[mes-1]}</h1></div>
+    <button ${prox?`data-go="planner/${prox}" data-troca`:'disabled'} aria-label="Próximo dia">${I.chev}</button></div>
+  ${plAvisoSql()}
+  <div class="night">
+    ${fd.exata?luaSvg(PL_ILUM[fd.fase],CRESCE.has(fd.fase),64):luaSvg(lua.ilum,lua.crescendo,64)}
+    <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+      <div class="eyebrow">Lua do dia</div>
+      <div class="serif" style="font-size:24px">${esc(B.lua[fd.fase].nome)}${fd.exata?` às ${plHora(fd.exata.data)}`:''}</div>
+      <p style="font-size:13.5px">${fd.exata?'Horário de Brasília. ':''}Dia de ${esc(sem.planeta)}: ${esc(sem.temas.join(', '))}.</p>
+    </div>
+  </div>
+  ${linhas?`<div class="list">${linhas}</div>`:''}
+  <section class="card pl-campo"><h2 class="h2">Anotações do dia</h2>${plCampo(iso,`Anotações de ${dia} de ${MESES[mes-1]}`,'Compromissos, lembretes, como foi o dia…','style="min-height:170px"')}</section>
+  <button class="btn ghost" data-go="planner/${plIso(mes)}">Ver ${MESES[mes-1]} inteiro</button>`;
+}
+// mês em miniatura (tela do ano e página impressa): fase exata vira o desenho da Lua; sabá, bolinha dourada; feriado, número rosa
+function plMini(mes,hoje,lua){
+  const cel=['D','S','T','Q','Q','S','S'].map(x=>`<span class="wd">${x}</span>`);
+  for(let i=0;i<plSemana(plIso(mes,1));i++)cel.push('<span></span>');
+  for(let d=1;d<=plDiasNoMes(mes);d++){
+    const iso=plIso(mes,d), ev=plCal().dias[iso]||[], l=ev.find(e=>e.tipo==='lua');
+    cel.push(`<span class="${ev.some(e=>e.tipo==='saba')?'s ':''}${ev.some(e=>e.tipo==='fer')?'f ':''}${iso===hoje?'h':''}">${l&&!ev.some(e=>e.tipo==='saba')?lua(l.fase):d}</span>`);
+  }
+  return cel.join('');
+}
+function plTelaAno(hoje){
+  const meses=MESES.map((nome,i)=>{
+    const mes=i+1, pre=plIso(mes), marcos=Object.keys(plCal().dias).filter(k=>k.startsWith(pre)).sort().flatMap(k=>plCal().dias[k].filter(e=>e.tipo==='saba').map(e=>`${B.sabas[e.id].nome} ${+k.slice(8)}`));
+    const temNota=Object.keys(plLocal()).some(k=>k.startsWith(pre)&&plTexto(k).trim());
+    return `<button class="pl-mini" data-go="planner/${pre}" aria-label="Abrir ${nome}"><b>${nome}</b><div class="g" aria-hidden="true">${plMini(mes,hoje,f=>plLua(f,13))}</div><small>${esc(marcos.join(' · ')||' ')}${temNota?`${marcos.length?' · ':''}✎ com anotações`:''}</small></button>`;
+  }).join('');
+  return `
+  ${plTopo('hoje','Hoje')}
+  <section class="cl-hero pl-hero">${ornamento()}<div class="eyebrow">Só para quem está no Coven</div><h2 class="gt">Planner ${PL_ANO}</h2><p class="cl-sub" style="font-size:17px">O ano inteiro: as Luas, os oito sabás e os feriados.</p></section>
+  ${plAbas('ano')}
+  ${plAvisoSql()}
+  <section class="card pl-campo"><h2 class="h2">${PL_ANO} em uma página</h2><p class="dica">As suas intenções para o ano: o que você quer estudar, cuidar, experimentar. Dá para voltar e mudar quando quiser.</p>${plCampo('ano-'+PL_ANO,PL_ANO+' em uma página','Em '+PL_ANO+' eu quero…','style="min-height:190px"')}</section>
+  <div class="pl-ano">${meses}</div>
+  <div class="pl-leg"><span>${plLua('nova',13)} Nova</span><span>${plLua('quarto-crescente',13)} Crescente</span><span>${plLua('cheia',13)} Cheia</span><span>${plLua('quarto-minguante',13)} Minguante</span><span><i class="pl-m saba" style="width:10px;height:10px"></i> Sabá</span><span><b class="f">12</b> Feriado</span></div>
+  ${plBotaoImprimir()}
+  ${plRodape()}`;
+}
+
+// --- versão para imprimir (A4 em pé): o conteúdo fica em #pl-print, invisível na tela, e é o único que sai no papel ---
+function plTelaImprimir(){
+  return `
+  ${plTopo('planner','Planner')}
+  <div><div class="eyebrow">Planner ${PL_ANO}</div><h1 class="h1" style="margin-top:6px">Para imprimir</h1></div>
+  <div class="card">
+    <p style="font-size:15px;color:var(--ink2)">Um caderno em A4 com 28 páginas:</p>
+    <ul class="pl-lista"><li>capa</li><li>${PL_ANO} em uma página, com o ano inteiro e as suas intenções</li><li>os oito sabás de ${PL_ANO}, com data e horário</li><li>para cada mês: o calendário com Luas, sabás e feriados, e ao lado a página das intenções e das quatro Luas</li></ul>
+    <label class="check"><input type="checkbox" id="pl-notas" ${PL.comNotas?'checked':''}><span><b>Incluir minhas anotações</b><br>Desmarcado, o planner sai em branco, com linhas para escrever à mão.</span></label>
+    <button class="btn" data-act="pl-imprimir">Imprimir ou salvar em PDF</button>
+    <p class="msg erro" id="pl-imp-msg" role="alert" hidden></p>
+    <p class="dica">Na janela de impressão, escolha papel <b>A4</b>, margens <b>Nenhuma</b> e escala <b>100%</b>. Para guardar como arquivo, escolha <b>Salvar como PDF</b> no lugar da impressora. Imprimindo frente e verso, o calendário de cada mês fica de frente para a página das Luas.</p>
+  </div>
+  <div id="pl-print" aria-hidden="true">${plImpressao()}</div>`;
+}
+// Lua para o papel: Nova cheia de tinta, Cheia vazada, quartos pela metade (no hemisfério sul a crescente acende pela esquerda)
+function luaImp(fase,mm,cor,claro){
+  cor=cor||'#4A2545';claro=claro||'#fff';
+  let dir=fase==='quarto-crescente'?1:-1;if(S.hemisferio!=='norte')dir=-dir;
+  const meio=/^quarto/.test(fase)?`<path transform="scale(${dir},1)" d="M0,-44 A44,44 0 0 1 0,44Z" fill="${claro}"/>`:'';
+  return `<svg width="${mm}mm" height="${mm}mm" viewBox="-50 -50 100 100" style="flex-shrink:0;display:block"><circle r="44" fill="${fase==='cheia'?claro:cor}"/>${meio}<circle r="44" fill="none" stroke="${cor}" stroke-width="7"/></svg>`;
+}
+function plImpressao(){
+  const com=PL.comNotas, cal=plCal();
+  const linhas=n=>`<div class="ln">${'<i></i>'.repeat(n)}</div>`;
+  const caixa=(ch,n)=>{const t=com?plTexto(ch).trim():'';return t?`<p class="txt">${esc(t)}</p>`:linhas(n);};
+  const rod=d=>`<div class="rod"><span>Coven · Raquel Lopes Strix</span><span>${d}</span></div>`;
+  const nomeFase={nova:'Nova','quarto-crescente':'Crescente',cheia:'Cheia','quarto-minguante':'Minguante'};
+  const pags=[];
+  // capa
+  pags.push(`<section class="pp capa"><div class="moldura"></div>
+    <svg class="orn" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M40 10a20 20 0 1 0 14 34A16 16 0 0 1 40 10z"/><path d="M14 12l1.6 3.4L19 17l-3.4 1.6L14 22l-1.6-3.4L9 17l3.4-1.6zM52 50l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/></svg>
+    <div class="ey">Coven</div><div class="t1">Planner</div><div class="t2">${PL_ANO}</div>
+    <div class="fs">${PL_FASES.map(f=>luaImp(f[0],8,'#F2D36B','#4A2545')).join('')}</div>
+    <div class="as">Coven · Raquel Lopes Strix</div>
+    <div class="de">Este planner é de<span></span></div></section>`);
+  // o ano em uma página
+  pags.push(`<section class="pp"><div><h2>${PL_ANO}<small>em uma página</small></h2><p class="sub">O ano inteiro: as Luas, os oito sabás e os feriados nacionais.</p></div>
+    <div class="pp-ano">${MESES.map((nome,i)=>`<div class="pp-mini"><b>${nome}</b><div class="g">${plMini(i+1,'',f=>luaImp(f,3))}</div></div>`).join('')}</div>
+    <div class="pp-leg"><span>${luaImp('nova',3)} Lua Nova</span><span>${luaImp('quarto-crescente',3)} Quarto Crescente</span><span>${luaImp('cheia',3)} Lua Cheia</span><span>${luaImp('quarto-minguante',3)} Quarto Minguante</span><span><i class="s"></i> sabá</span><span><b class="f">12</b> feriado ou ponto facultativo</span></div>
+    <div class="cx" style="flex:1"><h3>Minhas intenções para ${PL_ANO}</h3>${caixa('ano-'+PL_ANO,13)}</div>
+    ${rod('Planner '+PL_ANO)}</section>`);
+  // os oito sabás
+  const sabas=Object.keys(cal.dias).sort().flatMap(k=>cal.dias[k].filter(e=>e.tipo==='saba').map(e=>[k,e]));
+  pags.push(`<section class="pp"><div><h2>A Roda do Ano</h2><p class="sub">Os oito sabás de ${PL_ANO} no hemisfério ${cal.hemi}, no horário de Brasília.</p></div>
+    <div class="pp-sabas">${sabas.map(([k,e])=>`<div class="cx"><div class="dt">${+k.slice(8)} de ${MESES[+k.slice(5,7)-1]}<small>${B.dias[plSemana(k)].nome.toLowerCase()}${e.astro?', às '+plHora(e.data):''}</small></div><h3>${esc(B.sabas[e.id].nome)}</h3><p class="q">${esc(B.sabas[e.id].subtitulo)}</p><p class="tm">${esc(B.sabas[e.id].temas.join(' · '))}</p><p class="cm">Como eu quero viver este dia</p>${linhas(3)}</div>`).join('')}</div>
+    ${rod('Planner '+PL_ANO)}</section>`);
+  // cada mês: calendário + página das intenções e das Luas
+  for(let mes=1;mes<=12;mes++){
+    const n=plDiasNoMes(mes), ini=plSemana(plIso(mes,1)), semanas=Math.ceil((ini+n)/7), nLin=semanas>=6?3:4, cel=[];
+    for(let i=0;i<ini;i++)cel.push('<div class="c out"></div>');
+    for(let d=1;d<=n;d++){
+      const iso=plIso(mes,d), ev=cal.dias[iso]||[], lua=ev.find(e=>e.tipo==='lua'), outros=ev.filter(e=>e.tipo!=='lua'), t=com?plTexto(iso).trim():'';
+      cel.push(`<div class="c ${ev.some(e=>e.tipo==='fer')?'fer':''}"><div class="tp"><span class="n">${d}</span>${lua?`<span class="lu">${plHora(lua.data)} ${luaImp(lua.fase,3.6)}</span>`:''}</div>${outros.map(e=>`<span class="e ${e.tipo}">${esc(plNomeEv(e))}${e.astro?' '+plHora(e.data):''}</span>`).join('')}${t?`<p class="txt">${esc(t)}</p>`:linhas(Math.max(2,nLin-outros.length))}</div>`);
+    }
+    while(cel.length%7)cel.push('<div class="c out"></div>');
+    const fm=plFasesDoMes(mes), crono=cal.fases.filter(f=>isoSP(f.data).startsWith(plIso(mes)));
+    pags.push(`<section class="pp"><div class="pp-cab"><h2>${Mai(MESES[mes-1])}<small>${PL_ANO}</small></h2><div class="pp-luas">${crono.map(f=>`<span>${luaImp(f.fase,3.2)} ${nomeFase[f.fase]} · dia ${+isoSP(f.data).slice(8)}, ${plHora(f.data)}</span>`).join('')}</div></div>
+      <div class="pp-grade">${['dom','seg','ter','qua','qui','sex','sáb'].map(x=>`<div class="wd">${x}</div>`).join('')}${cel.join('')}</div>
+      ${rod(Mai(MESES[mes-1])+' · horários de Brasília')}</section>`);
+    pags.push(`<section class="pp"><div><h2>${Mai(MESES[mes-1])}<small>intenções e Luas</small></h2><p class="sub">Uma pergunta para cada fase. Responda quando a Lua chegar lá.</p></div>
+      <div class="cx" style="height:62mm;flex-shrink:0"><h3>Intenções de ${MESES[mes-1]}</h3>${caixa(plIso(mes),6)}</div>
+      <div class="pp-fases">${fm.map(f=>`<div class="cx"><h3>${luaImp(f.fase,6)}<span>${esc(B.lua[f.fase].nome)}<br><small>${f.datas.length?f.datas.map(x=>`${+isoSP(x).slice(8)} de ${MESES[mes-1]}, ${plHora(x)}`).join(' e '):'não acontece neste mês'}</small></span></h3><p class="q">${f.pergunta}</p>${caixa(plIso(mes)+'-'+f.chave,8)}</div>`).join('')}</div>
+      ${rod(Mai(MESES[mes-1])+' · intenções e Luas')}</section>`);
+  }
+  // página final de anotações (fecha o caderno em número par de páginas)
+  pags.push(`<section class="pp"><div><h2>Anotações</h2><p class="sub">Para o que não coube em nenhum mês.</p></div><div class="cx" style="flex:1">${linhas(27)}</div>${rod('Planner '+PL_ANO)}</section>`);
+  // regras de página e de "só o planner no papel" entram junto com o conteúdo, para não mexer na impressão das outras telas
+  return `<style>@page{size:A4;margin:0}@media print{html,body{background:#fff!important}#nav{display:none!important}#app{display:block!important;max-width:none!important;min-height:0!important}#main{display:block!important;padding:0!important;max-width:none!important}#main>:not(#pl-print){display:none!important}#pl-print{display:block!important}}</style>${pags.join('')}`;
 }
 
 render();
